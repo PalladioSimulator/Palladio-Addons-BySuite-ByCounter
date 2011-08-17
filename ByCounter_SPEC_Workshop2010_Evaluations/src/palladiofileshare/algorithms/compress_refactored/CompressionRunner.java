@@ -1,0 +1,60 @@
+package palladiofileshare.algorithms.compress_refactored;
+
+import java.util.Arrays;
+import java.util.logging.Logger;
+
+/**
+ * Replaces Harness.java from original SPEC compression
+ * @author kelsaka
+ *
+ */
+public class CompressionRunner {    
+	private Logger logger = Logger.getLogger(this.getClass().getCanonicalName());
+	
+    public Source SOURCE;
+    public byte[][] COMPRESS_BUFFERS;
+    public byte[][] DECOMPRESS_BUFFERS;
+    public Compress CB;
+	
+	void prepareBuffers(byte[] inputFile) {
+        this.CB = new Compress();
+        
+    	this.SOURCE = new Source(inputFile);
+
+        //DECOMPRESS_BUFFERS = new byte[Launch.currentNumberBmThreads][Source.MAX_LENGTH];
+        //COMPRESS_BUFFERS = new byte[Launch.currentNumberBmThreads][Source.MAX_LENGTH];
+        this.DECOMPRESS_BUFFERS = new byte[20][Source.MAX_LENGTH]; //FIXME: 20
+        this.COMPRESS_BUFFERS = new byte[20][Source.MAX_LENGTH]; //FIXME: 20
+    }
+
+	OutputBuffer runCompress(int btid) {		
+    	
+	    @SuppressWarnings("unused")
+		OutputBuffer comprBuffer, decomprBufer;
+	    comprBuffer = Compress.performAction(this.SOURCE.getBuffer(),
+	    		this.SOURCE.getLength(),
+	    		Compress.COMPRESS,
+	            this.COMPRESS_BUFFERS[btid - 1]);
+	    /*decomprBufer = CB.performAction(COMPRESS_BUFFERS[btid - 1],
+	            comprBuffer.getLength(),
+	            CB.UNCOMPRESS,
+	            DECOMPRESS_BUFFERS[btid - 1]);*/
+        this.logger.fine("src length: " + this.SOURCE.getLength() + " -- " + this.SOURCE.getCRC() + " ");
+        this.logger.fine("compressed length: " + comprBuffer.getLength() + " -- " + comprBuffer.getCRC() + " ");                
+        //logger.info(decomprBufer.getLength() + " " + decomprBufer.getCRC());
+    
+        return comprBuffer;
+	}
+	
+    public byte[] compress(byte[] inputFile) {				
+		prepareBuffers(inputFile);
+
+		//int threadID = (int)Thread.currentThread().getId();				
+		int threadID = 1; //TODO: check use of threads
+		OutputBuffer outBuffer = runCompress(threadID);
+		byte[] returnBytes = Arrays.copyOf(outBuffer.getBuffer(), outBuffer.getLength());
+		return returnBytes;
+	}
+
+	
+}

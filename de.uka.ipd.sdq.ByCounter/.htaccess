@@ -1,0 +1,10 @@
+ErrorDocument 400 "<h1>ERROR 400</h1><p>The requested ByCounter document/file lead to a bad request. See <a href=http://sdqweb.ipd.kit.edu/eclipse/ByCounter/readme.txt>ByCounter readme.txt</a> for explanations.</p>"
+ErrorDocument 401 "<h1>ERROR 401</h1><p>Unauthorised access to the requested ByCounter document/file. See <a href=http://sdqweb.ipd.kit.edu/eclipse/ByCounter/readme.txt>ByCounter readme.txt</a> for explanations.</p>"
+ErrorDocument 402 "<h1>ERROR 402</h1><p>The requested ByCounter document/file requires payment. See <a href=http://sdqweb.ipd.kit.edu/eclipse/ByCounter/readme.txt>ByCounter readme.txt</a> for explanations.</p>"
+ErrorDocument 403 "<h1>ERROR 403</h1><p>Access forbidden to the requested ByCounter document/file. See <a href=http://sdqweb.ipd.kit.edu/eclipse/ByCounter/readme.txt>ByCounter readme.txt</a> for explanations.</p>"
+ErrorDocument 404 "<h1>ERROR 404</h1><p>The requested ByCounter document/file was not found. See <a href=http://sdqweb.ipd.kit.edu/eclipse/ByCounter/readme.txt>ByCounter readme.txt</a> for explanations.</p>"
+ErrorDocument 500 "<h1>ERROR 500</h1><p>The requested ByCounter document/file lead to an internal server error. See <a href=http://sdqweb.ipd.kit.edu/eclipse/ByCounter/readme.txt>ByCounter readme.txt</a> for explanations.</p>"
+AuthType Basic
+AuthName "ByCounter Downloads, see http://sdqweb.ipd.kit.edu/eclipse/ByCounter/readme.txt"
+AuthUserFile /var/www/html/eclipse/ByCounter/dist/.htpasswd
+require valid-user

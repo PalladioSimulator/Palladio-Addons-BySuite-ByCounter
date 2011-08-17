@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ByCounter.Input:InstrumentationProfileRepository xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ByCounter.Input="http://sdq.ipd.kit.edu/ByCounterModels/Input/0.3" xmlns:statements="http://www.fzi.de/gast/statements" id="_-KA24PyKEd-93MTxWiOuvg">
+  <instrumentationProfile id="_-7IKwPyKEd-93MTxWiOuvg">
+    <entitiesToInstrument xsi:type="ByCounter.Input:InstrumentedCodeArea" id="__Il_APyKEd-93MTxWiOuvg" from="statements:BlockStatement ../GAST/Fibonacci(merged).gast#_xMMXwPyZEd-93MTxWiOuvg" to="statements:BlockStatement ../GAST/Fibonacci(merged).gast#_xMMXwPyZEd-93MTxWiOuvg"/>
+  </instrumentationProfile>
+</ByCounter.Input:InstrumentationProfileRepository>

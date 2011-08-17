@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="ASCII"?>
+<ByCounter.Output:MeasurementRun xmlns:ByCounter.Input="http://sdq.ipd.kit.edu/ByCounterModels/Input/0.3" xmlns:ByCounter.Output="http://sdq.ipd.kit.edu/ByCounterModels/Output/0.3" id="__CKCAPyZEd-w6eMXQP8b7Q">
+  <requests id="__COTcPyZEd-w6eMXQP8b7Q">
+    <observedExecutionSequence id="__CPhkPyZEd-w6eMXQP8b7Q" entity="ByCounter.Input:InstrumentedCodeArea Fibonacci.input#__Il_APyKEd-93MTxWiOuvg">
+      <resourceDemands id="__CQIoPyZEd-w6eMXQP8b7Q">
+        <javaVMCall name="NOP"/>
+        <javaVMCall id="1" name="ACONST_NULL"/>
+        <javaVMCall id="2" name="ICONST_M1"/>
+        <javaVMCall id="3" name="ICONST_0"/>
+        <javaVMCall id="4" name="ICONST_1"/>
+        <javaVMCall id="5" name="ICONST_2"/>
+        <javaVMCall id="6" name="ICONST_3"/>
+        <javaVMCall id="7" name="ICONST_4"/>
+        <javaVMCall id="8" name="ICONST_5"/>
+        <javaVMCall numberObservations="3" id="9" name="LCONST_0"/>
+        <javaVMCall numberObservations="101" id="10" name="LCONST_1"/>
+        <javaVMCall id="11" name="FCONST_0"/>
+        <javaVMCall id="12" name="FCONST_1"/>
+        <javaVMCall id="13" name="FCONST_2"/>
+        <javaVMCall id="14" name="DCONST_0"/>
+        <javaVMCall id="15" name="DCONST_1"/>
+        <javaVMCall id="16" name="BIPUSH"/>
+        <javaVMCall id="17" name="SIPUSH"/>
+        <javaVMCall id="18" name="LDC"/>
+        <javaVMCall id="19"/>
+        <javaVMCall id="20"/>
+        <javaVMCall id="21" name="ILOAD"/>
+        <javaVMCall numberObservations="703" id="22" name="LLOAD"/>
+        <javaVMCall id="23" name="FLOAD"/>
+        <javaVMCall id="24" name="DLOAD"/>
+        <javaVMCall id="25" name="ALOAD"/>
+        <javaVMCall id="26"/>
+        <javaVMCall id="27"/>
+        <javaVMCall id="28"/>
+        <javaVMCall id="29"/>
+        <javaVMCall id="30"/>
+        <javaVMCall id="31"/>
+        <javaVMCall id="32" name="ACC_SYNCHRONIZED"/>
+        <javaVMCall id="33"/>
+        <javaVMCall id="34"/>
+        <javaVMCall id="35"/>
+        <javaVMCall id="36"/>
+        <javaVMCall id="37"/>
+        <javaVMCall id="38"/>
+        <javaVMCall id="39"/>
+        <javaVMCall id="40"/>
+        <javaVMCall id="41"/>
+        <javaVMCall id="42"/>
+        <javaVMCall id="43"/>
+        <javaVMCall id="44"/>
+        <javaVMCall id="45"/>
+        <javaVMCall id="46" name="IALOAD"/>
+        <javaVMCall id="47" name="LALOAD"/>
+        <javaVMCall id="48" name="FALOAD"/>
+        <javaVMCall id="49" name="DALOAD"/>
+        <javaVMCall id="50" name="AALOAD"/>
+        <javaVMCall id="51" name="BALOAD"/>
+        <javaVMCall id="52" name="CALOAD"/>
+        <javaVMCall id="53" name="SALOAD"/>
+        <javaVMCall id="54" name="ISTORE"/>
+        <javaVMCall numberObservations="404" id="55" name="LSTORE"/>
+        <javaVMCall id="56" name="FSTORE"/>
+        <javaVMCall id="57" name="DSTORE"/>
+        <javaVMCall id="58" name="ASTORE"/>
+        <javaVMCall id="59"/>
+        <javaVMCall id="60"/>
+        <javaVMCall id="61"/>
+        <javaVMCall id="62"/>
+        <javaVMCall id="63"/>
+        <javaVMCall id="64" name="ACC_BRIDGE"/>
+        <javaVMCall id="65"/>
+        <javaVMCall id="66"/>
+        <javaVMCall id="67"/>
+        <javaVMCall id="68"/>
+        <javaVMCall id="69"/>
+        <javaVMCall id="70"/>
+        <javaVMCall id="71"/>
+        <javaVMCall id="72"/>
+        <javaVMCall id="73"/>
+        <javaVMCall id="74"/>
+        <javaVMCall id="75"/>
+        <javaVMCall id="76"/>
+        <javaVMCall id="77"/>
+        <javaVMCall id="78"/>
+        <javaVMCall id="79" name="IASTORE"/>
+        <javaVMCall id="80" name="LASTORE"/>
+        <javaVMCall id="81" name="FASTORE"/>
+        <javaVMCall id="82" name="DASTORE"/>
+        <javaVMCall id="83" name="AASTORE"/>
+        <javaVMCall id="84" name="BASTORE"/>
+        <javaVMCall id="85" name="CASTORE"/>
+        <javaVMCall id="86" name="SASTORE"/>
+        <javaVMCall id="87" name="POP"/>
+        <javaVMCall id="88" name="POP2"/>
+        <javaVMCall id="89" name="DUP"/>
+        <javaVMCall id="90" name="DUP_X1"/>
+        <javaVMCall id="91" name="DUP_X2"/>
+        <javaVMCall id="92" name="DUP2"/>
+        <javaVMCall id="93" name="DUP2_X1"/>
+        <javaVMCall id="94" name="DUP2_X2"/>
+        <javaVMCall id="95" name="SWAP"/>
+        <javaVMCall id="96" name="IADD"/>
+        <javaVMCall numberObservations="200" id="97" name="LADD"/>
+        <javaVMCall id="98" name="FADD"/>
+        <javaVMCall id="99" name="DADD"/>
+        <javaVMCall id="100" name="ISUB"/>
+        <javaVMCall id="101" name="LSUB"/>
+        <javaVMCall id="102" name="FSUB"/>
+        <javaVMCall id="103" name="DSUB"/>
+        <javaVMCall id="104" name="IMUL"/>
+        <javaVMCall id="105" name="LMUL"/>
+        <javaVMCall id="106" name="FMUL"/>
+        <javaVMCall id="107" name="DMUL"/>
+        <javaVMCall id="108" name="IDIV"/>
+        <javaVMCall id="109" name="LDIV"/>
+        <javaVMCall id="110" name="FDIV"/>
+        <javaVMCall id="111" name="DDIV"/>
+        <javaVMCall id="112" name="IREM"/>
+        <javaVMCall id="113" name="LREM"/>
+        <javaVMCall id="114" name="FREM"/>
+        <javaVMCall id="115" name="DREM"/>
+        <javaVMCall id="116" name="INEG"/>
+        <javaVMCall id="117" name="LNEG"/>
+        <javaVMCall id="118" name="FNEG"/>
+        <javaVMCall id="119" name="DNEG"/>
+        <javaVMCall id="120" name="ISHL"/>
+        <javaVMCall id="121" name="LSHL"/>
+        <javaVMCall id="122" name="ISHR"/>
+        <javaVMCall id="123" name="LSHR"/>
+        <javaVMCall id="124" name="IUSHR"/>
+        <javaVMCall id="125" name="LUSHR"/>
+        <javaVMCall id="126" name="IAND"/>
+        <javaVMCall id="127" name="LAND"/>
+        <javaVMCall id="-128" name="IOR"/>
+        <javaVMCall id="-127" name="LOR"/>
+        <javaVMCall id="-126" name="IXOR"/>
+        <javaVMCall id="-125" name="LXOR"/>
+        <javaVMCall id="-124" name="IINC"/>
+        <javaVMCall id="-123" name="I2L"/>
+        <javaVMCall id="-122" name="I2F"/>
+        <javaVMCall id="-121" name="I2D"/>
+        <javaVMCall id="-120" name="L2I"/>
+        <javaVMCall id="-119" name="L2F"/>
+        <javaVMCall id="-118" name="L2D"/>
+        <javaVMCall id="-117" name="F2I"/>
+        <javaVMCall id="-116" name="F2L"/>
+        <javaVMCall id="-115" name="F2D"/>
+        <javaVMCall id="-114" name="D2I"/>
+        <javaVMCall id="-113" name="D2L"/>
+        <javaVMCall id="-112" name="D2F"/>
+        <javaVMCall id="-111" name="I2B"/>
+        <javaVMCall id="-110" name="I2C"/>
+        <javaVMCall id="-109" name="I2S"/>
+        <javaVMCall numberObservations="101" id="-108" name="LCMP"/>
+        <javaVMCall id="-107" name="FCMPL"/>
+        <javaVMCall id="-106" name="FCMPG"/>
+        <javaVMCall id="-105" name="DCMPL"/>
+        <javaVMCall id="-104" name="DCMPG"/>
+        <javaVMCall id="-103" name="IFEQ"/>
+        <javaVMCall id="-102" name="IFNE"/>
+        <javaVMCall numberObservations="101" id="-101" name="IFLT"/>
+        <javaVMCall id="-100" name="IFGE"/>
+        <javaVMCall id="-99" name="IFGT"/>
+        <javaVMCall id="-98" name="IFLE"/>
+        <javaVMCall id="-97" name="IF_ICMPEQ"/>
+        <javaVMCall id="-96" name="IF_ICMPNE"/>
+        <javaVMCall id="-95" name="IF_ICMPLT"/>
+        <javaVMCall id="-94" name="IF_ICMPGE"/>
+        <javaVMCall id="-93" name="IF_ICMPGT"/>
+        <javaVMCall id="-92" name="IF_ICMPLE"/>
+        <javaVMCall id="-91" name="IF_ACMPEQ"/>
+        <javaVMCall id="-90" name="IF_ACMPNE"/>
+        <javaVMCall numberObservations="1" id="-89" name="GOTO"/>
+        <javaVMCall id="-88" name="JSR"/>
+        <javaVMCall id="-87" name="RET"/>
+        <javaVMCall id="-86" name="TABLESWITCH"/>
+        <javaVMCall id="-85" name="LOOKUPSWITCH"/>
+        <javaVMCall id="-84" name="IRETURN"/>
+        <javaVMCall numberObservations="1" id="-83" name="LRETURN"/>
+        <javaVMCall id="-82" name="FRETURN"/>
+        <javaVMCall id="-81" name="DRETURN"/>
+        <javaVMCall id="-80" name="ARETURN"/>
+        <javaVMCall id="-79" name="RETURN"/>
+        <javaVMCall id="-78" name="GETSTATIC"/>
+        <javaVMCall id="-77" name="PUTSTATIC"/>
+        <javaVMCall id="-76" name="GETFIELD"/>
+        <javaVMCall id="-75" name="PUTFIELD"/>
+        <javaVMCall id="-74" name="INVOKEVIRTUAL"/>
+        <javaVMCall id="-73" name="INVOKESPECIAL"/>
+        <javaVMCall id="-72" name="INVOKESTATIC"/>
+        <javaVMCall id="-71" name="INVOKEINTERFACE"/>
+        <javaVMCall id="-70" name="INVOKEDYNAMIC"/>
+        <javaVMCall id="-69" name="NEW"/>
+        <javaVMCall id="-68" name="NEWARRAY"/>
+        <javaVMCall id="-67" name="ANEWARRAY"/>
+        <javaVMCall id="-66" name="ARRAYLENGTH"/>
+        <javaVMCall id="-65" name="ATHROW"/>
+        <javaVMCall id="-64" name="CHECKCAST"/>
+        <javaVMCall id="-63" name="INSTANCEOF"/>
+        <javaVMCall id="-62" name="MONITORENTER"/>
+        <javaVMCall id="-61" name="MONITOREXIT"/>
+        <javaVMCall id="-60"/>
+        <javaVMCall id="-59" name="MULTIANEWARRAY"/>
+        <javaVMCall id="-58" name="IFNULL"/>
+        <javaVMCall id="-57" name="IFNONNULL"/>
+        <javaVMCall id="-56"/>
+        <javaVMCall id="-55"/>
+        <javaVMCall id="-54"/>
+        <javaVMCall id="-53"/>
+        <javaVMCall id="-52"/>
+        <javaVMCall id="-51"/>
+        <javaVMCall id="-50"/>
+        <javaVMCall id="-49"/>
+        <javaVMCall id="-48"/>
+        <javaVMCall id="-47"/>
+      </resourceDemands>
+    </observedExecutionSequence>
+  </requests>
+</ByCounter.Output:MeasurementRun>

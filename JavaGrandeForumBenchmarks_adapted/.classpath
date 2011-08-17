@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry excluding="section1/|section3/|section2/|tools/" kind="src" path="src"/>
+	<classpathentry kind="src" path="src/section1"/>
+	<classpathentry kind="src" path="src/section2"/>
+	<classpathentry kind="src" path="src/tools"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

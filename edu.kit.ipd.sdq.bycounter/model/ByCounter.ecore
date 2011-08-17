@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ecore:EPackage xmi:version="2.0"
+    xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="bycounter"
+    nsURI="http://sdq.ipd.kit.edu/ByCounterModels/0.3" nsPrefix="ByCounter">
+  <eSubpackages name="output" nsURI="http://sdq.ipd.kit.edu/ByCounterModels/Output/0.3"
+      nsPrefix="ByCounter.Output">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Decorator&amp;nbsp;models&amp;nbsp;which&amp;nbsp;annotate&amp;nbsp;raw&amp;nbsp;resource&amp;nbsp;demands&amp;nbsp;to&amp;nbsp;AbstractInternalControlFlowActions."/>
+    </eAnnotations>
+    <eClassifiers xsi:type="ecore:EClass" name="OutputModelRepository" eSuperTypes="../../de.uka.ipd.sdq.identifier/model/identifier.ecore#//Identifier">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="measurementRuns" ordered="false"
+          upperBound="-1" eType="#//output/MeasurementRun" containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="environmentCharacterisations"
+          ordered="false" upperBound="-1" eType="#//output/EnvironmentDescription"
+          containment="true"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="MeasurementRun" eSuperTypes="../../de.uka.ipd.sdq.identifier/model/identifier.ecore#//Identifier">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="environmentCharacterisation"
+          ordered="false" eType="#//output/EnvironmentDescription"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="requests" ordered="false"
+          upperBound="-1" eType="#//output/Request" containment="true" eOpposite="#//output/Request/measurementRun"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="EnvironmentDescription" abstract="true"
+        eSuperTypes="../../de.uka.ipd.sdq.identifier/model/identifier.ecore#//Identifier">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="e.g. settings of JVM or Garbage Collection"/>
+      </eAnnotations>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="Request" eSuperTypes="../../de.uka.ipd.sdq.identifier/model/identifier.ecore#//Identifier">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="observedExecutionSequence"
+          upperBound="-1" eType="#//output/ObservedEntityExecution" containment="true"
+          eOpposite="#//output/ObservedEntityExecution/request">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Ordered set or sequence of"/>
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="measurementRun" ordered="false"
+          lowerBound="1" eType="#//output/MeasurementRun" eOpposite="#//output/MeasurementRun/requests"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="ObservedEntityExecution" eSuperTypes="../../de.uka.ipd.sdq.identifier/model/identifier.ecore#//Identifier">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="&lt;p>&#xD;&#xA;    Execution sequence of code areas which was observed in the measurement run.&#xD;&#xA;&lt;/p>"/>
+      </eAnnotations>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="resourceDemands" lowerBound="1"
+          eType="#//output/ResourceDemands" containment="true" eOpposite="#//output/ResourceDemands/observedExecution"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="observedForkedExecutionSequence"
+          upperBound="-1" eType="#//output/ObservedEntityExecution" containment="true"
+          eOpposite="#//output/ObservedEntityExecution/observedExecutionSequenceForkedBy">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="&lt;p>&#xD;&#xA;    Execution sequence of a &lt;em>single&lt;/em> forked thread. Only one thread can be forked within a ObservedCodeAreaSequence.&#xD;&#xA;&lt;/p>"/>
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="observedExecutionSequenceForkedBy"
+          ordered="false" eType="#//output/ObservedEntityExecution" eOpposite="#//output/ObservedEntityExecution/observedForkedExecutionSequence"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="entity" ordered="false"
+          lowerBound="1" eType="#//input/EntityToInstrument"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="request" ordered="false"
+          eType="#//output/Request" eOpposite="#//output/Request/observedExecutionSequence"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="ResourceDemands" eSuperTypes="../../de.uka.ipd.sdq.identifier/model/identifier.ecore#//Identifier">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Stores&amp;nbsp;the measured&amp;nbsp;resource demands&amp;nbsp;for a single code area and single invocation, e.g. all JVM library&#xD;&#xA;calls and byte code instructions for an internal action or an external method invocation for an external call."/>
+      </eAnnotations>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="functionCalls" ordered="false"
+          upperBound="-1" eType="#//output/FunctionCall" containment="true" eOpposite="#//output/FunctionCall/resourceDemands"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="javaVMCall" ordered="false"
+          upperBound="-1" eType="#//output/JavaVMCall" containment="true" eOpposite="#//output/JavaVMCall/resourceDemands"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="observedExecution" ordered="false"
+          lowerBound="1" eType="#//output/ObservedEntityExecution" eOpposite="#//output/ObservedEntityExecution/resourceDemands"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="FunctionCall" eSuperTypes="../../de.uka.ipd.sdq.identifier/model/identifier.ecore#//Identifier">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="parameterInstance" ordered="false"
+          upperBound="-1" eType="#//output/ParameterInstance" containment="true" eOpposite="#//output/ParameterInstance/functionCall"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="function" ordered="false"
+          lowerBound="1" eType="ecore:EClass platform:/plugin/de.fzi.gast/model/gast.ecore#//functions/Function"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="numberObservations" ordered="false"
+          lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//ELong"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="native" ordered="false"
+          lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="synchronized" ordered="false"
+          lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="The entire method is synchronized, not just a section (or several) inside it."/>
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="resourceDemands" ordered="false"
+          lowerBound="1" eType="#//output/ResourceDemands" eOpposite="#//output/ResourceDemands/functionCalls"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="ParameterInstance" eSuperTypes="../../de.uka.ipd.sdq.identifier/model/identifier.ecore#//Identifier">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="formalParameter" ordered="false"
+          lowerBound="1" eType="ecore:EClass platform:/plugin/de.fzi.gast/model/gast.ecore#//variables/FormalParameter"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="parameterCharacterisation"
+          ordered="false" upperBound="-1" eType="#//output/ParameterCharacterisation"
+          containment="true" eOpposite="#//output/ParameterCharacterisation/parameterInstance"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="functionCall" ordered="false"
+          lowerBound="1" eType="#//output/FunctionCall" eOpposite="#//output/FunctionCall/parameterInstance"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="ParameterCharacterisation" abstract="true"
+        eSuperTypes="../../de.uka.ipd.sdq.identifier/model/identifier.ecore#//Identifier">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="characterisation" ordered="false"
+          lowerBound="1" eType="ecore:EDataType platform:/plugin/org.eclipse.emf.ecore/model/Ecore.ecore#//EString"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="parameterInstance" ordered="false"
+          lowerBound="1" eType="#//output/ParameterInstance" eOpposite="#//output/ParameterInstance/parameterCharacterisation"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="JavaVMCall">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="numberObservations" ordered="false"
+          lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//ELong"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="id" ordered="false" lowerBound="1"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EByte"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" ordered="false"
+          lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="resourceDemands" ordered="false"
+          lowerBound="1" eType="#//output/ResourceDemands" eOpposite="#//output/ResourceDemands/javaVMCall"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="DoubleCharacterisation" eSuperTypes="#//output/ParameterCharacterisation">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" ordered="false"
+          lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="LongCharacterisation" eSuperTypes="#//output/ParameterCharacterisation">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" ordered="false"
+          lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//ELong"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="BooleanCharacterisation" eSuperTypes="#//output/ParameterCharacterisation">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" ordered="false"
+          lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="StringCharacterisation" eSuperTypes="#//output/ParameterCharacterisation">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" ordered="false"
+          lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    </eClassifiers>
+  </eSubpackages>
+  <eSubpackages name="input" nsURI="http://sdq.ipd.kit.edu/ByCounterModels/Input/0.3"
+      nsPrefix="ByCounter.Input">
+    <eClassifiers xsi:type="ecore:EClass" name="InstrumentationProfile" eSuperTypes="../../de.uka.ipd.sdq.identifier/model/identifier.ecore#//Identifier">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="self.summationExcludes->size()>0 implies self.aggregateInternalCallsTransparently=true&#xD;&#xA;"/>
+      </eAnnotations>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="definedLogicalSets" ordered="false"
+          upperBound="-1" eType="#//input/LogicalSet" containment="true" eOpposite="#//input/LogicalSet/instrumentationProfile"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="instrumentRecursively"
+          ordered="false" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"
+          defaultValueLiteral="true"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="aggregateInternalCallsTransparently"
+          ordered="false" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"
+          defaultValueLiteral="true"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="aggregationType" ordered="false"
+          lowerBound="1" eType="#//input/AggregationType" defaultValueLiteral="ONLINE"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="persistInstrumentedClasses"
+          ordered="false" lowerBound="1" eType="ecore:EDataType platform:/plugin/org.eclipse.emf.ecore/model/Ecore.ecore#//EString"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="temporaryResultsType"
+          ordered="false" lowerBound="1" eType="#//input/InternalResultStorageType"
+          defaultValueLiteral="IN_MEMORY"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="entitiesToInstrument"
+          ordered="false" upperBound="-1" eType="#//input/EntityToInstrument" containment="true"
+          eOpposite="#//input/EntityToInstrument/instrumentationProfile"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="intrumentationProfileRepository"
+          ordered="false" eType="#//input/InstrumentationProfileRepository" eOpposite="#//input/InstrumentationProfileRepository/instrumentationProfile"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="instrumentUsingLongCounters"
+          ordered="false" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"
+          defaultValueLiteral="true"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="instrumentUsingBasicBlocks"
+          ordered="false" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"
+          defaultValueLiteral="true"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="traceAndIdentifyRequests"
+          ordered="false" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"
+          defaultValueLiteral="false"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="aggregationExcludes"
+          ordered="false" upperBound="-1" eType="ecore:EClass platform:/plugin/de.fzi.gast/model/gast.ecore#//functions/Method"
+          containment="true"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="LogicalSet" eSuperTypes="../../de.uka.ipd.sdq.identifier/model/identifier.ecore#//Identifier">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="internalClasses" ordered="false"
+          upperBound="-1" eType="ecore:EClass platform:/plugin/de.fzi.gast/model/gast.ecore#//types/GASTClass"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="instrumentationProfile"
+          ordered="false" lowerBound="1" eType="#//input/InstrumentationProfile" eOpposite="#//input/InstrumentationProfile/definedLogicalSets"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EEnum" name="AggregationType">
+      <eLiterals name="ONLINE"/>
+      <eLiterals name="OFFLINE" value="1"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EEnum" name="InternalResultStorageType">
+      <eLiterals name="IN_MEMORY"/>
+      <eLiterals name="ON_HDD" value="1"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="InstrumentationProfileRepository"
+        eSuperTypes="../../de.uka.ipd.sdq.identifier/model/identifier.ecore#//Identifier">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="instrumentationProfile"
+          ordered="false" upperBound="-1" eType="#//input/InstrumentationProfile"
+          containment="true" eOpposite="#//input/InstrumentationProfile/intrumentationProfileRepository"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="InstrumentedCodeArea" eSuperTypes="#//input/EntityToInstrument">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="from" ordered="false"
+          lowerBound="1" eType="ecore:EClass platform:/plugin/de.fzi.gast/model/gast.ecore#//statements/Statement"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="to" ordered="false" lowerBound="1"
+          eType="ecore:EClass platform:/plugin/de.fzi.gast/model/gast.ecore#//statements/Statement"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="InstrumentedMethod" eSuperTypes="#//input/EntityToInstrument">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="implementationOrDerived"
+          ordered="false" upperBound="-1" eType="#//input/InstrumentedMethod" containment="true"
+          eOpposite="#//input/InstrumentedMethod/declarationOrParent"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="declarationOrParent"
+          ordered="false" eType="#//input/InstrumentedMethod" eOpposite="#//input/InstrumentedMethod/implementationOrDerived"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="instrumentDerived" ordered="false"
+          lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"
+          defaultValueLiteral="false"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="method" ordered="false"
+          lowerBound="1" eType="ecore:EClass platform:/plugin/de.fzi.gast/model/gast.ecore#//functions/Method"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="EntityToInstrument" abstract="true"
+        eSuperTypes="../../de.uka.ipd.sdq.identifier/model/identifier.ecore#//Identifier">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="instrumentationProfile"
+          ordered="false" eType="#//input/InstrumentationProfile" eOpposite="#//input/InstrumentationProfile/entitiesToInstrument"/>
+    </eClassifiers>
+  </eSubpackages>
+</ecore:EPackage>

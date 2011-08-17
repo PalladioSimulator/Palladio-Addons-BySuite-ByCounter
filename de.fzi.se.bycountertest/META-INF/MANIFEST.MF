@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Bycountertest
+Bundle-SymbolicName: de.fzi.se.bycountertest
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: de.fzi.se.bycountertest.Activator
+Bundle-ActivationPolicy: lazy
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Require-Bundle: org.junit4;bundle-version="4.5.0"

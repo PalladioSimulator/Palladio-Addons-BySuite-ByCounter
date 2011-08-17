@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/Palladio.BySuite.ByCounter"/>
+	<classpathentry kind="lib" path="lib/junit-4.4.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/SPECjvm2008_adapted"/>
+	<classpathentry kind="lib" path="lib/jlMichaelKuperbergMac.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/SPECjbb2005_adapted"/>
+	<classpathentry kind="lib" path="lib/log4j-1.2.15.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/PalladioFileShare"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/Palladio.BySuite.ByPred"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/InternalActionInstrumenter"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/Palladio.BySuite.ByBench"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/Palladio.BySuite.Interfaces"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/Palladio.BySuite.Mappings"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/JavaGrandeForumBenchmarks_adapted"/>
+	<classpathentry kind="lib" path="lib/commons-math-2.0.jar"/>
+	<classpathentry kind="lib" path="lib/iText-5.0.3.jar"/>
+	<classpathentry kind="lib" path="lib/jfreechart-1.0.13-experimental.jar"/>
+	<classpathentry kind="lib" path="lib/jfreechart-1.0.13-swt.jar"/>
+	<classpathentry kind="lib" path="lib/jfreechart-1.0.13.jar"/>
+	<classpathentry kind="lib" path="lib/jcommon-1.0.10.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

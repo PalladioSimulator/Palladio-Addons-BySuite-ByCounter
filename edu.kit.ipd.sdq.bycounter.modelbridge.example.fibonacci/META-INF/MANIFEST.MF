@@ -1,0 +1,8 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Fibonacci Example for Modelbridge
+Bundle-SymbolicName: edu.kit.ipd.sdq.bycounter.modelbridge.example.fibonacci
+Bundle-Version: 1.0.0.qualifier
+Bundle-Vendor: FZI Forschungszentrum Informatik
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Require-Bundle: edu.kit.ipd.sdq.bycounter.modelbridge;bundle-version="1.0.0"

@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<genmodel:GenModel xmi:version="2.0"
+    xmlns:xmi="http://www.omg.org/XMI" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore"
+    xmlns:genmodel="http://www.eclipse.org/emf/2002/GenModel" modelDirectory="/edu.kit.ipd.sdq.bycounter/src"
+    modelPluginID="edu.kit.ipd.sdq.bycounter" modelName="ByCounter" importerID="org.eclipse.emf.importer.ecore"
+    complianceLevel="6.0" copyrightFields="false" usedGenPackages="platform:/plugin/org.eclipse.emf.ecore/model/Ecore.genmodel#//ecore ../../de.uka.ipd.sdq.identifier/model/identifier.genmodel#//identifier platform:/plugin/de.fzi.gast/model/SissyModel.genmodel#//gast">
+  <foreignModel>ByCounter.ecore</foreignModel>
+  <genPackages prefix="Bycounter" basePackage="edu.kit.ipd.sdq" disposableProviderFactory="true"
+      ecorePackage="ByCounter.ecore#/">
+    <nestedGenPackages prefix="Output" resource="XML" disposableProviderFactory="true"
+        ecorePackage="ByCounter.ecore#//output">
+      <genClasses ecoreClass="ByCounter.ecore#//output/OutputModelRepository">
+        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference ByCounter.ecore#//output/OutputModelRepository/measurementRuns"/>
+        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference ByCounter.ecore#//output/OutputModelRepository/environmentCharacterisations"/>
+      </genClasses>
+      <genClasses ecoreClass="ByCounter.ecore#//output/MeasurementRun">
+        <genFeatures notify="false" createChild="false" propertySortChoices="true"
+            ecoreFeature="ecore:EReference ByCounter.ecore#//output/MeasurementRun/environmentCharacterisation"/>
+        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference ByCounter.ecore#//output/MeasurementRun/requests"/>
+      </genClasses>
+      <genClasses image="false" ecoreClass="ByCounter.ecore#//output/EnvironmentDescription"/>
+      <genClasses ecoreClass="ByCounter.ecore#//output/Request">
+        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference ByCounter.ecore#//output/Request/observedExecutionSequence"/>
+        <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference ByCounter.ecore#//output/Request/measurementRun"/>
+      </genClasses>
+      <genClasses ecoreClass="ByCounter.ecore#//output/ObservedEntityExecution">
+        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference ByCounter.ecore#//output/ObservedEntityExecution/resourceDemands"/>
+        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference ByCounter.ecore#//output/ObservedEntityExecution/observedForkedExecutionSequence"/>
+        <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference ByCounter.ecore#//output/ObservedEntityExecution/observedExecutionSequenceForkedBy"/>
+        <genFeatures notify="false" createChild="false" propertySortChoices="true"
+            ecoreFeature="ecore:EReference ByCounter.ecore#//output/ObservedEntityExecution/entity"/>
+        <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference ByCounter.ecore#//output/ObservedEntityExecution/request"/>
+      </genClasses>
+      <genClasses ecoreClass="ByCounter.ecore#//output/ResourceDemands">
+        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference ByCounter.ecore#//output/ResourceDemands/functionCalls"/>
+        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference ByCounter.ecore#//output/ResourceDemands/javaVMCall"/>
+        <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference ByCounter.ecore#//output/ResourceDemands/observedExecution"/>
+      </genClasses>
+      <genClasses ecoreClass="ByCounter.ecore#//output/FunctionCall">
+        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference ByCounter.ecore#//output/FunctionCall/parameterInstance"/>
+        <genFeatures notify="false" createChild="false" propertySortChoices="true"
+            ecoreFeature="ecore:EReference ByCounter.ecore#//output/FunctionCall/function"/>
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute ByCounter.ecore#//output/FunctionCall/numberObservations"/>
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute ByCounter.ecore#//output/FunctionCall/native"/>
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute ByCounter.ecore#//output/FunctionCall/synchronized"/>
+        <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference ByCounter.ecore#//output/FunctionCall/resourceDemands"/>
+      </genClasses>
+      <genClasses ecoreClass="ByCounter.ecore#//output/ParameterInstance">
+        <genFeatures notify="false" createChild="false" propertySortChoices="true"
+            ecoreFeature="ecore:EReference ByCounter.ecore#//output/ParameterInstance/formalParameter"/>
+        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference ByCounter.ecore#//output/ParameterInstance/parameterCharacterisation"/>
+        <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference ByCounter.ecore#//output/ParameterInstance/functionCall"/>
+      </genClasses>
+      <genClasses image="false" ecoreClass="ByCounter.ecore#//output/ParameterCharacterisation">
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute ByCounter.ecore#//output/ParameterCharacterisation/characterisation"/>
+        <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference ByCounter.ecore#//output/ParameterCharacterisation/parameterInstance"/>
+      </genClasses>
+      <genClasses ecoreClass="ByCounter.ecore#//output/JavaVMCall">
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute ByCounter.ecore#//output/JavaVMCall/numberObservations"/>
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute ByCounter.ecore#//output/JavaVMCall/id"/>
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute ByCounter.ecore#//output/JavaVMCall/name"/>
+        <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference ByCounter.ecore#//output/JavaVMCall/resourceDemands"/>
+      </genClasses>
+      <genClasses ecoreClass="ByCounter.ecore#//output/DoubleCharacterisation">
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute ByCounter.ecore#//output/DoubleCharacterisation/value"/>
+      </genClasses>
+      <genClasses ecoreClass="ByCounter.ecore#//output/LongCharacterisation">
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute ByCounter.ecore#//output/LongCharacterisation/value"/>
+      </genClasses>
+      <genClasses ecoreClass="ByCounter.ecore#//output/BooleanCharacterisation">
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute ByCounter.ecore#//output/BooleanCharacterisation/value"/>
+      </genClasses>
+      <genClasses ecoreClass="ByCounter.ecore#//output/StringCharacterisation">
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute ByCounter.ecore#//output/StringCharacterisation/value"/>
+      </genClasses>
+    </nestedGenPackages>
+    <nestedGenPackages prefix="Input" resource="XML" disposableProviderFactory="true"
+        ecorePackage="ByCounter.ecore#//input">
+      <genEnums typeSafeEnumCompatible="false" ecoreEnum="ByCounter.ecore#//input/AggregationType">
+        <genEnumLiterals ecoreEnumLiteral="ByCounter.ecore#//input/AggregationType/ONLINE"/>
+        <genEnumLiterals ecoreEnumLiteral="ByCounter.ecore#//input/AggregationType/OFFLINE"/>
+      </genEnums>
+      <genEnums typeSafeEnumCompatible="false" ecoreEnum="ByCounter.ecore#//input/InternalResultStorageType">
+        <genEnumLiterals ecoreEnumLiteral="ByCounter.ecore#//input/InternalResultStorageType/IN_MEMORY"/>
+        <genEnumLiterals ecoreEnumLiteral="ByCounter.ecore#//input/InternalResultStorageType/ON_HDD"/>
+      </genEnums>
+      <genClasses ecoreClass="ByCounter.ecore#//input/InstrumentationProfile">
+        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference ByCounter.ecore#//input/InstrumentationProfile/definedLogicalSets"/>
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute ByCounter.ecore#//input/InstrumentationProfile/instrumentRecursively"/>
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute ByCounter.ecore#//input/InstrumentationProfile/aggregateInternalCallsTransparently"/>
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute ByCounter.ecore#//input/InstrumentationProfile/aggregationType"/>
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute ByCounter.ecore#//input/InstrumentationProfile/persistInstrumentedClasses"/>
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute ByCounter.ecore#//input/InstrumentationProfile/temporaryResultsType"/>
+        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference ByCounter.ecore#//input/InstrumentationProfile/entitiesToInstrument"/>
+        <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference ByCounter.ecore#//input/InstrumentationProfile/intrumentationProfileRepository"/>
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute ByCounter.ecore#//input/InstrumentationProfile/instrumentUsingLongCounters"/>
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute ByCounter.ecore#//input/InstrumentationProfile/instrumentUsingBasicBlocks"/>
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute ByCounter.ecore#//input/InstrumentationProfile/traceAndIdentifyRequests"/>
+        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference ByCounter.ecore#//input/InstrumentationProfile/summationExcludes"/>
+      </genClasses>
+      <genClasses ecoreClass="ByCounter.ecore#//input/LogicalSet">
+        <genFeatures notify="false" createChild="false" propertySortChoices="true"
+            ecoreFeature="ecore:EReference ByCounter.ecore#//input/LogicalSet/internalClasses"/>
+        <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference ByCounter.ecore#//input/LogicalSet/instrumentationProfile"/>
+      </genClasses>
+      <genClasses ecoreClass="ByCounter.ecore#//input/InstrumentationProfileRepository">
+        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference ByCounter.ecore#//input/InstrumentationProfileRepository/instrumentationProfile"/>
+      </genClasses>
+      <genClasses ecoreClass="ByCounter.ecore#//input/InstrumentedCodeArea">
+        <genFeatures notify="false" createChild="false" propertySortChoices="true"
+            ecoreFeature="ecore:EReference ByCounter.ecore#//input/InstrumentedCodeArea/from"/>
+        <genFeatures notify="false" createChild="false" propertySortChoices="true"
+            ecoreFeature="ecore:EReference ByCounter.ecore#//input/InstrumentedCodeArea/to"/>
+      </genClasses>
+      <genClasses ecoreClass="ByCounter.ecore#//input/InstrumentedMethod">
+        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference ByCounter.ecore#//input/InstrumentedMethod/implementationOrDerived"/>
+        <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference ByCounter.ecore#//input/InstrumentedMethod/declarationOrParent"/>
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute ByCounter.ecore#//input/InstrumentedMethod/instrumentDerived"/>
+        <genFeatures notify="false" createChild="false" propertySortChoices="true"
+            ecoreFeature="ecore:EReference ByCounter.ecore#//input/InstrumentedMethod/method"/>
+      </genClasses>
+      <genClasses image="false" ecoreClass="ByCounter.ecore#//input/EntityToInstrument">
+        <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference ByCounter.ecore#//input/EntityToInstrument/instrumentationProfile"/>
+      </genClasses>
+    </nestedGenPackages>
+  </genPackages>
+</genmodel:GenModel>

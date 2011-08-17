@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+
+<!--
+ <copyright>
+ </copyright>
+
+ $Id$
+-->
+
+<plugin>
+
+   <extension point="org.eclipse.emf.ecore.generated_package">
+      <package
+            uri="http://sdq.ipd.kit.edu/ByCounterModels/Output/0.3"
+            class="edu.kit.ipd.sdq.bycounter.output.OutputPackage"
+            genModel="model/ByCounter.genmodel"/>
+   </extension>
+
+   <extension point="org.eclipse.emf.ecore.extension_parser">
+      <parser
+            type="output"
+            class="edu.kit.ipd.sdq.bycounter.output.util.OutputResourceFactoryImpl"/>
+   </extension>
+
+   <extension point="org.eclipse.emf.ecore.generated_package">
+      <package
+            uri="http://sdq.ipd.kit.edu/ByCounterModels/Input/0.3"
+            class="edu.kit.ipd.sdq.bycounter.input.InputPackage"
+            genModel="model/ByCounter.genmodel"/>
+   </extension>
+
+   <extension point="org.eclipse.emf.ecore.extension_parser">
+      <parser
+            type="input"
+            class="edu.kit.ipd.sdq.bycounter.input.util.InputResourceFactoryImpl"/>
+   </extension>
+
+</plugin>

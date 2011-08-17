@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+
+<!--
+ <copyright>
+ </copyright>
+
+ $Id$
+-->
+
+<plugin>
+
+   <extension point="org.eclipse.ui.newWizards">
+      <category
+            id="org.eclipse.emf.ecore.Wizard.category.ID"
+            name="%_UI_Wizard_category"/>
+      <wizard
+            id="edu.kit.ipd.sdq.bycounter.output.presentation.OutputModelWizardID"
+            name="%_UI_OutputModelWizard_label"
+            class="edu.kit.ipd.sdq.bycounter.output.presentation.OutputModelWizard"
+            category="org.eclipse.emf.ecore.Wizard.category.ID"
+            icon="icons/full/obj16/OutputModelFile.gif">
+         <description>%_UI_OutputModelWizard_description</description>
+         <selection class="org.eclipse.core.resources.IResource"/>
+      </wizard>
+   </extension>
+
+   <extension point="org.eclipse.ui.editors">
+      <editor
+            id="edu.kit.ipd.sdq.bycounter.output.presentation.OutputEditorID"
+            name="%_UI_OutputEditor_label"
+            icon="icons/full/obj16/OutputModelFile.gif"
+            extensions="output"
+            class="edu.kit.ipd.sdq.bycounter.output.presentation.OutputEditor"
+            contributorClass="edu.kit.ipd.sdq.bycounter.output.presentation.OutputActionBarContributor">
+      </editor>
+   </extension>
+
+   <extension point="org.eclipse.ui.newWizards">
+      <category
+            id="org.eclipse.emf.ecore.Wizard.category.ID"
+            name="%_UI_Wizard_category"/>
+      <wizard
+            id="edu.kit.ipd.sdq.bycounter.input.presentation.InputModelWizardID"
+            name="%_UI_InputModelWizard_label"
+            class="edu.kit.ipd.sdq.bycounter.input.presentation.InputModelWizard"
+            category="org.eclipse.emf.ecore.Wizard.category.ID"
+            icon="icons/full/obj16/InputModelFile.gif">
+         <description>%_UI_InputModelWizard_description</description>
+         <selection class="org.eclipse.core.resources.IResource"/>
+      </wizard>
+   </extension>
+
+   <extension point="org.eclipse.ui.editors">
+      <editor
+            id="edu.kit.ipd.sdq.bycounter.input.presentation.InputEditorID"
+            name="%_UI_InputEditor_label"
+            icon="icons/full/obj16/InputModelFile.gif"
+            extensions="input"
+            class="edu.kit.ipd.sdq.bycounter.input.presentation.InputEditor"
+            contributorClass="edu.kit.ipd.sdq.bycounter.input.presentation.InputActionBarContributor">
+      </editor>
+   </extension>
+
+</plugin>

@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<launchConfiguration type="de.fzi.sissy.ui.LaunchSISSyType">
+<intAttribute key="de.uka.ipd.sdq.workflowengine.debuglevel" value="2"/>
+<booleanAttribute key="sissy.metrics.docalculation" value="false"/>
+<listAttribute key="sissy.metrics.table"/>
+<listAttribute key="sissy.problempatterndetection.table">
+<listEntry value="AttributeOverlap.sql"/>
+<listEntry value="ComplexMethod.sql"/>
+<listEntry value="ConstantRedefinition.sql"/>
+<listEntry value="CycDepClasses.sql"/>
+<listEntry value="CycDepFiles.sql"/>
+<listEntry value="CycDepPackages.sql"/>
+<listEntry value="CycDepPackagesCPP.sql"/>
+<listEntry value="DeadAttribute.sql"/>
+<listEntry value="DeadCode.sql"/>
+<listEntry value="DeadImport.sql"/>
+<listEntry value="DeadImportCPP.sql"/>
+<listEntry value="DeadMethod.sql"/>
+<listEntry value="GeneralParameter.sql"/>
+<listEntry value="GenerationConflict.sql"/>
+<listEntry value="GodClassAttribute.sql"/>
+<listEntry value="GodClassAttributeCPP.sql"/>
+<listEntry value="GodClassMethod.sql"/>
+<listEntry value="GodFile.sql"/>
+<listEntry value="GodMethod.sql"/>
+<listEntry value="GodPackage.sql"/>
+<listEntry value="GodPackageCPP.sql"/>
+<listEntry value="IgnoredAbstraction.sql"/>
+<listEntry value="ImportChaos.sql"/>
+<listEntry value="ImportChaosCPP.sql"/>
+<listEntry value="ImproperNameLength.sql"/>
+<listEntry value="ImproperNameLengthCPP.sql"/>
+<listEntry value="InappropriteCommenting.sql"/>
+<listEntry value="InconsistentOperations.sql"/>
+<listEntry value="InconsistentOperationsCPP.sql"/>
+<listEntry value="InformalDocumentation.sql"/>
+<listEntry value="InterfaceBypass.sql"/>
+<listEntry value="KnowsOfDerived.sql"/>
+<listEntry value="LateAbstraction.sql"/>
+<listEntry value="LongParameterList.sql"/>
+<listEntry value="MiniClass.sql"/>
+<listEntry value="MiniPackages.sql"/>
+<listEntry value="MiniPackagesCPP.sql"/>
+<listEntry value="MisleadingNamingFiles.sql"/>
+<listEntry value="ObjectPlaceboAttribute.sql"/>
+<listEntry value="ObjectPlaceboMethod.sql"/>
+<listEntry value="OrphanSiblingAttributes.sql"/>
+<listEntry value="OrphanSiblingMethods.sql"/>
+<listEntry value="OverloadedFile.sql"/>
+<listEntry value="PermissiveVisibilityAttribute.sql"/>
+<listEntry value="PermissiveVisibilityMethod.sql"/>
+<listEntry value="PolyCallsInContructor.sql"/>
+<listEntry value="PolymorphismPlacebo.sql"/>
+<listEntry value="RefusedBequestImplementation.sql"/>
+<listEntry value="RefusedBequestInterface.sql"/>
+<listEntry value="ReversedPackInhHierarchies.sql"/>
+<listEntry value="ReversedPackInhHierarchiesCPP.sql"/>
+<listEntry value="RiskyCode.sql"/>
+<listEntry value="SimilarUnrelatedAbstractions.sql"/>
+<listEntry value="SimulatedPolymorphism.sql"/>
+<listEntry value="Statistics.sql"/>
+<listEntry value="TypeNameDuplication.sql"/>
+<listEntry value="UnfinishedCode.sql"/>
+<listEntry value="VariablesHavingConstValue.sql"/>
+<listEntry value="ViolationOfDataEncapsulation.sql"/>
+<listEntry value="ViolationOfNamingConvention.sql"/>
+<listEntry value="ViolationOfNamingConventionCPP.sql"/>
+</listAttribute>
+<stringAttribute key="sissy2gast.cdtversion" value="CDT 3"/>
+<booleanAttribute key="sissy2gast.checkcloneanalysis" value="false"/>
+<booleanAttribute key="sissy2gast.checkcomments" value="false"/>
+<booleanAttribute key="sissy2gast.checkdashboardgenerator" value="false"/>
+<booleanAttribute key="sissy2gast.checkexportyesno" value="true"/>
+<booleanAttribute key="sissy2gast.checkproblemanalysis" value="false"/>
+<booleanAttribute key="sissy2gast.checkrunsissy" value="true"/>
+<stringAttribute key="sissy2gast.combosourcelevel" value="5.0"/>
+<stringAttribute key="sissy2gast.dbdriverselection" value="DERBY"/>
+<stringAttribute key="sissy2gast.dbname" value="SISSy"/>
+<stringAttribute key="sissy2gast.dbpwd" value="sissy"/>
+<stringAttribute key="sissy2gast.dbserverurl" value=""/>
+<stringAttribute key="sissy2gast.dbuser" value="sissy"/>
+<stringAttribute key="sissy2gast.derbyfilepath" value="C:\data\wrk\Projekte\Validation\runtime-ValidationExample\edu.kit.ipd.sdq.bycounter.modelbridge.tests\DerbyDB"/>
+<booleanAttribute key="sissy2gast.extractcpponly" value="false"/>
+<stringAttribute key="sissy2gast.freeparameters" value=""/>
+<stringAttribute key="sissy2gast.gastexprfile" value="C:\data\wrk\Projekte\Validation\runtime-ValidationExample\edu.kit.ipd.sdq.bycounter.modelbridge.tests\models\GAST\Fibonacci.expressions"/>
+<booleanAttribute key="sissy2gast.gastexprfilecheck" value="true"/>
+<stringAttribute key="sissy2gast.gastfile" value="C:\data\wrk\Projekte\Validation\runtime-ValidationExample\edu.kit.ipd.sdq.bycounter.modelbridge.tests\models\GAST\Fibonacci.gast"/>
+<booleanAttribute key="sissy2gast.gastfilecheck" value="true"/>
+<stringAttribute key="sissy2gast.gastmergedfile" value="C:\data\wrk\Projekte\Validation\runtime-ValidationExample\edu.kit.ipd.sdq.bycounter.modelbridge.tests\models\GAST\Fibonacci(merged).gast"/>
+<booleanAttribute key="sissy2gast.gastmetricscheck" value="false"/>
+<stringAttribute key="sissy2gast.gastmetrisresultsfile" value=""/>
+<booleanAttribute key="sissy2gast.gasttomerge" value="true"/>
+<booleanAttribute key="sissy2gast.graphmlcontainment" value="false"/>
+<listAttribute key="sissy2gast.graphmlentitieslist"/>
+<booleanAttribute key="sissy2gast.graphmlexportsourcentitiesonly" value="false"/>
+<booleanAttribute key="sissy2gast.graphmlfunctioncalls" value="false"/>
+<booleanAttribute key="sissy2gast.graphmlimports" value="false"/>
+<booleanAttribute key="sissy2gast.graphmlinheritance" value="false"/>
+<stringAttribute key="sissy2gast.graphmlpath" value=""/>
+<booleanAttribute key="sissy2gast.graphmlrun" value="false"/>
+<booleanAttribute key="sissy2gast.graphmlvariableaccesses" value="false"/>
+<booleanAttribute key="sissy2gast.omitexternc" value="false"/>
+<booleanAttribute key="sissy2gast.optioncpp" value="false"/>
+<booleanAttribute key="sissy2gast.optiondelphi" value="false"/>
+<booleanAttribute key="sissy2gast.optionjava" value="true"/>
+<stringAttribute key="sissy2gast.sqlitefilepath" value=""/>
+<stringAttribute key="sissy2gast.textdashboardgeneratortarget" value=""/>
+<stringAttribute key="sissy2gast.textdefinitionfile" value=""/>
+<stringAttribute key="sissy2gast.textexclude" value=""/>
+<stringAttribute key="sissy2gast.textincludefile" value=""/>
+<stringAttribute key="sissy2gast.textinputfile" value="C:\data\wrk\Projekte\Validation\runtime-ValidationExample\edu.kit.ipd.sdq.bycounter.modelbridge.tests\src\de\fzi\se\bycounter\modelbridge\example"/>
+<stringAttribute key="sissy2gast.textlibbin" value=""/>
+<stringAttribute key="sissy2gast.textlibsrc" value=""/>
+<stringAttribute key="sissy2gast.textnumberofrecords" value=""/>
+</launchConfiguration>
