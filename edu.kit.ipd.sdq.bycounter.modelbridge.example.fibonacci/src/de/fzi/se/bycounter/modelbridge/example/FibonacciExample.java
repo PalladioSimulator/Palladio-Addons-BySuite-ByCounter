@@ -48,7 +48,8 @@ public class FibonacciExample {
 		
 		// Execute
 		Method targetMethod = getFibonacciMethod();
-		byCounterWrapper.execute(targetMethod, new Object[] {100});
+		Object instance = byCounterWrapper.instantiate(targetMethod);
+		byCounterWrapper.execute(targetMethod, instance, new Object[] {100});
 
 		// Store results
 		MeasurementRun result = byCounterWrapper.generateResult();
