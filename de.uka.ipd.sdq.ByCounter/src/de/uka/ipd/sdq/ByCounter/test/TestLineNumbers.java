@@ -282,7 +282,7 @@ public class TestLineNumbers {
                        .add(Opcodes.ISTORE, 3)
                        .add(Opcodes.LDC, 3)
                        .add(Opcodes.NEW, 3)
-                       .add("java.lang.String.valueOf(Ljava/lang/Object;)Ljava/lang/String;", 3)
+                       .add(String.class.getCanonicalName(), "public static java.lang.String valueOf(java.lang.Object obj)", 3)
                        .add("java.lang.StringBuilder.StringBuilder(Ljava/lang/String;)V", 3)
                        .add("java.lang.StringBuilder.toString()Ljava/lang/String;", 3);
         // initialize ByCounter
