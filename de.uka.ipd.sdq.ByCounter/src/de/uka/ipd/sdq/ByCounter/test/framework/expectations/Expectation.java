@@ -13,7 +13,8 @@ import de.uka.ipd.sdq.ByCounter.execution.CountingResult;
 import de.uka.ipd.sdq.ByCounter.parsing.LineNumberRange;
 
 /**
- * Offers a framework to specify expectations and to compare them with the actual measurement.
+ * Offers a framework to specify expectations and to compare them with the
+ * actual measurement.
  * 
  * <p>
  * To define new expectations you can write them down like a tree. Example:<br/>
@@ -26,181 +27,203 @@ import de.uka.ipd.sdq.ByCounter.parsing.LineNumberRange;
  * <p>
  * For use with JUnit-Framework only.
  * 
+ * @version 1.0
  * @author Florian Schreier
  */
 public class Expectation {
 
-    /** States if section sequence is important or not. */
-    private final boolean ordered;
+	/** States if section sequence is important or not. */
+	private final boolean ordered;
 
-    /** The biggest used section number. Is used to add new entries to dictionary. */
-    private int biggestSectionNumber;
+	/** The biggest used section number. Is used to add new entries to dictionary. */
+	private int biggestSectionNumber;
 
-    /** A dictionary with all line number ranges and corresponding section numbers. */
-    private final SortedMap<LineNumberRange, Integer> lineRangeToSectionNumber;
+	/**
+	 * A dictionary with all line number ranges and corresponding section numbers.
+	 */
+	private final SortedMap<LineNumberRange, Integer> lineRangeToSectionNumber;
 
-    /** All expected sections in the order they should appear. Only if <code>ordered == true</code>. */
-    private final List<SectionExpectation> orderedSections;
+	/**
+	 * All expected sections in the order they should appear. Only if
+	 * <code>ordered == true</code>.
+	 */
+	private final List<SectionExpectation> orderedSections;
 
-    /** All expected sections without order. Only if <code>ordered == false</code>. */
-    private final Map<Integer, SectionExpectation> unorderedSections;
+	/**
+	 * All expected sections without order. Only if <code>ordered == false</code>.
+	 */
+	private final Map<Integer, SectionExpectation> unorderedSections;
 
-    /**
-     * Creates a new Expectation.
-     * 
-     * @param ordered
-     *            <code>true</code>, if actual and expected sequence of sections has to be the same.
-     *            <code>false</code>, if not.
-     */
-    public Expectation(final boolean ordered) {
-        this.ordered = ordered;
-        this.biggestSectionNumber = -1;
-        this.lineRangeToSectionNumber = new TreeMap<LineNumberRange, Integer>();
-        if (this.ordered) {
-            this.orderedSections = new ArrayList<SectionExpectation>();
-            this.unorderedSections = null;
-        } else {
-            this.orderedSections = null;
-            this.unorderedSections = new HashMap<Integer, SectionExpectation>();
-        }
-    }
+	/**
+	 * Creates a new Expectation.
+	 * 
+	 * @param ordered
+	 *          <code>true</code>, if actual and expected sequence of sections has
+	 *          to be the same. <code>false</code>, if not.
+	 */
+	public Expectation(final boolean ordered) {
+		this.ordered = ordered;
+		this.biggestSectionNumber = -1;
+		this.lineRangeToSectionNumber = new TreeMap<LineNumberRange, Integer>();
+		if (this.ordered) {
+			this.orderedSections = new ArrayList<SectionExpectation>();
+			this.unorderedSections = null;
+		} else {
+			this.orderedSections = null;
+			this.unorderedSections = new HashMap<Integer, SectionExpectation>();
+		}
+	}
 
-    /**
-     * Creates a section without a section number and marks it as expected.
-     * 
-     * @return The new <code>SectionExpectation</code>.
-     */
-    public SectionExpectation add() {
-        return this.add(-1, null);
-    }
+	/**
+	 * Creates a section without a section number and marks it as expected.
+	 * 
+	 * @return The new <code>SectionExpectation</code>.
+	 */
+	public SectionExpectation add() {
+		return this.add(-1, null);
+	}
 
-    /**
-     * Creates a section with the given section number and marks it as expected. If you want to
-     * create a dummy expectation use <code>add()</code> instead.
-     * 
-     * @param sectionNumber
-     *            The new section's number. Has to be greater or equal <code>0</code>.
-     * @return The new <code>SectionExpectation</code>.
-     */
-    public SectionExpectation add(final int sectionNumber) {
-        if (sectionNumber < 0) {
-            throw new IllegalArgumentException("sectionNumber has to be greater or equal zero");
-        }
-        return this.add(sectionNumber, null);
-    }
+	/**
+	 * Creates a section with the given section number and marks it as expected.
+	 * If you want to create a dummy expectation use <code>add()</code> instead.
+	 * 
+	 * @param sectionNumber
+	 *          The new section's number. Has to be greater or equal
+	 *          <code>0</code>.
+	 * @return The new <code>SectionExpectation</code>.
+	 */
+	public SectionExpectation add(final int sectionNumber) {
+		if (sectionNumber < 0) {
+			throw new IllegalArgumentException(
+					"sectionNumber has to be greater or equal zero");
+		}
+		return this.add(sectionNumber, null);
+	}
 
-    /**
-     * Creates a section with the given range block and marks it as expected. The corresponding
-     * section number is automatically derived.
-     * 
-     * @param firstLine
-     *            The first line of the range block this section is about.
-     * @param lastLine
-     *            The last line of this range block. Has to be greater or equal
-     *            <code>firstLine</code>.
-     * @return The new <code>SectionExpectation</code>.
-     */
-    public SectionExpectation add(final int firstLine, final int lastLine) {
-        if (firstLine > lastLine) {
-            throw new IllegalArgumentException("lastLine has to be greater or equal firstLine");
-        }
-        LineNumberRange range = new LineNumberRange(firstLine, lastLine);
-        return this.add(this.getSectionNumberByRange(range), range);
-    }
+	/**
+	 * Creates a section with the given range block and marks it as expected. The
+	 * corresponding section number is automatically derived.
+	 * 
+	 * @param firstLine
+	 *          The first line of the range block this section is about.
+	 * @param lastLine
+	 *          The last line of this range block. Has to be greater or equal
+	 *          <code>firstLine</code>.
+	 * @return The new <code>SectionExpectation</code>.
+	 */
+	public SectionExpectation add(final int firstLine, final int lastLine) {
+		if (firstLine > lastLine) {
+			throw new IllegalArgumentException(
+					"lastLine has to be greater or equal firstLine");
+		}
+		LineNumberRange range = new LineNumberRange(firstLine, lastLine);
+		return this.add(this.getSectionNumberByRange(range), range);
+	}
 
-    /**
-     * Creates a section with the given range block and its section number and marks it as expected.
-     * 
-     * @param sectionNumber
-     *            The new section's number. Has to be greater or equal <code>0</code>.
-     * @param range
-     *            The new section's number. Can be <code>null</code> if unknown.
-     * @return The new <code>SectionExpectation</code>.
-     */
-    private SectionExpectation add(final int sectionNumber, final LineNumberRange range) {
-        assert sectionNumber >= 0 : "sectionNumber has to be greater or equal zero";
+	/**
+	 * Creates a section with the given range block and its section number and
+	 * marks it as expected.
+	 * 
+	 * @param sectionNumber
+	 *          The new section's number. Has to be greater or equal
+	 *          <code>0</code>.
+	 * @param range
+	 *          The new section's number. Can be <code>null</code> if unknown.
+	 * @return The new <code>SectionExpectation</code>.
+	 */
+	private SectionExpectation add(final int sectionNumber,
+			final LineNumberRange range) {
+		assert sectionNumber >= 0 : "sectionNumber has to be greater or equal zero";
 
-        if (sectionNumber > this.biggestSectionNumber) {
-            this.biggestSectionNumber = sectionNumber;
-        }
-        SectionExpectation sectExpt = new SectionExpectation(sectionNumber, range);
-        if (ordered) {
-            this.orderedSections.add(sectExpt);
-        } else {
-            this.unorderedSections.put(sectionNumber, sectExpt);
-        }
-        return sectExpt;
-    }
+		if (sectionNumber > this.biggestSectionNumber) {
+			this.biggestSectionNumber = sectionNumber;
+		}
+		SectionExpectation sectExpt = new SectionExpectation(sectionNumber, range);
+		if (ordered) {
+			this.orderedSections.add(sectExpt);
+		} else {
+			this.unorderedSections.put(sectionNumber, sectExpt);
+		}
+		return sectExpt;
+	}
 
-    /**
-     * Returns all known line number ranges.
-     * 
-     * @return All known line number ranges.
-     */
-    public LineNumberRange[] getRanges() {
-        return this.lineRangeToSectionNumber.keySet().toArray(new LineNumberRange[0]);
-    }
+	/**
+	 * Returns all known line number ranges.
+	 * 
+	 * @return All known line number ranges.
+	 */
+	public LineNumberRange[] getRanges() {
+		return this.lineRangeToSectionNumber.keySet().toArray(
+				new LineNumberRange[0]);
+	}
 
-    /**
-     * Compares the predefined expectations with the actual measurement. The section's order is
-     * considered if <code>ordered == true</code>.
-     * 
-     * <p>
-     * If the expected and the actual values are different this method throws adequate assertions.
-     * So if you want to read the log you have to call this method after your logging method.
-     * 
-     * @param observation
-     *            ByCounter's output.
-     * @param zeroMethod
-     *            <code>true</code>, if measured method call counts equal to zero are handled as
-     *            error. <code>false</code>, if not.
-     */
-    public void compare(final CountingResult[] observation, final boolean zeroMethod) {
-        String message = "Unexpected number of sections.";
-        Assert.assertEquals(message, this.getNumberOfSections(), observation.length);
-        for (int i = 0; i < observation.length; i++) {
-            long[] measuredOpcodeCounts = observation[i].getOpcodeCounts();
-            Map<String, Long> measuredMethodCallCounts = observation[i].getMethodCallCounts();
-            SectionExpectation sectExpt;
-            if (this.ordered) {
-                sectExpt = this.orderedSections.get(i);
-                message = "Unexpected section. Maybe wrong order.";
-                Assert.assertEquals(message, sectExpt.getSectionNumber(), observation[i].getIndexOfRangeBlock());
-            } else {
-                sectExpt = this.unorderedSections.get(observation[i].getIndexOfRangeBlock());
-                message = "Unexpected section.";
-                Assert.assertNotNull(message, sectExpt);
-            }
-            sectExpt.compare(measuredOpcodeCounts, measuredMethodCallCounts, zeroMethod, i);
-        }
+	/**
+	 * Compares the predefined expectations with the actual measurement. The
+	 * section's order is considered if <code>ordered == true</code>.
+	 * 
+	 * <p>
+	 * If the expected and the actual values are different this method throws
+	 * adequate assertions. So if you want to read the log you have to call this
+	 * method after your logging method.
+	 * 
+	 * @param observation
+	 *          ByCounter's output.
+	 * @param zeroMethod
+	 *          <code>true</code>, if measured method call counts equal to zero
+	 *          are handled as error. <code>false</code>, if not.
+	 */
+	public void compare(final CountingResult[] observation,
+			final boolean zeroMethod) {
+		String message = "Unexpected number of sections.";
+		Assert
+				.assertEquals(message, this.getNumberOfSections(), observation.length);
+		for (int i = 0; i < observation.length; i++) {
+			long[] measuredOpcodeCounts = observation[i].getOpcodeCounts();
+			Map<String, Long> measuredMethodCallCounts = observation[i]
+					.getMethodCallCounts();
+			SectionExpectation sectExpt;
+			if (this.ordered) {
+				sectExpt = this.orderedSections.get(i);
+				message = "Unexpected section. Maybe wrong order.";
+				Assert.assertEquals(message, sectExpt.getSectionNumber(),
+						observation[i].getIndexOfRangeBlock());
+			} else {
+				sectExpt = this.unorderedSections.get(observation[i]
+						.getIndexOfRangeBlock());
+				message = "Unexpected section.";
+				Assert.assertNotNull(message, sectExpt);
+			}
+			sectExpt.compare(measuredOpcodeCounts, measuredMethodCallCounts,
+					zeroMethod, i);
+		}
 
-    }
+	}
 
-    /**
-     * Looks for the given <code>range</code> in a dictionary and returns the corresponding section
-     * number.
-     * 
-     * @param range
-     *            The range to look for.
-     * @return The corresponding section number.
-     */
-    private int getSectionNumberByRange(final LineNumberRange range) {
-        if (!this.lineRangeToSectionNumber.containsKey(range)) {
-            this.lineRangeToSectionNumber.put(range, this.biggestSectionNumber + 1);
-        }
-        return this.lineRangeToSectionNumber.get(range);
-    }
+	/**
+	 * Looks for the given <code>range</code> in a dictionary and returns the
+	 * corresponding section number.
+	 * 
+	 * @param range
+	 *          The range to look for.
+	 * @return The corresponding section number.
+	 */
+	private int getSectionNumberByRange(final LineNumberRange range) {
+		if (!this.lineRangeToSectionNumber.containsKey(range)) {
+			this.lineRangeToSectionNumber.put(range, this.biggestSectionNumber + 1);
+		}
+		return this.lineRangeToSectionNumber.get(range);
+	}
 
-    /**
-     * Returns the number of expected sections.
-     * 
-     * @return The number of expected sections.
-     */
-    private int getNumberOfSections() {
-        if (this.ordered) {
-            return this.orderedSections.size();
-        } else {
-            return this.unorderedSections.size();
-        }
-    }
+	/**
+	 * Returns the number of expected sections.
+	 * 
+	 * @return The number of expected sections.
+	 */
+	private int getNumberOfSections() {
+		if (this.ordered) {
+			return this.orderedSections.size();
+		} else {
+			return this.unorderedSections.size();
+		}
+	}
 }
