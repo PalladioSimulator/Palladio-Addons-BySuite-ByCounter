@@ -153,14 +153,12 @@ public class TestLineNumbers {
         Expectation e = new Expectation(false);
         e.add(51, 53).add(Opcodes.ICONST_0, 3)
                      .add(Opcodes.ISTORE, 3);
-        // TODO ByCounter counts an additional GOTO in section 0
         e.add(54, 54).add(Opcodes.BIPUSH, 2)
                      .add(Opcodes.GOTO, 1)
                      .add(Opcodes.IF_ICMPLT, 2)
                      .add(Opcodes.ILOAD, 2);
         e.add(55, 55).add(Opcodes.IINC, 1);
         e.add(57, 57).add(Opcodes.IINC, 1);
-        // TODO ByCounter counts an additional GOTO in section 3
         e.add(58, 58).add(Opcodes.BIPUSH, 13)
                      .add(Opcodes.GOTO, 1)
                      .add(Opcodes.IF_ICMPLT, 13)
