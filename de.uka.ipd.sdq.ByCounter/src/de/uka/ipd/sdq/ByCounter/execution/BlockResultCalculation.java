@@ -195,24 +195,33 @@ public class BlockResultCalculation {
 			Map<Integer, List<RangeBlockDescriptor>> rangeBlocksByBasicBlock = 
 				getRangeBlocksByBasicBlock();
 			
-			List<RangeBlocksBBExecutionCounts> currentRBs = new LinkedList<RangeBlocksBBExecutionCounts>();
+			// A list of active range blocks, i.e. blocks where the currently 
+			// considered block (index) in the execution sequence is part of the range block
+			List<RangeBlocksBBExecutionCounts> currentRBECs = new LinkedList<RangeBlocksBBExecutionCounts>();
 			
 			for(Integer blockIndex : result.blockExecutionSequence) {
 				List<RangeBlockDescriptor> rangeBlocksContainingBBblockIndex = 
 					rangeBlocksByBasicBlock.get(blockIndex);	// can be null!
+				
+				// list of range blocks that end
 				List<RangeBlocksBBExecutionCounts> toRemoveFromCurrentRBs = new LinkedList<BlockResultCalculation.RangeBlocksBBExecutionCounts>();
-				// Find active range blocks that do not contain the new basic block
-				for(RangeBlocksBBExecutionCounts rb : currentRBs) {
+				
+				// 1. Find active range blocks that do not contain the new basic block.
+				// These range blocks end.
+				for(RangeBlocksBBExecutionCounts rbec : currentRBECs) {
 					if(rangeBlocksContainingBBblockIndex == null
-							|| !rangeBlocksContainingBBblockIndex.contains(rb.rb)) {
+							|| !rangeBlocksContainingBBblockIndex.contains(rbec.rbd)) {
 						// range block ends
-						resultCounts.add(getCountsForRangeBlock(rb.rb, rb.basicBlockExecutionCounts));
+						resultCounts.add(getCountsForRangeBlock(rbec.rbd, rbec.basicBlockExecutionCounts));
 						// mark for removal
-						toRemoveFromCurrentRBs.add(rb);
+						toRemoveFromCurrentRBs.add(rbec);
 					}
 				}
+				
 				// actually remove the rbs
-				currentRBs.removeAll(toRemoveFromCurrentRBs);
+				currentRBECs.removeAll(toRemoveFromCurrentRBs);
+				
+				// 2. Find range blocks that become active
 				
 				// no new range block can start here if no range block contains the bb
 				if(rangeBlocksContainingBBblockIndex == null) {
@@ -220,22 +229,40 @@ public class BlockResultCalculation {
 				}
 				
 				// find inactive range blocks that contain the new basic block
-				for(RangeBlockDescriptor rb : rangeBlocksContainingBBblockIndex) {
-					if(!currentRBs.contains(rb)) {
+				for(RangeBlockDescriptor rbd : rangeBlocksContainingBBblockIndex) {
+					if(!findRangeBlockDescriptor(currentRBECs, rbd)) {
 						// a new range block started
 						RangeBlocksBBExecutionCounts newRB = new RangeBlocksBBExecutionCounts();
-						newRB.rb = rb;
+						newRB.rbd = rbd;
 						newRB.basicBlockExecutionCounts = new long[this.currentBasicBlocks.length];
-						currentRBs.add(newRB);
+						currentRBECs.add(newRB);
 					}
 				}
-				// add the executed basic block to the active range blocks
-				for(RangeBlocksBBExecutionCounts rb : currentRBs) {
+				// add the executed basic block to the execution counts of active range blocks
+				for(RangeBlocksBBExecutionCounts rb : currentRBECs) {
 					rb.basicBlockExecutionCounts[blockIndex] += 1;
 				}
 			}
 		}
 		return resultCounts.toArray(new CalculatedCounts[resultCounts.size()]);
+	}
+
+	/**
+	 * Find a {@link RangeBlocksBBExecutionCounts} instance with the given 
+	 * {@link RangeBlockDescriptor} in the given list.
+	 * @param currentRBECs List of {@link RangeBlocksBBExecutionCounts} to search.
+	 * @param rbd {@link RangeBlockDescriptor} to find.
+	 * @return True when found, false otherwise.
+	 */
+	private boolean findRangeBlockDescriptor(
+			List<RangeBlocksBBExecutionCounts> currentRBECs,
+			RangeBlockDescriptor rbd) {
+		for(RangeBlocksBBExecutionCounts rbec : currentRBECs) {
+			if(rbec.rbd.equals(rbd)) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	/**
@@ -255,8 +282,6 @@ public class BlockResultCalculation {
 		CalculatedCounts result = new CalculatedCounts();
 		result.init();
 		result.indexOfRangeBlock = rb.getBlockIndex();
-		
-		boolean rangeBlockCounted = false;
 
 		// go through all basic blocks and add the counts if the basic block is part of the range block
 		for(InstructionBlockDescriptor blockDesc : this.currentBasicBlocks) {
@@ -265,7 +290,8 @@ public class BlockResultCalculation {
 				// this can happen if the basic block is never executed?
 				// no actually this should not happen at all because the array
 				// is of the full size no matter what is executed.
-				continue;
+				// TODO: eliminate
+				throw new RuntimeException("Basic block index is too big.");
 			}
 			
 			// count of the currently handled BB in the currently handled RB
@@ -280,34 +306,23 @@ public class BlockResultCalculation {
 			if(bbCount == 0) {
 				continue;
 			}
+			
 			// add opcode counts
 			result.addOpcodeCounts(blockDesc.getOpcodeCounts(), bbCount);
 			// add method call counts
 			result.addMethodCallCounts(blockDesc.getMethodCallCounts(), bbCount);
 			
-			if(!rangeBlockCounted) {
-				rangeBlockCounted = true;
-			}
-		}
-		
-		if(rangeBlockCounted) {
-			// now subtract nrOfBBExecutions*offsets for first and last bb
-			// opcode counts (there can be more than 2 basic block offsets!)
+			// find basic block offsets for the basic block
 			for(BasicBlockOffset bbOffset : rb.getBasicBlockOffsets()) {
 				if(bbOffset == null || bbOffset.offset == null) {
 					continue;
 				}
-				if(bbOffset.basicBlockIndex >= basicBlockExecutionCounts.length) {
-					// basicBlockExecutionCounts contains no values for the basic block
-					continue;
+				if(bbOffset.basicBlockIndex == bbIndex) {
+					// there is an offset for this basic block; apply it
+					result.addOpcodeCounts(bbOffset.offset.getOpcodeCounts(), bbCount);
+					result.addMethodCallCounts(bbOffset.offset.getMethodCallCounts(), bbCount);
 				}
-				final long bbCount = basicBlockExecutionCounts[bbOffset.basicBlockIndex]*
-					rb.getBasicBlockCounts()[bbOffset.basicBlockIndex];
-				result.addOpcodeCounts(bbOffset.offset.getOpcodeCounts(), bbCount);
-				result.addMethodCallCounts(bbOffset.offset.getMethodCallCounts(), bbCount);
 			}
-		} else {
-			return null;
 		}
 		
 		return result;
@@ -347,7 +362,21 @@ public class BlockResultCalculation {
 	}
 	
 	private class RangeBlocksBBExecutionCounts {
-		public RangeBlockDescriptor rb;
+		public RangeBlockDescriptor rbd;
 		long[] basicBlockExecutionCounts;
+		
+		/* (non-Javadoc)
+		 * @see java.lang.Object#toString()
+		 */
+		@Override
+		public String toString() {
+			StringBuilder builder = new StringBuilder();
+			builder.append("RangeBlocksBBExecutionCounts [rbd=");
+			builder.append(this.rbd);
+			builder.append(", basicBlockExecutionCounts=");
+			builder.append(Arrays.toString(this.basicBlockExecutionCounts));
+			builder.append("]");
+			return builder.toString();
+		}
 	}
 }

@@ -269,7 +269,8 @@ public final class RangeBlockAnalyser implements IInstructionAnalyser {
 						bbOffset.basicBlockIndex = currentBasicBlockIndex;
 						rangeBlocks[r].getBasicBlockOffsets().add(bbOffset);
 					}
-				} else if(currentLine == this.ranges[r].lastLine + 1) {
+				} else if(currentLine == this.ranges[r].lastLine + 1
+						&& rangeBlocks[r].getBasicBlockCounts()[currentBasicBlockIndex] != 0) {
 					// Assume this is the label directly after the range.
 					// Handle the partial basic block instructions by					
 					// subtracting the instructions that are in the basic block, 

@@ -200,22 +200,16 @@ public class TestLineNumbers {
         Expectation e = new Expectation(true);
         e.add(51, 53).add(Opcodes.ICONST_0, 3)
                      .add(Opcodes.ISTORE, 3);
-        // TODO ByCounter counts an additional GOTO in section 0
         e.add(54, 54).add(Opcodes.BIPUSH, 1)
                      .add(Opcodes.GOTO, 1)
                      .add(Opcodes.IF_ICMPLT, 1)
                      .add(Opcodes.ILOAD, 1);
-        // TODO ByCounter counts section 1 a second time with BIPUSH, IF_ICMPLT and ILOAD, but no
-        // GOTO
         e.add(55, 55).add(Opcodes.IINC, 1);
         e.add(57, 57).add(Opcodes.IINC, 1);
-        // TODO ByCounter counts an additional GOTO in section 3 (same error as above)
         e.add(58, 58).add(Opcodes.BIPUSH, 1)
                      .add(Opcodes.GOTO, 1)
                      .add(Opcodes.IF_ICMPLT, 1)
                      .add(Opcodes.ILOAD, 1);
-        // TODO ByCounter counts section 4 a second time with BIPUSH, IF_ICMPLT and ILOAD, but no
-        // GOTO (same error as above)
         for (int i = 0; i < 12; i++) {
             e.add(59, 59).add(Opcodes.ICONST_2, 1)
                          .add(Opcodes.ILOAD, 1)

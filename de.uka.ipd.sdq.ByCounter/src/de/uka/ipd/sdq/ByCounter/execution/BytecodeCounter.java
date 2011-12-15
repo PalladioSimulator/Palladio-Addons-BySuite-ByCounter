@@ -733,7 +733,6 @@ public final class BytecodeCounter {
 			}
 		}
 		log.info(msg.toString());
-		System.out.println(msg.toString());
 //		log.fine("fine");
 //		log.finer("finer");
 //		log.finest("finest");
