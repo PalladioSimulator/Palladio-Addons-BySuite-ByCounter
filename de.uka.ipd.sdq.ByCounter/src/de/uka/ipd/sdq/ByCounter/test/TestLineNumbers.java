@@ -317,9 +317,7 @@ public class TestLineNumbers {
                      .add(Opcodes.IINC, 1)
                      .add(Opcodes.INVOKESPECIAL, 1)
                      .add(TEST_SUBJECT_CANONICAL + ".extCall1()V", 1);
-        e.add(57, 57).add(Opcodes.IINC, 1)
-                     .add(Opcodes.GOTO, 1);
-        // TODO in section 1 there is one goto to much (should be 0), compare with testRangeBlockOrderedCounting()
+        e.add(57, 57).add(Opcodes.IINC, 1);
         // initialize ByCounter
         BytecodeCounter counter = new BytecodeCounter();
         counter.setInstrumentationParams(this.instrumentationParameters);
