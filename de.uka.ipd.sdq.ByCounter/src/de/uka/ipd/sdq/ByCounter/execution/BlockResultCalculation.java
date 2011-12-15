@@ -292,7 +292,7 @@ public class BlockResultCalculation {
 		
 		if(rangeBlockCounted) {
 			// now subtract nrOfBBExecutions*offsets for first and last bb
-			// opcode counts
+			// opcode counts (there can be more than 2 basic block offsets!)
 			for(BasicBlockOffset bbOffset : rb.getBasicBlockOffsets()) {
 				if(bbOffset == null || bbOffset.offset == null) {
 					continue;

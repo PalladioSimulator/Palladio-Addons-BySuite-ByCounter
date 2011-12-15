@@ -175,6 +175,7 @@ public class TestLineNumbers {
         BytecodeCounter counter = new BytecodeCounter();
         counter.setInstrumentationParams(this.instrumentationParameters);
         counter.getInstrumentationParams().setUseBasicBlocks(true);
+        counter.getInstrumentationParams().setRecordBlockExecutionOrder(false);
         MethodDescriptor methodRanged = new MethodDescriptor(TEST_SUBJECT_CANONICAL, SIGNATURE_RANGE_BLOCK);
         methodRanged.setCodeAreasToInstrument(e.getRanges());
         counter.instrument(methodRanged);

@@ -21,6 +21,7 @@ import org.objectweb.asm.tree.TryCatchBlockNode;
 
 import de.uka.ipd.sdq.ByCounter.instrumentation.IInstructionAnalyser;
 import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentationParameters;
+import de.uka.ipd.sdq.ByCounter.parsing.RangeBlockDescriptor.BasicBlockOffset;
 import de.uka.ipd.sdq.ByCounter.utils.MethodDescriptor;
 
 /**
@@ -34,6 +35,10 @@ import de.uka.ipd.sdq.ByCounter.utils.MethodDescriptor;
 public final class RangeBlockAnalyser implements IInstructionAnalyser {
 
 	private Logger log;
+	
+	/**
+	 * The ranges as specified by the user.
+	 */
 	private LineNumberRange[] ranges;
 	
 	/**
@@ -197,7 +202,7 @@ public final class RangeBlockAnalyser implements IInstructionAnalyser {
 		// basic blocks that are not fully included in a linenumberrange are 
 		// still added to the range block but in addition to that, the 
 		// instructions that are not in the specified linenumberrange are added 
-		// to an offset counter to be able to substract these from the results.
+		// to an offset counter to be able to subtract these from the results.
 		if(this.labelBlocks.isEmpty()) {
 			// empty method?
 			return;
@@ -208,6 +213,7 @@ public final class RangeBlockAnalyser implements IInstructionAnalyser {
 		// the current basic block from its start to the currentLine
 		InstructionBlockDescriptor partialBB = new InstructionBlockDescriptor();
 		
+		// initialise range blocks
 		for(int i = 0; i < this.ranges.length; i++) {
 			rangeBlocks[i] = new RangeBlockDescriptor(basicBlockLabels.length);
 			rangeBlocks[i].setBlockIndex(i);
@@ -220,7 +226,7 @@ public final class RangeBlockAnalyser implements IInstructionAnalyser {
 		
 		for(InstructionBlockLocation labelBlock : this.labelBlocks) {
 			Label currentLabel =  labelBlock.label;
-			// ranges where currentLine >= startLine
+			// ranges where firstLine <= currentLine <= lastLine
 			// this needs to be rebuild for every new line because the order
 			// of the linenumbers is not the same as the order of the labels
 			List<Integer> currentRanges = new ArrayList<Integer>();
@@ -228,7 +234,7 @@ public final class RangeBlockAnalyser implements IInstructionAnalyser {
 			final int currentLine = labelBlock.lineNumber;
 			
 
-			// look for a basic block start label
+			// look for a basic block start labeltype filter textype filter textt
 			int bbFind = findLabelIndex(this.basicBlockLabels, currentLabel);
 			if(bbFind >= 0) {
 				// a new basic block starts
@@ -256,25 +262,25 @@ public final class RangeBlockAnalyser implements IInstructionAnalyser {
 					if(!rangeWasEntered[r]) {
 						// this is the first time we are in this range
 						rangeWasEntered[r] = true;
-						rangeBlocks[r].getBasicBlockOffsets()[0] = 
-							rangeBlocks[r].new BasicBlockOffset();
-						rangeBlocks[r].getBasicBlockOffsets()[0].offset = 
+						BasicBlockOffset bbOffset = rangeBlocks[r].new BasicBlockOffset();
+						bbOffset.offset = 
 							InstructionBlockDescriptor.subtract(	// offset=-partialBB
 									new InstructionBlockDescriptor(), partialBB);
-						rangeBlocks[r].getBasicBlockOffsets()[0].basicBlockIndex = 
-							currentBasicBlockIndex;
+						bbOffset.basicBlockIndex = currentBasicBlockIndex;
+						rangeBlocks[r].getBasicBlockOffsets().add(bbOffset);
 					}
 				} else if(currentLine == this.ranges[r].lastLine + 1) {
-					// assume this directly after the range
-					// handle the partial basic block instructions by					
-					// subtracting the instructions from the range
-					rangeBlocks[r].getBasicBlockOffsets()[1] = 
-						rangeBlocks[r].new BasicBlockOffset();
-					rangeBlocks[r].getBasicBlockOffsets()[1].offset = 
+					// Assume this is the label directly after the range.
+					// Handle the partial basic block instructions by					
+					// subtracting the instructions that are in the basic block, 
+					// but not yet in the partialBB from the range.
+					BasicBlockOffset bbOffset = rangeBlocks[r].new BasicBlockOffset();
+					// the offset 
+					bbOffset.offset = 
 						InstructionBlockDescriptor.subtract(
 								partialBB, basicBlocks[currentBasicBlockIndex]);
-					rangeBlocks[r].getBasicBlockOffsets()[1].basicBlockIndex = 
-						currentBasicBlockIndex;
+					bbOffset.basicBlockIndex = currentBasicBlockIndex;
+					rangeBlocks[r].getBasicBlockOffsets().add(bbOffset);
 				}
 			}
 			

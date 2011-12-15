@@ -5,6 +5,8 @@ package de.uka.ipd.sdq.ByCounter.parsing;
 
 import java.io.Serializable;
 import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 import de.uka.ipd.sdq.ByCounter.utils.MethodDescriptor;
@@ -24,8 +26,8 @@ import de.uka.ipd.sdq.ByCounter.utils.MethodDescriptor;
  * for each basic block b with instructions counts b.counts and execution count b.c:
  *    result +=  b.c*b.counts
  *    
- * result -= firstBasicBlockOffset*firstBasicBlock.c
- * result -= lastBasicBlockOffset*lastBasicBlock.c
+ *    for each basicBlockOffset bbOffset for basicBlock offsetBB:
+ * 		result -= bbOffset*offsetBB.c
  * </pre>
  * </p>
  */
@@ -53,7 +55,7 @@ public class RangeBlockDescriptor extends InstructionBlockDescriptor {
 	/** Version of the {@link Serializable}.*/
 	private static final long serialVersionUID = 1L;
 	private int[] basicBlockCounts;
-	private BasicBlockOffset[] bbOffsets;
+	private List<BasicBlockOffset> bbOffsets;
 	
 	/**
 	 * Construct a new {@link RangeBlockDescriptor}.
@@ -62,7 +64,7 @@ public class RangeBlockDescriptor extends InstructionBlockDescriptor {
 	 */
 	public RangeBlockDescriptor(final int numOfBasicBlocks) {
 		this.basicBlockCounts = new int[numOfBasicBlocks];
-		this.bbOffsets = new BasicBlockOffset[2];
+		this.bbOffsets = new LinkedList<RangeBlockDescriptor.BasicBlockOffset>();
 	}
 	
 	/**
@@ -97,19 +99,19 @@ public class RangeBlockDescriptor extends InstructionBlockDescriptor {
 	/**
 	 * Sets the counter for the specified basic block to 1.
 	 * @param rangeBlockDescriptor The {@link RangeBlockDescriptor} to modify.
-	 * @param nextBasicBlockIndex Index of the basic block that has to be 
+	 * @param basicBlockIndex Index of the basic block that has to be 
 	 * counted in this rangeBlock.
 	 */
 	public static void setUsesBasicBlock(RangeBlockDescriptor rangeBlockDescriptor,
-			int nextBasicBlockIndex) {
-		rangeBlockDescriptor.basicBlockCounts[nextBasicBlockIndex] = 1;
+			int basicBlockIndex) {
+		rangeBlockDescriptor.basicBlockCounts[basicBlockIndex] = 1;
 		
 	}
 	
 	/**
 	 * @return The offsets defined for this basic block.
  	 */
-	public BasicBlockOffset[] getBasicBlockOffsets() {
+	public List<BasicBlockOffset> getBasicBlockOffsets() {
 		return this.bbOffsets;
 	}
 
@@ -120,7 +122,7 @@ public class RangeBlockDescriptor extends InstructionBlockDescriptor {
 	public String toString() {
 		return "RangeBlockDescriptor [basicBlockCounts="
 				+ Arrays.toString(this.basicBlockCounts) + ", bbOffsets="
-				+ Arrays.toString(this.bbOffsets) + "]";
+				+ this.bbOffsets + "]";
 	}
 
 	
