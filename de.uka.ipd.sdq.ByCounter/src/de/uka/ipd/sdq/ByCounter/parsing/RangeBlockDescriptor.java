@@ -21,7 +21,7 @@ import de.uka.ipd.sdq.ByCounter.utils.MethodDescriptor;
  * describe the difference in counts.
  * 
  * <p>
- * Results are calculated using the following algorithm (pseudocode):
+ * Results are calculated using the following algorithm (pseudo code):
  * <pre>
  * for each basic block b with instructions counts b.counts and execution count b.c:
  *    result +=  b.c*b.counts
@@ -35,7 +35,7 @@ public class RangeBlockDescriptor extends InstructionBlockDescriptor {
 	
 	/**
 	 * Describes which instructions in the basic block with the index
-	 * {@link #basicBlockIndex} are added/substracted in addition to normal 
+	 * {@link #basicBlockIndex} are added/subtracted in addition to normal 
 	 * basic block counts.
 	 */
 	public class BasicBlockOffset implements Serializable {

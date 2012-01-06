@@ -5,6 +5,7 @@ import java.util.Collection;
 import junit.framework.Assert;
 
 import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -86,7 +87,7 @@ public class TestLineNumbers {
      * Cleans up after every test. Especially important is that it resets the instrumentation
      * parameters.
      */
-    @After
+    @After @Before
     public void cleanResults() {
         // clear all collected results
         CountingResultCollector.getInstance().clearResults();

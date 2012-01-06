@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.SortedMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -321,6 +322,16 @@ public class BlockResultCalculation {
 					// there is an offset for this basic block; apply it
 					result.addOpcodeCounts(bbOffset.offset.getOpcodeCounts(), bbCount);
 					result.addMethodCallCounts(bbOffset.offset.getMethodCallCounts(), bbCount);
+					// purge methods that are not actually part of the range block (but of the basic block)
+					for(Entry<String, Integer> methodOffset : bbOffset.offset.getMethodCallCounts().entrySet()) {
+						final String methodName = methodOffset.getKey();
+						final Integer methodCountOffset = methodOffset.getValue();
+						final int countInBB = blockDesc.getMethodCallCounts().get(methodName);
+						if(countInBB + methodCountOffset == 0) {
+							// method is not in range block; remove entry
+							result.methodCounts.remove(methodName);
+						}
+					}
 				}
 			}
 		}
