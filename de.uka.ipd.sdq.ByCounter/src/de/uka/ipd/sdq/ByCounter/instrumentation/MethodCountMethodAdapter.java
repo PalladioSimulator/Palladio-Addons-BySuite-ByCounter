@@ -1108,7 +1108,7 @@ public final class MethodCountMethodAdapter extends MethodAdapter implements Opc
 				&& !name.equalsIgnoreCase(this.superNameBC)) {	// same for super calls
 			// here we need to replace the call to the original method for all instrumented methods
 			int methodIndex = 
-				MethodDescriptor.getIndexOfMethodMatch(
+				MethodDescriptor.findMethodInList(
 						this.instrumentationParameters.getMethodsToInstrument(),
 						owner.replace('/', '.'),
 						name,

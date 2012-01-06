@@ -64,12 +64,10 @@ public class TestBytecodeCounter {
 
 	private static final String resultLogFileName = "output" + File.separatorChar +"tmpLogFile.log";
 
-	private static final String testSubjectClassName = "TestSubject";
+	private static final String testSubjectCanonicalClassName = TestSubject.class.getCanonicalName();
 
 	private static String testCallingTreeMethodSignature = "public void methodCallTest()";
 
-	private static String testCallingTreePackageName = "de.uka.ipd.sdq.ByCounter.test.helpers";
-	
 	private static Class<?> testClass = TestSubject.class;
 	
 	private static String testClassMethodCallTest = "public void methodCallTest()";
@@ -190,13 +188,13 @@ public class TestBytecodeCounter {
 		// instrument the methodCallTest
 		// flat results
 		MethodDescriptor methodDescriptorMCT = 
-			new MethodDescriptor(testCallingTreePackageName, testSubjectClassName, 
+			new MethodDescriptor(testSubjectCanonicalClassName, 
 				testCallingTreeMethodSignature);
 		MethodDescriptor methodDescriptorLT = 
-			new MethodDescriptor(testCallingTreePackageName, testSubjectClassName, 
+			new MethodDescriptor(testSubjectCanonicalClassName, 
 					"public int loopTest()");
 		MethodDescriptor methodDescriptorPT =  
-			new MethodDescriptor(testCallingTreePackageName, testSubjectClassName, 
+			new MethodDescriptor(testSubjectCanonicalClassName, 
 			"public void printTest()");
 		
 		ArrayList<MethodDescriptor> methodsToInstrument = new ArrayList<MethodDescriptor>();
@@ -266,7 +264,7 @@ public class TestBytecodeCounter {
 			"public boolean parameterTest(int i, float f, java.lang.String s)");
 		counter.instrument(methodDescriptor);
 		counter.execute(methodDescriptor, 
-			new Object[]{2, 2, testSubjectClassName});
+			new Object[]{2, 2, testSubjectCanonicalClassName});
 				
 		// reset to old instrumentation parameters
 		this.instrumentationParameters.setUseResultCollector(oldUseResultCollector);
@@ -400,7 +398,7 @@ public class TestBytecodeCounter {
 				counter,
 				MethodDescriptor.forConstructor(nestedClassPackageName +"."+ nestedClassName, 
 						nestedClassMethodSig1),
-				new MethodDescriptor(nestedClassPackageName + "." + testSubjectClassName, 
+				new MethodDescriptor(nestedClassPackageName + "." + testSubjectCanonicalClassName, 
 						nestedClassRunMethodSig));
 
 		CountingResultCollector.getInstance().logResult(r, false, true);
@@ -412,7 +410,7 @@ public class TestBytecodeCounter {
 				counter,
 				new MethodDescriptor(nestedClassPackageName + "." + nestedClassName, 
 						nestedClassMethodSig2),
-				new MethodDescriptor(nestedClassPackageName  + "." + testSubjectClassName, 
+				new MethodDescriptor(nestedClassPackageName  + "." + testSubjectCanonicalClassName, 
 						nestedClassRunMethodSig));
 
 		CountingResultCollector.getInstance().logResult(r, false, true);

@@ -910,7 +910,7 @@ public final class MethodCountClassAdapter extends ClassAdapter {
 		
 
 		int methodIndex = 
-			MethodDescriptor.getIndexOfMethodMatch(
+			MethodDescriptor.findMethodInList(
 					this.instrumentationParameters.getMethodsToInstrument(),
 					this.className,
 					methodName,

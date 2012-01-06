@@ -55,7 +55,7 @@ public final class MethodSectionCountClassAdapter extends ClassAdapter {
 		mv = this.cv.visitMethod(access, name, desc, signature, exceptions);
 		
 		if (mv != null) {
-			int indexOfMethodMatch = MethodDescriptor.getIndexOfMethodMatch(
+			int indexOfMethodMatch = MethodDescriptor.findMethodInList(
 					this.instrumentationParameters.getMethodsToInstrument(), 
 					this.className,
 					name, 

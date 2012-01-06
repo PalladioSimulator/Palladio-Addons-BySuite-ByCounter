@@ -430,21 +430,22 @@ public final class BytecodeCounter {
 	 * This is modified by this method
 	 * @param classMethodDefinitions {@link ClassMethodImplementations} for all
 	 * classes considered to this point.
-	 * @param m Method to analyse. If the methods implementing class is not in
+	 * @param methodToAnalyse Method to analyse. If the methods implementing class is not in
 	 * the list of classes to instrument, it will be added.
 	 * @return True, if the method has an implementation. False otherwise.
 	 */
 	private boolean findClassToInstrument(Set<String> classesToInstrument,
 			Map<String, ClassMethodImplementations> classMethodDefinitions, 
-			MethodDescriptor m) {
+			MethodDescriptor methodToAnalyse) {
 		FindMethodDefinitionsClassAdapter findMethods = 
 			new FindMethodDefinitionsClassAdapter(
 					this.instrumentationParameters.getIgnoredPackagePrefixes());
 		boolean descent;
+		MethodDescriptor currentM = methodToAnalyse;
 		do {
 			descent = false;
 			// make sure that the method has an implementation in the class
-			String canonicalClassName = m.getCanonicalClassName();
+			String canonicalClassName = currentM.getCanonicalClassName();
 			ClassMethodImplementations methods = classMethodDefinitions.get(canonicalClassName);
 			if(methods == null) {
 				methods = new ClassMethodImplementations();
@@ -455,23 +456,23 @@ public final class BytecodeCounter {
 			}
 			// if the method is not defined, see if the super class has an 
 			// implementation.
-			if(TRY_TO_FIND_IMPLEMENTATIONS_IN_SUPER && !methods.getMethods().contains(m.getMethodSignature())) {
-				if(m.getCanonicalClassName().equals(Object.class.getCanonicalName())) {
-					log.severe("Could not find an implementation of the following method: " + m);
+			if(TRY_TO_FIND_IMPLEMENTATIONS_IN_SUPER && !methods.getMethods().contains(currentM.getMethodSignature())) {
+				if(currentM.getCanonicalClassName().equals(Object.class.getCanonicalName())) {
+					log.severe("Could not find an implementation of the following method: " + currentM);
 					return false;
 				} else {
 					if(methods.getSuperClass() == null) {
-						log.severe("Could not find an implementation of the following method: " + m);
+						log.severe("Could not find an implementation of the following method: " + currentM);
 						log.severe("Superclass is null");
 						return false;
 					}
 					String superCanonicalClassName = methods.getSuperClass().replace('/', '.');
 					// if there already is a methoddescriptor for the superclasses method, skip it
-					if(MethodDescriptor.getIndexOfMethodMatch(
+					if(MethodDescriptor.findMethodInList(
 							instrumentationParameters.getMethodsToInstrument(), 
 							superCanonicalClassName, 
-							m.getSimpleClassName(), 
-							m.getDescriptor()) != -1) {
+							currentM.getSimpleClassName(), 
+							currentM.getDescriptor()) != -1) {
 						continue;
 					} else {
 						String[] str = 
@@ -480,8 +481,8 @@ public final class BytecodeCounter {
 						if(!superCanonicalClassName.contains(".") || str[1].equals("Object")) {
 							str[0].hashCode();//DEBUG
 						}
-						m.setPackageName(str[0]);
-						m.setSimpleClassName(str[1]);
+						currentM.setPackageName(str[0]);
+						currentM.setSimpleClassName(str[1]);
 						descent = true;
 						continue;
 					}
@@ -552,7 +553,7 @@ public final class BytecodeCounter {
 			
 			String canonicalClassName = child.getOwner().replace('/', '.');
 			final int methodIndex = 
-				MethodDescriptor.getIndexOfMethodMatch(
+				MethodDescriptor.findMethodInList(
 						methodsList,
 					canonicalClassName,
 					child.getName(), 

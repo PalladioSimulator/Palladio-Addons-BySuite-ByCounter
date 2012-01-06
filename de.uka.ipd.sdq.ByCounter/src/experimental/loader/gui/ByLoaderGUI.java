@@ -126,7 +126,6 @@ public class ByLoaderGUI extends JFrame {
 		setNativeLookAndFeel();
 	}
 
-	@SuppressWarnings("deprecation")
 	public void addComponentsToPane(final Container pane) {
 		JPanel controls = new JPanel();
 		controls.setLayout(new GridBagLayout());
