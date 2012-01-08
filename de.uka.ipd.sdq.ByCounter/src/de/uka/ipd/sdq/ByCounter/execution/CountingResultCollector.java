@@ -260,9 +260,7 @@ public final class CountingResultCollector {
 				new TreeMap<String,Long>(),
 				new long[]{},
 				new int[]{},
-				new String[]{},
-				new TreeMap<BytecodeSectionDescription,SortedMap<Integer,Long>>(),
-				new TreeMap<BytecodeSectionDescription,SortedMap<String,Long>>()
+				new String[]{}
 				);
 		this.inlined_methodsMap = new TreeMap<String, Integer>();
 		this.mode = CountingResultCollectorModeEnum.UseReportingMethodChoiceByInstrumentedMethods;
@@ -352,11 +350,12 @@ public final class CountingResultCollector {
 					result.newArrayTypeOrDim.length != 0 && 
 					result.newArrayDescr != null && 
 					result.newArrayDescr.length != 0) {
-				analyzeArrayParams(newArrayType, 
-						newArrayDim, 
+				NewArrayTypeAndDimension r = analyzeArrayParams(
 						result.newArrayCounts,
 						result.newArrayDescr, 
 						result.newArrayTypeOrDim);
+				newArrayType = r.newArrayType; 
+				newArrayDim = r.newArrayDim;
 			}
 
 			/* executionStart + i is a used to make sure that two results always have a different starting time.
@@ -389,9 +388,7 @@ public final class CountingResultCollector {
 				ccounts[i].methodCounts,
 				result.newArrayCounts,
 				newArrayDim,
-				newArrayType,
-				null, //sectionInstCounts,
-				null  //sectionMethCounts
+				newArrayType
 				);
 			if(convertCountsFromRangeBlockCounts) {
 				// set the index of the range block, i.e. the number of the section as
@@ -475,6 +472,16 @@ public final class CountingResultCollector {
 	}
 	
 	/**
+	 * Simple data structure to hold converted information about new array creation.
+	 * @see CountingResultCollector#analyzeArrayParams(long[], String[], int[])
+	 * No initialisation happens on construction.
+	 */
+	private static class NewArrayTypeAndDimension {
+		String[] newArrayType;
+		int[] newArrayDim;
+	}
+	
+	/**
 	 * TODO test this method out-refactoring
 	 * @param newArrayType
 	 * @param newArrayDim
@@ -482,11 +489,12 @@ public final class CountingResultCollector {
 	 * @param newArrayDescr
 	 * @param newArrayTypeOrDim
 	 */
-	public synchronized void analyzeArrayParams(String[] newArrayType, int[] newArrayDim, long[] newArrayCounts, String[] newArrayDescr,
-			int[] newArrayTypeOrDim){
+	public static synchronized NewArrayTypeAndDimension analyzeArrayParams(long[] newArrayCounts, String[] newArrayDescr,
+			int[] newArrayTypeOrDim) {
+		NewArrayTypeAndDimension result = new NewArrayTypeAndDimension();
 		// process information for the *newarray counts
-		newArrayType = new String[newArrayCounts.length];
-		newArrayDim = new int[newArrayCounts.length];
+		result.newArrayType = new String[newArrayCounts.length];
+		result.newArrayDim = new int[newArrayCounts.length];
 
 		for(int i = 0; i < newArrayCounts.length; i++) {
 			// check whether the type is coded into the integer
@@ -519,19 +527,19 @@ public final class CountingResultCollector {
 					str = "long";
 					break;
 				default:
-					log.severe("Unknown object type id: " + newArrayTypeOrDim[i]);
-					break;
+					throw new IllegalArgumentException("Unknown object type id: " + newArrayTypeOrDim[i]);
 				}
-				newArrayType[i] = str;
+				result.newArrayType[i] = str;
 				// no dimension information here
-				newArrayDim[i] = AdditionalOpcodeInformation.NO_INFORMATION_INT;
+				result.newArrayDim[i] = AdditionalOpcodeInformation.NO_INFORMATION_INT;
 			} else {
 				// Type is there as descriptor - just copy it
-				newArrayType[i] = newArrayDescr[i];
+				result.newArrayType[i] = newArrayDescr[i];
 				// copy the dimension information
-				newArrayDim[i] = newArrayTypeOrDim[i];
+				result.newArrayDim[i] = newArrayTypeOrDim[i];
 			}
 		}
+		return result;
 
 	}
 
@@ -572,9 +580,7 @@ public final class CountingResultCollector {
 				new TreeMap<String,Long>(),//method call counts
 				new long[]{},//array creation counts
 				new int[]{},//array creation dimensions
-				new String[]{},//array creation type info
-				new TreeMap<BytecodeSectionDescription,SortedMap<Integer,Long>>(),//section instruction counts
-				new TreeMap<BytecodeSectionDescription,SortedMap<String,Long>>()//section method counts
+				new String[]{}//array creation type info
 				);
 	}
 

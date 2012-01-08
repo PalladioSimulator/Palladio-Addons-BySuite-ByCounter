@@ -158,9 +158,7 @@ implements Serializable, Cloneable, IFullCountingResult{
 				resultMethodCallCounts,
 				resultNewArrayCountsArray,
 				resultNewArrayDimArray,
-				resultNewArrayTypeArray,
-				null,
-				null);
+				resultNewArrayTypeArray);
 		return cr;
 	}
 
@@ -232,9 +230,8 @@ implements Serializable, Cloneable, IFullCountingResult{
 				resultMethodCallCounts,
 				null, //resultNewArrayCountsArray,
 				null, //resultNewArrayDimArray,
-				null, //resultNewArrayTypeArray,
-				null,
-				null);
+				null //resultNewArrayTypeArray,
+				);
 		return cr;
 	}
 
@@ -374,7 +371,7 @@ implements Serializable, Cloneable, IFullCountingResult{
 	private transient String[] arrayCreationTypeInfo = null;
 
 	/**
-	 * A {@link UUID} that is linked to a the method calling the method that
+	 * A {@link UUID} that is linked to the method calling the method that
 	 * calls the protocol function. Used with {@link #ownID} to construct a CCT.
 	 */
 	private UUID callerID = null;
@@ -438,7 +435,6 @@ implements Serializable, Cloneable, IFullCountingResult{
 	 * This Map says whether the counts of the methods have been computed and
 	 * integrated into this CountingResults's method and instruction counts TODO
 	 */
-	@SuppressWarnings("unused")
 	private SortedMap<String, Boolean> methodCountsExpansionStatus = null;
 
 	/**
@@ -484,16 +480,6 @@ implements Serializable, Cloneable, IFullCountingResult{
 	private UUID requestID;
 
 	/**
-	 * Should be used by the next release
-	 */
-	private transient SortedMap<BytecodeSectionDescription,SortedMap<Integer,Long>> sectionInstCounts = null;
-
-	/**
-	 * Should be used by the next release
-	 */
-	private transient SortedMap<BytecodeSectionDescription,SortedMap<String,Long>> sectionMethCounts = null;
-
-	/**
 	 * Total count of all opcodes, except the four INVOKE* opcodes
 	 */
 	private Long totalCountExclInvokes;
@@ -518,7 +504,7 @@ implements Serializable, Cloneable, IFullCountingResult{
 				
 				opcodeCounts,
 				methodCallCounts,
-				null,null,null,null,null);
+				null,null,null);
 	}
 	
 	/**
@@ -554,8 +540,6 @@ implements Serializable, Cloneable, IFullCountingResult{
 	 * @param arrayCreationCounts
 	 * @param arrayCreationDimensions
 	 * @param arrayCreationTypeInfo
-	 * @param sectionInstCounts
-	 * @param sectionMethCounts
 	 */
 	public CountingResult(//TODO make sure the instructions are "full", even if some instruction counts are zero
 			UUID requestID,
@@ -577,10 +561,7 @@ implements Serializable, Cloneable, IFullCountingResult{
 			
 			long[] arrayCreationCounts,
 			int[] arrayCreationDimensions,
-			String[] arrayCreationTypeInfo,
-			
-			SortedMap<BytecodeSectionDescription,SortedMap<Integer,Long>> sectionInstCounts,
-			SortedMap<BytecodeSectionDescription,SortedMap<String,Long>> sectionMethCounts) {
+			String[] arrayCreationTypeInfo) {
 		this.setRequestID(requestID);
 		this.setOwnID(ownID);
 		this.setCallerID(callerID);
@@ -599,8 +580,6 @@ implements Serializable, Cloneable, IFullCountingResult{
 		assert(opcodeCounts.length==201);//TODO document, propagate...
 		this.opcodeCounts = opcodeCounts;
 		this.qualifyingMethodName = qualifyingMethodName; //should be a PRIVATE setter
-		this.sectionInstCounts = sectionInstCounts;
-		this.sectionMethCounts = sectionMethCounts;
 		this.SPECjvm2008_compress_fileType = fileType;
 		this.totalCountExclInvokes = 0L;
 		this.totalCountInclInvokes = 0L;
@@ -692,9 +671,7 @@ implements Serializable, Cloneable, IFullCountingResult{
 				(TreeMap<String,Long>) ((TreeMap<String,Long>) this.methodCallCounts).clone(),
 				null, //this.arrayCreationCounts.clone(),
 				null, //this.arrayCreationDimensions.clone(),
-				null, //this.arrayCreationTypeInfo.clone(),
-				null, //TODO: this.sectionInstCounts,
-				null //this.sectionMethCounts
+				null //this.arrayCreationTypeInfo.clone()
 				);
 	}
 
@@ -979,20 +956,6 @@ implements Serializable, Cloneable, IFullCountingResult{
 	 */
 	public UUID getRequestID() {
 		return requestID;
-	}
-
-	/**
-	 * @return sectionInstCounts
-	 */
-	public SortedMap<BytecodeSectionDescription, SortedMap<Integer, Long>> getSectionInstCounts() {
-		return sectionInstCounts;
-	}
-
-	/**
-	 * @return sectionMethCounts
-	 */
-	public SortedMap<BytecodeSectionDescription, SortedMap<String, Long>> getSectionMethCounts() {
-		return sectionMethCounts;
 	}
 
 	/** (non-Javadoc)

@@ -9,6 +9,8 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.logging.Logger;
 
+import javassist.bytecode.Opcode;
+
 import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodAdapter;
 import org.objectweb.asm.MethodVisitor;
@@ -16,6 +18,7 @@ import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
 import org.objectweb.asm.commons.LocalVariablesSorter;
 
+import de.uka.ipd.sdq.ByCounter.execution.CountingResult;
 import de.uka.ipd.sdq.ByCounter.execution.CountingResultCollector;
 import de.uka.ipd.sdq.ByCounter.execution.ProtocolCountStructure;
 import de.uka.ipd.sdq.ByCounter.utils.JavaType;
@@ -70,13 +73,13 @@ public final class MethodCountMethodAdapter extends MethodAdapter implements Opc
 		"_____BYCOUNTER_INSTRUMENTED______";
 
 	/**
-	 * The fully qualifyied class name of {@link CountingResultCollector}, but 
+	 * The fully qualified class name of {@link CountingResultCollector}, but 
 	 * in bytecode form.
 	 */
 	private static final String CountingResultCollectorCanonicalNameDescriptor = 
 		CountingResultCollector.class.getCanonicalName().replace('.', '/');
 
-	private static final int MAX_OPCODE = 210;	// TODO: exact value
+	private static final int MAX_OPCODE = CountingResult.MAX_OPCODE;
 
 	/**
 	 * all invoked methods and array information
@@ -236,7 +239,7 @@ public final class MethodCountMethodAdapter extends MethodAdapter implements Opc
 	 * Count the construction of an array with the given parameters 
 	 * where applicable. Use AdditionalOpcodeInformation.NO_INFORMATION*
 	 * if a parameter is not used. If this method is called, 
-	 * then only in addition to countOpcode, which is called for any opcode.
+	 * then is counted only in addition to countOpcode, which is called for any opcode.
 	 * TODO assert that this method is not called on its own without countOpcode
 	 * @param integer Integer information. For array of a primitive type 
 	 * such as int[], long[], etc. this encodes the type while 's' contains 
@@ -247,7 +250,7 @@ public final class MethodCountMethodAdapter extends MethodAdapter implements Opc
 	 * For new object type arrays this is empty and 's' holds the type.
 	 * </p>
 	 * @param s String information. For primitive type arrays such as int[], long[],
-	 * etc. this is empty. In all other cases this hold the type information.
+	 * etc. this is empty. In all other cases this holds the type information.
 	 */
 	private void countArrayConstruction(int integer, String s) {
 		if(this.useBlockCounters) {
@@ -870,6 +873,9 @@ public final class MethodCountMethodAdapter extends MethodAdapter implements Opc
 			if(this.methodDescriptor.getCodeAreasToInstrument() != null
 					&& this.methodDescriptor.getCodeAreasToInstrument().length != 0) {
 				this.useRangeBlocks = true;
+			}
+			if(this.instrumentationParameters.getUseArrayParameterRecording()) {
+				throw new RuntimeException("Array parameter recording is not currently supported in block counting modes.");
 			}
 		}
 		

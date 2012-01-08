@@ -1,5 +1,7 @@
 package de.uka.ipd.sdq.ByCounter.test;
 
+import java.lang.reflect.Method;
+
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -19,6 +21,8 @@ public class TestMethodDescriptor {
 	@Test
 	public void testGetFromJavaSignature() {
 		// TODO: add many more different signatures for testing.
+		
+		// 1
 		MethodDescriptor d = new MethodDescriptor("de.uka.ipd.sdq.ByCounter.test.Test",
 				"public static void testVoid(int[][] a, org.junit.Test b)"
 				);
@@ -37,6 +41,7 @@ public class TestMethodDescriptor {
 		Assert.assertTrue("Method was not recognised as static", 
 				d.getMethodIsStatic());
 		
+		// 2
 		d = new MethodDescriptor("de.uka.ipd.sdq.ByCounter.test.Test",
 				"public int factor(double A[][],  int pivot[])");
 		Assert.assertNotNull("Method descriptor was null. " + 
@@ -49,6 +54,7 @@ public class TestMethodDescriptor {
 				d.getMethodIsStatic());
 		
 
+		// 3
 		d = new MethodDescriptor("de.uka.ipd.sdq.ByCounter.test.Test",
 				"public static java.util.List <Integer> factor(java.util.List<java.util.List<Double>> A,  int pivot[])");
 		Assert.assertNotNull("Method descriptor was null. " + 
@@ -61,5 +67,78 @@ public class TestMethodDescriptor {
 		Assert.assertEquals("new ArrayList();", MethodDescriptor.removeGenericTyping("new ArrayList<List<Double>>();"));
 		Assert.assertTrue("Method was not recognised as static", 
 				d.getMethodIsStatic());
+		
+		Exception e = null;
+		// 4 - garbage input
+		try {
+			d = new MethodDescriptor("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890",
+				"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890");
+		} catch(RuntimeException r) {
+			e = r;
+		}
+		Assert.assertNotNull("Expected runtime exception on garbage input." , e);
+
+
+		e = null;
+		// 5 - garbage input + braces
+		try {
+			d = new MethodDescriptor("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890",
+				"abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890(abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890)");
+		} catch(RuntimeException r) {
+			e = r;
+		}
+		Assert.assertNotNull("Expected runtime exception on garbage input." , e);
+	
+
+		// 6 - garbage input + empty braces + garbage
+		d = new MethodDescriptor("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890",
+				"abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890() abbdd");
+		Assert.assertNotNull("Method descriptor was null. " + 
+				"This means it could not be parsed correctly", d);
+		Assert.assertEquals("Method descriptor method name is not correct.", 
+				"ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890", d.getSimpleMethodName());
+		Assert.assertEquals("Method descriptor is not correct.", 
+				"()Labcdefghijklmnopqrstuvwxyz;", d.getDescriptor());
+		Assert.assertFalse("Method was recognised as static", 
+				d.getMethodIsStatic());
+	
+	}
+	
+	/**
+	 * Test calling methods with null parameters.
+	 */
+	@Test
+	public void testNullInput() {
+		boolean exceptionCaught = false;
+		try {
+			MethodDescriptor._constructMethodDescriptorFromASM("", "", "");
+		} catch(RuntimeException r) {
+			exceptionCaught = true;
+		}
+		Assert.assertTrue("MethodDescriptor did not throw expected exception", exceptionCaught);
+
+		exceptionCaught = false;
+		try {
+			MethodDescriptor._constructMethodDescriptorFromASM("", "", null);
+		} catch(RuntimeException r) {
+			exceptionCaught = true;
+		}
+		Assert.assertTrue("MethodDescriptor did not throw expected exception", exceptionCaught);
+
+		exceptionCaught = false;
+		try {
+			MethodDescriptor._constructMethodDescriptorFromASM("", null, "");
+		} catch(RuntimeException r) {
+			exceptionCaught = true;
+		}
+		Assert.assertTrue("MethodDescriptor did not throw expected exception", exceptionCaught);
+
+		exceptionCaught = false;
+		try {
+			MethodDescriptor._constructMethodDescriptorFromASM(null, "", "");
+		} catch(RuntimeException r) {
+			exceptionCaught = true;
+		}
+		Assert.assertTrue("MethodDescriptor did not throw expected exception", exceptionCaught);
 	}
 }

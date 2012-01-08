@@ -123,9 +123,7 @@ public class CountingResultCSVWriter implements ICountingResultWriter {
 				methodCounts,
 				null,
 				null,
-				null,
-				null, //sectionInstCounts,
-				null  //sectionMethCounts);
+				null
 				);
 		
 		return r;

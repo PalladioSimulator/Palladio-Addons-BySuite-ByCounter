@@ -73,7 +73,18 @@ public final class MethodDescriptor implements Comparable<MethodDescriptor>, Ser
 			String owner,
 			String name,
 			String desc) {
+		// Check input
+		if(owner == null || owner.length() <= 0) {
+			throw new RuntimeException("Owner must not be null or empty. Check asm output.");
+		}
+		if(name == null || name.length() <= 0) {
+			throw new RuntimeException("Name must not be null or empty. Check asm output.");
+		}
+		if(desc == null || desc.length() <= 0) {
+			throw new RuntimeException("Desc must not be null or empty. Check asm output.");
+		}
 		
+		// parse class and package
 		String fqcn = owner.replace('/', '.');	// fully qualified class name
 		int packageClassSeperationPlace = fqcn.lastIndexOf('.');
 		String packageName = "";
@@ -85,7 +96,7 @@ public final class MethodDescriptor implements Comparable<MethodDescriptor>, Ser
 			className = fqcn;
 		}
 		
-
+		// construct the MethodDescriptor
 		MethodDescriptor result = new MethodDescriptor();
 		boolean isConstructor = name.equalsIgnoreCase("<init>");
 		
@@ -180,6 +191,9 @@ public final class MethodDescriptor implements Comparable<MethodDescriptor>, Ser
 	 * @return The Java method name of the constructor for a given class name.
 	 */
 	private static String getConstructorName(final String canonicalClassName) {
+		if(canonicalClassName == null) {
+			throw new IllegalArgumentException("Canonical class name must not be null.");
+		}
 		int startSplitIndex = canonicalClassName.lastIndexOf('.')+1;
 		return canonicalClassName.substring(startSplitIndex);
 	}
@@ -190,6 +204,9 @@ public final class MethodDescriptor implements Comparable<MethodDescriptor>, Ser
 	 * index i reflects the type of the parameter at index i.
 	 */
 	public static JavaType[] getParametersTypesFromDesc(String desc) {
+		if(desc == null) {
+			throw new IllegalArgumentException("Descriptor must not be null.");
+		}
 		int indOpeningBrace = desc.indexOf('(');
 		int indClosingBrace = desc.lastIndexOf(')');
 		String croppedDesc = desc.substring(indOpeningBrace+1, indClosingBrace);
@@ -201,6 +218,9 @@ public final class MethodDescriptor implements Comparable<MethodDescriptor>, Ser
 	 * @return The type that of the return value.
 	 */
 	public static JavaType getReturnTypeFromDesc(String desc) {
+		if(desc == null) {
+			throw new IllegalArgumentException("Descriptor must not be null.");
+		}
 		int indClosingBrace = desc.lastIndexOf(')');
 		String croppedDesc = desc.substring(indClosingBrace+1);
 		return parseTypesFromBytecodeDesc(croppedDesc)[0];
@@ -215,6 +235,9 @@ public final class MethodDescriptor implements Comparable<MethodDescriptor>, Ser
 	 * '/' is used. For example "java/lang/String".
 	 */
 	private static String parseType(String typeString) {
+		if(typeString == null || typeString.length() < 2) {
+			throw new IllegalArgumentException("Type string must not be null or empty.");
+		}
 		String tStr = typeString;
 		StringBuilder returnString = new StringBuilder();
 		
@@ -249,7 +272,7 @@ public final class MethodDescriptor implements Comparable<MethodDescriptor>, Ser
 				// Since ByCounter can not infer packages, display a warning.
 				// packageless classes will also get this warning
 				log.warning("Signature warning " +
-						"Object type (\"" + tStr + "\")"+
+						"Object type (\"" + tStr + "\") "+
 						"possibly not given as full canonical name. " +
 						"If the type is packageless, ignore this warning");
 			}//else{
@@ -268,6 +291,9 @@ public final class MethodDescriptor implements Comparable<MethodDescriptor>, Ser
 	 * index i reflects the type of the parameter at index i.
 	 */
 	private static JavaType[] parseTypesFromBytecodeDesc(String desc) {
+		if(desc == null) {
+			throw new IllegalArgumentException("Descriptor must not be null.");
+		}
 		ArrayList<JavaType> types = new ArrayList<JavaType>();		
 		Stack<JavaType> unfinishedTypes = new Stack<JavaType>(); // array types need more than one parse iteration
 		boolean newUnfinishedType = false;
@@ -341,6 +367,9 @@ public final class MethodDescriptor implements Comparable<MethodDescriptor>, Ser
 	 * @return The cleaned signature.
 	 */
 	public static String removeGenericTyping(String signature) {
+		if(signature == null || signature.length() <= 0) {
+			throw new IllegalArgumentException("Signature must not be null or empty.");
+		}
 		String sig = signature;
 		int braceLevel = 0;
 		int cutStart = -1;
@@ -363,9 +392,9 @@ public final class MethodDescriptor implements Comparable<MethodDescriptor>, Ser
 						i = 0;
 					} else if(braceLevel < 0) {
 
-						throw new RuntimeException(new IllegalArgumentException(
+						throw new IllegalArgumentException(
 								"Error in method signature " + signature + 
-								". Number of '<' does not match number of '>'"));
+								". Number of '<' does not match number of '>'");
 					}
 				}
 			}
@@ -424,6 +453,9 @@ public final class MethodDescriptor implements Comparable<MethodDescriptor>, Ser
 	 * @param c {@link Constructor} that is described by the MethodDescriptor.
 	 */
 	public MethodDescriptor(Constructor<?> c) {
+		if(c == null) {
+			throw new IllegalArgumentException("Constructor object must not be null.");
+		}
 		construct(
 				c.getDeclaringClass().getPackage().getName(), 
 				c.getDeclaringClass().getSimpleName(), 
@@ -437,6 +469,9 @@ public final class MethodDescriptor implements Comparable<MethodDescriptor>, Ser
 	 * @param m Method that is described by the MethodDescriptor.
 	 */
 	public MethodDescriptor(Method m) {
+		if(m == null) {
+			throw new IllegalArgumentException("Method object must not be null.");
+		}
 		Package p = m.getDeclaringClass().getPackage();
 		String packageName = "";
 		String simpleClassName = "";
@@ -462,8 +497,8 @@ public final class MethodDescriptor implements Comparable<MethodDescriptor>, Ser
 	 * Construct a MethodDescriptor from a Java method signature.
 	 * @param className The canonical name of the class declaring the method.
 	 * @param signature A string containing a standard Java method signature 
-	 * as for example:
-	 * <code>public static de.uka.ipd.sdq.ByCounter.MethodDescriptor getFromJavaSignature(String sig)</code>
+	 * with fully qualified types. For example: <br />
+	 * <code>public static java-lang.String[] canonicalClassNameToPackageAndSimpleName(java-lang.String className)</code> <br />
 	 * Object types need to be specified with the full canonical name.
 	 * Specifically, only the two tokens before the first '(', as well as 
 	 * everything between '(' and ')' is evaluated.
@@ -473,11 +508,13 @@ public final class MethodDescriptor implements Comparable<MethodDescriptor>, Ser
 	 * For method parameters, only one or two tokens are allowed 
 	 * (example: "int[]" or "int[] abc").
 	 * It is advised to take the method declaration from sourcecode or from 
-	 * documentation and only adapt it, if necessary. The thing that needs to 
-	 * be adapted is type names for object types. So instead of giving the String 
+	 * documentation and only adapt it, if necessary. 
+	 * <p><b>Important: </b> The type names for object types need to be adapted. 
+	 * So instead of giving the String 
 	 * "String myString", this has to be expanded to "java.lang.String".
 	 * Note that inner/nested classes need to be specified using the '$' symbol
 	 * as in the following example: <code>my.packagename.OutClass$InnerClass</code>.
+	 * </p>
 	 */
 	public MethodDescriptor(String className, String signature) {
 		this(className, signature, false);
@@ -486,32 +523,36 @@ public final class MethodDescriptor implements Comparable<MethodDescriptor>, Ser
 	/**
 	 * Main constructor for MethodDescriptor.
 	 * @see #MethodDescriptor(String, String)
-	 * @param packageName Package name.
 	 * @param className Canonical class name.
-	 * @param signature Signature.
+	 * @param signature Java method signature with fully qualified types.
 	 * @param isConstructor When true, the signature is treated as the 
 	 * signature of a constructor. When false, the signature is treated as the 
 	 * signature of a normal method.
 	 */
 	private MethodDescriptor(
-			String className, 
+			String canonicalClassName, 
 			String signature, 
 			final boolean isConstructor) {
+
+		// do some error checks
+		if(canonicalClassName == null || canonicalClassName.length() <= 0) {
+			throw new IllegalArgumentException(
+					"The classname for the methoddescriptor was not supplied.");
+		}
+		if(signature == null || signature.length() <= 0) {
+			throw new IllegalArgumentException(
+					"The signature for the methoddescriptor was not supplied.");
+		}
+		
+		String[] packageAndClass = MethodDescriptor.canonicalClassNameToPackageAndSimpleName(canonicalClassName);
+		String mPackageName = packageAndClass[0];
+		String mClassName = packageAndClass[1];
+		
 		String retType = "";	// initialise since this is not set for constructors
 		String simpleMethodName = null;
 		ArrayList<String> argTypes = new ArrayList<String>();
 		this.isConstructor = isConstructor;
 		this.methodIsStatic = false;
-		
-		// do some error checks
-		if(className == null || className.length() <= 0) {
-			throw new RuntimeException(new IllegalArgumentException(
-					"The classname for the methoddescriptor was not supplied."));
-		}
-		if(signature == null || signature.length() <= 0) {
-			throw new RuntimeException(new IllegalArgumentException(
-					"The signature for the methoddescriptor was not supplied."));
-		}
 		
 		String sig = removeGenericTyping(signature);
 		
@@ -520,8 +561,8 @@ public final class MethodDescriptor implements Comparable<MethodDescriptor>, Ser
 
 		// make sure we found something
 		if(split1 < 0 || split2 < 0) {
-			throw new RuntimeException(new IllegalArgumentException(
-					"The signature supplied for the methoddescriptor does not have the correct braces '(' or ')'"));
+			throw new IllegalArgumentException(
+					"The signature supplied for the methoddescriptor does not have the correct braces '(' or ')'");
 		}
 
 		final String returnStr = sig.substring(0, split1);	 // the first part contains the return type
@@ -530,18 +571,18 @@ public final class MethodDescriptor implements Comparable<MethodDescriptor>, Ser
 		String[] tokens = null;
 		tokens = returnStr.split("(\\s)+");	// split at whitespaces
 		if(tokens.length < 1) {
-			throw new RuntimeException(new IllegalArgumentException(
-					"No tokens before '(' in signature."));
+			throw new IllegalArgumentException(
+					"No tokens before '(' in signature.");
 		} else {
 			// the last token should be the method name.
 			simpleMethodName = tokens[tokens.length-1];
 			if(!isConstructor) {
 				// try to parse out the return type
 				if(tokens.length < 2) {
-					throw new RuntimeException(new IllegalArgumentException(
+					throw new IllegalArgumentException(
 							"Error parsing return type for Java signature. " +
 							"Expecting at least two tokens before '(' " +
-							"for non-constructor methods."));
+							"for non-constructor methods.");
 				} else {
 					// the second last token should be the type.
 					// example: "public static void main"
@@ -563,9 +604,9 @@ public final class MethodDescriptor implements Comparable<MethodDescriptor>, Ser
 				s = s.trim();	// remove leading and trailing whitespaces 
 				tokens = s.split("(\\s)+");	// split at whitespaces
 				if(tokens.length < 1 || tokens.length > 2) {
-					throw new RuntimeException(new IllegalArgumentException(
+					throw new IllegalArgumentException(
 						"Error parsing Java signature \"" + signature + "\": "
-						+"Parameter definition does not contain 1 or 2 tokens"));
+						+"Parameter definition does not contain 1 or 2 tokens");
 				} else {
 					// if the array braces "[]" are appended to the parameter name,
 					// cut them of and append them to the type string:
@@ -593,8 +634,8 @@ public final class MethodDescriptor implements Comparable<MethodDescriptor>, Ser
 		}
 		constructedDescriptor.append(")");
 		constructedDescriptor.append(retType);
-		this.construct(packageName, 
-				className, 
+		this.construct(mPackageName, 
+				mClassName, 
 				simpleMethodName, 
 				constructedDescriptor.toString(), 
 				isConstructor);
@@ -604,7 +645,6 @@ public final class MethodDescriptor implements Comparable<MethodDescriptor>, Ser
 	 * @see java.lang.Comparable#compareTo(java.lang.Object)
 	 */
 	public int compareTo(MethodDescriptor o) {
-		// TODO 
 		// compare package name
 		int comparisonResult = this.packageName.compareTo(o.packageName);
 		if(comparisonResult!=0){
@@ -622,14 +662,29 @@ public final class MethodDescriptor implements Comparable<MethodDescriptor>, Ser
 		}
 		// compare descriptor
 		comparisonResult = this.descriptor.compareTo(o.descriptor);
-//		if(comparisonResult!=0) {
+		if(comparisonResult!=0) {
 			return comparisonResult;
-//		}
-		//TODO support code areas to instrument!
+		}
+		// compare codeAreasToInstrument; length
+		comparisonResult = new Integer(this.codeAreasToInstrument.length).compareTo(
+						o.codeAreasToInstrument.length);
+		if(comparisonResult!=0) {
+			return comparisonResult;
+		}
+		// compare individual code areas
+		for(int i = 0; i < this.codeAreasToInstrument.length; i++) {
+			comparisonResult = this.codeAreasToInstrument[i].compareTo(o.codeAreasToInstrument[i]);
+			if(comparisonResult!=0) {
+				return comparisonResult;
+			}
+		}
+		// consider the MethodDescriptors the same
+		return 0;
 	}
 
 	/**
-	 * Sets the essential properties of the {@link MethodDescriptor}
+	 * Sets the essential properties of the {@link MethodDescriptor}.
+	 * No checks are done here, so make sure the given parameters are valid!
 	 * @param packageName Package name ({@link #getPackageName()}).
 	 * @param className Simple class name ({@link #getSimpleClassName()}).
 	 * @param methodName Simple method name ({@link #getSimpleMethodName()}).
@@ -667,7 +722,7 @@ public final class MethodDescriptor implements Comparable<MethodDescriptor>, Ser
 	}
 
 	/**
-	 * Checks for equalling class name, method name, package name and descriptor.
+	 * Checks for equaling class name, method name, package name and descriptor.
 	 */
 	@Override
 	public boolean equals(Object obj) {
@@ -693,6 +748,7 @@ public final class MethodDescriptor implements Comparable<MethodDescriptor>, Ser
 		if(this.packageName.length() > 0) {
 			return this.packageName + "." + this.className;
 		} else {
+			// default (no) package
 			return this.className;
 		}
 	}
@@ -782,8 +838,10 @@ public final class MethodDescriptor implements Comparable<MethodDescriptor>, Ser
 	}
 
 	/**
-	 * Gets the qualifying method signature of the described method
-	 * (i.e. with the descriptors, i.e. with the types of input/output parameters).
+	 * Gets the qualifying method signature of the described method. This consists
+	 * of the qualifying method name ({@link #getQualifyingMethodName()}) and the 
+	 * descriptor ({@link #getDescriptor()}; i.e. with the types of 
+	 * input/output parameters).
 	 * @return The method signature.
 	 */
 	public String getQualifyingMethodSignature() {

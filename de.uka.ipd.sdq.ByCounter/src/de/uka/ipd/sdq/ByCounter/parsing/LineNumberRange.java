@@ -83,7 +83,6 @@ public final class LineNumberRange implements Comparable<LineNumberRange>, Seria
 
 	/* (non-Javadoc)
 	 * @see java.lang.Comparable#compareTo(java.lang.Object)
-	 * Comparation only based on first line.
 	 */
 	public int compareTo(LineNumberRange o) {
 		if(this.firstLine<o.firstLine){

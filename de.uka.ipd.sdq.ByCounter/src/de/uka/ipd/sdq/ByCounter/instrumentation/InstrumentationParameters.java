@@ -22,6 +22,7 @@ import de.uka.ipd.sdq.ByCounter.utils.MethodDescriptor;
  * <li>{@link #getBasicBlockSerialisation()} only applies if {@link #getUseBasicBlocks()} == true</li>
  * <li>{@link #getRangeBlockSerialisation()} only applies if {@link #getUseBasicBlocks()} == true and {@link MethodDescriptor#setCodeAreasToInstrument(LineNumberRange[])} has been called with non-empty line number ranges ({@link #hasMethodsWithCodeAreas()} == true)</li>
  * <li>{@link #setRecordBlockExecutionOrder(boolean)} only applies if either range blocks or basic blocks are used, i.e. if {@link #getUseBasicBlocks()} == true</li>
+ * <li>{@link #setUseArrayParameterRecording(boolean)} is currently only supported when not using basic/range blocks.</li>
  * </ul>
  * </p>
  * 
