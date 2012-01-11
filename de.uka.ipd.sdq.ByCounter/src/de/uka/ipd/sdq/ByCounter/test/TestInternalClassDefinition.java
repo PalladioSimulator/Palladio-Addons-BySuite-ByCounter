@@ -97,7 +97,7 @@ public class TestInternalClassDefinition {
 	 */
 	@Test
 	public void testRetriveInternalResults() {
-		// define expectations
+		// define expectations (TODO no real expectations, this is what is counted)
 		Expectation e = new Expectation(true);
 		e.add().add(Opcodes.GETSTATIC, 1) // ClassY.methodX1()
 					 .add(Opcodes.INVOKEVIRTUAL, 1)
