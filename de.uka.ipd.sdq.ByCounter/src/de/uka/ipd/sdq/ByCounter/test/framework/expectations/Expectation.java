@@ -19,13 +19,26 @@ import de.uka.ipd.sdq.ByCounter.parsing.LineNumberRange;
  * <p>
  * To define new expectations you can write them down like a tree. Example:<br/>
  * <code>Expectation e = new Expectation();<br/>
- * e.add(-1).add(Opcodes.ICONST_1, 1)<br/>
+ * e.add().add(Opcodes.ICONST_1, 1)<br/>
  * &nbsp;.add(Opcodes.ISTORE, 1)<br/>
  * &nbsp;.add(Opcodes.IINC, 1)<br/>
  * &nbsp;.add(Opcodes.RETURN, 1);</code>
  * 
  * <p>
- * For use with JUnit-Framework only.
+ * If something went wrong or not as expected this framework uses JUnit to throw
+ * an AssertionError. It normally comes with the following message:
+ * <i>&lt;Opcode&gt; in round &lt;RoundNumber&gt; in SectionExpectation
+ * [sectionNumber=&lt;SectionNumber&gt;, range=LineNumberRange
+ * [firstLine=&lt;number&gt;, lastLine=&lt;number&gt;]] expected:&lt;number&gt;
+ * but was:&lt;number&gt;</i>
+ * 
+ * <p>
+ * The round number may help you if a section has to be counted more than once.
+ * It tells you how many sections were counted before this section which caused
+ * the error. The section number is either the number you have used on
+ * {@link Expectation#add(int)} or a generated one according to the section
+ * order if you used another add(..) method. The rest should be
+ * self-explanatory.
  * 
  * @version 1.0
  * @author Florian Schreier
@@ -94,8 +107,7 @@ public class Expectation {
 	 */
 	public SectionExpectation add(final int sectionNumber) {
 		if (sectionNumber < 0) {
-			throw new IllegalArgumentException(
-					"sectionNumber has to be greater or equal zero");
+			throw new IllegalArgumentException("sectionNumber has to be greater or equal zero");
 		}
 		return this.add(sectionNumber, null);
 	}
@@ -113,8 +125,7 @@ public class Expectation {
 	 */
 	public SectionExpectation add(final int firstLine, final int lastLine) {
 		if (firstLine > lastLine) {
-			throw new IllegalArgumentException(
-					"lastLine has to be greater or equal firstLine");
+			throw new IllegalArgumentException("lastLine has to be greater or equal firstLine");
 		}
 		LineNumberRange range = new LineNumberRange(firstLine, lastLine);
 		return this.add(this.getSectionNumberByRange(range), range);
@@ -131,8 +142,7 @@ public class Expectation {
 	 *          The new section's number. Can be <code>null</code> if unknown.
 	 * @return The new <code>SectionExpectation</code>.
 	 */
-	private SectionExpectation add(final int sectionNumber,
-			final LineNumberRange range) {
+	private SectionExpectation add(final int sectionNumber, final LineNumberRange range) {
 		assert sectionNumber >= 0 : "sectionNumber has to be greater or equal zero";
 
 		if (sectionNumber > this.biggestSectionNumber) {
@@ -153,8 +163,7 @@ public class Expectation {
 	 * @return All known line number ranges.
 	 */
 	public LineNumberRange[] getRanges() {
-		return this.lineRangeToSectionNumber.keySet().toArray(
-				new LineNumberRange[0]);
+		return this.lineRangeToSectionNumber.keySet().toArray(new LineNumberRange[0]);
 	}
 
 	/**
@@ -172,29 +181,23 @@ public class Expectation {
 	 *          <code>true</code>, if measured method call counts equal to zero
 	 *          are handled as error. <code>false</code>, if not.
 	 */
-	public void compare(final CountingResult[] observation,
-			final boolean zeroMethod) {
+	public void compare(final CountingResult[] observation, final boolean zeroMethod) {
 		String message = "Unexpected number of sections.";
-		Assert
-				.assertEquals(message, this.getNumberOfSections(), observation.length);
+		Assert.assertEquals(message, this.getNumberOfSections(), observation.length);
 		for (int i = 0; i < observation.length; i++) {
 			long[] measuredOpcodeCounts = observation[i].getOpcodeCounts();
-			Map<String, Long> measuredMethodCallCounts = observation[i]
-					.getMethodCallCounts();
+			Map<String, Long> measuredMethodCallCounts = observation[i].getMethodCallCounts();
 			SectionExpectation sectExpt;
 			if (this.ordered) {
 				sectExpt = this.orderedSections.get(i);
-				message = "Unexpected section. Maybe wrong order.";
-				Assert.assertEquals(message, sectExpt.getSectionNumber(),
-						observation[i].getIndexOfRangeBlock());
+				message = sectExpt.toString() + " not expected. Maybe wrong order.";
+				Assert.assertEquals(message, sectExpt.getSectionNumber(), observation[i].getIndexOfRangeBlock());
 			} else {
-				sectExpt = this.unorderedSections.get(observation[i]
-						.getIndexOfRangeBlock());
-				message = "Unexpected section.";
+				sectExpt = this.unorderedSections.get(observation[i].getIndexOfRangeBlock());
+				message = sectExpt.toString() + " not expected.";
 				Assert.assertNotNull(message, sectExpt);
 			}
-			sectExpt.compare(measuredOpcodeCounts, measuredMethodCallCounts,
-					zeroMethod, i);
+			sectExpt.compare(measuredOpcodeCounts, measuredMethodCallCounts, zeroMethod, i);
 		}
 
 	}

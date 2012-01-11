@@ -47,8 +47,7 @@ public class SectionExpectation {
 	 *          The line number range of the new section. If the range is unknown,
 	 *          this should be <code>null</code>.
 	 */
-	protected SectionExpectation(final int sectionNumber,
-			final LineNumberRange range) {
+	protected SectionExpectation(final int sectionNumber, final LineNumberRange range) {
 		assert sectionNumber >= 0 : "sectionNumber has to be greater or equal zero.";
 
 		this.sectionNumber = sectionNumber;
@@ -90,12 +89,10 @@ public class SectionExpectation {
 	 */
 	public SectionExpectation add(final int opcode, final long number) {
 		if (this.opcodeExpectations.containsKey(opcode)) {
-			throw new IllegalArgumentException("Cannot add Opcode #" + opcode
-					+ " twice.");
+			throw new IllegalArgumentException("Cannot add Opcode #" + opcode + " twice.");
 		}
 		if (number <= 0) {
-			throw new IllegalArgumentException(
-					"The value of number has to be greater than zero.");
+			throw new IllegalArgumentException("The value of number has to be greater than zero.");
 		}
 		this.opcodeExpectations.put(opcode, number);
 		return this;
@@ -112,15 +109,12 @@ public class SectionExpectation {
 	 *          Has to be greater than zero.
 	 * @return This {@link SectionExpectation} object.
 	 */
-	public SectionExpectation add(final String bytecodeDescriptor,
-			final long number) {
+	public SectionExpectation add(final String bytecodeDescriptor, final long number) {
 		if (this.opcodeExpectations.containsKey(bytecodeDescriptor)) {
-			throw new IllegalArgumentException("Cannot store " + bytecodeDescriptor
-					+ " twice.");
+			throw new IllegalArgumentException("Cannot store " + bytecodeDescriptor + " twice.");
 		}
 		if (number <= 0) {
-			throw new IllegalArgumentException(
-					"The value of number has to be greater than zero.");
+			throw new IllegalArgumentException("The value of number has to be greater than zero.");
 		}
 		this.methodCallExpectations.put(bytecodeDescriptor, number);
 		return this;
@@ -157,8 +151,7 @@ public class SectionExpectation {
 	 *          Has to be greater than zero.
 	 * @return This {@link SectionExpectation} object.
 	 */
-	public SectionExpectation add(final String className, final String signature,
-			final long number) {
+	public SectionExpectation add(final String className, final String signature, final long number) {
 		return this.add(this.signatureToDescriptor(className, signature), number);
 	}
 
@@ -176,8 +169,7 @@ public class SectionExpectation {
 	 *          The comparison round. Used for better human readable error
 	 *          messages.
 	 */
-	protected void compare(final long[] measuredOpcodeCounts,
-			final Map<String, Long> measuredMethodCallCounts,
+	protected void compare(final long[] measuredOpcodeCounts, final Map<String, Long> measuredMethodCallCounts,
 			final boolean zeroMethodError, final int round) {
 		// compare opcodes
 		for (int j = 0; j < measuredOpcodeCounts.length; j++) {
@@ -201,12 +193,38 @@ public class SectionExpectation {
 			String message;
 			long actual = measuredMethodCallCounts.get(method);
 
-			message = method + " in round " + round + " enlisted and counted as 0";
+			message = message(method, round) + " enlisted and counted as 0";
 			Assert.assertTrue(message, actual > 0 || !zeroMethodError);
-			message = "Actual " + message(method, round)
-					+ " not expected but counted as " + actual;
+			message = "Actual " + message(method, round) + " not expected but counted as " + actual;
 			Assert.assertTrue(message, actual <= 0);
 		}
+	}
+
+	/**
+	 * Builds an error message that shows if an assertion is false. This
+	 * workaround for non-assertEquals()-methods adds an additional info about the
+	 * expected and actual value.
+	 * 
+	 * @param name
+	 *          The name of the wrong opcode or method.
+	 * @param round
+	 *          Counting round.
+	 * @param expected
+	 *          The expected value.
+	 * @param actual
+	 *          The actual value.
+	 * @return Error message.
+	 */
+	@SuppressWarnings("unused")
+	private String message(final String name, final int round, final int expected, final int actual) {
+		StringBuilder sb = new StringBuilder();
+		sb.append(this.message(name, round));
+		sb.append(" expected:<");
+		sb.append(expected);
+		sb.append("> but was:<");
+		sb.append(actual);
+		sb.append(">");
+		return sb.toString();
 	}
 
 	/**
@@ -219,8 +237,7 @@ public class SectionExpectation {
 	 * @return Error message.
 	 */
 	private String message(final int opcode, final int round) {
-		assert opcode >= 0 && opcode < 202 : "Opcode number out of range. Was: "
-				+ opcode;
+		assert opcode >= 0 && opcode < 202 : "Opcode number out of range. Was: " + opcode;
 		String opString = FullOpcodeMapper.getMnemonicOfOpcode(opcode);
 		return this.message(opString, round);
 	}
