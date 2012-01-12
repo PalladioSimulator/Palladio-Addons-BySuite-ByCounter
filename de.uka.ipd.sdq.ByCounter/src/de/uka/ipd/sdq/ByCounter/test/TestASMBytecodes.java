@@ -17,7 +17,6 @@ import org.junit.runners.Parameterized.Parameters;
 import de.uka.ipd.sdq.ByCounter.execution.BytecodeCounter;
 import de.uka.ipd.sdq.ByCounter.execution.CountingResult;
 import de.uka.ipd.sdq.ByCounter.execution.CountingResultCollector;
-import de.uka.ipd.sdq.ByCounter.execution.IFullCountingResult;
 import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentationParameters;
 import de.uka.ipd.sdq.ByCounter.test.framework.expectations.Expectation;
 import de.uka.ipd.sdq.ByCounter.test.framework.expectations.Opcodes;
@@ -226,9 +225,6 @@ public class TestASMBytecodes {
         e.compare(new CountingResult[] {r}, false);
 
 //		Assert.assertEquals(1, getOpcCount(r, DisplayOpcodes.JSR));
-		Assert.assertEquals(1, Utils.getOpcCount(r, ASMOpcodesMapper.TABLESWITCH));
-		Assert.assertEquals(1, Utils.getOpcCount(r, ASMOpcodesMapper.LOOKUPSWITCH));
-		Assert.assertEquals(2, Utils.getOpcCount(r, ASMOpcodesMapper.IFGE));
 	}
 	
 	@Test
@@ -242,46 +238,38 @@ public class TestASMBytecodes {
         e.add()	// "section"
          .add(Opcodes.IF_ACMPEQ, 1)
          .add(Opcodes.IF_ACMPNE, 1)
-         .add(Opcodes.IFNULL, 1)
+//         .add(Opcodes.IFNULL, 1)		TODO: produce a test case with IFNULL
          .add(Opcodes.IFNONNULL, 1)
-         .add(Opcodes.IF_ACMPEQ, 1)
+         .add(Opcodes.INSTANCEOF, 1)
+         
+         .add(Opcodes.IF_ICMPEQ, 1)
+         .add(Opcodes.IF_ICMPNE, 1)
+         .add(Opcodes.IF_ICMPGT, 1)
+         .add(Opcodes.IF_ICMPLT, 1)
+         .add(Opcodes.IF_ICMPGE, 1)
+         .add(Opcodes.IF_ICMPLE, 1)
+         
+         .add(Opcodes.IFEQ, 2)
+         .add(Opcodes.IFNE, 1)
+         .add(Opcodes.IFLT, 1)
+         .add(Opcodes.IFGT, 1)
+         .add(Opcodes.IFGE, 1)
+         .add(Opcodes.IFLE, 1)
                 
         // unrelated opcodes:
-         .add(Opcodes.BIPUSH, 2)
+         .add(Opcodes.BIPUSH, 5)
          .add(Opcodes.LDC, 6)
-         .add(Opcodes.ILOAD, 2)
-         .add(Opcodes.ISTORE, 5)
-         .add(Opcodes.FLOAD, 4)
-         .add(Opcodes.FSTORE, 3)
-         .add(Opcodes.DLOAD, 4)
-         .add(Opcodes.DSTORE, 3)
+         .add(Opcodes.ILOAD, 18)
+         .add(Opcodes.ALOAD, 6)
+         .add(Opcodes.ASTORE, 6)
+         .add(Opcodes.ISTORE, 8)
+         .add(Opcodes.ICONST_4, 1)
          .add(Opcodes.ICONST_2, 1)
-         .add(Opcodes.ICONST_1, 2)
-         .add(Opcodes.ICONST_0, 1)
-         .add(Opcodes.IRETURN, 1);
+         .add(Opcodes.ICONST_1, 1)
+//         .add(Opcodes.ICONST_0, 1)
+         .add(Opcodes.RETURN, 1);
         
         e.compare(new CountingResult[] {r}, false);
-		
-		Assert.assertEquals(1, Utils.getOpcCount(r, ASMOpcodesMapper.IF_ACMPEQ));
-		Assert.assertEquals(1, Utils.getOpcCount(r, ASMOpcodesMapper.IF_ACMPNE));
-		Assert.assertEquals(1, Utils.getOpcCount(r, ASMOpcodesMapper.IFNULL));
-		Assert.assertEquals(1, Utils.getOpcCount(r, ASMOpcodesMapper.IFNONNULL));
-		Assert.assertEquals(1, Utils.getOpcCount(r, ASMOpcodesMapper.INSTANCEOF));
-		
-		Assert.assertEquals(1, Utils.getOpcCount(r, ASMOpcodesMapper.IF_ICMPEQ));
-		Assert.assertEquals(1, Utils.getOpcCount(r, ASMOpcodesMapper.IF_ICMPNE));
-		Assert.assertEquals(1, Utils.getOpcCount(r, ASMOpcodesMapper.IF_ICMPGT));
-		Assert.assertEquals(1, Utils.getOpcCount(r, ASMOpcodesMapper.IF_ICMPLT));
-		Assert.assertEquals(1, Utils.getOpcCount(r, ASMOpcodesMapper.IF_ICMPGE));
-		Assert.assertEquals(1, Utils.getOpcCount(r, ASMOpcodesMapper.IF_ICMPLE));
-		
-		Assert.assertEquals(2, Utils.getOpcCount(r, ASMOpcodesMapper.IFEQ));
-		Assert.assertEquals(1, Utils.getOpcCount(r, ASMOpcodesMapper.IFNE));
-		Assert.assertEquals(1, Utils.getOpcCount(r, ASMOpcodesMapper.IFLT));
-		Assert.assertEquals(1, Utils.getOpcCount(r, ASMOpcodesMapper.IFGT));
-		Assert.assertEquals(1, Utils.getOpcCount(r, ASMOpcodesMapper.IFGE));
-		Assert.assertEquals(3, Utils.getOpcCount(r, ASMOpcodesMapper.IFLE));
-
 	}
 
 	/**
@@ -290,10 +278,21 @@ public class TestASMBytecodes {
 	 */
 	@Test
 	public void testCHECKCAST() {
-		IFullCountingResult r = Utils.getCountingResultForTest(this.counter, 
+		CountingResult r = Utils.getCountingResultForTest(this.counter, 
 				new MethodDescriptor(testClassName, "public static java.lang.String checkcast()"));
 		
-		Assert.assertEquals(1, Utils.getOpcCount(r, ASMOpcodesMapper.CHECKCAST));
+		// define expectations
+        Expectation e = new Expectation(false);
+        e.add()	// "section"
+         .add(Opcodes.CHECKCAST, 1)
+         
+        // unrelated opcodes:
+         .add(Opcodes.LDC, 1)
+         .add(Opcodes.ALOAD, 1)
+         .add(Opcodes.ASTORE, 1)
+         .add(Opcodes.ARETURN, 1);
+        
+        e.compare(new CountingResult[] {r}, false);
 	}
 
 	/**
@@ -308,25 +307,40 @@ public class TestASMBytecodes {
 	 */
 	@Test
 	public void testConstantOpcodes() {
-		IFullCountingResult r = Utils.getCountingResultForTest(this.counter, 
+		CountingResult r = Utils.getCountingResultForTest(this.counter, 
 				new MethodDescriptor(testClassName, "public static void constants()"));
-	
-		Assert.assertEquals(Utils.getOpcCount(r, ASMOpcodesMapper.ACONST_NULL), 1);
-		Assert.assertEquals(Utils.getOpcCount(r, ASMOpcodesMapper.ICONST_M1), 1);
-		Assert.assertEquals(Utils.getOpcCount(r, ASMOpcodesMapper.ICONST_0), 1);
-		Assert.assertEquals(Utils.getOpcCount(r, ASMOpcodesMapper.ICONST_1), 1);
-		Assert.assertEquals(Utils.getOpcCount(r, ASMOpcodesMapper.ICONST_2), 1);
-		Assert.assertEquals(Utils.getOpcCount(r, ASMOpcodesMapper.ICONST_3), 1);
-		Assert.assertEquals(Utils.getOpcCount(r, ASMOpcodesMapper.ICONST_4), 1);
-		Assert.assertEquals(Utils.getOpcCount(r, ASMOpcodesMapper.ICONST_5), 1);
-		Assert.assertEquals(Utils.getOpcCount(r, ASMOpcodesMapper.DCONST_0), 1);
-		Assert.assertEquals(Utils.getOpcCount(r, ASMOpcodesMapper.DCONST_1), 1);
-		Assert.assertEquals(Utils.getOpcCount(r, ASMOpcodesMapper.FCONST_0), 1);
-		Assert.assertEquals(Utils.getOpcCount(r, ASMOpcodesMapper.FCONST_1), 1);
-		Assert.assertEquals(Utils.getOpcCount(r, ASMOpcodesMapper.FCONST_2), 1);
-		Assert.assertEquals(Utils.getOpcCount(r, ASMOpcodesMapper.LCONST_0), 1);
-		Assert.assertEquals(Utils.getOpcCount(r, ASMOpcodesMapper.LCONST_1), 1);
-		Assert.assertEquals(Utils.getOpcCount(r, ASMOpcodesMapper.LDC), 1);
+		// define expectations
+
+		Expectation e = new Expectation(false);
+        e.add()	// "section"
+		.add(Opcodes.ACONST_NULL,  1)
+        .add(Opcodes.ICONST_M1,  1)
+        .add(Opcodes.ICONST_0,  1)
+        .add(Opcodes.ICONST_1,  1)
+        .add(Opcodes.ICONST_2,  1)
+        .add(Opcodes.ICONST_3,  1)
+        .add(Opcodes.ICONST_4,  1)
+        .add(Opcodes.ICONST_5,  1)
+        .add(Opcodes.DCONST_0,  1)
+        .add(Opcodes.DCONST_1,  1)
+        .add(Opcodes.FCONST_0,  1)
+        .add(Opcodes.FCONST_1,  1)
+        .add(Opcodes.FCONST_2,  1)
+        .add(Opcodes.LCONST_0,  1)
+        .add(Opcodes.LCONST_1,  1)
+        .add(Opcodes.LDC,  1)
+        
+        
+        // unrelated opcodes:
+         .add(Opcodes.ISTORE, 7)
+         .add(Opcodes.LSTORE, 3)
+         .add(Opcodes.FSTORE, 3)
+         .add(Opcodes.DSTORE, 2)         
+         .add(Opcodes.ASTORE, 1)
+         .add(Opcodes.RETURN, 1);
+
+        e.compare(new CountingResult[] {r}, false);
+        
 	}
 	
 	/**
@@ -337,24 +351,41 @@ public class TestASMBytecodes {
 	 */
 	@Test
 	public void testConversions() {
-		IFullCountingResult r = Utils.getCountingResultForTest(this.counter, 
+		CountingResult r = Utils.getCountingResultForTest(this.counter, 
 				new MethodDescriptor(testClassName, "public static void conversions()"));
 
-		Assert.assertEquals(Utils.getOpcCount(r, ASMOpcodesMapper.D2F), 1);
-		Assert.assertEquals(Utils.getOpcCount(r, ASMOpcodesMapper.D2I), 1);
-		Assert.assertEquals(Utils.getOpcCount(r, ASMOpcodesMapper.D2L), 1);
-		Assert.assertEquals(Utils.getOpcCount(r, ASMOpcodesMapper.F2D), 1);
-		Assert.assertEquals(Utils.getOpcCount(r, ASMOpcodesMapper.F2I), 1);
-		Assert.assertEquals(Utils.getOpcCount(r, ASMOpcodesMapper.F2L), 1);
-		Assert.assertEquals(Utils.getOpcCount(r, ASMOpcodesMapper.I2D), 1);
-		Assert.assertEquals(Utils.getOpcCount(r, ASMOpcodesMapper.I2F), 1);
-		Assert.assertEquals(Utils.getOpcCount(r, ASMOpcodesMapper.I2B), 1);
-		Assert.assertEquals(Utils.getOpcCount(r, ASMOpcodesMapper.I2C), 1);
-		Assert.assertEquals(Utils.getOpcCount(r, ASMOpcodesMapper.I2L), 1);
-		Assert.assertEquals(Utils.getOpcCount(r, ASMOpcodesMapper.I2S), 1);
-		Assert.assertEquals(Utils.getOpcCount(r, ASMOpcodesMapper.L2D), 1);
-		Assert.assertEquals(Utils.getOpcCount(r, ASMOpcodesMapper.L2F), 1);
-		Assert.assertEquals(Utils.getOpcCount(r, ASMOpcodesMapper.L2I), 1);
+
+		Expectation e = new Expectation(false);
+        e.add()	// "section"
+        .add(Opcodes.D2F, 1)
+        .add(Opcodes.D2I, 1)
+        .add(Opcodes.D2L, 1)
+        .add(Opcodes.F2D, 1)
+        .add(Opcodes.F2I, 1)
+        .add(Opcodes.F2L, 1)
+        .add(Opcodes.I2D, 1)
+        .add(Opcodes.I2F, 1)
+        .add(Opcodes.I2B, 1)
+        .add(Opcodes.I2C, 1)
+        .add(Opcodes.I2L, 1)
+        .add(Opcodes.I2S, 1)
+        .add(Opcodes.L2D, 1)
+        .add(Opcodes.L2F, 1)
+        .add(Opcodes.L2I, 1)
+            
+        // unrelated opcodes:   
+         .add(Opcodes.LDC, 1)
+         .add(Opcodes.ILOAD, 6)
+         .add(Opcodes.ISTORE, 6)
+         .add(Opcodes.LLOAD, 3)
+         .add(Opcodes.LSTORE, 3)
+         .add(Opcodes.FLOAD, 3)
+         .add(Opcodes.FSTORE, 3)
+         .add(Opcodes.DLOAD, 3)
+         .add(Opcodes.DSTORE, 4)
+         .add(Opcodes.RETURN, 1);
+
+        e.compare(new CountingResult[] {r}, false);
 	}
 	
 	/**
@@ -363,10 +394,29 @@ public class TestASMBytecodes {
 	 */
 	@Test
 	public void testDUP() {
-		IFullCountingResult r = Utils.getCountingResultForTest(this.counter, 
+		CountingResult r = Utils.getCountingResultForTest(this.counter, 
 				new MethodDescriptor(testClassName, "public static void dup()"));
-		
-		Assert.assertEquals(Utils.getOpcCount(r, ASMOpcodesMapper.DUP), 1);
+
+
+		Expectation e = new Expectation(false);
+        e.add()	// "section"
+        .add(Opcodes.DUP, 1)
+            
+        // unrelated opcodes:   
+         .add(Opcodes.LDC, 2)
+         .add(Opcodes.ALOAD, 1)
+         .add(Opcodes.ASTORE, 2)
+         .add(Opcodes.INVOKEVIRTUAL, 2)
+         .add(Opcodes.INVOKESPECIAL, 1)
+         .add(Opcodes.INVOKESTATIC, 1)
+         .add(Opcodes.NEW, 1)
+         .add("java.lang.String.valueOf(Ljava/lang/Object;)Ljava/lang/String;", 1)
+         .add("java.lang.StringBuilder.StringBuilder(Ljava/lang/String;)V", 1)
+         .add("java.lang.StringBuilder.append(Ljava/lang/String;)Ljava/lang/StringBuilder;", 1)
+         .add("java.lang.StringBuilder.toString()Ljava/lang/String;", 1)
+         .add(Opcodes.RETURN, 1);
+
+        e.compare(new CountingResult[] {r}, false);
 	}
 	
 	/**
@@ -377,15 +427,35 @@ public class TestASMBytecodes {
 	 */
 	@Test
 	public void testInvokationsAndClasses() {
-		IFullCountingResult r = Utils.getCountingResultForTest(this.counter, 
+		CountingResult r = Utils.getCountingResultForTest(this.counter, 
 				new MethodDescriptor(testClassName, "public static void invokationsAndClasses()"));
-		
-		Assert.assertEquals(Utils.getOpcCount(r, ASMOpcodesMapper.INVOKEINTERFACE), 1);
-		Assert.assertEquals(Utils.getOpcCount(r, ASMOpcodesMapper.INVOKESPECIAL), 1);
-		Assert.assertEquals(Utils.getOpcCount(r, ASMOpcodesMapper.INVOKESTATIC), 1);
-		Assert.assertEquals(Utils.getOpcCount(r, ASMOpcodesMapper.INVOKEVIRTUAL), 1);
-		Assert.assertEquals(Utils.getOpcCount(r, ASMOpcodesMapper.PUTFIELD), 1);
-		Assert.assertEquals(Utils.getOpcCount(r, ASMOpcodesMapper.PUTSTATIC), 1);
+
+		Expectation e = new Expectation(false);
+        e.add()	// "section"
+        .add(Opcodes.INVOKEINTERFACE,  1)
+	    .add(Opcodes.INVOKESPECIAL,  1)
+	    .add(Opcodes.INVOKESTATIC,  1)
+	    .add(Opcodes.INVOKEVIRTUAL,  1)
+	    .add(Opcodes.PUTFIELD,  1)
+	    .add(Opcodes.PUTSTATIC,  1)
+            
+        // unrelated opcodes:  
+	     .add(Opcodes.ICONST_2, 1)
+	     .add(Opcodes.BIPUSH, 1)
+         .add(Opcodes.LDC, 1)
+         .add(Opcodes.ALOAD, 3)
+         .add(Opcodes.ASTORE, 1)
+         .add(Opcodes.POP, 1)
+         .add(Opcodes.DUP, 1)
+         .add(Opcodes.CHECKCAST, 1)
+         .add(Opcodes.NEW, 1)
+         .add(ASMBytecodeOccurences.class.getCanonicalName() + "$ISimpleInterface.test()V", 1)
+         .add(ASMBytecodeOccurences.class.getCanonicalName() + "$InterfaceImplementingClass.ASMBytecodeOccurences$InterfaceImplementingClass(Lde/uka/ipd/sdq/ByCounter/test/helpers/ASMBytecodeOccurences;)V", 1)
+         .add(ASMBytecodeOccurences.class.getCanonicalName() + "$InterfaceImplementingClass.staticMethod()V", 1)
+         .add(Object.class.getCanonicalName()+".equals(Ljava/lang/Object;)Z", 1)
+         .add(Opcodes.RETURN, 1);
+
+        e.compare(new CountingResult[] {r}, false);
 	}
 	
 	/**
@@ -400,46 +470,67 @@ public class TestASMBytecodes {
 	 */
 	@Test
 	public void testMathOpcodes() {
-		IFullCountingResult r = Utils.getCountingResultForTest(counter, 
+		CountingResult r = Utils.getCountingResultForTest(counter, 
 				new MethodDescriptor(testClassName, "public static float math()"));
 		
-		Assert.assertEquals(Utils.getOpcCount(r, ASMOpcodesMapper.DADD), 1);
-		Assert.assertEquals(Utils.getOpcCount(r, ASMOpcodesMapper.DDIV), 1);
-		Assert.assertEquals(Utils.getOpcCount(r, ASMOpcodesMapper.DMUL), 1);
-		Assert.assertEquals(Utils.getOpcCount(r, ASMOpcodesMapper.DNEG), 1);
-		Assert.assertEquals(Utils.getOpcCount(r, ASMOpcodesMapper.DREM), 1);
-		Assert.assertEquals(Utils.getOpcCount(r, ASMOpcodesMapper.DSUB), 1);
-		Assert.assertEquals(Utils.getOpcCount(r, ASMOpcodesMapper.FADD), 1);
-		Assert.assertEquals(Utils.getOpcCount(r, ASMOpcodesMapper.FDIV), 1);
-		Assert.assertEquals(Utils.getOpcCount(r, ASMOpcodesMapper.FMUL), 1);
-		Assert.assertEquals(Utils.getOpcCount(r, ASMOpcodesMapper.FNEG), 1);
-		Assert.assertEquals(Utils.getOpcCount(r, ASMOpcodesMapper.FREM), 1);
-		Assert.assertEquals(Utils.getOpcCount(r, ASMOpcodesMapper.FSUB), 1);
-		Assert.assertEquals(Utils.getOpcCount(r, ASMOpcodesMapper.IADD), 1);
-		Assert.assertEquals(Utils.getOpcCount(r, ASMOpcodesMapper.IAND), 1);
-		Assert.assertEquals(Utils.getOpcCount(r, ASMOpcodesMapper.IOR), 1);
-		Assert.assertEquals(Utils.getOpcCount(r, ASMOpcodesMapper.IXOR), 1);
-		Assert.assertEquals(Utils.getOpcCount(r, ASMOpcodesMapper.IINC), 1);
-		Assert.assertEquals(Utils.getOpcCount(r, ASMOpcodesMapper.IDIV), 1);
-		Assert.assertEquals(Utils.getOpcCount(r, ASMOpcodesMapper.IMUL), 1);
-		Assert.assertEquals(Utils.getOpcCount(r, ASMOpcodesMapper.INEG), 1);
-		Assert.assertEquals(Utils.getOpcCount(r, ASMOpcodesMapper.IREM), 1);
-		Assert.assertEquals(Utils.getOpcCount(r, ASMOpcodesMapper.ISUB), 1);
-		Assert.assertEquals(Utils.getOpcCount(r, ASMOpcodesMapper.ISHL), 1);
-		Assert.assertEquals(Utils.getOpcCount(r, ASMOpcodesMapper.ISHR), 1);
-		Assert.assertEquals(Utils.getOpcCount(r, ASMOpcodesMapper.IUSHR), 1);
-		Assert.assertEquals(Utils.getOpcCount(r, ASMOpcodesMapper.LADD), 1);
-		Assert.assertEquals(Utils.getOpcCount(r, ASMOpcodesMapper.LAND), 1);
-		Assert.assertEquals(Utils.getOpcCount(r, ASMOpcodesMapper.LOR), 1);
-		Assert.assertEquals(Utils.getOpcCount(r, ASMOpcodesMapper.LXOR), 1);
-		Assert.assertEquals(Utils.getOpcCount(r, ASMOpcodesMapper.LDIV), 1);
-		Assert.assertEquals(Utils.getOpcCount(r, ASMOpcodesMapper.LMUL), 1);
-		Assert.assertEquals(Utils.getOpcCount(r, ASMOpcodesMapper.LNEG), 1);
-		Assert.assertEquals(Utils.getOpcCount(r, ASMOpcodesMapper.LREM), 1);
-		Assert.assertEquals(Utils.getOpcCount(r, ASMOpcodesMapper.LSUB), 1);
-		Assert.assertEquals(Utils.getOpcCount(r, ASMOpcodesMapper.LSHL), 1);
-		Assert.assertEquals(Utils.getOpcCount(r, ASMOpcodesMapper.LSHR), 1);
-		Assert.assertEquals(Utils.getOpcCount(r, ASMOpcodesMapper.LUSHR), 1);
+		Expectation e = new Expectation(false);
+        e.add()	// "section"
+		.add(Opcodes.DADD,  1)
+        .add(Opcodes.DDIV,  1)
+        .add(Opcodes.DMUL,  1)
+        .add(Opcodes.DNEG,  1)
+        .add(Opcodes.DREM,  1)
+        .add(Opcodes.DSUB,  1)
+        .add(Opcodes.FADD,  1)
+        .add(Opcodes.FDIV,  1)
+        .add(Opcodes.FMUL,  1)
+        .add(Opcodes.FNEG,  1)
+        .add(Opcodes.FREM,  1)
+        .add(Opcodes.FSUB,  1)
+        .add(Opcodes.IADD,  1)
+        .add(Opcodes.IAND,  1)
+        .add(Opcodes.IOR,  1)
+        .add(Opcodes.IXOR,  1)
+        .add(Opcodes.IINC,  1)
+        .add(Opcodes.IDIV,  1)
+        .add(Opcodes.IMUL,  1)
+        .add(Opcodes.INEG,  1)
+        .add(Opcodes.IREM,  1)
+        .add(Opcodes.ISUB,  1)
+        .add(Opcodes.ISHL,  1)
+        .add(Opcodes.ISHR,  1)
+        .add(Opcodes.IUSHR,  1)
+        .add(Opcodes.LADD,  1)
+        .add(Opcodes.LAND,  1)
+        .add(Opcodes.LOR,  1)
+        .add(Opcodes.LXOR,  1)
+        .add(Opcodes.LDIV,  1)
+        .add(Opcodes.LMUL,  1)
+        .add(Opcodes.LNEG,  1)
+        .add(Opcodes.LREM,  1)
+        .add(Opcodes.LSUB,  1)
+        .add(Opcodes.LSHL,  1)
+        .add(Opcodes.LSHR,  1)
+        .add(Opcodes.LUSHR,  1)
+
+        // unrelated opcodes:
+        .add(Opcodes.ICONST_1, 1)
+	     .add(Opcodes.ICONST_2, 1)
+         .add(Opcodes.LDC, 5)
+         .add(Opcodes.LCONST_1, 1)
+         .add(Opcodes.ILOAD, 23)
+         .add(Opcodes.ISTORE, 14)
+         .add(Opcodes.LLOAD, 23)
+         .add(Opcodes.LSTORE, 14)
+         .add(Opcodes.FLOAD, 12)
+         .add(Opcodes.FSTORE, 8)         
+         .add(Opcodes.DLOAD, 11)
+         .add(Opcodes.DSTORE, 8)
+         .add(Opcodes.L2I, 3)
+         .add(Opcodes.FRETURN, 1);
+
+        e.compare(new CountingResult[] {r}, false);
+        
 	}
 	
 	/**
@@ -448,19 +539,45 @@ public class TestASMBytecodes {
 	 */
 	@Test
 	public void testMonitor() {
-		IFullCountingResult r = Utils.getCountingResultForTest(counter, 
+		CountingResult r = Utils.getCountingResultForTest(counter, 
 				new MethodDescriptor(testClassName, "public static void monitor()"));
-		
-		Assert.assertEquals(Utils.getOpcCount(r, ASMOpcodesMapper.MONITORENTER), 1);
-		Assert.assertEquals(Utils.getOpcCount(r, ASMOpcodesMapper.MONITOREXIT), 1);
+
+		Expectation e = new Expectation(false);
+        e.add()	// "section"
+    	.add(Opcodes.MONITORENTER,  1)
+        .add(Opcodes.MONITOREXIT,  1)
+
+        // unrelated opcodes:
+         .add(Opcodes.LDC, 1)
+         .add(Opcodes.ALOAD, 3)
+         .add(Opcodes.ASTORE, 2)
+         .add(Opcodes.INVOKEVIRTUAL, 1)
+         .add("java.lang.String.length()I", 1)
+         .add(Opcodes.GOTO, 1)
+         .add(Opcodes.DUP, 1)
+         .add(Opcodes.POP, 1)
+         .add(Opcodes.RETURN, 1);
+
+        e.compare(new CountingResult[] {r}, false);
 	}
 	
 	@Test
 	public void testNew() {
-		IFullCountingResult r = Utils.getCountingResultForTest(counter, 
+		CountingResult r = Utils.getCountingResultForTest(counter, 
 				new MethodDescriptor(testClassName, "public static void newObj()"));
 		
-		Assert.assertEquals(Utils.getOpcCount(r, ASMOpcodesMapper.NEW), 1);
+		Expectation e = new Expectation(false);
+        e.add()	// "section"
+    	.add(Opcodes.NEW,  1)
+
+        // unrelated opcodes:
+         .add(Opcodes.ASTORE, 1)
+         .add(Opcodes.INVOKESPECIAL, 1)
+         .add("java.lang.Object.Object()V", 1)
+         .add(Opcodes.DUP, 1)
+         .add(Opcodes.RETURN, 1);
+
+        e.compare(new CountingResult[] {r}, false);
 	}
 
 	/**
@@ -469,13 +586,25 @@ public class TestASMBytecodes {
 	 */
 	@Test
 	public void testPushPop() {
-		IFullCountingResult r = Utils.getCountingResultForTest(counter, 
+		CountingResult r = Utils.getCountingResultForTest(counter, 
 				new MethodDescriptor(testClassName, "public static void pushPop()"));
+		Expectation e = new Expectation(false);
+        e.add()	// "section"
+        .add(Opcodes.POP,  1)
+        .add(Opcodes.POP2,  1)
+        .add(Opcodes.BIPUSH,  1)
+        .add(Opcodes.SIPUSH,  1)
 
-		Assert.assertEquals(Utils.getOpcCount(r, ASMOpcodesMapper.POP), 1);
-		Assert.assertEquals(Utils.getOpcCount(r, ASMOpcodesMapper.POP2), 1);
-		Assert.assertEquals(Utils.getOpcCount(r, ASMOpcodesMapper.BIPUSH), 1);
-		Assert.assertEquals(Utils.getOpcCount(r, ASMOpcodesMapper.SIPUSH), 1);
+        // unrelated opcodes:
+         .add(Opcodes.LDC, 1)
+         .add(Opcodes.ISTORE, 2)
+         .add(Opcodes.INVOKEVIRTUAL, 1)
+         .add(Opcodes.INVOKESTATIC, 1)
+         .add(ASMBytecodeOccurences.class.getCanonicalName() + ".getaDouble()D", 1)
+         .add("java.lang.String.length()I", 1)
+         .add(Opcodes.RETURN, 1);
+
+        e.compare(new CountingResult[] {r}, false);
 	}
 	
 	/**
@@ -488,57 +617,193 @@ public class TestASMBytecodes {
 	 */
 	@Test
 	public void testRefLoadStore() {
-		IFullCountingResult r = Utils.getCountingResultForTest(counter, 
+		CountingResult r = Utils.getCountingResultForTest(counter, 
 				new MethodDescriptor(testClassName, "public static void refLoadStore()"));
 		
-		Assert.assertEquals(Utils.getOpcCount(r, ASMOpcodesMapper.ALOAD), 1);
-		Assert.assertEquals(Utils.getOpcCount(r, ASMOpcodesMapper.ASTORE), 2);
-		Assert.assertEquals(Utils.getOpcCount(r, ASMOpcodesMapper.DLOAD), 1);
-		Assert.assertEquals(Utils.getOpcCount(r, ASMOpcodesMapper.DSTORE), 2);
-		Assert.assertEquals(Utils.getOpcCount(r, ASMOpcodesMapper.FLOAD), 1);
-		Assert.assertEquals(Utils.getOpcCount(r, ASMOpcodesMapper.FSTORE), 2);
-		Assert.assertEquals(Utils.getOpcCount(r, ASMOpcodesMapper.LLOAD), 1);
-		Assert.assertEquals(Utils.getOpcCount(r, ASMOpcodesMapper.LSTORE), 2);
-		Assert.assertEquals(Utils.getOpcCount(r, ASMOpcodesMapper.ILOAD), 1);
-		Assert.assertEquals(Utils.getOpcCount(r, ASMOpcodesMapper.ISTORE), 2);
+		Expectation e = new Expectation(false);
+        e.add()	// "section"
+        .add(Opcodes.ALOAD,  1)
+        .add(Opcodes.ASTORE, 2)
+        .add(Opcodes.DLOAD,  1)
+        .add(Opcodes.DSTORE, 2)
+        .add(Opcodes.FLOAD,  1)
+        .add(Opcodes.FSTORE, 2)
+        .add(Opcodes.LLOAD,  1)
+        .add(Opcodes.LSTORE, 2)
+        .add(Opcodes.ILOAD,  1)
+        .add(Opcodes.ISTORE, 2)
+            
+        // unrelated opcodes:
+        .add(Opcodes.ICONST_0, 1)
+        .add(Opcodes.LCONST_0, 1)
+        .add(Opcodes.FCONST_0, 1)
+        .add(Opcodes.DCONST_0, 1)
+        .add(Opcodes.ACONST_NULL, 1)
+         .add(Opcodes.RETURN, 1);
+
+        e.compare(new CountingResult[] {r}, false);
 	}
 
 	/**
 	 * RETURN statements:
 	 * RETURN, ARETURN, DRETURN, FRETURN, IRETURN
-	 *
 	 */
 	@Test
 	public void testReturn() {
-		IFullCountingResult r;
+		CountingResult r;
 		// RETURN
 		r = Utils.getCountingResultForTest(counter, 
 				new MethodDescriptor(testClassName, "public static void refLoadStore()"));
 		Assert.assertEquals(1, Utils.getOpcCount(r, ASMOpcodesMapper.RETURN));
+
+		Expectation e = new Expectation(false);
+        e.add()	// "section"
+        .add(Opcodes.RETURN,  1)
+            
+        // unrelated opcodes:
+        .add(Opcodes.ICONST_0, 1)
+        .add(Opcodes.LCONST_0, 1)
+        .add(Opcodes.FCONST_0, 1)
+        .add(Opcodes.DCONST_0, 1)
+        .add(Opcodes.ACONST_NULL, 1)
+        .add(Opcodes.ALOAD, 1)
+        .add(Opcodes.ASTORE, 2)
+        .add(Opcodes.LLOAD, 1)
+        .add(Opcodes.LSTORE, 2)
+        .add(Opcodes.DLOAD, 1)
+        .add(Opcodes.DSTORE, 2)
+        .add(Opcodes.FLOAD, 1)
+        .add(Opcodes.FSTORE, 2)
+        .add(Opcodes.ILOAD, 1)
+        .add(Opcodes.ISTORE, 2);
+
+        e.compare(new CountingResult[] {r}, false);
 		cleanResults();
 
 		// ARETURN
 		r = Utils.getCountingResultForTest(counter, 
 				new MethodDescriptor(testClassName, "public static java.lang.String checkcast()"));
-		Assert.assertEquals(1, Utils.getOpcCount(r, ASMOpcodesMapper.ARETURN));
+		// define expectations
+        e = new Expectation(false);
+        e.add()	// "section"
+         .add(Opcodes.ARETURN, 1)
+         
+        // unrelated opcodes:
+         .add(Opcodes.LDC, 1)
+         .add(Opcodes.ALOAD, 1)
+         .add(Opcodes.ASTORE, 1)
+         .add(Opcodes.CHECKCAST, 1);
+        
+        e.compare(new CountingResult[] {r}, false);
 		cleanResults();
 		
 		// DRETURN
 		r = Utils.getCountingResultForTest(counter, 
 				new MethodDescriptor(testClassName, "public static double getaDouble()"));
-		Assert.assertEquals(1, Utils.getOpcCount(r, ASMOpcodesMapper.DRETURN));
+		// define expectations
+        e = new Expectation(false);
+        e.add()	// "section"
+         .add(Opcodes.DRETURN, 1)
+         
+        // unrelated opcodes:
+         .add(Opcodes.LDC, 1);
+        e.compare(new CountingResult[] {r}, false);
 		cleanResults();
 		
 		// FRETURN
 		r = Utils.getCountingResultForTest(counter, 
 				new MethodDescriptor(testClassName, "public static float math()"));
-		Assert.assertEquals(1, Utils.getOpcCount(r, ASMOpcodesMapper.FRETURN));
+		// define expectations
+        e = new Expectation(false);
+        e.add()	// "section"
+         .add(Opcodes.FRETURN, 1)
+         
+        // unrelated opcodes:
+        .add(Opcodes.DADD,  1)
+        .add(Opcodes.DDIV,  1)
+        .add(Opcodes.DMUL,  1)
+        .add(Opcodes.DNEG,  1)
+        .add(Opcodes.DREM,  1)
+        .add(Opcodes.DSUB,  1)
+        .add(Opcodes.FADD,  1)
+        .add(Opcodes.FDIV,  1)
+        .add(Opcodes.FMUL,  1)
+        .add(Opcodes.FNEG,  1)
+        .add(Opcodes.FREM,  1)
+        .add(Opcodes.FSUB,  1)
+        .add(Opcodes.IADD,  1)
+        .add(Opcodes.IAND,  1)
+        .add(Opcodes.IOR,  1)
+        .add(Opcodes.IXOR,  1)
+        .add(Opcodes.IINC,  1)
+        .add(Opcodes.IDIV,  1)
+        .add(Opcodes.IMUL,  1)
+        .add(Opcodes.INEG,  1)
+        .add(Opcodes.IREM,  1)
+        .add(Opcodes.ISUB,  1)
+        .add(Opcodes.ISHL,  1)
+        .add(Opcodes.ISHR,  1)
+        .add(Opcodes.IUSHR,  1)
+        .add(Opcodes.LADD,  1)
+        .add(Opcodes.LAND,  1)
+        .add(Opcodes.LOR,  1)
+        .add(Opcodes.LXOR,  1)
+        .add(Opcodes.LDIV,  1)
+        .add(Opcodes.LMUL,  1)
+        .add(Opcodes.LNEG,  1)
+        .add(Opcodes.LREM,  1)
+        .add(Opcodes.LSUB,  1)
+        .add(Opcodes.LSHL,  1)
+        .add(Opcodes.LSHR,  1)
+        .add(Opcodes.LUSHR,  1)
+        .add(Opcodes.ICONST_1, 1)
+	    .add(Opcodes.ICONST_2, 1)
+	    .add(Opcodes.LDC, 5)
+	    .add(Opcodes.LCONST_1, 1)
+	    .add(Opcodes.ILOAD, 23)
+	    .add(Opcodes.ISTORE, 14)
+	    .add(Opcodes.LLOAD, 23)
+	    .add(Opcodes.LSTORE, 14)
+	    .add(Opcodes.FLOAD, 12)
+	    .add(Opcodes.FSTORE, 8)         
+	    .add(Opcodes.DLOAD, 11)
+	    .add(Opcodes.DSTORE, 8)
+	    .add(Opcodes.L2I, 3);
+        
+        e.compare(new CountingResult[] {r}, false);
 		cleanResults();
 
 		// IRETURN
 		r = Utils.getCountingResultForTest(counter, 
 				new MethodDescriptor(testClassName, "public static int branches()"));
-		Assert.assertEquals(1, Utils.getOpcCount(r, ASMOpcodesMapper.IRETURN));
+		// define expectations
+        e = new Expectation(false);
+        e.add()	// "section"
+         .add(Opcodes.IRETURN, 1)
+         
+        // unrelated opcodes:
+         .add(Opcodes.DCMPG, 1)
+         .add(Opcodes.DCMPL, 1)
+         .add(Opcodes.FCMPG, 1)
+         .add(Opcodes.FCMPL, 1)         
+         .add(Opcodes.GOTO, 1)         
+         .add(Opcodes.TABLESWITCH, 1)
+         .add(Opcodes.LOOKUPSWITCH, 1)
+         .add(Opcodes.IFGE, 2)
+         .add(Opcodes.IFLE, 2)
+         .add(Opcodes.BIPUSH, 2)
+         .add(Opcodes.LDC, 6)
+         .add(Opcodes.ILOAD, 2)
+         .add(Opcodes.ISTORE, 5)
+         .add(Opcodes.FLOAD, 4)
+         .add(Opcodes.FSTORE, 3)
+         .add(Opcodes.DLOAD, 4)
+         .add(Opcodes.DSTORE, 3)
+         .add(Opcodes.ICONST_2, 1)
+         .add(Opcodes.ICONST_1, 2)
+         .add(Opcodes.ICONST_0, 1);
+        
+        e.compare(new CountingResult[] {r}, false);
 		cleanResults();
 	}
 }
