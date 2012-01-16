@@ -38,7 +38,17 @@ public class TestProxyClasses {
 		counter.instrument(myMethod);
 
 		// create an instance of the default implementation of ProxyDependeny
-		ProxyDependencyIssue target = (ProxyDependencyIssue) counter.instantiate(myMethod);;
+		Object target0 = counter.instantiate(myMethod);
+		ProxyDependencyIssue pdi = new ProxyDependencyIssue();
+		ProxyDependencyIssue target = null;
+		
+		// Problem: Anstatt alles mit ByCounter zu laden und auszuführen, wird 
+		// hier manuell die mit ByCounter instrumentierte Klasse aus ByCounter 
+		// geholt und dann zusammen mit den uninstrumentierten Klassen verwendet.
+		// Da instrumentierte Klasse != uninstrumentierte Klasse muss es 
+		// natürlich zu Problemen kommen.
+		
+		target = (ProxyDependencyIssue) counter.instantiate(myMethod);
 		ProxyDependency dep = new ProxyDependencyImpl();
 		target.setDependency(dep);
 		counter.execute(myMethod, target, new Object[0]);

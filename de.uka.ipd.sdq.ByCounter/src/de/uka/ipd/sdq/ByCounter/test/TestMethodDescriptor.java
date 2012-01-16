@@ -1,7 +1,5 @@
 package de.uka.ipd.sdq.ByCounter.test;
 
-import java.lang.reflect.Method;
-
 import org.junit.Assert;
 import org.junit.Test;
 

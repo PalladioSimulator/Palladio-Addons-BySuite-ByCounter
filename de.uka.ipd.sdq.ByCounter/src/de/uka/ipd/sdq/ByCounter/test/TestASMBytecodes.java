@@ -8,6 +8,7 @@ import junit.framework.Assert;
 
 import org.junit.After;
 import org.junit.AfterClass;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -56,7 +57,6 @@ public class TestASMBytecodes {
 	 * This is also used by other unit tests in the suite.
 	 * @return The parameter collection for calling the test constructor.
 	 */
-	@SuppressWarnings({ "deprecation" })
 	@Parameters
 	public static Collection<?> parameterSetup() {
 //		InstrumentationParameters p1 = new InstrumentationParameters();
@@ -88,6 +88,7 @@ public class TestASMBytecodes {
 
 
 	private BytecodeCounter counter;
+	private InstrumentationParameters instrumentationParameterTemplate;
 	
 	/**
 	 * This constructor is used by the Parametrized runner 
@@ -97,7 +98,12 @@ public class TestASMBytecodes {
 	public TestASMBytecodes(InstrumentationParameters params) {
 		// create a BytecodeCounter
 		this.counter = new BytecodeCounter();
-		this.counter.setInstrumentationParams(params);
+		this.instrumentationParameterTemplate = params;
+	}
+	
+	@Before
+	public void setupInstrumentationParameters() {
+		this.counter.setInstrumentationParams(this.instrumentationParameterTemplate.clone());
 	}
 
 	@After

@@ -9,12 +9,11 @@ import java.util.logging.Logger;
 import junit.framework.Assert;
 
 import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
-
-import com.lowagie.text.DocumentException;
 
 import de.uka.ipd.sdq.ByCounter.execution.BytecodeCounter;
 import de.uka.ipd.sdq.ByCounter.execution.CountingResult;
@@ -56,13 +55,20 @@ public class TestResultWriters {
 	 * @return The parameter collection for calling the test constructor.
 	 * @see #TestASMBytecodes.parameterSetup()
 	 */
-	@SuppressWarnings({ "unchecked"})
 	@Parameters
-	public static Collection parameterSetup() {
+	public static Collection<?> parameterSetup() {
 		return TestASMBytecodes.parameterSetup();
 	}
 
+	/**
+	 * {@link InstrumentationParameters} used in the tests.
+	 */
 	private InstrumentationParameters instrumentationParameters;
+
+	/**
+	 * {@link InstrumentationParameters} are cloned from this template.
+	 */
+	private final InstrumentationParameters instrumentationParametersTemplate;
 
 	/**
 	 * This constructor is used by the Parametrized runner
@@ -70,8 +76,16 @@ public class TestResultWriters {
 	 * @param params {@link InstrumentationParameters} for the counting setup.
 	 */
 	public TestResultWriters(InstrumentationParameters params) {
-		// create a BytecodeCounter
-		this.instrumentationParameters = params;
+		// save the template
+		this.instrumentationParametersTemplate = params;
+	}
+	
+	/**
+	 * Clone the {@link InstrumentationParameters} for each test.
+	 */
+	@Before
+	public void setupInstrumentationParameters() {
+		this.instrumentationParameters = this.instrumentationParametersTemplate.clone();
 	}
 
 	/**
@@ -102,13 +116,11 @@ public class TestResultWriters {
 				resultWriter
 			);
 
-
 		// test with void method
 		MethodDescriptor methodDescriptor = new MethodDescriptor(
 				testClassName, testMethod);
 		counter.instrument(methodDescriptor);
 		counter.execute(methodDescriptor, new Object[]{});
-
 
 
 
@@ -281,17 +293,11 @@ public class TestResultWriters {
 
 		// disable usage of result collector
 		Assert.assertNotNull(counter.getInstrumentationParams());
-		boolean oldUseResultCollector =
-			counter.getInstrumentationParams().getUseResultCollector();
 		counter.getInstrumentationParams().setUseResultCollector(false);
 		Assert.assertEquals(false, counter.getInstrumentationParams().getUseResultCollector());
 
 		// set the file name for the result log
-		String oldResultLogFileName =
-			counter.getInstrumentationParams().getResultLogFileName();
 		counter.getInstrumentationParams().setResultLogFileName(resultLogFileName);
-		boolean oldUseArrayParameterRecording =
-			counter.getInstrumentationParams().getUseArrayParameterRecording();
 		counter.getInstrumentationParams().setUseArrayParameterRecording(true);
 		Assert.assertEquals(resultLogFileName, counter.getInstrumentationParams().getResultLogFileName());
 
@@ -315,11 +321,6 @@ public class TestResultWriters {
 
 		// check whether a file was written
 		checkAndDeleteFile(resultLogFileName);
-
-		// reset to old instrumentation parameters
-		instrumentationParameters.setUseResultCollector(oldUseResultCollector);
-		instrumentationParameters.setResultLogFileName(oldResultLogFileName);
-		instrumentationParameters.setUseArrayParameterRecording(oldUseArrayParameterRecording);
 	}
 
 

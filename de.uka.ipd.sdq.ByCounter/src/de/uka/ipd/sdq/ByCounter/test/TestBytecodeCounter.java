@@ -13,6 +13,7 @@ import java.util.logging.Logger;
 import junit.framework.Assert;
 
 import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -22,6 +23,7 @@ import de.uka.ipd.sdq.ByCounter.execution.BytecodeCounter;
 import de.uka.ipd.sdq.ByCounter.execution.CountingResult;
 import de.uka.ipd.sdq.ByCounter.execution.CountingResultCollector;
 import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentationParameters;
+import de.uka.ipd.sdq.ByCounter.instrumentation.Instrumenter;
 import de.uka.ipd.sdq.ByCounter.test.helpers.ASMBytecodeOccurences;
 import de.uka.ipd.sdq.ByCounter.test.helpers.TestSubject;
 import de.uka.ipd.sdq.ByCounter.test.helpers.TestSubjectInterfaceMethods;
@@ -48,23 +50,15 @@ public class TestBytecodeCounter {
 						File.separatorChar + "helpers" + 
 						File.separatorChar;
 
-	private static final Class<?> CLASS = ASMBytecodeOccurences.class;
-
 	private static final String METHOD_SIGNATURE = "public static void arrayInstructions()";
 	
 	private static String nestedClassMethodSig1 = "public TestSubject$InnerClass$InnerClassLevel2()";
 	
 	private static String nestedClassMethodSig2 = "public boolean isWorking(int a)";
-	
-	private static String nestedClassName = "TestSubject$InnerClass$InnerClassLevel2";
-	
-	private static String nestedClassPackageName = "de.uka.ipd.sdq.ByCounter.test.helpers";
-	
+
 	private static String nestedClassRunMethodSig = "public void useInnerClassLevel2()";
 
 	private static final String resultLogFileName = "output" + File.separatorChar +"tmpLogFile.log";
-
-	private static final String testSubjectCanonicalClassName = TestSubject.class.getCanonicalName();
 
 	private static String testCallingTreeMethodSignature = "public void methodCallTest()";
 
@@ -84,18 +78,39 @@ public class TestBytecodeCounter {
 		return TestASMBytecodes.parameterSetup();
 	}
 	
+	/**
+	 * An instance of {@link InstrumentationParameters} based on 
+	 * {@link #instrumentationParametersTemplate} used in the tests.  
+	 * Individual tests may override some parameters.
+	 */
 	private InstrumentationParameters instrumentationParameters;
+
+	/**
+	 * The {@link InstrumentationParameters} template used for all the tests.
+	 */
+	private InstrumentationParameters instrumentationParametersTemplate;
 
 	/**
 	 * This constructor is used by the Parametrized runner 
 	 * for running tests with different parameters.
-	 * @param params {@link InstrumentationParameters} for the counting setup.
+	 * @param params {@link InstrumentationParameters} template for the counting setup.
 	 */
 	public TestBytecodeCounter(InstrumentationParameters params) {
-		// create a BytecodeCounter
-		this.instrumentationParameters = params;
+		this.instrumentationParametersTemplate = params;
 	}
 	
+	/**
+	 * Clone an instance of {@link InstrumentationParameters}.
+	 */
+	@Before
+	public void setupInstrumentationParameters() {
+		// create a fresh instance of InstrumentationParameters
+		this.instrumentationParameters = this.instrumentationParametersTemplate.clone();
+	}
+	
+	/**
+	 * Clear results in the {@link CountingResultCollector}. 
+	 */
 	@After
 	public void cleanResults() {
 		// clear all collected results
@@ -144,7 +159,7 @@ public class TestBytecodeCounter {
 	 */
 	@Test
 	public void testByteClass() {
-		File file = new File(CLASS_DIR + CLASS.getSimpleName() + ".class");
+		File file = new File(CLASS_DIR + ASMBytecodeOccurences.class.getSimpleName() + ".class");
 		byte[] bytes = readClassFromFile(file);
 		
 		// early CountingResultCollector construction; initialize the singleton
@@ -160,7 +175,7 @@ public class TestBytecodeCounter {
 		
 		// do the de.uka.ipd.sdq.ByCount
 		// let the counter do its work on a method
-		counter.instrument(new MethodDescriptor(CLASS.getCanonicalName(), METHOD_SIGNATURE));
+		counter.instrument(new MethodDescriptor(ASMBytecodeOccurences.class.getCanonicalName(), METHOD_SIGNATURE));
 
 		
 		Assert.assertNotNull(resultColl.retrieveAllCountingResults_nonRecursively());
@@ -175,12 +190,11 @@ public class TestBytecodeCounter {
 	}
 	
 	/**TODO: This test does no tests yet
-	 * This test uses the instrumenter on the method methodTest(),
-	 * which is a method that calls other methods of the Test class.
+	 * This test uses the {@link Instrumenter} on the method methodTest(),
+	 * which is a method that calls other methods of the TestSubject class.
 	 * It is then tested whether the results calculated by 
 	 * {@link CountingResultCollector} are sane.
 	 */
-	@SuppressWarnings("deprecation")
 	@Test
 	public void testCallingTreeResults() {
 		BytecodeCounter counter = new BytecodeCounter();
@@ -188,13 +202,13 @@ public class TestBytecodeCounter {
 		// instrument the methodCallTest
 		// flat results
 		MethodDescriptor methodDescriptorMCT = 
-			new MethodDescriptor(testSubjectCanonicalClassName, 
+			new MethodDescriptor(TestSubject.class.getCanonicalName(), 
 				testCallingTreeMethodSignature);
 		MethodDescriptor methodDescriptorLT = 
-			new MethodDescriptor(testSubjectCanonicalClassName, 
+			new MethodDescriptor(TestSubject.class.getCanonicalName(), 
 					"public int loopTest()");
 		MethodDescriptor methodDescriptorPT =  
-			new MethodDescriptor(testSubjectCanonicalClassName, 
+			new MethodDescriptor(TestSubject.class.getCanonicalName(), 
 			"public void printTest()");
 		
 		ArrayList<MethodDescriptor> methodsToInstrument = new ArrayList<MethodDescriptor>();
@@ -255,7 +269,6 @@ public class TestBytecodeCounter {
 		counter.instrument(methodDescriptor);
 		counter.execute(methodDescriptor, new Object[]{});
 		
-
 		// The log file name is dynamic and cannot be checked
 		cleanResults();
 
@@ -264,13 +277,14 @@ public class TestBytecodeCounter {
 			"public boolean parameterTest(int i, float f, java.lang.String s)");
 		counter.instrument(methodDescriptor);
 		counter.execute(methodDescriptor, 
-			new Object[]{2, 2, testSubjectCanonicalClassName});
+			new Object[]{2, 2, TestSubject.class.getCanonicalName()});
 				
 		// reset to old instrumentation parameters
 		this.instrumentationParameters.setUseResultCollector(oldUseResultCollector);
 		this.instrumentationParameters.setResultLogFileName(oldResultLogFileName);
 		this.instrumentationParameters.setUseArrayParameterRecording(oldUseArrayParameterRecording);
 	}
+	
 	/**
 	 * This unit test tries to instrument a class that is given as byte[].
 	 * In this case the .class file of ASMBytecodeOccurences is used.
@@ -301,8 +315,6 @@ public class TestBytecodeCounter {
 		
 		counter.getInstrumentationParams().setInstrumentRecursively(false, 0);
 	}
-	
-	
 
 	/**
 	 * This unit test tries to instrument a class using instrumentAll.
@@ -311,11 +323,9 @@ public class TestBytecodeCounter {
 	public void testInstrumentAll() {
 		//1. Set up a BytecodeCounter instance to use ByCounter, using a parameterless constructor. 
 		BytecodeCounter counter = new BytecodeCounter();
-
 		
 		//2. now tell ByCounter to instrument all methods
 		counter.instrumentAllInClass(TestSubject.class.getCanonicalName(), new String[0], true);
-		
 
 		//3. Specify the method to be executed
 		MethodDescriptor myMethod = new MethodDescriptor(
@@ -340,7 +350,7 @@ public class TestBytecodeCounter {
 	 */
 	@Test
 	public void testInstrumetingTwice() {
-		File file = new File(CLASS_DIR + CLASS.getSimpleName() + ".class");
+		File file = new File(CLASS_DIR + ((Class<?>) ASMBytecodeOccurences.class).getSimpleName() + ".class");
 		byte[] bytes = readClassFromFile(file);
 		
 		Assert.assertNotNull(bytes);
@@ -363,7 +373,7 @@ public class TestBytecodeCounter {
 		// do the de.uka.ipd.sdq.ByCount
 		// let the counter do its work on a method
 		counter.instrument(
-				new MethodDescriptor(CLASS.getCanonicalName(), METHOD_SIGNATURE));
+				new MethodDescriptor(((Class<?>) ASMBytecodeOccurences.class).getCanonicalName(), METHOD_SIGNATURE));
 		
 		byte[] instrumentedBytes = counter.getInstrumentedBytes();
 		Assert.assertNotNull(instrumentedBytes);
@@ -371,7 +381,7 @@ public class TestBytecodeCounter {
 		counter.setClassToInstrument(instrumentedBytes);
 	
 		counter.instrument(
-				new MethodDescriptor(CLASS.getCanonicalName(), METHOD_SIGNATURE));
+				new MethodDescriptor(((Class<?>) ASMBytecodeOccurences.class).getCanonicalName(), METHOD_SIGNATURE));
 //		
 //		Assert.assertNotNull(resultColl.getAllCountingResults_nonRecursively());
 //		// print the results into the log
@@ -383,7 +393,7 @@ public class TestBytecodeCounter {
 		resultColl.clearResults();
 
 	}
-
+	
 	/**
 	 * This test uses the instrumenter on inner classes using the classfile 
 	 * overwriting option which is important as 
@@ -393,12 +403,17 @@ public class TestBytecodeCounter {
 	public void testNestedClassInstrumentation() {
 		BytecodeCounter counter = new BytecodeCounter();
 		counter.setInstrumentationParams(this.instrumentationParameters);
-		// instrument the constructor of the nested class
+
+		String classNameInnerClassLevel2 = TestSubject.class.getCanonicalName() 
+			+"$" + TestSubject.InnerClass.class.getSimpleName() 
+			+"$" + TestSubject.InnerClass.InnerClassLevel2.class.getSimpleName();
+		
+		// instrument the constructor of the nested class		
 		CountingResult r = Utils.getCountingResultForTest(
 				counter,
-				MethodDescriptor.forConstructor(nestedClassPackageName +"."+ nestedClassName, 
+				MethodDescriptor.forConstructor(classNameInnerClassLevel2, 
 						nestedClassMethodSig1),
-				new MethodDescriptor(nestedClassPackageName + "." + testSubjectCanonicalClassName, 
+				new MethodDescriptor(TestSubject.class.getCanonicalName(), 
 						nestedClassRunMethodSig));
 
 		CountingResultCollector.getInstance().logResult(r, false, true);
@@ -408,9 +423,9 @@ public class TestBytecodeCounter {
 		// instrument the method of the nested class
 		r = Utils.getCountingResultForTest(
 				counter,
-				new MethodDescriptor(nestedClassPackageName + "." + nestedClassName, 
+				new MethodDescriptor(classNameInnerClassLevel2, 
 						nestedClassMethodSig2),
-				new MethodDescriptor(nestedClassPackageName  + "." + testSubjectCanonicalClassName, 
+				new MethodDescriptor(TestSubject.class.getCanonicalName(), 
 						nestedClassRunMethodSig));
 
 		CountingResultCollector.getInstance().logResult(r, false, true);

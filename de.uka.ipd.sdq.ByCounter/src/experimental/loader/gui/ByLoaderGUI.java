@@ -432,7 +432,6 @@ public class ByLoaderGUI extends JFrame {
 	 * Otherwise the methods to instrument and instrumentation options as
 	 * {@link InstrumentationParameters}.
 	 */
-	@SuppressWarnings("deprecation")
 	public synchronized InstrumentationParameters getInstrumentationParameters() {
 
 		if(optInstrumentFromFS.isSelected()) {
@@ -446,7 +445,7 @@ public class ByLoaderGUI extends JFrame {
 		for(int i = 0; i < methodListModel.getSize(); i++) {
 			methods.add((MethodDescriptor)methodListModel.elementAt(i));
 		}
-		params = new InstrumentationParameters(methods);
+		params = new InstrumentationParameters(methods, true, true, false, false, InstrumentationParameters.COUNTER_PRECISION_LONG);
 		log.fine("Instrumentation params after adding methods, before setting conf: "+params);
 
 		// set options

@@ -31,7 +31,7 @@ import de.uka.ipd.sdq.ByCounter.utils.MethodDescriptor;
  * @since 0.1
  * @version 1.2
  */
-public final class InstrumentationParameters {
+public final class InstrumentationParameters implements Cloneable {
 
 	/**
 	 * Use integer variables as counters.
@@ -67,17 +67,9 @@ public final class InstrumentationParameters {
 	 * long variables instead. See the COUNTER_PRECISION_ constants. */
 	private boolean counterPrecisionIsLong;
 
-/** When true, ByCounter makes a static analysis of the specified code. */
+	/** When true, ByCounter makes a static analysis of the specified code. */
 	@Deprecated
 	private boolean countStatically;
-	
-	/** @deprecated in favor of 
-	 * {@link #setInstrumentationScopeOverrideClassLevel(InstrumentationScopeModeEnum)}
-	 * and {@link #setInstrumentationScopeOverrideMethodLevel(InstrumentationScopeModeEnum)} 
-	 * When true, ByCounter will attempt to instrument all methods */
-	@SuppressWarnings("unused")
-	@Deprecated()
-	private boolean instrumentAllMethods;
 	
 	/**
 	 * @see #setInstrumentRecursivly(boolean, int)
@@ -183,15 +175,16 @@ public final class InstrumentationParameters {
 	 * Methods to instrument are NOT set - you must do so manually! 
 	 * Assumes dynamic analysis and usage of the CountingResultCollector.
 	 * Uses high registers for counting and the CountingResultCollector 
-	 * framework. 
-	 * @deprecated
+	 * framework.
 	 */
 	@SuppressWarnings("dep-ann")
 	public InstrumentationParameters() {
 		this(	null,   // methods to instrument
 				true,  	// use high registers for counting
 				true,	// use CountingResultCollector
-				false	// static analysis
+				false,	// static analysis
+				false,  // count statically
+				COUNTER_PRECISION_LONG
 			);
 	}
 	
@@ -201,75 +194,16 @@ public final class InstrumentationParameters {
 	 * Uses high registers for counting.
 	 * @param pMethodsToInstrument Name of the methods that shall be instrumented.
 	 * When false, results are written to disk directly. 
-	 * @deprecated
 	 */
 	@SuppressWarnings("dep-ann")
 	public InstrumentationParameters(List<MethodDescriptor> pMethodsToInstrument) {
 		this(pMethodsToInstrument, 
 				true, 	// use high registers for counting
 				true,	// use CountingResultCollector
-				false	// no static analysis
+				false,	// no static analysis
+				false,  // count statically
+				COUNTER_PRECISION_LONG
 				);
-	}
-	
-	/**
-	 * Assumes dynamic analysis and usage of the CountingResultCollector. Array 
-	 * construction parameters will not be recorded.
-	 * @param pMethodsToInstrument Name of the methods that shall be instrumented.
-	 * @param pUseHighRegistersForCounting Decides whether to preallocate registers near max_locals instead of using LocalVariablesSorter.
-	 * When false, results are written to disk directly. 
-	 * @deprecated
-	 */
-	@SuppressWarnings("dep-ann")
-	public InstrumentationParameters(
-			List<MethodDescriptor> pMethodsToInstrument,
-			boolean pUseHighRegistersForCounting) {
-		this(pMethodsToInstrument, 
-				pUseHighRegistersForCounting, 
-				true,	// use CountingResultCollector
-				false	// no static analysis
-				);
-	}
-
-	/**
-	 * Assumes dynamic analysis without array parameter recording.
-	 * @param pMethodsToInstrument Name of the methods that shall be instrumented.
-	 * @param pUseHighRegistersForCounting Decides whether to preallocate registers near max_locals instead of using LocalVariablesSorter.
-	 * @param pUseResultCollector Decides whether to use the CountingResultCollector framework.
-	 * When false, results are written to disk directly. 
-	 * @deprecated
-	 */
-	@SuppressWarnings("dep-ann")
-	public InstrumentationParameters(List<MethodDescriptor> pMethodsToInstrument,
-			boolean pUseHighRegistersForCounting, 
-			boolean pUseResultCollector) {
-		this(pMethodsToInstrument, 
-				pUseHighRegistersForCounting, 
-				pUseResultCollector,
-				false	// no static analysis
-				);
-	}
-
-	/**
-	 * Assumes dynamic analysis.
-	 * @param pMethodsToInstrument Name of the methods that shall be instrumented.
-	 * @param pUseHighRegistersForCounting Decides whether to preallocate registers near max_locals instead of using LocalVariablesSorter.
-	 * @param pUseResultCollector Decides whether to use the CountingResultCollector framework.
-	 * @param pUseArrayParameterRecording Decides whether instrumentation for the recording of parameters of array construction takes place. Causes some additional overhead.
-	 * When false, results are written to disk directly. 
-	 * @deprecated
-	 */
-	@SuppressWarnings("dep-ann")
-	public InstrumentationParameters(List<MethodDescriptor> pMethodsToInstrument,
-			boolean pUseHighRegistersForCounting, 
-			boolean pUseResultCollector,
-			boolean pUseArrayParameterRecording) {
-		this(pMethodsToInstrument, 
-				pUseHighRegistersForCounting, 
-				pUseResultCollector,
-				pUseArrayParameterRecording,
-				false,
-				COUNTER_PRECISION_LONG);
 	}
 	
 	/**
@@ -307,6 +241,47 @@ public final class InstrumentationParameters {
 		this.recordBlockExecutionOrder = true;
 	}
 	
+	/* (non-Javadoc)
+	 * @see java.lang.Object#clone()
+	 */
+	@Override
+	public InstrumentationParameters clone() {
+		InstrumentationParameters copy = null;
+		
+		try {
+			copy = (InstrumentationParameters) super.clone();
+		} catch (CloneNotSupportedException e) {
+			// object.clone() cannot fail
+			return null;
+		}
+		
+		// shallow copy all fields
+		copy.basicBlockSerialisation = this.basicBlockSerialisation;
+		copy.counterPrecisionIsLong = this.counterPrecisionIsLong;
+		copy.countStatically = this.countStatically;
+		copy.instrumentationScopeOverrideClassLevel = this.instrumentationScopeOverrideClassLevel;
+		copy.instrumentationScopeOverrideMethodLevel = this.instrumentationScopeOverrideMethodLevel;
+		copy.instrumentRecursively = this.instrumentRecursively;
+		copy.instrumentRecursivelyMaxDepth = this.instrumentRecursivelyMaxDepth;
+		copy.methodsToInstrument = this.methodsToInstrument;
+		copy.methodsToInstrumentCalculated = this.methodsToInstrumentCalculated;
+		copy.methodsToInstrumentCalculationDone = this.methodsToInstrumentCalculationDone;
+		copy.parentClassLoader = this.parentClassLoader;
+		copy.rangeBlocks = this.rangeBlocks;
+		copy.rangeBlockSerialisation = this.rangeBlockSerialisation;
+		copy.recordBlockExecutionOrder = this.recordBlockExecutionOrder;
+		copy.resultLogFileName = this.resultLogFileName;
+		copy.traceAndIdentifyRequests = this.traceAndIdentifyRequests;
+		copy.useArrayParameterRecording = this.useArrayParameterRecording;
+		copy.useBasicBlocks = this.useBasicBlocks;
+		copy.useHighRegistersForCounting = this.useHighRegistersForCounting;
+		copy.useResultCollector = this.useResultCollector;
+		copy.writeClassesToDisk = this.writeClassesToDisk;
+		copy.writeClassesToDiskDirectory = this.writeClassesToDiskDirectory;
+		
+		return copy;
+	}
+
 	/**
 	 * @deprecated
 	 * @return Reflects, whether dynamic or static method analysis is employed.
@@ -470,6 +445,7 @@ public final class InstrumentationParameters {
 		b.append("methodsToInstrumentCalculated:      " + this.methodsToInstrumentCalculated + ", \n");
 		b.append("methodsToInstrumentCalculationDone: " + this.methodsToInstrumentCalculationDone + ", \n");
 		b.append("rangeBlocks:                        " + this.rangeBlocks + ", \n");
+		b.append("recordBlockExecutionOrder:          " + this.recordBlockExecutionOrder + ", \n");
 		b.append("resultLogFileName:                  " + this.resultLogFileName + ", \n");
 		b.append("traceAndIdentifyRequests:           " + this.traceAndIdentifyRequests + ", \n");
 		b.append("useArrayParameterRecording:         " + this.useArrayParameterRecording + ", \n");

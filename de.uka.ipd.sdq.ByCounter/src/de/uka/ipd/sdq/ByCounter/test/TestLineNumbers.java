@@ -57,7 +57,9 @@ public class TestLineNumbers {
     private static final String SIGNATURE_LINE_NUMBERS = "public void testLabelAndLineNumbers()";
 
     /** These parameters are used by all tests. Revert potential modifications in &#064;After-method. */
-    private final InstrumentationParameters instrumentationParameters;
+    private InstrumentationParameters instrumentationParameters;
+
+	private final InstrumentationParameters instrumentationParametersTemplate;
 
     /**
      * Generates the different parameters with which all tests are run. This reuses the parameters
@@ -76,25 +78,28 @@ public class TestLineNumbers {
      * parameters.
      * 
      * @param params
-     *            {@link InstrumentationParameters} for the counting setup.
+     *            {@link InstrumentationParameters} template for the counting setup.
      */
     public TestLineNumbers(final InstrumentationParameters params) {
         // create a BytecodeCounter
-        this.instrumentationParameters = params;
+        this.instrumentationParametersTemplate = params;
+    }
+    
+    /**
+     * Clones an instance of {@link InstrumentationParameters} from the template.
+     */
+    @Before
+    public void setupInstrumentationParameters() {
+    	this.instrumentationParameters = this.instrumentationParametersTemplate.clone();
     }
 
     /**
-     * Cleans up after every test. Especially important is that it resets the instrumentation
-     * parameters.
+     * Cleans up results after every test. 
      */
-    @After @Before
+    @After
     public void cleanResults() {
         // clear all collected results
         CountingResultCollector.getInstance().clearResults();
-        // reset parameters
-        this.instrumentationParameters.setUseBasicBlocks(false);
-        this.instrumentationParameters.setRecordBlockExecutionOrder(false);
-        this.instrumentationParameters.setWriteClassesToDisk(false);
     }
 
     /**

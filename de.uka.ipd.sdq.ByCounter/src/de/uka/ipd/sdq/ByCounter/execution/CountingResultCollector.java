@@ -482,9 +482,7 @@ public final class CountingResultCollector {
 	}
 	
 	/**
-	 * TODO test this method out-refactoring
-	 * @param newArrayType
-	 * @param newArrayDim
+	 * Decode the information saved for array parameters.
 	 * @param newArrayCounts
 	 * @param newArrayDescr
 	 * @param newArrayTypeOrDim
@@ -1790,42 +1788,6 @@ public final class CountingResultCollector {
 			}
 		}
 		return counts;
-//		return this.countingResults.get(artefact);
-	}
-	
-	//	/**
-//	 * Assumption: when forced inlining is not "on", a ready-to-use CountingResult is maintained nonetheless
-//	 * TODO this logic can be simiplified: remove redundancies
-//	 * @param doInliningIgnoringMethodWished
-//	 */
-//	public synchronized final void setForceInliningIgnoringMethodWishes(boolean doInliningIgnoringMethodWished) {
-//		if      (this.forcedInlining_IgnoreMethodWishes==true && doInliningIgnoringMethodWished==true){
-//			this.saveCurrentForcedInliningResultAndRecreateNewOne();
-//		}else if(this.forcedInlining_IgnoreMethodWishes==true && doInliningIgnoringMethodWished==false){
-//			this.saveCurrentForcedInliningResultAndRecreateNewOne();
-//			this.forcedInlining_IgnoreMethodWishes = doInliningIgnoringMethodWished;
-//		}else if(this.forcedInlining_IgnoreMethodWishes==false && doInliningIgnoringMethodWished==true){
-//			this.forcedInlining_IgnoreMethodWishes = doInliningIgnoringMethodWished;
-//		}else if(this.forcedInlining_IgnoreMethodWishes==false && doInliningIgnoringMethodWished==false){
-//			this.forcedInlining_IgnoreMethodWishes = doInliningIgnoringMethodWished;
-//		}
-//	}
-	/**
-	 * TODO use the forcedInlining_* boolean flags...
-	 * Used to be called when changing modes
-	 */
-	private synchronized final void saveCurrentForcedInliningResultAndRecreateNewOne() {
-		this.forcedInlining_CountingResult.setMethodReportingTime(System.nanoTime());//TODO parameterise
-		this.forcedInlining_CountingResult.overwriteOpcodeCounts(forcedInlining_InlinedOpcodeCounts);
-		this.forcedInlining_CountingResult.overwriteMethodCallCounts(forcedInlining_InlinedMethodCounts);
-		//TODO set its opcode counts to forcedInlining_InlinedOpcodeCounts
-		//TODO set its method counts to forcedInlining_InlinedMethodMapping
-		
-		this.forcedInlining_CountingResultsSortedSet.add(this.forcedInlining_CountingResult);
-		this.forcedInlining_CountingResult = createNewForcedInlinedCountingResult();
-//		this.forcedInlining_InlinedMethodMappings.add(this.forcedInlining_InlinedMethodMapping);//TODO I think this structure should be added to the forcedInlining_CountingResult
-		this.forcedInlining_InlinedMethodCounts = new TreeMap<String, Long>();
-		this.forcedInlining_InlinedOpcodeCounts = new long[256];
 	}
 	
 	/**
