@@ -244,6 +244,13 @@ public class BlockResultCalculation {
 					rb.basicBlockExecutionCounts[blockIndex] += 1;
 				}
 			}
+			
+			// Add range block execution counts that are still active 
+			// (i.e. have not been removed from the active list)
+			for(RangeBlocksBBExecutionCounts rbec : currentRBECs) {
+				resultCounts.add(getCountsForRangeBlock(rbec.rbd, rbec.basicBlockExecutionCounts));
+			}
+			
 		}
 		return resultCounts.toArray(new CalculatedCounts[resultCounts.size()]);
 	}
