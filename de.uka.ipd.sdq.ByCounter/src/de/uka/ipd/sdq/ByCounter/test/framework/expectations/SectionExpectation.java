@@ -27,14 +27,13 @@ public class SectionExpectation {
 	private final LineNumberRange range;
 
 	/**
-	 * All expected opcodes. The key stands for the opcode number as specified in
-	 * {@link Opcodes}, the value stands for the expected count number.
+	 * All expected opcodes. The key stands for the opcode number as specified in {@link Opcodes}, the value stands for
+	 * the expected count number.
 	 */
 	private final Map<Integer, Long> opcodeExpectations;
 
 	/**
-	 * All expected method calls. The key stands for the method's name, the value
-	 * stands for the expected count number.
+	 * All expected method calls. The key stands for the method's name, the value stands for the expected count number.
 	 */
 	private final Map<String, Long> methodCallExpectations;
 
@@ -44,8 +43,7 @@ public class SectionExpectation {
 	 * @param sectionNumber
 	 *          The new section's number. Has to be greater or equal zero.
 	 * @param range
-	 *          The line number range of the new section. If the range is unknown,
-	 *          this should be <code>null</code>.
+	 *          The line number range of the new section. If the range is unknown, this should be <code>null</code>.
 	 */
 	protected SectionExpectation(final int sectionNumber, final LineNumberRange range) {
 		assert sectionNumber >= 0 : "sectionNumber has to be greater or equal zero.";
@@ -68,23 +66,20 @@ public class SectionExpectation {
 	/**
 	 * Returns this section's line number range.
 	 * 
-	 * @return This section's line number range if it is known. Otherwise
-	 *         <code>null</code>.
+	 * @return This section's line number range if it is known. Otherwise <code>null</code>.
 	 */
 	protected LineNumberRange getRange() {
 		return this.range;
 	}
 
 	/**
-	 * Adds an opcode expectation to this section. Throws an
-	 * {@link IllegalArgumentException} if you want to add an opcode twice.
+	 * Adds an opcode expectation to this section. Throws an {@link IllegalArgumentException} if you want to add an opcode
+	 * twice.
 	 * 
 	 * @param opcode
-	 *          An integer value representing an opcode as specified in
-	 *          {@link Opcodes}.
+	 *          An integer value representing an opcode.
 	 * @param number
-	 *          The expected number (How often this opcode should be counted.).
-	 *          Has to be greater than zero.
+	 *          The expected number (How often this opcode should be counted.). Has to be greater than zero.
 	 * @return This {@link SectionExpectation} object.
 	 */
 	public SectionExpectation add(final int opcode, final long number) {
@@ -99,14 +94,13 @@ public class SectionExpectation {
 	}
 
 	/**
-	 * Adds a method call expectation to this section. Throws an
-	 * {@link IllegalArgumentException} if you want to add a method call twice.
+	 * Adds a method call expectation to this section. Throws an {@link IllegalArgumentException} if you want to add a
+	 * method call twice.
 	 * 
 	 * @param bytecodeDescriptor
 	 *          A String representing a method as used in Java Bytecode.
 	 * @param number
-	 *          The expected number (How often this opcode should be counted.).
-	 *          Has to be greater than zero.
+	 *          The expected number (How often this opcode should be counted.). Has to be greater than zero.
 	 * @return This {@link SectionExpectation} object.
 	 */
 	public SectionExpectation add(final String bytecodeDescriptor, final long number) {
@@ -121,8 +115,8 @@ public class SectionExpectation {
 	}
 
 	/**
-	 * Adds a method call expectation to this section. Throws an
-	 * {@link IllegalArgumentException} if you want to add a method call twice.
+	 * Adds a method call expectation to this section. Throws an {@link IllegalArgumentException} if you want to add a
+	 * method call twice.
 	 * <p>
 	 * Don't use this with constructors!
 	 * 
@@ -130,25 +124,18 @@ public class SectionExpectation {
 	 *          The canonical name of the class declaring the method.
 	 * @param signature
 	 *          A string containing a standard Java method signature (i.e.
-	 *          <code>public static java.lang.String valueOf(java.lang.Object obj)</code>
-	 *          ). Object types need to be specified with the full canonical name.
-	 *          Specifically, only the two tokens before the first '(', as well as
-	 *          everything between '(' and ')' is evaluated. Whitespaces and
-	 *          qualifiers like "public", "static" are ignored. Generic types may
-	 *          be ommited (and are ignored) so that "List" and "List<Integer>"
-	 *          are treated as the same since bytecode signatures ignore generics.
-	 *          For method parameters, only one or two tokens are allowed
-	 *          (example: "int[]" or "int[] abc"). It is advised to take the
-	 *          method declaration from sourcecode or from documentation and only
-	 *          adapt it, if necessary. The thing that needs to be adapted is type
-	 *          names for object types. So instead of giving the String
-	 *          "String myString", this has to be expanded to "java.lang.String".
-	 *          Note that inner/nested classes need to be specified using the '$'
-	 *          symbol as in the following example:
-	 *          <code>my.packagename.OutClass$InnerClass</code>.
+	 *          <code>public static java.lang.String valueOf(java.lang.Object obj)</code> ). Object types need to be
+	 *          specified with the full canonical name. Specifically, only the two tokens before the first '(', as well as
+	 *          everything between '(' and ')' is evaluated. Whitespaces and qualifiers like "public", "static" are
+	 *          ignored. Generic types may be ommited (and are ignored) so that "List" and "List<Integer>" are treated as
+	 *          the same since bytecode signatures ignore generics. For method parameters, only one or two tokens are
+	 *          allowed (example: "int[]" or "int[] abc"). It is advised to take the method declaration from sourcecode or
+	 *          from documentation and only adapt it, if necessary. The thing that needs to be adapted is type names for
+	 *          object types. So instead of giving the String "String myString", this has to be expanded to
+	 *          "java.lang.String". Note that inner/nested classes need to be specified using the '$' symbol as in the
+	 *          following example: <code>my.packagename.OutClass$InnerClass</code>.
 	 * @param number
-	 *          The expected number (How often this opcode should be counted.).
-	 *          Has to be greater than zero.
+	 *          The expected number (How often this opcode should be counted.). Has to be greater than zero.
 	 * @return This {@link SectionExpectation} object.
 	 */
 	public SectionExpectation add(final String className, final String signature, final long number) {
@@ -163,11 +150,10 @@ public class SectionExpectation {
 	 * @param measuredMethodCallCounts
 	 *          The number of method calls counted.
 	 * @param zeroMethodError
-	 *          <code>true</code>, if measured method call counts equal to zero
-	 *          are handled as error. <code>false</code>, if not.
+	 *          <code>true</code>, if measured method call counts equal to zero are handled as error. <code>false</code>,
+	 *          if not.
 	 * @param round
-	 *          The comparison round. Used for better human readable error
-	 *          messages.
+	 *          The comparison round. Used for better human readable error messages.
 	 */
 	protected void compare(final long[] measuredOpcodeCounts, final Map<String, Long> measuredMethodCallCounts,
 			final boolean zeroMethodError, final int round) {
@@ -201,9 +187,8 @@ public class SectionExpectation {
 	}
 
 	/**
-	 * Builds an error message that shows if an assertion is false. This
-	 * workaround for non-assertEquals()-methods adds an additional info about the
-	 * expected and actual value.
+	 * Builds an error message that shows if an assertion is false. This workaround for non-assertEquals()-methods adds an
+	 * additional info about the expected and actual value.
 	 * 
 	 * @param name
 	 *          The name of the wrong opcode or method.
@@ -265,31 +250,24 @@ public class SectionExpectation {
 	 * Converts a typical java signature to the equivalent bytecode descriptor.
 	 * 
 	 * For example:<br />
-	 * java.lang.String valueOf(java.lang.Object obj) =>
-	 * java.lang.String.valueOf(Ljava/lang/Object;)Ljava/lang/String;
+	 * java.lang.String valueOf(java.lang.Object obj) => java.lang.String.valueOf(Ljava/lang/Object;)Ljava/lang/String;
 	 * 
 	 * @param className
 	 *          The canonical name of the class declaring the method.
 	 * @param signature
 	 *          A string containing a standard Java method signature (i.e.
-	 *          <code>public static java.lang.String valueOf(java.lang.Object obj)</code>
-	 *          ). Object types need to be specified with the full canonical name.
-	 *          Specifically, only the two tokens before the first '(', as well as
-	 *          everything between '(' and ')' is evaluated. Whitespaces and
-	 *          qualifiers like "public", "static" are ignored. Generic types may
-	 *          be ommited (and are ignored) so that "List" and "List<Integer>"
-	 *          are treated as the same since bytecode signatures ignore generics.
-	 *          For method parameters, only one or two tokens are allowed
-	 *          (example: "int[]" or "int[] abc"). It is advised to take the
-	 *          method declaration from sourcecode or from documentation and only
-	 *          adapt it, if necessary. The thing that needs to be adapted is type
-	 *          names for object types. So instead of giving the String
-	 *          "String myString", this has to be expanded to "java.lang.String".
-	 *          Note that inner/nested classes need to be specified using the '$'
-	 *          symbol as in the following example:
-	 *          <code>my.packagename.OutClass$InnerClass</code>.
-	 * @return A bytecode descriptor to uniquely identify methods consisting of
-	 *         the canonical classname, the method name and the method descriptor.
+	 *          <code>public static java.lang.String valueOf(java.lang.Object obj)</code> ). Object types need to be
+	 *          specified with the full canonical name. Specifically, only the two tokens before the first '(', as well as
+	 *          everything between '(' and ')' is evaluated. Whitespaces and qualifiers like "public", "static" are
+	 *          ignored. Generic types may be ommited (and are ignored) so that "List" and "List<Integer>" are treated as
+	 *          the same since bytecode signatures ignore generics. For method parameters, only one or two tokens are
+	 *          allowed (example: "int[]" or "int[] abc"). It is advised to take the method declaration from sourcecode or
+	 *          from documentation and only adapt it, if necessary. The thing that needs to be adapted is type names for
+	 *          object types. So instead of giving the String "String myString", this has to be expanded to
+	 *          "java.lang.String". Note that inner/nested classes need to be specified using the '$' symbol as in the
+	 *          following example: <code>my.packagename.OutClass$InnerClass</code>.
+	 * @return A bytecode descriptor to uniquely identify methods consisting of the canonical classname, the method name
+	 *         and the method descriptor.
 	 */
 	private String signatureToDescriptor(String className, String signature) {
 		MethodDescriptor test = new MethodDescriptor(className, signature);

@@ -10,12 +10,12 @@ import java.util.logging.Logger;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
+import org.objectweb.asm.Opcodes;
 
 import de.uka.ipd.sdq.ByCounter.execution.BytecodeCounter;
 import de.uka.ipd.sdq.ByCounter.execution.CountingResult;
 import de.uka.ipd.sdq.ByCounter.execution.CountingResultCollector;
 import de.uka.ipd.sdq.ByCounter.test.framework.expectations.Expectation;
-import de.uka.ipd.sdq.ByCounter.test.framework.expectations.Opcodes;
 import de.uka.ipd.sdq.ByCounter.test.helpers.ClassZ;
 import de.uka.ipd.sdq.ByCounter.test.helpers.InterfaceX;
 import de.uka.ipd.sdq.ByCounter.test.helpers.TestSubjectInterfaceMethods;

@@ -11,13 +11,14 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
+import com.sun.xml.internal.ws.org.objectweb.asm.Opcodes;
+
 import de.uka.ipd.sdq.ByCounter.execution.BytecodeCounter;
 import de.uka.ipd.sdq.ByCounter.execution.CountingResult;
 import de.uka.ipd.sdq.ByCounter.execution.CountingResultCollector;
 import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentationParameters;
 import de.uka.ipd.sdq.ByCounter.test.TestASMBytecodes;
 import de.uka.ipd.sdq.ByCounter.test.framework.expectations.Expectation;
-import de.uka.ipd.sdq.ByCounter.test.framework.expectations.Opcodes;
 import de.uka.ipd.sdq.ByCounter.test.helpers.TestSubjectLineNumbers;
 import de.uka.ipd.sdq.ByCounter.test.helpers.Utils;
 import de.uka.ipd.sdq.ByCounter.utils.ASMOpcodesMapper;
