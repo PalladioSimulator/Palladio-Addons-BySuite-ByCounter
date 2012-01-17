@@ -175,7 +175,7 @@ public class TestASMBytecodes {
          .add(Opcodes.ICONST_1, 11)
          .add(Opcodes.ICONST_0, 15);
         
-        e.compare(new CountingResult[] {r}, false);
+        e.compare(new CountingResult[] {r});
 		
 		Assert.assertNotNull(r.getNewArrayTypes());
 		Assert.assertEquals("java/lang/Object", r.getNewArrayTypes()[0]);
@@ -228,7 +228,7 @@ public class TestASMBytecodes {
          .add(Opcodes.ICONST_0, 1)
          .add(Opcodes.IRETURN, 1);
         
-        e.compare(new CountingResult[] {r}, false);
+        e.compare(new CountingResult[] {r});
 
 //		Assert.assertEquals(1, getOpcCount(r, DisplayOpcodes.JSR));
 	}
@@ -275,7 +275,7 @@ public class TestASMBytecodes {
 //         .add(Opcodes.ICONST_0, 1)
          .add(Opcodes.RETURN, 1);
         
-        e.compare(new CountingResult[] {r}, false);
+        e.compare(new CountingResult[] {r});
 	}
 
 	/**
@@ -298,7 +298,7 @@ public class TestASMBytecodes {
          .add(Opcodes.ASTORE, 1)
          .add(Opcodes.ARETURN, 1);
         
-        e.compare(new CountingResult[] {r}, false);
+        e.compare(new CountingResult[] {r});
 	}
 
 	/**
@@ -345,7 +345,7 @@ public class TestASMBytecodes {
          .add(Opcodes.ASTORE, 1)
          .add(Opcodes.RETURN, 1);
 
-        e.compare(new CountingResult[] {r}, false);
+        e.compare(new CountingResult[] {r});
         
 	}
 	
@@ -391,7 +391,7 @@ public class TestASMBytecodes {
          .add(Opcodes.DSTORE, 4)
          .add(Opcodes.RETURN, 1);
 
-        e.compare(new CountingResult[] {r}, false);
+        e.compare(new CountingResult[] {r});
 	}
 	
 	/**
@@ -422,7 +422,7 @@ public class TestASMBytecodes {
          .add("java.lang.StringBuilder.toString()Ljava/lang/String;", 1)
          .add(Opcodes.RETURN, 1);
 
-        e.compare(new CountingResult[] {r}, false);
+        e.compare(new CountingResult[] {r});
 	}
 	
 	/**
@@ -461,7 +461,7 @@ public class TestASMBytecodes {
          .add(Object.class.getCanonicalName()+".equals(Ljava/lang/Object;)Z", 1)
          .add(Opcodes.RETURN, 1);
 
-        e.compare(new CountingResult[] {r}, false);
+        e.compare(new CountingResult[] {r});
 	}
 	
 	/**
@@ -535,7 +535,7 @@ public class TestASMBytecodes {
          .add(Opcodes.L2I, 3)
          .add(Opcodes.FRETURN, 1);
 
-        e.compare(new CountingResult[] {r}, false);
+        e.compare(new CountingResult[] {r});
         
 	}
 	
@@ -564,7 +564,7 @@ public class TestASMBytecodes {
          .add(Opcodes.POP, 1)
          .add(Opcodes.RETURN, 1);
 
-        e.compare(new CountingResult[] {r}, false);
+        e.compare(new CountingResult[] {r});
 	}
 	
 	@Test
@@ -583,7 +583,7 @@ public class TestASMBytecodes {
          .add(Opcodes.DUP, 1)
          .add(Opcodes.RETURN, 1);
 
-        e.compare(new CountingResult[] {r}, false);
+        e.compare(new CountingResult[] {r});
 	}
 
 	/**
@@ -610,7 +610,7 @@ public class TestASMBytecodes {
          .add("java.lang.String.length()I", 1)
          .add(Opcodes.RETURN, 1);
 
-        e.compare(new CountingResult[] {r}, false);
+        e.compare(new CountingResult[] {r});
 	}
 	
 	/**
@@ -647,7 +647,7 @@ public class TestASMBytecodes {
         .add(Opcodes.ACONST_NULL, 1)
          .add(Opcodes.RETURN, 1);
 
-        e.compare(new CountingResult[] {r}, false);
+        e.compare(new CountingResult[] {r});
 	}
 
 	/**
@@ -683,7 +683,7 @@ public class TestASMBytecodes {
         .add(Opcodes.ILOAD, 1)
         .add(Opcodes.ISTORE, 2);
 
-        e.compare(new CountingResult[] {r}, false);
+        e.compare(new CountingResult[] {r});
 		cleanResults();
 
 		// ARETURN
@@ -700,7 +700,7 @@ public class TestASMBytecodes {
          .add(Opcodes.ASTORE, 1)
          .add(Opcodes.CHECKCAST, 1);
         
-        e.compare(new CountingResult[] {r}, false);
+        e.compare(new CountingResult[] {r});
 		cleanResults();
 		
 		// DRETURN
@@ -713,7 +713,7 @@ public class TestASMBytecodes {
          
         // unrelated opcodes:
          .add(Opcodes.LDC, 1);
-        e.compare(new CountingResult[] {r}, false);
+        e.compare(new CountingResult[] {r});
 		cleanResults();
 		
 		// FRETURN
@@ -776,7 +776,7 @@ public class TestASMBytecodes {
 	    .add(Opcodes.DSTORE, 8)
 	    .add(Opcodes.L2I, 3);
         
-        e.compare(new CountingResult[] {r}, false);
+        e.compare(new CountingResult[] {r});
 		cleanResults();
 
 		// IRETURN
@@ -809,7 +809,7 @@ public class TestASMBytecodes {
          .add(Opcodes.ICONST_1, 2)
          .add(Opcodes.ICONST_0, 1);
         
-        e.compare(new CountingResult[] {r}, false);
+        e.compare(new CountingResult[] {r});
 		cleanResults();
 	}
 }

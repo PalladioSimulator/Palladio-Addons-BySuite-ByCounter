@@ -36,9 +36,6 @@ import de.uka.ipd.sdq.ByCounter.utils.MethodDescriptor;
 @RunWith(Parameterized.class)
 public class TestLineNumbers {
 
-    /** A switch whether counted zeros on method calls shall be handled as error (true) or not (false). */
-    private static final boolean HANDLE_ZERO_ON_METHOD_AS_ERROR = false;
-
     /** The canonical name of the test subject's class. */
     private static final String TEST_SUBJECT_CANONICAL = TestSubjectLineNumbers.class.getCanonicalName();
 
@@ -195,7 +192,7 @@ public class TestLineNumbers {
         }
         CountingResultCollector.getInstance().clearResults();
         // compare
-        e.compare(results, HANDLE_ZERO_ON_METHOD_AS_ERROR);
+        e.compare(results);
     }
 
     /**
@@ -250,7 +247,7 @@ public class TestLineNumbers {
         }
         CountingResultCollector.getInstance().clearResults();
         // compare
-        e.compare(results, HANDLE_ZERO_ON_METHOD_AS_ERROR);
+        e.compare(results);
     }
 
     /**
@@ -303,7 +300,7 @@ public class TestLineNumbers {
         }
         CountingResultCollector.getInstance().clearResults();
         // compare
-        e.compare(results, HANDLE_ZERO_ON_METHOD_AS_ERROR);
+        e.compare(results);
     }
 
     /**
@@ -343,7 +340,7 @@ public class TestLineNumbers {
         }
         CountingResultCollector.getInstance().clearResults();
         // compare
-        e.compare(results, HANDLE_ZERO_ON_METHOD_AS_ERROR);
+        e.compare(results);
     }
 
     /**

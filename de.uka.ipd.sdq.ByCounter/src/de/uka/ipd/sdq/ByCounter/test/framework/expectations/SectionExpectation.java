@@ -139,6 +139,9 @@ public class SectionExpectation {
 	 * @return This {@link SectionExpectation} object.
 	 */
 	public SectionExpectation add(final String className, final String signature, final long number) {
+		if (number <= 0) {
+			throw new IllegalArgumentException("The value of number has to be greater than zero.");
+		}
 		return this.add(this.signatureToDescriptor(className, signature), number);
 	}
 
@@ -149,14 +152,11 @@ public class SectionExpectation {
 	 *          The number of opcodes counted.
 	 * @param measuredMethodCallCounts
 	 *          The number of method calls counted.
-	 * @param zeroMethodError
-	 *          <code>true</code>, if measured method call counts equal to zero are handled as error. <code>false</code>,
-	 *          if not.
 	 * @param round
 	 *          The comparison round. Used for better human readable error messages.
 	 */
 	protected void compare(final long[] measuredOpcodeCounts, final Map<String, Long> measuredMethodCallCounts,
-			final boolean zeroMethodError, final int round) {
+			final int round) {
 		// compare opcodes
 		for (int j = 0; j < measuredOpcodeCounts.length; j++) {
 			long expected = 0;
@@ -178,9 +178,6 @@ public class SectionExpectation {
 		for (String method : measuredMethodCallCounts.keySet()) {
 			String message;
 			long actual = measuredMethodCallCounts.get(method);
-
-			message = message(method, round) + " enlisted and counted as 0";
-			Assert.assertTrue(message, actual > 0 || !zeroMethodError);
 			message = "Actual " + message(method, round) + " not expected but counted as " + actual;
 			Assert.assertTrue(message, actual <= 0);
 		}

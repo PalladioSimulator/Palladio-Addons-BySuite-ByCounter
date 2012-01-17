@@ -161,11 +161,12 @@ public class Expectation {
 	 * 
 	 * @param observation
 	 *          ByCounter's output.
-	 * @param zeroMethod
-	 *          <code>true</code>, if measured method call counts equal to zero are handled as error. <code>false</code>,
-	 *          if not.
 	 */
-	public void compare(final CountingResult[] observation, final boolean zeroMethod) {
+	public void compare(final CountingResult[] observation) {
+		if (observation == null) {
+			throw new IllegalArgumentException("observation must not be null");
+		}
+		
 		String message = "Unexpected number of sections.";
 		Assert.assertEquals(message, this.getNumberOfSections(), observation.length);
 		for (int i = 0; i < observation.length; i++) {
@@ -181,7 +182,7 @@ public class Expectation {
 				message = sectExpt.toString() + " not expected.";
 				Assert.assertNotNull(message, sectExpt);
 			}
-			sectExpt.compare(measuredOpcodeCounts, measuredMethodCallCounts, zeroMethod, i);
+			sectExpt.compare(measuredOpcodeCounts, measuredMethodCallCounts, i);
 		}
 
 	}

@@ -144,7 +144,7 @@ public class TestInternalClassDefinition {
 		
 		// retrieve results TODO does not work for recursive = true
 		CountingResult[] results = CountingResultCollector.getInstance().retrieveAllCountingResultsAsArray_noInlining(false);
-    e.compare(results, false);
+    e.compare(results);
     
     List<CountingResult> resultsList = CountingResultCollector.getInstance().retrieveAllCountingResults_recursively();
 		Assert.assertNotNull(resultsList);
