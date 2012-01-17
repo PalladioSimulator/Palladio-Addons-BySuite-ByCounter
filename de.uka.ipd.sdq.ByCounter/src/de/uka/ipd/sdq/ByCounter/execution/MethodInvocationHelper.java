@@ -51,7 +51,6 @@ public final class MethodInvocationHelper {
 	 * @param params Parameters for the method calls. This means one instance of RuntimeMethodParameters for each method. If null, no parameters is assumed.
 	 * @return Result and duration of execution. 
 	 */
-	@SuppressWarnings("deprecation")
 	public static InvocationResultData callMethods(
 			Logger log,
 			Class<? extends Object> clazz,
@@ -179,68 +178,5 @@ public final class MethodInvocationHelper {
 			List<MethodDescriptor> methodsToCall) {
 		return callMethods(log, clazz, parentObject, methodsToCall, null);
 	}
-	
 
-	/**
-	 * Checks if the given methods arguments match to the given parameters.
-	 * @param m Method with the parameter description
-	 * @param params Parameters to compare to the methods arguments.
-	 * @return True if the parameters fit.
-	 */
-	@Deprecated
-	public static boolean checkParametersMatch(Method m, 
-			RuntimeMethodParameters params) {
-		
-		// check for number of parameters
-		if(m.getParameterTypes().length == params.getParameters().length) {
-
-			// now compare the type for each parameter
-			for(int i = 0; i < params.getParameters().length; i++) {
-				Class<?> type = m.getParameterTypes()[i];
-				Class<?> givenType = params.getParameters()[i].getClass();
-
-				// check whether a primitive is expected
-				// in case it is do the specific comparison with its class type
-				if(type == Boolean.TYPE) {
-					if(!givenType.equals(Boolean.class)) {
-						return false;
-					}
-				} else if(type == Byte.TYPE) {
-					if(!givenType.equals(Byte.class)) {
-						return false;
-					}
-				} else if(type == Character.TYPE) {
-					if(!givenType.equals(Character.class)) {
-						return false;
-					}
-				} else if(type == Short.TYPE) {
-					if(!givenType.equals(Short.class)) {
-						return false;
-					}
-				} else if(type == Integer.TYPE) {
-					if(!givenType.equals(Integer.class)) {
-						return false;
-					}
-				} else if(type == Long.TYPE) {
-					if(!givenType.equals(Long.class)) {
-						return false;
-					}
-				} else if(type == Float.TYPE) {
-					if(!givenType.equals(Float.class)) {
-						return false;
-					}
-				} else if(type == Double.TYPE) {
-					if(!givenType.equals(Double.class)) {
-						return false;
-					}
-				} else { // no primitive type expected, do class check
-					if(!type.isAssignableFrom(givenType)) {
-						return false;
-					}
-				}
-			}
-			return true;
-		}
-		return false;
-	}
 }

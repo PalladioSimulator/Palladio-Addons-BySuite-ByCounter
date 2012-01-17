@@ -619,7 +619,7 @@ public class CountingResultCollectorMonitor implements Runnable {
 	}
 
 	public void run() {
-		while (true && crc.isMonitorShouldStop() == false) {
+		while (true && crc.getMonitorShouldStop() == false) {
 			try {
 				Thread.sleep(this.sleep);
 			} catch (InterruptedException e) {

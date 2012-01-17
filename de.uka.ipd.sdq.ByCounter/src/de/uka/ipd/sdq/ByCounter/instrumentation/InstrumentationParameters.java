@@ -283,7 +283,8 @@ public final class InstrumentationParameters implements Cloneable {
 	}
 
 	/**
-	 * @deprecated
+	 * @deprecated Static counting is implemented only in it's basics (opcode and method call counts). 
+	 * It is not a focus of ByCounter.
 	 * @return Reflects, whether dynamic or static method analysis is employed.
 	 */
 	@SuppressWarnings("dep-ann")
@@ -351,7 +352,8 @@ public final class InstrumentationParameters implements Cloneable {
 	}
 
 	/**
-	 * @deprecated
+	 * @deprecated Static counting is implemented only in it's basics (opcode and method call counts). 
+	 * It is not a focus of ByCounter.
 	 * @param countStatically When true, no runtime analysis is done. Instead the
 	 * method is statically analysed.
 	 */

@@ -28,10 +28,13 @@ public final class CountingResult
 implements Serializable, Cloneable, IFullCountingResult{
 
 	/**
-	 * TODO
+	 * Version for {@link Serializable} interface.
 	 */
 	private static final long serialVersionUID = 1L;
 
+	/**
+	 * The highest possible number of a Java bytecode opcode.
+	 */
 	public static final int MAX_OPCODE = FullOpcodeMapper.mnemonics.length;
 
 	/**
@@ -42,105 +45,22 @@ implements Serializable, Cloneable, IFullCountingResult{
 	 * @param left the first summand
 	 * @param right the second summand
 	 * @return an instance of {@link CountingResult} where only counts are initialised
-	 * @deprecated because not adapted to the new fields
 	 */
 	@SuppressWarnings("dep-ann")
 	public synchronized static CountingResult add(CountingResult left, CountingResult right){
 		//TODO replace cloning
 		long[] resultOpcodeCounts = new long[MAX_OPCODE];
-		TreeMap<String,Long>  resultMethodCallCounts = new TreeMap<String, Long>();
-		// the following three lists need to keep their indices in sync
-		ArrayList<Long> resultNewArrayCounts = new ArrayList<Long>();
-		ArrayList<Integer> resultNewArrayDim = new ArrayList<Integer>();
-		ArrayList<String> resultNewArrayType = new ArrayList<String>();
-
-		long[] resultNewArrayCountsArray = null;
-		int[] resultNewArrayDimArray = null;
-		String[] resultNewArrayTypeArray = null;
-
-		String keyString;
-
-		Long resultValue;
-		String rightKey_String;
-		Long rightValue;
+		SortedMap<String,Long>  resultMethodCallCounts = new TreeMap<String, Long>();
 
 		// add up all opcode counts
-		for(int i = 0; i < left.opcodeCounts.length; i++) {
-			resultOpcodeCounts[i] = left.opcodeCounts[i] + right.opcodeCounts[i];
-		}
-
-		// set all method call counts for which 'left' has keys:
-		Iterator<String> iteratorMethods = left.methodCallCounts.keySet().iterator();
-		while (iteratorMethods.hasNext()) {
-			keyString = iteratorMethods.next();
-			rightValue = right.methodCallCounts.get(keyString);
-			resultValue = left.methodCallCounts.get(keyString);
-			if(rightValue != null) {
-				resultValue += rightValue;
-			}
-			resultMethodCallCounts.put(
-					new String(keyString),
-					new Long(resultValue));
-		}
-		// set all method call counts for which only 'right' has keys:
-		Iterator<String> methodsKeysetRight = right.getMethodCallCounts().keySet().iterator();
-		while (methodsKeysetRight.hasNext()) {
-			rightKey_String = methodsKeysetRight.next();
-			rightValue = right.methodCallCounts.get(rightKey_String);
-			resultValue = resultMethodCallCounts.get(rightKey_String);
-			if(resultValue == null) {
-				resultMethodCallCounts.put(rightKey_String, rightValue);
-			}
-		}
-		if(left.getNewArrayCounts() != null && right.getNewArrayCounts() != null) {
-			// copy array counts from 'left':
-			for(int i = 0; i < left.getNewArrayCounts().length; i++) {
-				resultNewArrayCounts.add(left.getNewArrayCounts()[i]);
-				resultNewArrayDim.add(left.getNewArrayDim()[i]);
-				resultNewArrayType.add(left.getNewArrayTypes()[i]);
-			}
-
-			int rightDim;
-			String rightType;
-			long rightCount;
-			int resultDim;
-			String resultType;
-			boolean currentCountDone;
-			// now merge in the array counts from 'right'
-			for(int i = 0; i < right.getNewArrayCounts().length; i++) {
-				rightDim = right.getNewArrayDim()[i];
-				rightType = right.getNewArrayTypes()[i];
-				rightCount = right.getNewArrayCounts()[i];
-				currentCountDone = false;
-				// is this entry in the list already?
-				for(int j = 0; j < resultNewArrayCounts.size() && !currentCountDone; j++) {
-					resultDim = resultNewArrayDim.get(j);
-					resultType = resultNewArrayType.get(j);
-					if(rightDim == resultDim
-							&& rightType.equals(resultType)) {
-						// add the count value
-						resultNewArrayCounts.set(j,
-								resultNewArrayCounts.get(j) + rightCount);
-						currentCountDone = true;
-					}
-				}
-				if(!currentCountDone) {
-					// we have a new type/dimension; add it to the result
-					resultNewArrayCounts.add(rightCount);
-					resultNewArrayDim.add(rightDim);
-					resultNewArrayType.add(rightType);
-				}
-			}
-			// create arrays from the arraylists
-			int numOfNewArray = resultNewArrayCounts.size();
-			resultNewArrayCountsArray = new long[numOfNewArray];
-			resultNewArrayDimArray = new int[numOfNewArray];
-			resultNewArrayTypeArray = resultNewArrayType.toArray(new String[numOfNewArray]);
-			for(int i = 0; i < numOfNewArray; i++) {
-				resultNewArrayCountsArray[i] = resultNewArrayCounts.get(i);
-				resultNewArrayDimArray[i] = resultNewArrayDim.get(i);
-			}
-		}
+		resultOpcodeCounts = addOpcodeCounts(left.opcodeCounts, right.opcodeCounts);
+		// add up all method call counts
+		resultMethodCallCounts = addMethodCallCounts(left.methodCallCounts, right.methodCallCounts);
+		// add up all array creation parameters
+		ArrayParameters leftAP = ArrayParameters.copyFromCountingResult(left);
+		ArrayParameters rightAP = ArrayParameters.copyFromCountingResult(right);
+		ArrayParameters arrayParameters = addArrayParameters(leftAP, rightAP);
+		
 
 		CountingResult cr;
 		cr = new CountingResult(
@@ -156,10 +76,133 @@ implements Serializable, Cloneable, IFullCountingResult{
 				-1L,
 				resultOpcodeCounts,
 				resultMethodCallCounts,
-				resultNewArrayCountsArray,
-				resultNewArrayDimArray,
-				resultNewArrayTypeArray);
+				arrayParameters.newArrayCounts,
+				arrayParameters.newArrayDim,
+				arrayParameters.newArrayTypes);
+
 		return cr;
+	}
+	
+	private static ArrayParameters addArrayParameters(
+			ArrayParameters left,
+			ArrayParameters right
+			) {
+		
+		ArrayParameters result = new ArrayParameters();
+		
+		if(left.newArrayCounts == null || right.newArrayCounts == null) {
+			throw new RuntimeException("Cannot add array parameters when either operand is null.");
+		}
+		
+		ArrayList<Long> resultNewArrayCounts = new ArrayList<Long>();
+		ArrayList<Integer> resultNewArrayDim = new ArrayList<Integer>();
+		ArrayList<String> resultNewArrayType = new ArrayList<String>();
+		// copy array counts from 'left':
+		for(int i = 0; i < left.newArrayCounts.length; i++) {
+			resultNewArrayCounts .add(left.newArrayCounts[i]);
+			resultNewArrayDim.add(left.newArrayDim[i]);
+			resultNewArrayType.add(left.newArrayTypes[i]);
+		}
+
+		int rightDim;
+		String rightType;
+		long rightCount;
+		int resultDim;
+		String resultType;
+		boolean currentCountDone;
+		// now merge in the array counts from 'right'
+		for(int i = 0; i < right.newArrayCounts.length; i++) {
+			rightDim = right.newArrayDim[i];
+			rightType = right.newArrayTypes[i];
+			rightCount = right.newArrayCounts[i];
+			currentCountDone = false;
+			// is this entry in the list already?
+			for(int j = 0; j < resultNewArrayCounts.size() && !currentCountDone; j++) {
+				resultDim = resultNewArrayDim.get(j);
+				resultType = resultNewArrayType.get(j);
+				if(rightDim == resultDim
+						&& rightType.equals(resultType)) {
+					// add the count value
+					resultNewArrayCounts.set(j,
+							resultNewArrayCounts.get(j) + rightCount);
+					currentCountDone = true;
+				}
+			}
+			if(!currentCountDone) {
+				// we have a new type/dimension; add it to the result
+				resultNewArrayCounts.add(rightCount);
+				resultNewArrayDim.add(rightDim);
+				resultNewArrayType.add(rightType);
+			}
+		}
+		// create arrays from the arraylists
+		final int numOfNewArray = resultNewArrayCounts.size();
+		result.newArrayCounts = new long[numOfNewArray];
+		result.newArrayDim = new int[numOfNewArray];
+		result.newArrayTypes = resultNewArrayType.toArray(new String[numOfNewArray]);
+		for(int i = 0; i < numOfNewArray; i++) {
+			result.newArrayCounts[i] = resultNewArrayCounts.get(i);
+			result.newArrayDim[i] = resultNewArrayDim.get(i);
+			result.newArrayTypes[i] = resultNewArrayType.get(i);
+		}
+		
+		return result;
+	}
+
+	/**
+	 * Add up method call counts.
+	 * @param leftMethodCallCounts left operand
+	 * @param rightMethodCallCounts right operand
+	 * @return Sum of counts.
+	 */
+	private static SortedMap<String, Long> addMethodCallCounts(
+			SortedMap<String, Long> leftMethodCallCounts,
+			SortedMap<String, Long> rightMethodCallCounts) {
+		TreeMap<String, Long> resultMethodCallCounts = new TreeMap<String, Long>();
+		String keyString;
+		Long resultValue;
+		String rightKey_String;
+		Long rightValue;
+
+		// set all method call counts for which 'left' has keys:
+		Iterator<String> iteratorMethods = leftMethodCallCounts.keySet().iterator();
+		while (iteratorMethods.hasNext()) {
+			keyString = iteratorMethods.next();
+			rightValue = rightMethodCallCounts.get(keyString);
+			resultValue = leftMethodCallCounts.get(keyString);
+			if(rightValue != null) {
+				resultValue += rightValue;
+			}
+			resultMethodCallCounts.put(
+					new String(keyString),
+					new Long(resultValue));
+		}
+		// set all method call counts for which only 'right' has keys:
+		Iterator<String> methodsKeysetRight = rightMethodCallCounts.keySet().iterator();
+		while (methodsKeysetRight.hasNext()) {
+			rightKey_String = methodsKeysetRight.next();
+			rightValue = rightMethodCallCounts.get(rightKey_String);
+			resultValue = resultMethodCallCounts.get(rightKey_String);
+			if(resultValue == null) {
+				resultMethodCallCounts.put(rightKey_String, rightValue);
+			}
+		}
+		return resultMethodCallCounts;
+	}
+
+	/**
+	 * Add up the opcode count arrays
+	 * @param leftOpcodeCounts Opcode counts of first summand.
+	 * @param rightOpcodeCounts Opcode counts of second summand.
+	 * @return The sum array.
+	 */
+	private static long[] addOpcodeCounts(long[] leftOpcodeCounts, long[] rightOpcodeCounts) {
+		long[] resultOpcodeCounts = new long[MAX_OPCODE];
+		// add up all opcode counts
+		for(int i = 0; i < MAX_OPCODE; i++) {
+			resultOpcodeCounts[i] = leftOpcodeCounts[i] + rightOpcodeCounts[i];
+		}
+		return resultOpcodeCounts;
 	}
 
 	/**
@@ -170,49 +213,18 @@ implements Serializable, Cloneable, IFullCountingResult{
 	 * @param left the first summand
 	 * @param right the second summand
 	 * @return an instance of {@link CountingResult} where only counts are initialised
-	 * @deprecated because not adapted to the new fields
 	 */
 	@SuppressWarnings("dep-ann")
-	public synchronized static CountingResult add_methodInstructionsOnly(
+	public synchronized static CountingResult add_methodsAndInstructionsOnly(
 			CountingResult left, CountingResult right){
 		//TODO replace cloning
 		long[] resultOpcodeCounts = new long[MAX_OPCODE];
-		TreeMap<String,Long>  resultMethodCallCounts = new TreeMap<String, Long>();
-
-		String keyString;
-		Long resultValue;
-		String rightKey_String;
-		Long rightValue;
-
+		SortedMap<String,Long>  resultMethodCallCounts = new TreeMap<String, Long>();
 
 		// add up all opcode counts
-		for(int i = 0; i < left.opcodeCounts.length; i++) {
-			resultOpcodeCounts[i] = left.opcodeCounts[i] + right.opcodeCounts[i];
-		}
-
-		// set all method call counts for which 'left' has keys:
-		Iterator<String> iteratorMethods = left.methodCallCounts.keySet().iterator();
-		while (iteratorMethods.hasNext()) {
-			keyString = iteratorMethods.next();
-			rightValue = right.methodCallCounts.get(keyString);
-			resultValue = left.methodCallCounts.get(keyString);
-			if(rightValue != null) {
-				resultValue += rightValue;
-			}
-			resultMethodCallCounts.put(
-					new String(keyString),
-					new Long(resultValue));
-		}
-		// set all method call counts for which only 'right' has keys:
-		Iterator<String> methodsKeysetRight = right.getMethodCallCounts().keySet().iterator();
-		while (methodsKeysetRight.hasNext()) {
-			rightKey_String = methodsKeysetRight.next();
-			rightValue = right.methodCallCounts.get(rightKey_String);
-			resultValue = resultMethodCallCounts.get(rightKey_String);
-			if(resultValue == null) {
-				resultMethodCallCounts.put(rightKey_String, rightValue);
-			}
-		}
+		resultOpcodeCounts = addOpcodeCounts(left.opcodeCounts, right.opcodeCounts);
+		// add up all method call counts
+		resultMethodCallCounts = addMethodCallCounts(left.methodCallCounts, right.methodCallCounts);
 
 		CountingResult cr;
 		cr = new CountingResult(
@@ -598,7 +610,6 @@ implements Serializable, Cloneable, IFullCountingResult{
 	 * the counting results
 	 * of the {@link CountingResult} instance given as parameter
 	 * @param toBeAdded {@link CountingResult} instance whose counts are to be added
-	 * @deprecated because yet untested w.r.t. new fields and side effects
 	 */
 	@SuppressWarnings("dep-ann")
 	public synchronized void add(CountingResult toBeAdded){
@@ -609,18 +620,16 @@ implements Serializable, Cloneable, IFullCountingResult{
 		this.arrayCreationDimensions = skeletonResult.getNewArrayDim();
 		this.arrayCreationTypeInfo = skeletonResult.getNewArrayTypes();
 		skeletonResult = null;
-//		TODO add section counts ... and other non-copied fields
 	}
 
 	/** Adds the counts of this {@link CountingResult} instance to
 	 * the counting results
 	 * of the {@link CountingResult} instance given as parameter
 	 * @param toBeAdded {@link CountingResult} instance whose counts are to be added
-	 * @deprecated because yet untested w.r.t. new fields and side effects
 	 */
 	@SuppressWarnings("dep-ann")
 	public synchronized void add_methodsInstructionsOnly(CountingResult toBeAdded){
-		CountingResult skeletonResult = add_methodInstructionsOnly(this,toBeAdded);
+		CountingResult skeletonResult = add_methodsAndInstructionsOnly(this,toBeAdded);
 		this.methodCallCounts = skeletonResult.getMethodCallCounts();
 		this.opcodeCounts = skeletonResult.getOpcodeCounts();
 		skeletonResult = null;
@@ -775,37 +784,6 @@ implements Serializable, Cloneable, IFullCountingResult{
 	public int getFileType() {
 		return SPECjvm2008_compress_fileType;
 	}
-
-//	/**
-//	 * Constructs a new Result instance with the given values.
-//	 * @param time Time of method execution as returned by System.nanoTime().
-//	 * @param qualifyingMethodName Name of the evaluated method.
-//	 * @param opcodeCounts HashMap containing counts for every opcode occurrence.
-//	 * @param methodCallCounts HashMap containing count for every method that was called.
-//	 * @param newArrayCounts The counts for the specific array construction.
-//	 * @param newArrayDim The dimension information for the
-//	 * specific array construction if more than one dimension exists.
-//	 * @param newArrayType The descriptor string for array construction of non-
-//	 * simple type or a string identifying the type else.
-//	 * @deprecated
-//	 */
-//	public CountingResult(
-//			long time,
-//			String qualifyingMethodName,
-//			HashMap<Integer, Long> opcodeCounts,
-//			HashMap<String, Long> methodCallCounts,
-//			long[] newArrayCounts,
-//			int[] newArrayDim,
-//			String[] newArrayType) {
-//		this.methodInvocationBeginning = time;
-//		this.qualifyingMethodName = qualifyingMethodName;
-//		this.opcodeCounts = opcodeCounts;
-//		this.methodCallCounts = methodCallCounts;
-//		this.arrayCreationCounts = newArrayCounts;
-//		this.arrayCreationDimensions = newArrayDim;
-//		this.arrayCreationTypeInfo = newArrayType;
-//	}
-
 
 	/**
 	 * @return the ID
@@ -996,27 +974,6 @@ implements Serializable, Cloneable, IFullCountingResult{
 	public boolean isInvariantMethodsAreInlined() {
 		return invariantMethodsAreInlined;
 	}
-
-//	/* (non-Javadoc)
-//	 * @see de.uka.ipd.sdq.ByCounter.execution.ISimpleCountingResult#KK_getMethodCount(java.lang.String)
-//	 */
-//	public Long KK_getMethodCount(String methodName){
-//		return getMethodCountByString(methodName);
-//	}
-//
-//	/* (non-Javadoc)
-//	 * @see de.uka.ipd.sdq.ByCounter.execution.ISimpleCountingResult#KK_getOpcodeCount(int)
-//	 */
-//	public Long KK_getOpcodeCount(int opcode){
-//		return getOpcodeCountByInteger(opcode);
-//	}
-//
-//	/* (non-Javadoc)
-//	 * @see de.uka.ipd.sdq.ByCounter.execution.ISimpleCountingResult#KK_getOpcodeCount(java.lang.String)
-//	 */
-//	public Long KK_getOpcodeCount(String opcode){
-//		return getOpcodeCountByString(opcode);
-//	}
 
 	/**
 	 * Returns the total number of method invocations
@@ -1311,6 +1268,5 @@ implements Serializable, Cloneable, IFullCountingResult{
 	public boolean isTotalCountsAlreadyComputed() {
 		return this.totalCountsAlreadyComputed;
 	}
-
 
 }

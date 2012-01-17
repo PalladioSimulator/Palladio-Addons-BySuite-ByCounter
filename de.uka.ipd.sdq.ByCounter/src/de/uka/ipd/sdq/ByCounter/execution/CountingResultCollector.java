@@ -104,18 +104,6 @@ public final class CountingResultCollector {
 	private HashMap<CountingArtefactInformation, CountingResult> countingResultsByArtefactInformation;
 
 	/**
-	 * Currently evaluated; see forceInline method for controlling flags
-	 * @deprecated because untested and not evaluated
-	 */
-	private List<long[]> forcedInlining_CollectedMethodCallCounts;
-
-	/**
-	 * Currently evaluated; see forceInline method for controlling flags
-	 * @deprecated because untested and not evaluated
-	 */
-	private List<String[]> forcedInlining_CollectedMethodCallSignatures;
-	
-	/**
 	 * Should be re-appended carefully to the lists returned by *get methods
 	 */
 	private CountingResult forcedInlining_CountingResult;
@@ -125,11 +113,6 @@ public final class CountingResultCollector {
 	 * TODO ensure that this structure is properly read.
 	 */
 	private SortedSet<CountingResult> forcedInlining_CountingResultsSortedSet;
-
-//	/**
-//	 * TODO should this really be a separate structure?
-//	 */
-//	private SortedSet<SortedMap<String, Integer>> forcedInlining_InlinedMethodMappings;
 
 	private SortedMap<String, Long> forcedInlining_InlinedMethodCounts;
 
@@ -235,8 +218,6 @@ public final class CountingResultCollector {
 		this.countingInformationsByMethodname = new HashMap<String, List<CountingArtefactInformation>>();//TODO consider removing this...
 		this.countingResults = new ArrayList<CountingResult>();
 		this.countingResultsByArtefactInformation = new HashMap<CountingArtefactInformation, CountingResult>();
-		this.forcedInlining_CollectedMethodCallCounts = new ArrayList<long[]>();
-		this.forcedInlining_CollectedMethodCallSignatures = new ArrayList<String[]>();
 		this.forcedInlining_CountingResult = createNewForcedInlinedCountingResult();
 		this.forcedInlining_CountingResultsSortedSet = new TreeSet<CountingResult>();
 		this.forcedInlining_InlinedMethodCounts = new TreeMap<String, Long>();
@@ -550,8 +531,6 @@ public final class CountingResultCollector {
 		this.countingInformationsByMethodname.clear();
 		this.countingResults.clear();
 		this.countingResultsByArtefactInformation.clear();
-		this.forcedInlining_CollectedMethodCallCounts = new ArrayList<long[]>();
-		this.forcedInlining_CollectedMethodCallSignatures = new ArrayList<String[]>();
 		this.forcedInlining_CountingResult = createNewForcedInlinedCountingResult();
 		this.forcedInlining_CountingResultsSortedSet = new TreeSet<CountingResult>();
 		this.forcedInlining_InlinedMethodCounts = new TreeMap<String, Long>();
@@ -819,165 +798,21 @@ public final class CountingResultCollector {
 		}
 	}
 
-//	/**
-//	 * TODO how to make the parameter unmodifiable?
-//	 * @return
-//	 */
-//	public CountingResult getForcedInlined_CountingResult() {
-//		return this.forcedInlining_CountingResult;
-//	}
-
 	/**
 	 * @deprecated because only GUI-used but the GUI is outdated
 	 */
-	public boolean isMonitorShouldStop() {
+	public boolean getMonitorShouldStop() {
 		return this.monitorShouldStop;
 	}
 
-//	/**
-//	 * Print a log message that reports the result, listing all counts and
-//	 * data that was collected.
-//	 * @param cr Result to report.
-//	 * @param printZeros
-//	 * @param vertically
-//	 */
-//	public synchronized /*DefaultCategoryDataset*/ void logResult(
-//			CountingResult cr,
-//			boolean printZeros, //eigentlich 3 Abstufungen: gar nicht; wie gespeichert; alle opcodes (auch wenn nicht gespeichert)
-//			boolean vertically //TODO currently ignored
-//			) {
-//		StringBuffer sb = new StringBuffer();
-//		sb.append("\n==START========= Logging CountingResult ================\n");
-//		if(cr==null) {
-//			log.severe("CountingResult to log is null, EXITING");
-//			sb.append("== END ========= Logging CountingResult ================\n");
-//			log.info(sb.toString());
-//			return /*null*/;
-//		}
-//		String qualifyingMethodName = cr.getQualifyingMethodName();
-//		if(qualifyingMethodName==null || qualifyingMethodName.equals("")) {
-//			log.severe("Qualifying method name is null or empty, EXITING");
-//			sb.append("== END ========= Logging CountingResult ================\n");;
-//			log.info(sb.toString());
-//			return /*null*/;
-//		}
-//		sb.append("qualifyingMethodName: " + qualifyingMethodName+"\n");
-//		sb.append("requestID: " + cr.getRequestID() + ", ownID: " + cr.getOwnID()
-//				+ ", callerID: " + cr.getCallerID()+"\n");
-////		if(cr==null){
-////			log.severe("The CountingResult to log is null - nothing to do, returning immediately.");
-////			log.info("== END ========= Logging CountingResult ================");
-////			return;
-////		}
-//
-//		long[] opcodeCounts 		= cr.getOpcodeCounts();
-//		if(opcodeCounts == null) {
-//			log.severe("Opcode counts is null... EXITING");
-//			sb.append("== END ========= Logging CountingResult ================\n");
-//			log.info(sb.toString());
-//			return /*null*/;
-//		}
-//
-//		SortedMap<String, Long> methodCallCounts 		= cr.getMethodCallCounts();
-//		if(methodCallCounts == null) {
-//			log.severe("Method counts hashmap is null... EXITING");
-//			sb.append("== END ========= Logging CountingResult ================\n");
-//			log.info(sb.toString());
-//			return /*null*/;
-//		}
-//
-//		long time = cr.getMethodInvocationBeginning();
-//		if(time<0) {
-//			log.severe("Wrong time: "+time);//TODO which kind of time is this?
-//			sb.append("== END ========= Logging CountingResult ================\n");
-//			log.info(sb.toString());
-//			return /*null*/;
-//		}
-//
-//		if(resultWriters.size()>0){
-//			log.fine("Logging CountinResult using "+resultWriters.size()+
-//					" registered result writers");
-//			for(ICountingResultWriter rw : resultWriters){
-//				rw.writeResult(cr, false, -1);//TODO make this better/parameterised
-//			}
-//		}
-//
-//		long[] newArrayCounts 						= cr.getNewArrayCounts();
-//		int[] newArrayDims 							= cr.getNewArrayDim();
-//		String[] newArrayTypes 						= cr.getNewArrayTypes();
-//
-//		// No checks here (but below!) for array results, because null is also
-//		// returned when array parameter recording is disabled.
-//
-//		// make sure DisplayOpcodes does not interfere with the output...?
-//		ASMOpcodesMapper dop = ASMOpcodesMapper.getInstance();
-//		long totalCountOfAllOpcodes = 0; //you need longs for that...
-//		long totalCountOfAllMethods = 0; //you need longs for that...
-//
-//		String 	tabs;					// tabulators (for logging)
-//		String 	currentOpcodeString;	// opcode as string
-//		long 	currentOpcodeCount;		// opcode count
-//		long 	currentMethodCount = 0;	// method count
-//
-//
-//		int numberOfOpcodesWithNonzeroFrequencies=0;
-//		for(int i = 0; i < CountingResult.MAX_OPCODE; i++) {
-//			currentOpcodeString = dop.getOpcodeString(i);
-//			currentOpcodeCount 	= opcodeCounts[i];
-//			tabs 				= getTabs(currentOpcodeString + ":", 2);
-////			dataset.addValue(currentOpcodeCount, qualifyingMethodName+": instructions", currentOpcodeString);
-//			if(currentOpcodeCount!=0 || printZeros){
-//				sb.append(currentOpcodeString + ": "+tabs+currentOpcodeCount+"\n");//TODO make a cheaper call... append to a StringBuffer
-//			}
-//			if((totalCountOfAllOpcodes+currentOpcodeCount)<totalCountOfAllOpcodes){
-//				log.severe("OVERFLOW while adding opcode counts... use BigInteger instead");
-//			}else{
-//				totalCountOfAllOpcodes += currentOpcodeCount;
-//				if(currentOpcodeCount>0){
-//					numberOfOpcodesWithNonzeroFrequencies++;
-//				}
-//			}
-//		}
-//
-//		Iterator<String> methodSigs = methodCallCounts.keySet().iterator();
-//		String currentSig;
-//		while(methodSigs.hasNext()) {
-//			currentSig = methodSigs.next();
-//			currentMethodCount = methodCallCounts.get(currentSig);
-//			tabs = getTabs(currentSig + ":", 9);
-////			dataset.addValue(currentMethodCount, qualifyingMethodName+": methods", currentMethodSignature);
-//			sb.append(currentSig + ": " + tabs + currentMethodCount+"\n");
-//			if(totalCountOfAllMethods + currentMethodCount<totalCountOfAllMethods){
-//				log.severe("OVERFLOW while adding method counts");
-//			}else{
-//				totalCountOfAllMethods += currentMethodCount;
-//			}
-////			instrnames_texSB.append(currentMethodSignature+" & ");
-////			instrcounts_texSB.append(currentMethodCount+" & ");
-//		}
-////		instrnames_texSB.append("total \\\\"); //TODO use File.separator here
-////		instrcounts_texSB.append(totalCountOfAllMethods+" \\\\"); //TODO use File.separator here
-//
-//		// because null is a valid value for the array*Something* arrays,
-//		// we need to be carefull here.
-//		if(newArrayCounts != null
-//				&& newArrayDims != null
-//				&& newArrayTypes != null) {
-//			for(int i = 0; i < newArrayCounts.length; i++) {
-//				sb.append("new array of type '" + newArrayTypes[i] + "'"
-//						+ (newArrayDims[i] > 0 ? ", dim " + newArrayDims[i] : "")
-//						+ ": " + newArrayCounts[i]+"\n");
-//			}
-//		}
-//		sb.append("====================================================\n");
-//		sb.append(totalCountOfAllOpcodes + " instruc. executions of "+
-//				numberOfOpcodesWithNonzeroFrequencies + " different opcodes were counted.\n");
-//		sb.append(totalCountOfAllMethods + " methods invocations of "+
-//				methodCallCounts.size() + " different signatures were counted.\n");
-//		sb.append("== END ========= Logging CountingResult ================\n");
-//		log.info(sb.toString());
-//	}
-
+	/**
+	 * Print a log message that reports the result, listing all counts and
+	 * data that was collected.
+	 * @param cr {@link CountingResult} data to print.
+	 * @param printZeros When true, opcodes with an execution count of 0 are printed.
+	 * @param vertically When true, print as one opcode/method count per line.
+	 * @return The string with the logged message.
+	 */
 	public synchronized String logResult(CountingResult cr,
 			boolean printZeros, //eigentlich 3 Abstufungen: gar nicht; wie gespeichert; alle opcodes (auch wenn nicht gespeichert)
 			boolean vertically //TODO currently ignored
@@ -988,9 +823,11 @@ public final class CountingResultCollector {
 	/**
 	 * Print a log message that reports the result, listing all counts and
 	 * data that was collected.
-	 * @param cr Result to report.
-	 * @param printZeros
-	 * @param vertically
+	 * @param cr {@link CountingResult} data to print.
+	 * @param printZeros When true, opcodes with an execution count of 0 are printed.
+	 * @param vertically When true, print as one opcode/method count per line.
+	 * @param loggingLevel {@link Level} used to log the message.
+	 * @return The string with the logged message.
 	 */
 	public synchronized String logResult(
 			CountingResult cr,
@@ -1192,27 +1029,7 @@ public final class CountingResultCollector {
 		sb.append("== END ========= Logging CountingResult ================");
 		sb.append(NEWLINE);
 		String ret = sb.toString();
-		if(loggingLevel.equals(Level.CONFIG)){
-			log.config(sb.toString());
-		}else if(loggingLevel.equals(Level.FINE)){
-			log.fine(sb.toString());
-		}else if(loggingLevel.equals(Level.FINER)){
-			log.finer(sb.toString());
-		}else if(loggingLevel.equals(Level.FINEST)){
-			log.finest(sb.toString());
-		}else if(loggingLevel.equals(Level.INFO)){
-			log.info(sb.toString());
-		}else if(loggingLevel.equals(Level.SEVERE)){
-			log.severe(sb.toString());
-		}else if(loggingLevel.equals(Level.WARNING)){
-			log.warning(sb.toString());
-		}else if(loggingLevel.equals(Level.ALL)){
-			log.info(sb.toString());
-		}else if(loggingLevel.equals(Level.OFF)){
-			//log.info(sb.toString());
-		}else{
-			log.info(sb.toString());
-		} 
+		log.log(loggingLevel, sb.toString());
 		return ret;
 	}
 
@@ -1436,11 +1253,6 @@ public final class CountingResultCollector {
 			addToCountingResults(result, reportingStart);
 		}
 	}
-
-//	private void resetInlinedCountingResult() {
-//		inlined_countingResult.resetMethodInstructionCountsOnly();
-//	}
-
 
 	/**
 	 * TODO test me...
@@ -1678,7 +1490,6 @@ public final class CountingResultCollector {
 	 * @param suppressDebugMessages
 	 * @return The calculated {@link CountingResult}.
 	 */
-	@SuppressWarnings("deprecation")
 	public synchronized CountingResult retrieveCountingResultByStartTime_evaluateCallingTree(
 			Long callerStartTime,
 			boolean suppressDebugMessages){
@@ -1838,14 +1649,6 @@ public final class CountingResultCollector {
 	
 	public CountingResult getForcedInlining_CountingResult() {
 		return this.forcedInlining_CountingResult;
-	}
-	
-	public List<long[]> getForcedInlining_CollectedMethodCallCounts() {
-		return this.forcedInlining_CollectedMethodCallCounts;
-	}
-	
-	public List<String[]> getForcedInlining_CollectedMethodCallSignatures() {
-		return this.forcedInlining_CollectedMethodCallSignatures;
 	}
 	
 	public SortedSet<CountingResult> getForcedInlining_CountingResultsSortedSet() {

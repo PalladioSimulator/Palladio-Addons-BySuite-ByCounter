@@ -184,13 +184,4 @@ public class FullOpcodeMapper implements IAllJavaOpcodes {
 				+ getOpcodeOfMnemonic("AALOADfake"));
 
 	}
-
-	/**
-	 * @deprecated because unimplemented...
-	 * @return nothing yet
-	 */
-	public String[] getParametricInstructions(){
-		return null; //TODO
-	}
-
 }
