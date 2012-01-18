@@ -16,7 +16,6 @@ import de.uka.ipd.sdq.ByCounter.utils.MethodDescriptor;
  * Some combination of parameters only make sense in combination with others.
  * The following list summarizes these dependencies.
  * <ul>
- * <li>{@link #setInstrumentRecursivelyMaxDepth(int)} only applies if {@link #getInstrumentRecursively()} == true</li>
  * <li>{@link #setResultLogFileName(String)} only applies if {@link #getUseResultCollector()} == false</li>
  * <li>{@link #setWriteClassesToDiskDirectory(File)} only applies if {@link #getWriteClassesToDisk()} == true</li>
  * <li>{@link #getBasicBlockSerialisation()} only applies if {@link #getUseBasicBlocks()} == true</li>
@@ -33,6 +32,60 @@ import de.uka.ipd.sdq.ByCounter.utils.MethodDescriptor;
  */
 public final class InstrumentationParameters implements Cloneable {
 
+	/** Default value for {@link #getIgnoredPackagePrefixes()}. */
+	public static final String[] IGNORED_PACKAGES_DEFAULT = {
+			"java/",
+			"javax/",
+			"sun/",
+			"org/w3c/dom"
+		};
+
+	/** Default value for {@link #getUseBasicBlocks()}. */
+	public static final boolean USE_BASIC_BLOCKS_DEFAULT = false;
+
+	/** Default value for {@link #getRecordBlockExecutionOrder()}. */
+	public static final boolean RECORD_BLOCK_EXECUTION_ORDER_DEFAULT = true;
+
+	/** Default value for {@link #getInstrumentationScopeOverrideClassLevel()}. */
+	public static final InstrumentationScopeModeEnum INSTRUMENTATION_SCOPE_OVERRIDE_CLASS_LEVEL_DEFAULT = InstrumentationScopeModeEnum.InstrumentAsSpecified;
+	
+	/** Default value for {@link #getInstrumentationScopeOverrideMethodLevel()}. */
+	public static final InstrumentationScopeModeEnum INSTRUMENTATION_SCOPE_OVERRIDE_METHOD_LEVEL_DEFAULT = InstrumentationScopeModeEnum.InstrumentAsSpecified;
+
+	/** Default value for {@link #getWriteClassesToDiskDirectory()}. */
+	public static final File WRITE_CLASSES_TO_DISK_DIRECTORY_DEFAULT = new File("bin_instrumented");
+
+	/** Default value for {@link #getTraceAndIdentifyRequests()}. */
+	public static final boolean TRACE_AND_IDENTIFY_REQUESTS_DEFAULT = false;
+
+	/** Default value for {@link #getWriteClassesToDisk()}. */
+	public static final boolean WRITE_CLASSES_TO_DISK_DEFAULT = false;
+
+	/** Default value for {@link #getParentClassLoader()}. */
+	public static final ClassLoader PARENT_CLASS_LOADER_DEFAULT = null;
+
+	/** Default value for {@link #getInstrumentRecursively()}. */
+	public static final boolean INSTRUMENT_RECURSIVELY_DEFAULT = false;
+	
+	/** Default value for {@link #getInstrumentRecursivelyMaxDepth()}. */
+	public static final int INSTRUMENT_RECURSIVELY_MAX_DEPTH_DEFAULT = 0;
+
+	/** Default value for {@link #getMethodsToInstrument()}. */
+	public static final List<MethodDescriptor> METHODS_TO_INSTRUMENT_DEFAULT = null;
+
+	/** Default value for {@link #getUseHighRegistersForCounting()}. */
+	public static final boolean USE_HIGH_REGISTERS_FOR_COUNTING_DEFAULT = true;
+
+	/** Default value for {@link #getUseResultCollector()}. */
+	public static final boolean USE_RESULT_COLLECTOR_DEFAULT = true;
+
+	/** Default value for {@link #getUseArrayParameterRecording()}. */
+	public static final boolean USE_ARRAY_PARAMETER_RECORDING = false;
+
+	/** Default value for {@link #getCountStatically()}. */
+	public static final boolean COUNT_STATICALLY_DEFAULT = false;
+	
+	
 	/**
 	 * Use integer variables as counters.
 	 */
@@ -62,6 +115,12 @@ public final class InstrumentationParameters implements Cloneable {
 		RESULT_LOG_DEFAULT_DIRECTORY + 
 		File.separatorChar;
 	
+	/**
+	 * A list of strings that cause a class to be ignored in the parsing 
+	 * when found at the start of a package name.
+	 */
+	protected static String[] ignoredPackagePrefixes = IGNORED_PACKAGES_DEFAULT;
+
 	/** Decides on the precision of the variables used for counting. For 
 	 * very high counts integers might not be enough and you want to use 
 	 * long variables instead. See the COUNTER_PRECISION_ constants. */
@@ -74,7 +133,7 @@ public final class InstrumentationParameters implements Cloneable {
 	/**
 	 * @see #setInstrumentRecursivly(boolean, int)
 	 */
-	private boolean instrumentRecursively = false;
+	private boolean instrumentRecursively;
 	
 	/**
 	 * @see #instrumentRecursively
@@ -82,7 +141,7 @@ public final class InstrumentationParameters implements Cloneable {
 	private int instrumentRecursivelyMaxDepth;
 	
 	/** Descriptions of the methods that shall be instrumented. */
-	private List<MethodDescriptor> methodsToInstrument = null;
+	private List<MethodDescriptor> methodsToInstrument;
 	
 	/** The filename of the log containing the results, that is used if useResultCollector == false. */
 	private String resultLogFileName;
@@ -179,11 +238,11 @@ public final class InstrumentationParameters implements Cloneable {
 	 */
 	@SuppressWarnings("dep-ann")
 	public InstrumentationParameters() {
-		this(	null,   // methods to instrument
-				true,  	// use high registers for counting
-				true,	// use CountingResultCollector
-				false,	// static analysis
-				false,  // count statically
+		this(	METHODS_TO_INSTRUMENT_DEFAULT,
+				USE_HIGH_REGISTERS_FOR_COUNTING_DEFAULT,
+				USE_RESULT_COLLECTOR_DEFAULT,	// use CountingResultCollector instead of result log
+				USE_ARRAY_PARAMETER_RECORDING,
+				COUNT_STATICALLY_DEFAULT,
 				COUNTER_PRECISION_LONG
 			);
 	}
@@ -198,10 +257,10 @@ public final class InstrumentationParameters implements Cloneable {
 	@SuppressWarnings("dep-ann")
 	public InstrumentationParameters(List<MethodDescriptor> pMethodsToInstrument) {
 		this(pMethodsToInstrument, 
-				true, 	// use high registers for counting
-				true,	// use CountingResultCollector
-				false,	// no static analysis
-				false,  // count statically
+				USE_HIGH_REGISTERS_FOR_COUNTING_DEFAULT,
+				USE_RESULT_COLLECTOR_DEFAULT,	// use CountingResultCollector instead of result log
+				USE_ARRAY_PARAMETER_RECORDING,
+				COUNT_STATICALLY_DEFAULT,
 				COUNTER_PRECISION_LONG
 				);
 	}
@@ -223,22 +282,24 @@ public final class InstrumentationParameters implements Cloneable {
 			boolean countStatically,
 			boolean counterPrecision) {
 		this.setMethodsToInstrument(pMethodsToInstrument);
-		this.setParentClassLoader(null);
-		this.setUseBasicBlocks(false);
+		this.setParentClassLoader(PARENT_CLASS_LOADER_DEFAULT);
+		this.setUseBasicBlocks(USE_BASIC_BLOCKS_DEFAULT);
 		this.setUseHighRegistersForCounting(pUseHighRegistersForCounting);
 		this.setUseResultCollector(pUseResultCollector);
 		this.setCountStatically(countStatically);
 		this.setUseArrayParameterRecording(pUseArrayParameterRecording);
 		this.counterPrecisionIsLong = counterPrecision;
-		this.writeClassesToDisk = false;
+		this.writeClassesToDisk = WRITE_CLASSES_TO_DISK_DEFAULT;
 		this.methodsToInstrumentCalculationDone = false;
-		this.traceAndIdentifyRequests = false;
-		this.writeClassesToDiskDirectory = new File("bin_instrumented");
-		this.instrumentationScopeOverrideClassLevel = InstrumentationScopeModeEnum.InstrumentAsSpecified;
-		this.instrumentationScopeOverrideMethodLevel = InstrumentationScopeModeEnum.InstrumentAsSpecified;
+		this.traceAndIdentifyRequests = TRACE_AND_IDENTIFY_REQUESTS_DEFAULT;
+		this.writeClassesToDiskDirectory = WRITE_CLASSES_TO_DISK_DIRECTORY_DEFAULT;
+		this.instrumentationScopeOverrideClassLevel = INSTRUMENTATION_SCOPE_OVERRIDE_CLASS_LEVEL_DEFAULT;
+		this.instrumentationScopeOverrideMethodLevel = INSTRUMENTATION_SCOPE_OVERRIDE_METHOD_LEVEL_DEFAULT;
 		this.basicBlockSerialisation = new BasicBlockSerialisation();
 		this.rangeBlockSerialisation = new BasicBlockSerialisation();
-		this.recordBlockExecutionOrder = true;
+		this.recordBlockExecutionOrder = RECORD_BLOCK_EXECUTION_ORDER_DEFAULT;
+		this.instrumentRecursively = INSTRUMENT_RECURSIVELY_DEFAULT;
+		this.instrumentRecursivelyMaxDepth = INSTRUMENT_RECURSIVELY_MAX_DEPTH_DEFAULT;
 	}
 	
 	/* (non-Javadoc)
@@ -597,18 +658,7 @@ public final class InstrumentationParameters implements Cloneable {
 	public InstrumentationScopeModeEnum getInstrumentationScopeOverrideMethodLevel() {
 		return instrumentationScopeOverrideMethodLevel;
 	}
-
-	/**
-	 * A list of strings that cause a class to be ignored in the parsing 
-	 * when found at the start of a package name.
-	 */
-	protected static String[] ignoredPackagePrefixes = {
-		"java/",
-		"javax/",
-		"sun/",
-		"org/w3c/dom"
-	};
-
+	
 	/**
 	 * @return
 	 * A list of strings that cause a class to be ignored in the parsing 
@@ -663,14 +713,6 @@ public final class InstrumentationParameters implements Cloneable {
 	 */
 	public int getInstrumentRecursivelyMaxDepth() {
 		return this.instrumentRecursivelyMaxDepth;
-	}
-
-	/**
-	 * @see #setInstrumentRecursively(boolean)
-	 * @param instrumentRecursivelyMaxDepth depth
-	 */
-	public void setInstrumentRecursivelyMaxDepth(int instrumentRecursivelyMaxDepth) {
-		this.instrumentRecursivelyMaxDepth = instrumentRecursivelyMaxDepth;
 	}
 
 	/**
