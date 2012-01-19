@@ -99,6 +99,7 @@ public class Expectation {
 		if (sectionNumber < 0) {
 			throw new IllegalArgumentException("sectionNumber has to be greater or equal zero");
 		}
+		
 		return this.add(sectionNumber, null);
 	}
 
@@ -116,6 +117,7 @@ public class Expectation {
 		if (firstLine > lastLine) {
 			throw new IllegalArgumentException("lastLine has to be greater or equal firstLine");
 		}
+		
 		LineNumberRange range = new LineNumberRange(firstLine, lastLine);
 		return this.add(this.getSectionNumberByRange(range), range);
 	}
@@ -130,6 +132,8 @@ public class Expectation {
 	 * @return The new <code>SectionExpectation</code>.
 	 */
 	private SectionExpectation add(final int sectionNumber, final LineNumberRange range) {
+		assert sectionNumber >= 0 : "sectionNumber must not be less than zero";
+
 		if (sectionNumber > this.biggestSectionNumber) {
 			this.biggestSectionNumber = sectionNumber;
 		}
@@ -166,7 +170,7 @@ public class Expectation {
 		if (observation == null) {
 			throw new IllegalArgumentException("observation must not be null");
 		}
-		
+
 		String message = "Unexpected number of sections.";
 		Assert.assertEquals(message, this.getNumberOfSections(), observation.length);
 		for (int i = 0; i < observation.length; i++) {

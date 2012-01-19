@@ -38,6 +38,16 @@ public class SectionExpectation {
 	private final Map<String, Long> methodCallExpectations;
 
 	/**
+	 * Creates a new selection expectation with an unknown line number range.
+	 * 
+	 * @param sectionNumber
+	 *          The new section's number. Has to be greater or equal zero.
+	 */
+	protected SectionExpectation(final int sectionNumber) {
+		this(sectionNumber, null);
+	}
+
+	/**
 	 * Creates a new selection expectation.
 	 * 
 	 * @param sectionNumber
@@ -86,9 +96,13 @@ public class SectionExpectation {
 		if (this.opcodeExpectations.containsKey(opcode)) {
 			throw new IllegalArgumentException("Cannot add Opcode #" + opcode + " twice.");
 		}
+		if (opcode < 0 || opcode >= 202) {
+			throw new IllegalArgumentException("Opcode number out of range. Was: " + opcode);
+		}
 		if (number <= 0) {
 			throw new IllegalArgumentException("The value of number has to be greater than zero.");
 		}
+		
 		this.opcodeExpectations.put(opcode, number);
 		return this;
 	}
@@ -110,6 +124,7 @@ public class SectionExpectation {
 		if (number <= 0) {
 			throw new IllegalArgumentException("The value of number has to be greater than zero.");
 		}
+		
 		this.methodCallExpectations.put(bytecodeDescriptor, number);
 		return this;
 	}
@@ -142,6 +157,7 @@ public class SectionExpectation {
 		if (number <= 0) {
 			throw new IllegalArgumentException("The value of number has to be greater than zero.");
 		}
+		
 		return this.add(this.signatureToDescriptor(className, signature), number);
 	}
 
@@ -149,14 +165,18 @@ public class SectionExpectation {
 	 * Compares the predefined expectations with the actual measurement.
 	 * 
 	 * @param measuredOpcodeCounts
-	 *          The number of opcodes counted.
+	 *          The number of opcodes counted. Must not be null.
 	 * @param measuredMethodCallCounts
-	 *          The number of method calls counted.
+	 *          The number of method calls counted. Must not be null.
 	 * @param round
-	 *          The comparison round. Used for better human readable error messages.
+	 *          The comparison round. Used for better human readable error messages. Must be greater or equal to zero.
 	 */
 	protected void compare(final long[] measuredOpcodeCounts, final Map<String, Long> measuredMethodCallCounts,
 			final int round) {
+		assert measuredOpcodeCounts != null : "measuredOpcodeCounts must not be null";
+		assert measuredMethodCallCounts != null : "measuredMethodCallCounts must not be null";
+		assert round >= 0 : "round must not be less than zero";
+		
 		// compare opcodes
 		for (int j = 0; j < measuredOpcodeCounts.length; j++) {
 			long expected = 0;
@@ -220,6 +240,7 @@ public class SectionExpectation {
 	 */
 	private String message(final int opcode, final int round) {
 		assert opcode >= 0 && opcode < 202 : "Opcode number out of range. Was: " + opcode;
+		
 		String opString = FullOpcodeMapper.getMnemonicOfOpcode(opcode);
 		return this.message(opString, round);
 	}
