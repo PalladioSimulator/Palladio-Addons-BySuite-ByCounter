@@ -199,7 +199,7 @@ public class SectionExpectation {
 			String message;
 			long actual = measuredMethodCallCounts.get(method);
 			message = "Actual " + message(method, round) + " not expected but counted as " + actual;
-			Assert.assertTrue(message, actual <= 0);
+			Assert.assertTrue(message, actual < 0);
 		}
 	}
 
