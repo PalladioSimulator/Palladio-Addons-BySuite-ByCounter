@@ -11,7 +11,7 @@ import de.uka.ipd.sdq.ByCounter.execution.CountingResult;
 import de.uka.ipd.sdq.ByCounter.test.framework.expectations.Expectation;
 
 /**
- * 
+ * Tests the correct handling of zeros.
  * 
  * @author Florian Schreier
  */
@@ -22,9 +22,11 @@ public class TestZeroMethodCount {
 	 */
 	@Test
 	public void testZeroCountIsError() {
+		// create expectations
 		Expectation e = new Expectation(false);
 		e.add().add("testMethodTwo", 2L);
 
+		// create dummy CountingResult
 		long[] opcodeCounts = new long[201];
 		SortedMap<String, Long> methodCallCounts = new TreeMap<String, Long>();
 		methodCallCounts.put("testMethodTwo", 2L);
