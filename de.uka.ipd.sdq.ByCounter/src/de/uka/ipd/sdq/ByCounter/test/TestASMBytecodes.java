@@ -244,7 +244,7 @@ public class TestASMBytecodes {
         e.add()	// "section"
          .add(Opcodes.IF_ACMPEQ, 1)
          .add(Opcodes.IF_ACMPNE, 1)
-//         .add(Opcodes.IFNULL, 1)		TODO: produce a test case with IFNULL
+         .add(Opcodes.IFNULL, 1)
          .add(Opcodes.IFNONNULL, 1)
          .add(Opcodes.INSTANCEOF, 1)
          
@@ -266,7 +266,7 @@ public class TestASMBytecodes {
          .add(Opcodes.BIPUSH, 5)
          .add(Opcodes.LDC, 6)
          .add(Opcodes.ILOAD, 18)
-         .add(Opcodes.ALOAD, 6)
+         .add(Opcodes.ALOAD, 7) // 6 with older compiler?
          .add(Opcodes.ASTORE, 6)
          .add(Opcodes.ISTORE, 8)
          .add(Opcodes.ICONST_4, 1)

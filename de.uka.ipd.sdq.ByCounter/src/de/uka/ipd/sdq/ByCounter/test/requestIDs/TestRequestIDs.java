@@ -36,7 +36,7 @@ public class TestRequestIDs {
 	 * @return The parameter collection for calling the test constructor.
 	 * @see #TestASMBytecodes.parameterSetup()
 	 */
-	@SuppressWarnings({ "unchecked"})
+	@SuppressWarnings("rawtypes")
 	@Parameters
 	public static Collection parameterSetup() {
 		return TestASMBytecodes.parameterSetup();
@@ -109,7 +109,7 @@ public class TestRequestIDs {
 		methDescs.add(methDesc4);
 		methDescs.add(methDesc5);
 		methDescs.add(methDesc6);
-//		methDescs.add(methDesc7);
+		methDescs.add(methDesc7);
 		methDescs.add(methDesc8);
 		this.counter.instrument(methDescs);
 		this.counter.execute(this.methodToExecute, 

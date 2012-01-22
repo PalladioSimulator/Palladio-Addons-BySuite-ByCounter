@@ -34,12 +34,14 @@ public class ArrayParameters {
 		result.newArrayCounts = cr.getNewArrayCounts();
 		result.newArrayDim = cr.getNewArrayDim();
 		result.newArrayTypes = cr.getNewArrayTypes();
-		if(result.newArrayCounts.length != result.newArrayDim.length 
-				|| result.newArrayCounts.length != result.newArrayTypes.length) {
-			throw new RuntimeException("Error: The arrays newArrayCounts, newArrayDim and newArrayTypes need to match in length. " 
-					+ "Was " + result.newArrayCounts.length + ", "
-					+ result.newArrayDim.length + ", "
-					+ result.newArrayTypes.length + ".");
+		if(result.newArrayCounts != null) {
+			if(result.newArrayCounts.length != result.newArrayDim.length 
+					|| result.newArrayCounts.length != result.newArrayTypes.length) {
+				throw new RuntimeException("Error: The arrays newArrayCounts, newArrayDim and newArrayTypes need to match in length. " 
+						+ "Was " + result.newArrayCounts.length + ", "
+						+ result.newArrayDim.length + ", "
+						+ result.newArrayTypes.length + ".");
+			}
 		}
 		return result;
 	}

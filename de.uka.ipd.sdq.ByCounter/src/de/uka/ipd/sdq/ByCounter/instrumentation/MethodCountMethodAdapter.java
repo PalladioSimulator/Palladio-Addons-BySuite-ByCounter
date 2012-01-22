@@ -9,8 +9,6 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.logging.Logger;
 
-import javassist.bytecode.Opcode;
-
 import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodAdapter;
 import org.objectweb.asm.MethodVisitor;
@@ -198,6 +196,11 @@ public final class MethodCountMethodAdapter extends MethodAdapter implements Opc
 	 * {@link #initialiseBlockExecutionOrderArrayList()}.
 	 */
 	private int blockExecutionOrderArrayListVar;
+
+	/**
+	 * Intermediate instrumentation state.
+	 */
+	private InstrumentationState instrumentationState;
 	
 	/**
 	 * Creates the method adapter.
@@ -206,7 +209,8 @@ public final class MethodCountMethodAdapter extends MethodAdapter implements Opc
 	 * @param superName Name of the superclass.
 	 * @param qualifyingMethodName Qualifying name of the method (used for reporting).
 	 * @param desc Parameter descriptor in Java bytecode notation.
-	 * @param instrumentationParameters
+	 * @param instrumentationParameters User specified parameters.
+	 * @param instrumentationState Intermediate instrumention state.
 	 */
 	public MethodCountMethodAdapter(
 			MethodVisitor v, 
@@ -216,10 +220,12 @@ public final class MethodCountMethodAdapter extends MethodAdapter implements Opc
 			String qualifyingMethodName, 
 			String desc,
 			InstrumentationParameters instrumentationParameters,
+			InstrumentationState instrumentationState,
 			MethodDescriptor method) {
 		super(v);
 		this.log = Logger.getLogger(this.getClass().getCanonicalName());
 		this.instrumentationParameters = instrumentationParameters;
+		this.instrumentationState = instrumentationState;
 		// basicBlockCounters xor instrunctionCounters are initialised in visitCode()
 		this.methodCounters 		= new HashMap<String, Integer>();
 		this.arrayCreationCounters	= null;	// this is set in #setMethodInvocations
@@ -1115,7 +1121,7 @@ public final class MethodCountMethodAdapter extends MethodAdapter implements Opc
 			// here we need to replace the call to the original method for all instrumented methods
 			int methodIndex = 
 				MethodDescriptor.findMethodInList(
-						this.instrumentationParameters.getMethodsToInstrument(),
+						this.instrumentationState.getMethodsToInstrumentCalculated(),
 						owner.replace('/', '.'),
 						name,
 						desc);
@@ -1197,7 +1203,7 @@ public final class MethodCountMethodAdapter extends MethodAdapter implements Opc
 		if(isInstrumented) {
 			try {
 				this.isAlreadyInstrumented = isInstrumented; //simply means that visitCode won't instrument - does not impact the instrumentation of other method nodes
-				throw new Exception(signature+" already instrumented!");
+				throw new Exception(name + "("+signature+") already instrumented!");
 			} catch(Exception e) {
 				e.printStackTrace();
 			}

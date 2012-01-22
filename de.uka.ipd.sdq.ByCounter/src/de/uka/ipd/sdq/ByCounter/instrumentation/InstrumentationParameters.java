@@ -4,7 +4,6 @@ import java.io.File;
 import java.util.List;
 
 import de.uka.ipd.sdq.ByCounter.execution.CountingResultCollector;
-import de.uka.ipd.sdq.ByCounter.parsing.BasicBlockSerialisation;
 import de.uka.ipd.sdq.ByCounter.parsing.LineNumberRange;
 import de.uka.ipd.sdq.ByCounter.utils.MethodDescriptor;
 
@@ -18,8 +17,6 @@ import de.uka.ipd.sdq.ByCounter.utils.MethodDescriptor;
  * <ul>
  * <li>{@link #setResultLogFileName(String)} only applies if {@link #getUseResultCollector()} == false</li>
  * <li>{@link #setWriteClassesToDiskDirectory(File)} only applies if {@link #getWriteClassesToDisk()} == true</li>
- * <li>{@link #getBasicBlockSerialisation()} only applies if {@link #getUseBasicBlocks()} == true</li>
- * <li>{@link #getRangeBlockSerialisation()} only applies if {@link #getUseBasicBlocks()} == true and {@link MethodDescriptor#setCodeAreasToInstrument(LineNumberRange[])} has been called with non-empty line number ranges ({@link #hasMethodsWithCodeAreas()} == true)</li>
  * <li>{@link #setRecordBlockExecutionOrder(boolean)} only applies if either range blocks or basic blocks are used, i.e. if {@link #getUseBasicBlocks()} == true</li>
  * <li>{@link #setUseArrayParameterRecording(boolean)} is currently only supported when not using basic/range blocks.</li>
  * </ul>
@@ -173,28 +170,9 @@ public final class InstrumentationParameters implements Cloneable {
 	private boolean writeClassesToDisk;
 
 	/**
-	 * This list also contains methods selected for recursive instrumentation.
-	 * @see {@link #methodsToInstrument}, {@link #instrumentRecursively}
-	 * <b>This is for ByCounter internal use only!</b> 
-	 */
-	private List<MethodDescriptor> methodsToInstrumentCalculated;
-
-	/**
 	 * @see #getParentClassLoader()
 	 */
 	private ClassLoader parentClassLoader;
-
-	private boolean methodsToInstrumentCalculationDone;
-
-	/**
-	 * Basic block definitions.
-	 */
-	private BasicBlockSerialisation basicBlockSerialisation;
-
-	/**
-	 * Range block definitions.
-	 */
-	private BasicBlockSerialisation rangeBlockSerialisation;
 
 	/**
 	 * @see #getRangeBlocks()
@@ -290,13 +268,10 @@ public final class InstrumentationParameters implements Cloneable {
 		this.setUseArrayParameterRecording(pUseArrayParameterRecording);
 		this.counterPrecisionIsLong = counterPrecision;
 		this.writeClassesToDisk = WRITE_CLASSES_TO_DISK_DEFAULT;
-		this.methodsToInstrumentCalculationDone = false;
 		this.traceAndIdentifyRequests = TRACE_AND_IDENTIFY_REQUESTS_DEFAULT;
 		this.writeClassesToDiskDirectory = WRITE_CLASSES_TO_DISK_DIRECTORY_DEFAULT;
 		this.instrumentationScopeOverrideClassLevel = INSTRUMENTATION_SCOPE_OVERRIDE_CLASS_LEVEL_DEFAULT;
 		this.instrumentationScopeOverrideMethodLevel = INSTRUMENTATION_SCOPE_OVERRIDE_METHOD_LEVEL_DEFAULT;
-		this.basicBlockSerialisation = new BasicBlockSerialisation();
-		this.rangeBlockSerialisation = new BasicBlockSerialisation();
 		this.recordBlockExecutionOrder = RECORD_BLOCK_EXECUTION_ORDER_DEFAULT;
 		this.instrumentRecursively = INSTRUMENT_RECURSIVELY_DEFAULT;
 		this.instrumentRecursivelyMaxDepth = INSTRUMENT_RECURSIVELY_MAX_DEPTH_DEFAULT;
@@ -317,7 +292,6 @@ public final class InstrumentationParameters implements Cloneable {
 		}
 		
 		// shallow copy all fields
-		copy.basicBlockSerialisation = this.basicBlockSerialisation;
 		copy.counterPrecisionIsLong = this.counterPrecisionIsLong;
 		copy.countStatically = this.countStatically;
 		copy.instrumentationScopeOverrideClassLevel = this.instrumentationScopeOverrideClassLevel;
@@ -325,11 +299,8 @@ public final class InstrumentationParameters implements Cloneable {
 		copy.instrumentRecursively = this.instrumentRecursively;
 		copy.instrumentRecursivelyMaxDepth = this.instrumentRecursivelyMaxDepth;
 		copy.methodsToInstrument = this.methodsToInstrument;
-		copy.methodsToInstrumentCalculated = this.methodsToInstrumentCalculated;
-		copy.methodsToInstrumentCalculationDone = this.methodsToInstrumentCalculationDone;
 		copy.parentClassLoader = this.parentClassLoader;
 		copy.rangeBlocks = this.rangeBlocks;
-		copy.rangeBlockSerialisation = this.rangeBlockSerialisation;
 		copy.recordBlockExecutionOrder = this.recordBlockExecutionOrder;
 		copy.resultLogFileName = this.resultLogFileName;
 		copy.traceAndIdentifyRequests = this.traceAndIdentifyRequests;
@@ -364,10 +335,6 @@ public final class InstrumentationParameters implements Cloneable {
 	 * @return The methods to instrument described as <code>MethodDescriptor</code>.
 	 */
 	public List<MethodDescriptor> getMethodsToInstrument() {
-		if(this.methodsToInstrumentCalculationDone) {
-			return this.methodsToInstrumentCalculated;
-		}
-		
 		return this.methodsToInstrument;
 	}
 
@@ -505,8 +472,6 @@ public final class InstrumentationParameters implements Cloneable {
 		b.append("instrumentRecursively:              " + this.instrumentRecursively + ", \n");
 		b.append("instrumentRecursivelyMaxDepth:      " + this.instrumentRecursivelyMaxDepth + ", \n");
 		b.append("methodsToInstrument:                " + this.methodsToInstrument + ", \n");
-		b.append("methodsToInstrumentCalculated:      " + this.methodsToInstrumentCalculated + ", \n");
-		b.append("methodsToInstrumentCalculationDone: " + this.methodsToInstrumentCalculationDone + ", \n");
 		b.append("rangeBlocks:                        " + this.rangeBlocks + ", \n");
 		b.append("recordBlockExecutionOrder:          " + this.recordBlockExecutionOrder + ", \n");
 		b.append("resultLogFileName:                  " + this.resultLogFileName + ", \n");
@@ -563,27 +528,6 @@ public final class InstrumentationParameters implements Cloneable {
 	 */
 	public boolean getUseBasicBlocks() {
 		return useBasicBlocks;
-	}
-	
-	public void setMethodsToInstrumentCalculationDone() {
-		this.methodsToInstrumentCalculationDone = true;
-	}
-	
-	/**
-	 * <b>For ByCounter internal use only</b>
-	 * @param methodsToInstrumentCalculated the methodsToInstrumentCalculated to set
-	 */
-	public void setMethodsToInstrumentCalculated(
-			List<MethodDescriptor> methodsToInstrumentCalculated) {
-		this.methodsToInstrumentCalculated = methodsToInstrumentCalculated;
-	}
-
-	/**
-	 * <b>For ByCounter internal use only</b>
-	 * @return the methodsToInstrumentCalculated
-	 */
-	public List<MethodDescriptor> getMethodsToInstrumentCalculated() {
-		return methodsToInstrumentCalculated;
 	}
 
 	/**
@@ -716,49 +660,13 @@ public final class InstrumentationParameters implements Cloneable {
 	}
 
 	/**
-	 * Internally used.
-	 * @return True, when the methods to instrument list is completed.
-	 */
-	public boolean isMethodsToInstrumentCalculationDone() {
-		return this.methodsToInstrumentCalculationDone;
-	}
-
-	/**
-	 * Internally used.
-	 * @param methodsToInstrumentCalculationDone Set to true, when the methods to instrument list is completed.
-	 */
-	public void setMethodsToInstrumentCalculationDone(
-			boolean methodsToInstrumentCalculationDone) {
-		this.methodsToInstrumentCalculationDone = methodsToInstrumentCalculationDone;
-	}
-
-	/**
 	 * @see #getIgnoredPackagePrefixes()
 	 * @param ignoredPackagePrefixes Prefixes of packages that are ignored.
 	 */
 	public static void setIgnoredPackagePrefixes(String[] ignoredPackagePrefixes) {
 		InstrumentationParameters.ignoredPackagePrefixes = ignoredPackagePrefixes;
 	}
-
-	/**
-	 * This is used in the instrumentation process to save basic block 
-	 * definitions.
-	 * @return the basicBlockSerialisation
-	 */
-	public BasicBlockSerialisation getBasicBlockSerialisation() {
-		return basicBlockSerialisation;
-	}
-
-
-	/**
-	 * This is used in the instrumentation process to save range block 
-	 * definitions.
-	 * @return the rangeBlockSerialisation
-	 */
-	public BasicBlockSerialisation getRangeBlockSerialisation() {
-		return rangeBlockSerialisation;
-	}
-
+	
 	/**
 	 * @see #getRecordBlockExecutionOrder()
 	 * @param recordBlockExecutionOrder the recordBlockExecutionOrder to set

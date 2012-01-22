@@ -20,7 +20,7 @@ import org.objectweb.asm.tree.LineNumberNode;
 import org.objectweb.asm.tree.TryCatchBlockNode;
 
 import de.uka.ipd.sdq.ByCounter.instrumentation.IInstructionAnalyser;
-import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentationParameters;
+import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentationState;
 import de.uka.ipd.sdq.ByCounter.parsing.RangeBlockDescriptor.BasicBlockOffset;
 import de.uka.ipd.sdq.ByCounter.utils.MethodDescriptor;
 
@@ -73,9 +73,9 @@ public final class RangeBlockAnalyser implements IInstructionAnalyser {
 	private String methodDescriptorString;
 	
 	/**
-	 * The instrumentation parameters that define how to analyse the method.
+	 * The instrumentation state that define how to analyse the method.
 	 */
-	private InstrumentationParameters instrumentationParameters;
+	private InstrumentationState instrumentationState;
 	
 	/**
 	 * Labels for the basic blocks found by the 
@@ -94,11 +94,11 @@ public final class RangeBlockAnalyser implements IInstructionAnalyser {
 	
 	public RangeBlockAnalyser(
 			MethodDescriptor currentMethod, 
-			InstrumentationParameters instrumentationParameters) {
+			InstrumentationState instrumentationState) {
 		this.log = Logger.getLogger(this.getClass().getCanonicalName());
 		this.methodDescriptorString = currentMethod.getCanonicalMethodName();
 		this.ranges = currentMethod.getCodeAreasToInstrument();
-		this.instrumentationParameters = instrumentationParameters;
+		this.instrumentationState = instrumentationState;
 		
 		this.labelBlocks = new ArrayList<InstructionBlockLocation>();
 		this.findLabelBlockByLabel = new HashMap<Label, InstructionBlockLocation>();
@@ -221,7 +221,7 @@ public final class RangeBlockAnalyser implements IInstructionAnalyser {
 				
 		// we need the basic blocks to calculate partial blocks
 		final InstructionBlockDescriptor[] basicBlocks = 
-			this.instrumentationParameters.getBasicBlockSerialisation()
+			this.instrumentationState.getBasicBlockSerialisation()
 					.getBasicBlocksByMethod().get(this.methodDescriptorString);
 		
 		for(InstructionBlockLocation labelBlock : this.labelBlocks) {
@@ -290,7 +290,7 @@ public final class RangeBlockAnalyser implements IInstructionAnalyser {
 		}
 				
 		// serialise the detected blocks
-		instrumentationParameters.getRangeBlockSerialisation().addBasicBlocksForMethod(
+		instrumentationState.getRangeBlockSerialisation().addBasicBlocksForMethod(
 				methodDescriptorString, 
 				rangeBlocks);
 	}

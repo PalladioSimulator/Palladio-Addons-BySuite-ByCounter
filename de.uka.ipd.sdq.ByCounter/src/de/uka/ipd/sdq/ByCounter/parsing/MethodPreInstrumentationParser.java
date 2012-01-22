@@ -24,6 +24,7 @@ import org.objectweb.asm.tree.TypeInsnNode;
 import de.uka.ipd.sdq.ByCounter.instrumentation.AdditionalOpcodeInformation;
 import de.uka.ipd.sdq.ByCounter.instrumentation.IInstructionAnalyser;
 import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentationParameters;
+import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentationState;
 import de.uka.ipd.sdq.ByCounter.instrumentation.MethodCountMethodAdapter;
 import de.uka.ipd.sdq.ByCounter.utils.MethodDescriptor;
 
@@ -42,6 +43,7 @@ public final class MethodPreInstrumentationParser extends MethodAdapter {
 		
 	private AdditionalOpcodeInformation additionalOpcInfo = null;
 	
+	/** User specified parameters */
 	private InstrumentationParameters instrumentationParameters;
 	
 	private MethodCountMethodAdapter methodCountMethodAdapter;
@@ -57,6 +59,9 @@ public final class MethodPreInstrumentationParser extends MethodAdapter {
 	private List<IInstructionAnalyser> instructionAnalysers;
 
 	private boolean hasRangeBlocks;
+
+	/** Intermediate results of the instrumentation. */
+	private InstrumentationState instrumentationState;
 
 	/**
 	 * @param access As from ClassVisitor.
@@ -75,6 +80,7 @@ public final class MethodPreInstrumentationParser extends MethodAdapter {
 			String desc, 
 			MethodCountMethodAdapter methodCountMethodAdapter,
 			InstrumentationParameters parameters,
+			InstrumentationState state,
 			MethodDescriptor method) {
 		super(new MethodNode(access, name, desc, null, null));
 		this.log = Logger.getLogger(this.getClass().getCanonicalName());
@@ -82,6 +88,7 @@ public final class MethodPreInstrumentationParser extends MethodAdapter {
 		this.additionalOpcInfo = new AdditionalOpcodeInformation();
 		this.methodCountMethodAdapter = methodCountMethodAdapter;
 		this.instrumentationParameters = parameters;
+		this.instrumentationState = state;
 		this.hasRangeBlocks = method.getCodeAreasToInstrument() != null
 						&& method.getCodeAreasToInstrument().length != 0;
 		
@@ -91,14 +98,14 @@ public final class MethodPreInstrumentationParser extends MethodAdapter {
 			log.info("Analysing method for basic blocks.");
 			this.basicBlockAnalyser = new BasicBlockAnalyser(
 					MethodDescriptor._constructMethodDescriptorFromASM(owner, name, desc).getCanonicalMethodName(),
-					this.instrumentationParameters);
+					this.instrumentationState);
 			this.instructionAnalysers.add(basicBlockAnalyser);
 			// are code areas specified for the method?
 			if(hasRangeBlocks) {
 				log.info("Analysing method for range blocks.");
 				this.rangeBlockAnalyser = new RangeBlockAnalyser(
 						method, 
-						this.instrumentationParameters);
+						this.instrumentationState);
 				this.instructionAnalysers.add(rangeBlockAnalyser);
 			}
 		}

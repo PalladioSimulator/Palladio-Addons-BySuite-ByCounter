@@ -3,8 +3,6 @@ package de.uka.ipd.sdq.ByCounter.instrumentation;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.logging.Logger;
 
 import org.objectweb.asm.ClassAdapter;
@@ -39,6 +37,8 @@ public final class Instrumenter {
 	private boolean instrumentationFinished;
 	
 	private InstrumentationParameters instrumentationParameters;
+	
+	private InstrumentationState instrumentationState;
 
 	private byte[] instrumentedBytes;
 	
@@ -53,9 +53,6 @@ public final class Instrumenter {
 	private long timestampBeforeReaderInitialisation_0;
 
 	private long timestampInstrumenterInitialisation;
-	
-	private List<MethodDescriptor> successFullyInstrumentedMethods;
-	
 	
 	private byte[] uninstrumentedBytes;
 	
@@ -92,8 +89,10 @@ public final class Instrumenter {
 	 */
 	public Instrumenter(
 			byte[] classAsBytes, 
-			InstrumentationParameters parameters) {
+			InstrumentationParameters parameters,
+			InstrumentationState state) {
 		this.instrumentationParameters = parameters;
+		this.instrumentationState = state;
 		this.classReader = new ClassReader(classAsBytes);
 		this.classCanonicalName = this.classReader.getClassName();
 
@@ -110,13 +109,16 @@ public final class Instrumenter {
 	 * @param className The name of the class holding the methods that shall be instrumented.
 	 * Needs to be fully qualified as this is used to find the correct class.
 	 * @param params {@link InstrumentationParameters} instance that specifies how and what to instrument.
+	 * @param state {@link InstrumentationState} for this Instrumenter.
 	 * @throws ClassNotFoundException If the specified name cannot be resolved, this exception is thrown.
 	 * Check your className if you get this exception.
 	 */
 	public Instrumenter(
 			String className, 
-			InstrumentationParameters params
-			) throws ClassNotFoundException{
+			InstrumentationParameters params,
+			InstrumentationState state
+			) throws ClassNotFoundException {
+		this.instrumentationState = state;
 		this.instrumentationParameters = params;
 		this.log = Logger.getLogger(this.getClass().getCanonicalName());	// the log may be needed before initialize
 		try {
@@ -178,6 +180,13 @@ public final class Instrumenter {
 	 */
 	public InstrumentationParameters getInstrumentationParameters() {
 		return this.instrumentationParameters;
+	}
+	
+	/**
+	 * @return The {@link InstrumentationState}.
+	 */
+	public InstrumentationState getInstrumentationState() {
+		return this.instrumentationState;
 	}
 
 	/**
@@ -270,14 +279,14 @@ public final class Instrumenter {
 		this.timestampBeforeReaderInitialisation_0 = System.nanoTime();
 		if(this.instrumentationParameters.getInstrumentationScopeOverrideClassLevel()
 				!= InstrumentationScopeModeEnum.InstrumentEverything) {
-			if(this.instrumentationParameters.getMethodsToInstrument()==null){
+			if(this.instrumentationState.getMethodsToInstrumentCalculated()==null){
 				this.log.severe("Instrumenter has got no methods to instrument " +
 						"(methodsToInstrument instance is null");
 			} else {
 				// count the methods for this specific class
 				int nr = 0; 
-				for(int i = 0; i < this.instrumentationParameters.getMethodsToInstrument().size(); i++) {
-					if(this.instrumentationParameters.getMethodsToInstrument().get(i).
+				for(int i = 0; i < this.instrumentationState.getMethodsToInstrumentCalculated().size(); i++) {
+					if(this.instrumentationState.getMethodsToInstrumentCalculated().get(i).
 							getCanonicalClassName().equals(this.getClassCanonicalName().replace('/', '.'))) {
 						nr++;
 					}
@@ -344,7 +353,7 @@ public final class Instrumenter {
 		MethodDescriptor methDesc;
 		if(!instrumentEveryThing) {
 			for(int i = 0; i < mcca.methodInstrumentationStatus.length; i++) {
-				methDesc = this.instrumentationParameters.getMethodsToInstrument().get(i);
+				methDesc = this.instrumentationState.getMethodsToInstrumentCalculated().get(i);
 				canonicalClassName = methDesc.getCanonicalClassName();
 				thisCanonicalClassName = this.getClassCanonicalName().replace('/', '.');
 				if(!canonicalClassName.equals(thisCanonicalClassName)) {
@@ -358,21 +367,21 @@ public final class Instrumenter {
 					//TODO Martin: look in super-classes
 					String message = "FAILURE, Method not found (check whether " +
 							"object-typed parameters are given fully, i.e. including package name!):\n"+ 
-							this.instrumentationParameters.getMethodsToInstrument().get(i).toString_Linebreaks();
+							this.instrumentationState.getMethodsToInstrumentCalculated().get(i).toString_Linebreaks();
 					this.log.severe(message);
 					
 					//TODO MK solution 1: parse superclasses (solution 2: find all classes in dir, parse them --> see project MethodByteSizer)
 					try {
-						MethodDescriptor md = this.instrumentationParameters.getMethodsToInstrument().get(i);
+						MethodDescriptor md = this.instrumentationState.getMethodsToInstrumentCalculated().get(i);
 						MethodDescriptor superClassMd;
 						String canClassName = md.getCanonicalClassName();
-						Class clazz = Class.forName(canClassName);
+						Class<?> clazz = Class.forName(canClassName);
 						if(clazz==null){
 							log.severe("Cannot initialise class from class name "+canClassName);
 						}
 						boolean methodDeclaringSuperClassFound = false;
 						boolean topClassReached = false;
-						Class currentSuperClass = clazz;
+						Class<?> currentSuperClass = clazz;
 						while(!methodDeclaringSuperClassFound && !topClassReached ){
 							currentSuperClass = currentSuperClass.getSuperclass();
 							log.info("Currently considered superclass: "+currentSuperClass);
@@ -400,7 +409,7 @@ public final class Instrumenter {
 					retValue = false;
 				}else{
 					String message = "SUCCESS with instrumenting \n"+
-					this.instrumentationParameters.getMethodsToInstrument().get(i).toString_Linebreaks();
+					this.instrumentationState.getMethodsToInstrumentCalculated().get(i).toString_Linebreaks();
 					this.log.info(message);
 	//				String s = javax.swing.JOptionPane.showInputDialog("OK: "+message);
 				}
@@ -451,7 +460,7 @@ public final class Instrumenter {
 		if(this.instrumentationParameters.getInstrumentationScopeOverrideClassLevel()
 				!= InstrumentationScopeModeEnum.InstrumentEverything) {
 			for(MethodDescriptor methodd 
-					: this.instrumentationParameters.getMethodsToInstrument()) {
+					: this.instrumentationState.getMethodsToInstrumentCalculated()) {
 				if(methodd.getCanonicalClassName().equals(this.getClassCanonicalName().replace('/', '.'))) {
 					this.log.info("Instrumenting the method '" + methodd.getSimpleMethodName()
 						+ "' in the class '" + this.getClassCanonicalName() + "'.");
@@ -483,10 +492,13 @@ public final class Instrumenter {
 		// end Debug output
 	    
 	    if(!this.instrumentationParameters.getCountStatically()){
-	    	this.successFullyInstrumentedMethods = new ArrayList<MethodDescriptor>();
-	    	this.classAdapter = new MethodCountClassAdapter(next, this.instrumentationParameters, successFullyInstrumentedMethods);
+	    	this.classAdapter = new MethodCountClassAdapter(next, 
+	    			this.instrumentationParameters,
+	    			this.instrumentationState);
 	    } else {
-	    	this.classAdapter = new MethodSectionCountClassAdapter(next, this.instrumentationParameters);
+	    	this.classAdapter = new MethodSectionCountClassAdapter(next, 
+	    			this.instrumentationParameters,
+	    			this.instrumentationState);
 	    }
 	}
 	
@@ -550,9 +562,5 @@ public final class Instrumenter {
 			System.out.println(input9+" was not converted to "+output);
 		}
 		return globalSuccess;
-	}
-
-	public List<MethodDescriptor> getListOfSuccessfullyInstrumentedMethods() {
-		return this.successFullyInstrumentedMethods;
 	}
 }

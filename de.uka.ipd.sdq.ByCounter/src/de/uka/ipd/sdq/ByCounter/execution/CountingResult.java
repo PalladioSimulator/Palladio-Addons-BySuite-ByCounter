@@ -91,7 +91,8 @@ implements Serializable, Cloneable, IFullCountingResult{
 		ArrayParameters result = new ArrayParameters();
 		
 		if(left.newArrayCounts == null || right.newArrayCounts == null) {
-			throw new RuntimeException("Cannot add array parameters when either operand is null.");
+			// nothing to add
+			return result;
 		}
 		
 		ArrayList<Long> resultNewArrayCounts = new ArrayList<Long>();

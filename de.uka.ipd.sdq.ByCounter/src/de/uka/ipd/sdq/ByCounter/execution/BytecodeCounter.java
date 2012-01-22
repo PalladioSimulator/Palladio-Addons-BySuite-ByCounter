@@ -24,6 +24,7 @@ import javassist.Loader;
 import javassist.NotFoundException;
 import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentationParameters;
 import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentationScopeModeEnum;
+import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentationState;
 import de.uka.ipd.sdq.ByCounter.instrumentation.Instrumenter;
 import de.uka.ipd.sdq.ByCounter.parsing.BasicBlockSerialisation;
 import de.uka.ipd.sdq.ByCounter.parsing.CallGraph;
@@ -57,7 +58,6 @@ import de.uka.ipd.sdq.ByCounter.utils.MethodDescriptor;
  * @version 1.2
  * TODO investigate whether slash-separated class names should be supported alongside "."-supported class names
  */
-@SuppressWarnings("deprecation")
 public final class BytecodeCounter {
 
 	private static final boolean TRY_TO_FIND_IMPLEMENTATIONS_IN_SUPER = false;
@@ -119,7 +119,12 @@ public final class BytecodeCounter {
 	/**
 	 * Parameters for instrumentation, can be set by the user
 	 */
-	private InstrumentationParameters instrumentationParameters = new InstrumentationParameters();
+	private InstrumentationParameters instrumentationParameters;
+	
+	/**
+	 * Internal results of the instrumentation process.
+	 */
+	private InstrumentationState instrumentationState;
 	
 	/**
 	 * The callgraph used for 'recursive' instrumentation.
@@ -134,6 +139,8 @@ public final class BytecodeCounter {
 	 */
 	public BytecodeCounter() {
 		this.classPool = ClassPool.getDefault();
+		this.instrumentationParameters = new InstrumentationParameters();
+		this.instrumentationState = new InstrumentationState();
 		this.successFullyInstrumentedMethods = new ArrayList<MethodDescriptor>();
 		setupLogging();
 	}
@@ -262,8 +269,8 @@ public final class BytecodeCounter {
 
 	/**
 	 * Returns the current instrumentation parameters. Use this to change 
-	 * the way the instrumenter works. Note that the methods to count 
-	 * will be overridden by the count* methods.
+	 * the way the instrumenter works. Note that the methods to instrument 
+	 * will be overridden by the instrument* methods.
 	 * @return the instrumentation parameters. 
 	 */
 	public InstrumentationParameters getInstrumentationParams() {
@@ -405,8 +412,10 @@ public final class BytecodeCounter {
 				success = findClassToInstrument(classesToInstrument, classMethodDefinitions, m)
 				 		&& success;
 			}
+		} else {
+			this.instrumentationState.setMethodsToInstrumentCalculated(this.instrumentationParameters.getMethodsToInstrument());
 		}
-		log.fine("Instrumenting following methods: " + instrumentationParameters.getMethodsToInstrument());
+		log.fine("Instrumenting following methods: " + instrumentationState.getMethodsToInstrumentCalculated());
 		
     	this.successFullyInstrumentedMethods = new ArrayList<MethodDescriptor>();
     	
@@ -505,13 +514,13 @@ public final class BytecodeCounter {
 		// copy all methods specified in instrumentation parameters
 		final int size = this.instrumentationParameters.getMethodsToInstrument().size();
 
-		this.instrumentationParameters.setMethodsToInstrumentCalculated(
+		this.instrumentationState.setMethodsToInstrumentCalculated(
 			new ArrayList<MethodDescriptor>(size));//initial size
 		for(int i = 0; i < size; i++) {
-			this.instrumentationParameters.getMethodsToInstrumentCalculated().add(null);
+			this.instrumentationState.getMethodsToInstrumentCalculated().add(null);
 		}
 		Collections.copy(
-				this.instrumentationParameters.getMethodsToInstrumentCalculated(),
+				this.instrumentationState.getMethodsToInstrumentCalculated(),
 				this.instrumentationParameters.getMethodsToInstrument());
 		
 		//TODO add duplicate check here (or earlier)
@@ -524,10 +533,9 @@ public final class BytecodeCounter {
 			}
 			// recursively add the methods child methods
 			selectMethodsFromCallGraph_forMethod(
-					this.instrumentationParameters.getMethodsToInstrumentCalculated(),
+					this.instrumentationState.getMethodsToInstrumentCalculated(),
 					m);
 		}
-		this.instrumentationParameters.setMethodsToInstrumentCalculationDone();
 	}
 	
 	private static String[] excludedPackagePrefixes = {
@@ -620,10 +628,14 @@ public final class BytecodeCounter {
 		try {
 			if(this.classAsBytes) {
 				log.fine("Getting instrumenter over class bytes");
-				instr = new Instrumenter(this.classBytesToInstrument, this.instrumentationParameters);
+				instr = new Instrumenter(this.classBytesToInstrument, 
+						this.instrumentationParameters,
+						this.instrumentationState);
 			} else {
 				log.fine("Getting instrumenter over class name");
-				instr = new Instrumenter(this.classToInstrument, this.instrumentationParameters);
+				instr = new Instrumenter(this.classToInstrument, 
+						this.instrumentationParameters,
+						this.instrumentationState);
 			}
 //			long uninstrBytesize = instr.getUninstrumentedBytesize();
 			log.info(className+" instrumenting: TracingCharacterisationHook " +
@@ -640,7 +652,7 @@ public final class BytecodeCounter {
 			if(success == false) {
 				log.severe("Not all specified methods could be instrumented.");
 			}
-			this.successFullyInstrumentedMethods.addAll(instr.getListOfSuccessfullyInstrumentedMethods());
+			this.successFullyInstrumentedMethods.addAll(instr.getInstrumentationState().getSuccessFullyInstrumentedMethods());
 			log.fine("Getting instrumented bytes");
 			byte[] b = instr.getInstrumentedBytes();
 //			long instrBytesize = b.length;
@@ -668,13 +680,13 @@ public final class BytecodeCounter {
 					File file = new File(BasicBlockSerialisation.FILE_BASIC_BLOCK_SERIALISATION);
 					log.info("Writing basic block definition to " + file.getAbsolutePath());
 					BasicBlockSerialisation.serialise(
-							instrumentationParameters.getBasicBlockSerialisation(), file);
+							instrumentationState.getBasicBlockSerialisation(), file);
 					
 					if(this.instrumentationParameters.hasMethodsWithCodeAreas()) {
 						file = new File(BasicBlockSerialisation.FILE_RANGE_BLOCK_SERIALISATION);
 						log.info("Writing range block definition to " + file.getAbsolutePath());
 						BasicBlockSerialisation.serialise(
-								instrumentationParameters.getRangeBlockSerialisation(), file);
+								instrumentationState.getRangeBlockSerialisation(), file);
 					}
 				} catch (Exception e) {
 					e.printStackTrace();

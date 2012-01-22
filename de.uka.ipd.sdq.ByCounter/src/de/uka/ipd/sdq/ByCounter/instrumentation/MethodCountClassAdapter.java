@@ -181,6 +181,10 @@ public final class MethodCountClassAdapter extends ClassAdapter {
 	 */
 	private InstrumentationParameters instrumentationParameters;
 	
+	/**
+	 * The internal results of the instrumentation.
+	 */
+	private InstrumentationState instrumentationState;
 	
 	/**
 	 * Methods that need to be copied for versions with a requestID.
@@ -214,25 +218,20 @@ public final class MethodCountClassAdapter extends ClassAdapter {
 	private String classNameBC;
 
 	/**
-	 * A List that will be filled with a {@link MethodDescriptor} for every successfully
-	 * instrumented method. 
-	 */
-	private List<MethodDescriptor> successfullyInstrumented;
-	
-	/**
 	 * Create a new MethodCountAdapter.
 	 * @param visitor The preceding visitor in the chain.
+	 * @param parameters {@link InstrumentationParameters}
+	 * @param state {@link InstrumentationState}
 	 */
 	public MethodCountClassAdapter(
 			ClassVisitor visitor, 
 			InstrumentationParameters parameters,
-			List<MethodDescriptor> listOfSuccessfullyInstrumentedMethods
+			InstrumentationState state
 			) {
 		super(visitor);
 		this.instrumentationParameters = parameters;
-		this.characterisationHooks = new HashSet<ICharacterisationHook>();
-		
-		this.successfullyInstrumented = listOfSuccessfullyInstrumentedMethods;		
+		this.instrumentationState = state;
+		this.characterisationHooks = new HashSet<ICharacterisationHook>();		
 		this.methodsToDuplicate = new LinkedList<MethodVisitInformation>();
 	}
 
@@ -270,7 +269,7 @@ public final class MethodCountClassAdapter extends ClassAdapter {
 	 * @param newStatus The status to set.
 	 */
 	protected void resetMethodStatusTo(boolean newStatus) {
-		this.methodInstrumentationStatus = new boolean[this.instrumentationParameters.getMethodsToInstrument().size()];
+		this.methodInstrumentationStatus = new boolean[this.instrumentationState.getMethodsToInstrumentCalculated().size()];
 		for(int i = 0; i < this.methodInstrumentationStatus.length; i++) {
 			this.methodInstrumentationStatus[i] = newStatus;
 		}
@@ -911,7 +910,7 @@ public final class MethodCountClassAdapter extends ClassAdapter {
 
 		int methodIndex = 
 			MethodDescriptor.findMethodInList(
-					this.instrumentationParameters.getMethodsToInstrument(),
+					this.instrumentationState.getMethodsToInstrumentCalculated(),
 					this.className,
 					methodName,
 					desc);
@@ -957,7 +956,7 @@ public final class MethodCountClassAdapter extends ClassAdapter {
 						MethodDescriptor._constructMethodDescriptorFromASM(this.classNameBC, name, desc);
 				} else {
 					currentMethod = 
-						this.instrumentationParameters.getMethodsToInstrument().get(methodIndex);
+						this.instrumentationState.getMethodsToInstrumentCalculated().get(methodIndex);
 				}
 				String qualifyingMethodName = this.className + "." + methodName;
 				
@@ -975,6 +974,7 @@ public final class MethodCountClassAdapter extends ClassAdapter {
 						qualifyingMethodName, 
 						desc,
 						instrumentationParameters,
+						instrumentationState,
 						currentMethod);
 				mv = this.methodCountMethodAdapter;
 //				mv = new LabelAndLineNumberMethodAdapter(mv);
@@ -982,7 +982,8 @@ public final class MethodCountClassAdapter extends ClassAdapter {
 				// call the methodStart hooks
 				for(ICharacterisationHook hooks : characterisationHooks) {
 					hooks.methodStartHook(
-							methodCountMethodAdapter, instrumentationParameters, 
+							methodCountMethodAdapter, 
+							instrumentationParameters,
 							access, name, 
 							desc, signature, exceptions);
 				}
@@ -1002,10 +1003,12 @@ public final class MethodCountClassAdapter extends ClassAdapter {
 			    
 				nextVisitor = new MethodPreInstrumentationParser(
 						nextVisitor, access, this.className, name, desc, 
-						methodCountMethodAdapter, instrumentationParameters,
+						methodCountMethodAdapter, 
+						instrumentationParameters,
+						instrumentationState, 
 						currentMethod);
 				
-				this.successfullyInstrumented.add(currentMethod);
+				this.instrumentationState.getSuccessFullyInstrumentedMethods().add(currentMethod);
 				// this method was instrumented successfully //TODO add errors!
 				if(methodIndex >= 0) {
 					this.methodInstrumentationStatus[methodIndex] = true;

@@ -16,7 +16,7 @@ import org.objectweb.asm.tree.TableSwitchInsnNode;
 import org.objectweb.asm.tree.TryCatchBlockNode;
 
 import de.uka.ipd.sdq.ByCounter.instrumentation.IInstructionAnalyser;
-import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentationParameters;
+import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentationState;
 
 /**
  * An implementation of {@link IInstructionAnalyser} that analyses instructions 
@@ -26,25 +26,46 @@ import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentationParameters;
  */
 public final class BasicBlockAnalyser implements IInstructionAnalyser {
 	
-
+	/**
+	 * Labels that start a basic block.
+	 */
 	private HashSet<Label> basicBlockLabels;
+	/**
+	 * Field that is true on construction, but false after the first instruction
+	 * has been analysed.
+	 */
 	private boolean isFirstInstruction;
+	
+	/** Logger for logging output. */
 	@SuppressWarnings("unused")
 	private Logger log;
-	private InstrumentationParameters instrumentationParameters;
+
+	/**
+	 * The instrumentation state that define how to analyse the method.
+	 */
+	private InstrumentationState instrumentationState;
+	
+	/** Descriptor of the analysed method */
 	private String methodDescriptorString;
 
 	
+	/**
+	 * Construct the basic block analyser. Needed before each method.
+	 * @param methodDescriptorString Descriptor of the analysed method.
+	 * @param instrumentationState Structure for instrumentation results.
+	 */
 	public BasicBlockAnalyser(String methodDescriptorString,
-			InstrumentationParameters instrumentationParameters) {
+			InstrumentationState instrumentationState) {
 		this.log = Logger.getLogger(this.getClass().getCanonicalName());
 		this.basicBlockLabels = new HashSet<Label>();
 		isFirstInstruction = true;
 		this.methodDescriptorString = methodDescriptorString;
-		this.instrumentationParameters = instrumentationParameters;
+		this.instrumentationState = instrumentationState;
 	}
 	
-
+	/**
+	 * {@inheritDoc}
+	 */
 	public void analyseInstruction(AbstractInsnNode insn) {
 		if(isFirstInstruction) {
 			// The first label always starts the first basic block 
@@ -54,12 +75,15 @@ public final class BasicBlockAnalyser implements IInstructionAnalyser {
 		this.analyseForBasicBlocks(insn);
 	}
 	
-
+	/**
+	 * Add the given Label to the list of labels starting a basic block.
+	 * @see #basicBlockLabels
+	 * @param l Label.
+	 */
 	private void addLabelForBasicBlock(LabelNode l) {
 		if(l != null)
 		this.basicBlockLabels.add(l.getLabel());
-	}
-	
+	}	
 
 	/**
 	 * Look for basic block defining instructions.
@@ -117,11 +141,8 @@ public final class BasicBlockAnalyser implements IInstructionAnalyser {
 		}
 	}
 
-
-	
 	/**
-	 * 
-	 * @param tryCatchNode The {@link TryCatchBlockNode} to analyse.
+	 * {@inheritDoc}
 	 */
 	public void analyseTryCatchBlock(final TryCatchBlockNode tryCatchNode) {
 		// TODO: start and end of an exception mark a region in which the 
@@ -185,17 +206,21 @@ public final class BasicBlockAnalyser implements IInstructionAnalyser {
 			}
 		}
 		
-		instrumentationParameters.getBasicBlockSerialisation().addBasicBlocksForMethod(
+		instrumentationState.getBasicBlockSerialisation().addBasicBlocksForMethod(
 				methodDescriptorString, 
 				basicBlocks);
 	}
 
 	
+	/** {@inheritDoc} */
 	@SuppressWarnings("unchecked")
 	public void postAnalysisEvent(InsnList instructions) {
 		this.constructBasicBlocks(instructions.iterator());
 	}
 	
+	/**
+	 * @return An array of labels that start a basic block in the analysed method.
+	 */
 	public Label[] getBasicBlockLabels() {
 		return this.basicBlockLabels.toArray(new Label[this.basicBlockLabels.size()]);
 	}

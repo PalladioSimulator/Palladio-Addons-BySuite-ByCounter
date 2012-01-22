@@ -21,6 +21,8 @@ public final class MethodSectionCountClassAdapter extends ClassAdapter {
 	private String className;
 	
 	private InstrumentationParameters instrumentationParameters;
+
+	private InstrumentationState instrumentationState;
 	
 	/**
 	 * Create a new MethodSectionCountClassAdapter.
@@ -29,9 +31,11 @@ public final class MethodSectionCountClassAdapter extends ClassAdapter {
 	 */
 	public MethodSectionCountClassAdapter(
 			ClassVisitor visitor, 
-			InstrumentationParameters params) {
+			InstrumentationParameters params,
+			InstrumentationState state) {
 		super(visitor);
 		this.instrumentationParameters = params;
+		this.instrumentationState = state;
 	}
 
 	/**
@@ -56,7 +60,7 @@ public final class MethodSectionCountClassAdapter extends ClassAdapter {
 		
 		if (mv != null) {
 			int indexOfMethodMatch = MethodDescriptor.findMethodInList(
-					this.instrumentationParameters.getMethodsToInstrument(), 
+					this.instrumentationState.getMethodsToInstrumentCalculated(), 
 					this.className,
 					name, 
 					desc);
@@ -65,7 +69,7 @@ public final class MethodSectionCountClassAdapter extends ClassAdapter {
 				mv = new MethodSectionCountMethodAdapter(name, access, 
 						this.className + "." + name, desc, mv, 
 						this.instrumentationParameters,
-						this.instrumentationParameters.getMethodsToInstrument().get(indexOfMethodMatch));
+						this.instrumentationState.getMethodsToInstrumentCalculated().get(indexOfMethodMatch));
 				nextVisitor = mv;
 			} else {
 				// this is not the right method: use default visitor

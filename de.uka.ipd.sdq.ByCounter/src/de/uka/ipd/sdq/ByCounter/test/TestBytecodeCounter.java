@@ -216,22 +216,21 @@ public class TestBytecodeCounter {
 		methodsToInstrument.add(methodDescriptorLT);
 		methodsToInstrument.add(methodDescriptorPT);
 		this.instrumentationParameters.setMethodsToInstrument(methodsToInstrument);
-		// FIXME: The following does not work
-//		counter.instrument(methodDescriptorMCT);
-//		counter.instrument(methodDescriptorLT);
+		counter.instrument(methodDescriptorMCT);
+		counter.instrument(methodDescriptorLT);
 		counter.instrument();
 		counter.execute(methodDescriptorMCT, new Object[0]);
 
 		CountingResult[] countingResults = 
-			CountingResultCollector.getInstance().retrieveAllCountingResultsAsArray(false);
+			CountingResultCollector.getInstance().retrieveAllCountingResultsAsArray_noInlining(false);
 		Assert.assertTrue("Could not get any counting results.", countingResults.length > 0);
 		CountingResult r1 = countingResults[countingResults.length-1];	// last is methodCallTest
-		CountingResultCollector.getInstance().logResult(r1, true, true);
+		CountingResultCollector.getInstance().logResult(r1, false, true);
 		CountingResultCollector.getInstance().clearResults();
 		// calling tree results
 		counter.execute(methodDescriptorMCT, new Object[0]);
 		
-		countingResults = CountingResultCollector.getInstance().retrieveAllCountingResultsAsArray(true);
+		countingResults = CountingResultCollector.getInstance().retrieveAllCountingResultsAsArray_noInlining(true);
 		CountingResult r2 = countingResults[countingResults.length-1];
 		CountingResultCollector.getInstance().logResult(r2, false, true);
 	}
