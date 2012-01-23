@@ -1,5 +1,7 @@
 package de.uka.ipd.sdq.ByCounter.test.framework.expectations;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -127,6 +129,36 @@ public class SectionExpectation {
 		
 		this.methodCallExpectations.put(bytecodeDescriptor, number);
 		return this;
+	}
+	
+	/**
+	 * Adds a method call expectation to this section. Throws an {@link IllegalArgumentException} if you want to add a
+	 * method call twice.
+	 * 
+	 * @param constructor
+	 *          The constructor to add.
+	 * @param number
+	 *          The expected number (How often this opcode should be counted.). Has to be greater than zero.
+	 * @return This {@link SectionExpectation} object.
+	 */
+	public SectionExpectation add(final Constructor<?> constructor, final long number) {
+		MethodDescriptor desc = new MethodDescriptor(constructor);
+		return this.add(desc.getCanonicalMethodName(), number);
+	}
+	
+	/**
+	 * Adds a method call expectation to this section. Throws an {@link IllegalArgumentException} if you want to add a
+	 * method call twice.
+	 * 
+	 * @param method
+	 *          The method to add.
+	 * @param number
+	 *          The expected number (How often this opcode should be counted.). Has to be greater than zero.
+	 * @return This {@link SectionExpectation} object.
+	 */
+	public SectionExpectation add(final Method method, final long number) {
+		MethodDescriptor desc = new MethodDescriptor(method);
+		return this.add(desc.getCanonicalMethodName(), number);
 	}
 
 	/**
