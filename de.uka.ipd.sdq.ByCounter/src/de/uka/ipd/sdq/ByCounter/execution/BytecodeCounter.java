@@ -62,6 +62,13 @@ public final class BytecodeCounter {
 
 	private static final boolean TRY_TO_FIND_IMPLEMENTATIONS_IN_SUPER = false;
 
+	private static String[] excludedPackagePrefixes = {
+		"java.",
+		"javax.",
+		"sun.",
+		"org.w3c.dom."
+	};
+
 	/**
 	 * A logger instance (java.util Logging)
 	 */
@@ -117,9 +124,14 @@ public final class BytecodeCounter {
 	private byte[] instrumentedClassBytes;
 	
 	/**
-	 * Parameters for instrumentation, can be set by the user
+	 * Parameters for instrumentation, can be set by the user.
 	 */
 	private InstrumentationParameters instrumentationParameters;
+	
+	/**
+	 * Parameters relevant to execution and counting.
+	 */
+	private ExecutionSettings executionSettings;
 	
 	/**
 	 * Internal results of the instrumentation process.
@@ -140,6 +152,7 @@ public final class BytecodeCounter {
 	public BytecodeCounter() {
 		this.classPool = ClassPool.getDefault();
 		this.instrumentationParameters = new InstrumentationParameters();
+		this.executionSettings = new ExecutionSettings();
 		this.instrumentationState = new InstrumentationState();
 		this.successFullyInstrumentedMethods = new ArrayList<MethodDescriptor>();
 		setupLogging();
@@ -253,8 +266,9 @@ public final class BytecodeCounter {
 		// supply CountingResultCollector with details on how execute was called (for reporting purposes)
 		MethodExecutionRecord lastMethodExecutionDetails = new MethodExecutionRecord();
 		lastMethodExecutionDetails.canonicalClassName = targetClass.getCanonicalName();
-		lastMethodExecutionDetails.methodsToCalled = methodsToCall;
+		lastMethodExecutionDetails.methodsCalled = methodsToCall;
 		lastMethodExecutionDetails.methodCallParams = methodCallParams;
+		lastMethodExecutionDetails.executionSettings = this.executionSettings.clone();
 		CountingResultCollector.getInstance().setLastMethodExecutionDetails(lastMethodExecutionDetails);
 
 		// invoke
@@ -265,6 +279,15 @@ public final class BytecodeCounter {
 				methodsToCall, 
 				methodCallParams);
 		return invocationResult;
+	}
+
+	/**
+	 * Use these parameters to influence the way execution and counting of 
+	 * instrumentation results are handled.
+	 * @return The current execution parameters.
+	 */
+	public ExecutionSettings getExecutionSettings() {
+		return executionSettings;
 	}
 
 	/**
@@ -538,13 +561,6 @@ public final class BytecodeCounter {
 		}
 	}
 	
-	private static String[] excludedPackagePrefixes = {
-		"java.",
-		"javax.",
-		"sun.",
-		"org.w3c.dom."
-	};
-
 	/**
 	 * @see {@link #selectMethodsFromCallGraph()}
 	 * Used to traverse the callgraph.
@@ -790,15 +806,26 @@ public final class BytecodeCounter {
 			Object[] parameters) {
 		assert this.constructionDescriptors.size() == this.constructionParameters.size();
 		if(constructor == null) {
-			log.severe("setConstructionParameters: You need to supply a MethodDescriptor that is not null!");
-			return;
+			throw new IllegalArgumentException("setConstructionParameters: You need to supply a MethodDescriptor that is not null!");
 		}
 		if(parameters == null || parameters.length == 0) {
-			log.severe("setConstructionParameters: You need to supply a parameters!");
-			return;
+			throw new IllegalArgumentException("setConstructionParameters: You need to supply a parameters!");
 		}
 		this.constructionDescriptors.add(constructor);
 		this.constructionParameters.add(parameters);
+	}
+
+	/**
+	 * Use these parameters to influence the way execution and counting of 
+	 * instrumentation results are handled.
+	 * @param executionSettings The current execution parameters to use.
+	 */
+	public void setExecutionSettings(ExecutionSettings executionSettings) {
+		if(executionSettings != null) {
+			this.executionSettings = executionSettings;
+		} else {
+			throw new IllegalArgumentException("ExecutionSettings must not be set to null.");
+		}
 	}
 
 	/**
@@ -809,8 +836,8 @@ public final class BytecodeCounter {
 	public void setInstrumentationParams(InstrumentationParameters params) {
 		if(params != null) {
 			this.instrumentationParameters = params;
-		}else{
-			log.severe("Instrumentation parameters are null, not accepted");
+		} else {
+			throw new IllegalArgumentException("InstrumentationParameters must not be set to null.");
 		}
 	}
 
@@ -823,24 +850,24 @@ public final class BytecodeCounter {
 	}
 
 	/**
-		 * Updates the class definition for the class given by className
-		 * and bytes by adding it to the Javassist {@link ClassPool}.
-		 * @param className Fully qualified name of the given class.
-		 * @param bytes Byte array representing the class.
-		 */
-		private void updateClassInClassPool(String className, byte[] bytes) {
-			if(className == null || className.length() == 0) {
-				log.severe("Cannot update class pool because the given classname "
-						+ "was null or invalid.");
-				return;
-			} else if(bytes == null) {
-				log.severe("Cannot update class pool as the given byte[] for the class"
-						+ "was null.");
-				return;
-			}
-			// make the class known to the class pool
-			this.classPool.insertClassPath(new ByteArrayClassPath(className, bytes));
+	 * Updates the class definition for the class given by className
+	 * and bytes by adding it to the Javassist {@link ClassPool}.
+	 * @param className Fully qualified name of the given class.
+	 * @param bytes Byte array representing the class.
+	 */
+	private void updateClassInClassPool(String className, byte[] bytes) {
+		if(className == null || className.length() == 0) {
+			log.severe("Cannot update class pool because the given classname "
+					+ "was null or invalid.");
+			return;
+		} else if(bytes == null) {
+			log.severe("Cannot update class pool as the given byte[] for the class"
+					+ "was null.");
+			return;
 		}
+		// make the class known to the class pool
+		this.classPool.insertClassPath(new ByteArrayClassPath(className, bytes));
+	}
 	
 	/**
 	 * Writes .class file given as byte[].

@@ -15,6 +15,8 @@ import org.objectweb.asm.Opcodes;
 import de.uka.ipd.sdq.ByCounter.execution.BytecodeCounter;
 import de.uka.ipd.sdq.ByCounter.execution.CountingResult;
 import de.uka.ipd.sdq.ByCounter.execution.CountingResultCollector;
+import de.uka.ipd.sdq.ByCounter.execution.ExecutionSettings;
+import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentationParameters;
 import de.uka.ipd.sdq.ByCounter.test.framework.expectations.Expectation;
 import de.uka.ipd.sdq.ByCounter.test.helpers.ClassZ;
 import de.uka.ipd.sdq.ByCounter.test.helpers.InterfaceX;
@@ -71,11 +73,12 @@ public class TestInternalClassDefinition {
 		for (int i = 0; i < 2; i++) {
 			HashSet<String> internalClassesDef = new HashSet<String>();
 			internalClassesDef.add(definitions[i]);
-			CountingResultCollector.getInstance().setInternalClassesDefinition(internalClassesDef);
+			ExecutionSettings execParameters = new ExecutionSettings();
+			execParameters.setInternalClassesDefinition(internalClassesDef);
 			// iterates through all expectations and compares them with reality
 			for (String test : expectations[i].keySet()) {
 				String message = definitions[i] + " matcht " + test;
-				boolean actual = CountingResultCollector.getInstance().isInternalClass(test);
+				boolean actual = execParameters.isInternalClass(test);
 				if (expectations[i].get(test)) {
 					Assert.assertTrue(message + " nicht", actual);
 					LOG.info(message);
@@ -140,13 +143,13 @@ public class TestInternalClassDefinition {
 		// define internal classes
 		Set<String> internalClassesDefinition = new HashSet<String>();
 		internalClassesDefinition.add(INTERNAL_CLASS_CANONICAL);
-		CountingResultCollector.getInstance().setInternalClassesDefinition(internalClassesDefinition);
+		counter.getExecutionSettings().setInternalClassesDefinition(internalClassesDefinition);
 		
 		// retrieve results TODO does not work for recursive = true
 		CountingResult[] results = CountingResultCollector.getInstance().retrieveAllCountingResultsAsArray_noInlining(false);
-    e.compare(results);
+		e.compare(results);
     
-    List<CountingResult> resultsList = CountingResultCollector.getInstance().retrieveAllCountingResults_recursively();
+		List<CountingResult> resultsList = CountingResultCollector.getInstance().retrieveAllCountingResults_recursively();
 		Assert.assertNotNull(resultsList);
 		Assert.assertTrue(resultsList.size() > 1);
 		for(CountingResult newResult: resultsList) {

@@ -114,7 +114,7 @@ public class PdfReport implements ICountingResultWriter {
 
 	private Paragraph createExecutedMethods(MethodExecutionRecord methodExecution) {
 		Paragraph p = new Paragraph();
-		int numExecutedMethods = methodExecution.methodsToCalled.size();
+		int numExecutedMethods = methodExecution.methodsCalled.size();
 		if(numExecutedMethods == 1) {
 			p.add(new Paragraph("The following method was executed"));
 		} else {
@@ -123,7 +123,7 @@ public class PdfReport implements ICountingResultWriter {
 		List list = new List(false);
 		for(int i = 0; i < numExecutedMethods; i++) {
 			Paragraph p1 = new Paragraph();
-			p1.add(new Paragraph(methodExecution.methodsToCalled.get(i).getCanonicalMethodName()));
+			p1.add(new Paragraph(methodExecution.methodsCalled.get(i).getCanonicalMethodName()));
 			p1.add(new Paragraph("Parameters: " + Arrays.toString(methodExecution.methodCallParams.get(i).getParameters())));
 			list.add(new ListItem(p1));
 		}

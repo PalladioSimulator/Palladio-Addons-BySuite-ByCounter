@@ -30,8 +30,6 @@ import de.uka.ipd.sdq.ByCounter.utils.FullOpcodeMapper;
  * @version 1.2
  */
 public final class CountingResultCollector {
-	
-	private static final char INTERNAL_CLASS_DEFINITION_WILDCARD_CHAR = '*';
 
 	/**
 	 * Used by ByCounter to identify results from code instrumented to use 
@@ -202,13 +200,6 @@ public final class CountingResultCollector {
 	 */
 	private MethodExecutionRecord lastMethodExecutionDetails;
 
-	/**
-	 * Classes defined as internal when using recursive result retrieval.
-	 * 
-	 * @see #setInternalClassesDefinition(Set)
-	 */
-	private Set<String> internalClassesDefinition;
-	
 	/**
 	 * Private constructor that is invoked to create the singleton instance
 	 */
@@ -764,6 +755,10 @@ public final class CountingResultCollector {
 		return this.inlined_countingResult;
 	}
 
+	/** 
+	 * @see BytecodeCounter#setExecutionSettings(ExecutionSettings)
+	 * @returnCurrent Counting mode.
+	 */
 	public CountingResultCollectorModeEnum getMode() {
 		return this.mode;
 	}
@@ -1331,7 +1326,8 @@ public final class CountingResultCollector {
 			for(int i = 0; i < this.countingResults.size(); i++) {
 				callerStartTime = this.countingResults.get(i).getMethodInvocationBeginning();
 				CountingResult cr = this.retrieveCountingResultByStartTime_evaluateCallingTree(callerStartTime, true);
-				if(isInternalClass(cr.getQualifyingMethodName())) {
+				if(this.lastMethodExecutionDetails.executionSettings.isInternalClass(
+						cr.getQualifyingMethodName())) {
 					ret.add(cr);
 				}
 			}
@@ -1350,40 +1346,6 @@ public final class CountingResultCollector {
 		ret.add(forcedInlining_CountingResult);
 
 		return ret;
-	}
-
-	/**
-	 * Uses {@link #getInternalClassesDefinition()} to decide whether the given 
-	 * name is considered an internal class.
-	 * @param qualifyingMethodName Name of the class to check.
-	 * @return True when the class is internal.
-	 */
-	public boolean isInternalClass(String qualifyingMethodName) {
-		if(this.internalClassesDefinition == null) {
-			return true;
-		}
-		// find public parent class in case of internal class
-		int i = qualifyingMethodName.indexOf('$');
-		String className = qualifyingMethodName;
-		if(i >= 0) {
-			className = qualifyingMethodName.substring(0, i);
-		}
-		
-		for(String s : this.internalClassesDefinition) {
-			if(s.charAt(s.length() - 1) == INTERNAL_CLASS_DEFINITION_WILDCARD_CHAR) {
-				final String prefix = s.substring(0, s.length() - 1);
-				// prefix matching
-				if(qualifyingMethodName.startsWith(prefix)) {
-					return true;
-				}
-			} else {
-				// exact matching 
-				if(className.equals(s)) {
-					return true;
-				}
-			}
-		}
-		return false;
 	}
 
 	/**
@@ -1625,19 +1587,6 @@ public final class CountingResultCollector {
 			basicBlockCounts[i] += bbCounts[i];
 		}
 	}
-	
-	public void setForceInliningIgnoringMethodWishes(boolean b) {
-		if(b){
-			setMode(CountingResultCollectorModeEnum.ForceInlineDisregardingInstrumentMethodWishes_InstructionAndMethodCounts_ButCountReportsPerSignature);
-		}else{
-			setMode(CountingResultCollectorModeEnum.UseReportingMethodChoiceByInstrumentedMethods);
-		}
-	}
-
-	public void setMode(CountingResultCollectorModeEnum mode) {
-		//TODO add checks and reactions (esp. w.r.t. inlining), cf. the setForceInliningIgnoringMethodWishes(...) method
-		this.mode = mode;
-	}
 
 	/**
 	 * @deprecated because only GUI-used but the GUI is outdated
@@ -1680,52 +1629,28 @@ public final class CountingResultCollector {
 	/**
 	 * This is called by {@link BytecodeCounter} when an execute method is 
 	 * executed to provide the details of the execution to 
-	 * {@link CountingResultCollector}
+	 * {@link CountingResultCollector}.
+	 * <p>
+	 * Do not call; instead use {@link BytecodeCounter#setExecutionSettings(ExecutionSettings)}.
+	 * </p>
 	 * @param lastMethodExecutionDetails Method execution details.
 	 */
 	public void setLastMethodExecutionDetails(MethodExecutionRecord lastMethodExecutionDetails) {
 		this.lastMethodExecutionDetails = lastMethodExecutionDetails;
+		// set the counting mode
+		this.mode = lastMethodExecutionDetails.executionSettings.getCountingResultCollectorMode();
 	}
 
 	/**
+	 * The settings used for the last execution relevant to the 
+	 * {@link CountingResultCollector}.
+	 * <p>Do not call to change these settings.
+	 * Instead, use {@link BytecodeCounter#setExecutionSettings(ExecutionSettings)}.
+	 * </p>
+	 * @see #setLastMethodExecutionDetails(MethodExecutionRecord)
 	 * @return the lastMethodExecutionDetails
 	 */
 	public MethodExecutionRecord getLastMethodExecutionDetails() {
 		return lastMethodExecutionDetails;
 	}
-
-	/**
-	 * @param internalClassesDefinition The definition of interal classes.
-	 * When adding up results when retrieving results recursivly, this 
-	 * definition allows for adding up only results for classes defined as 
-	 * internal.
-	 * <p>
-	 * For each string, specifying a '*' at the end enabled prefix matching, 
-	 * i.e. all classes with the prefix are matched. If a string specifies a 
-	 * class name, non-public/internal classes are also considered internal.
-	 * </p>
-	 * <p>
-	 * Examples:
-	 * <code>
-	 * <list>
-	 * <li>de.uka* matches de.ukap.Test, de.uka.ipd, ...</li>
-	 * <li>de.uka.Test matches de.uka.Test, de.uka.Test$XXX, de.uka.Test$XXX$YYY, ...</li>
-	 * <li>de.uka.Test matches de.uka.Test, but not de.uka.Test.{ENUM Y}</li>
-	 * </list>
-	 * </code>
-	 * </p>
-	 */
-	public void setInternalClassesDefinition(
-			Set<String> internalClassesDefinition) {
-		this.internalClassesDefinition = internalClassesDefinition;
-	}
-
-	/**
-	 * @return The definition of internal classes.
-	 * @see #setInternalClassesDefinition(Set)
-	 */
-	public Set<String> getInternalClassesDefinition() {
-		return internalClassesDefinition;
-	}
-
 }

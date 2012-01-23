@@ -1,5 +1,9 @@
 package de.uka.ipd.sdq.ByCounter.execution;
 
+/**
+ * This enum lists modes in which the {@link CountingResultCollector} can 
+ * handle the counting of results.
+ */
 public enum CountingResultCollectorModeEnum {
 		DiscardAllIncomingCountingResults,
 		
@@ -16,9 +20,10 @@ public enum CountingResultCollectorModeEnum {
 //		
 //		ForceInlineDisregardingInstrumentMethodWishes_InstructionCountsOnly_ButCountReportsPerSignature,
 		
-		UseReportingMethodChoiceByInstrumentedMethods, //default...
-		
-		UseThresholdPerReportingMethod_UntilTotalThresholdReachedThenForceInline,//unlimited threshold allowed --> define constant
-		
-		UseTotalThreshold_RegardlessOfIndividualMethodCountsThenForceInline//unlimited threshold allowed --> define constant
+		/** default */
+		UseReportingMethodChoiceByInstrumentedMethods,
+		/** unlimited threshold allowed --> define constant */
+		UseThresholdPerReportingMethod_UntilTotalThresholdReachedThenForceInline,
+		/** sunlimited threshold allowed --> define constant */
+		UseTotalThreshold_RegardlessOfIndividualMethodCountsThenForceInline
 }

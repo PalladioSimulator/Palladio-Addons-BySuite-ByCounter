@@ -37,10 +37,14 @@ public final class InstrumentationParameters implements Cloneable {
 			"org/w3c/dom"
 		};
 
-	/** Default value for {@link #getUseBasicBlocks()}. */
+	/** Default value for {@link #getUseBasicBlocks()}:
+	 * {@value #USE_BASIC_BLOCKS_DEFAULT} */
 	public static final boolean USE_BASIC_BLOCKS_DEFAULT = false;
 
-	/** Default value for {@link #getRecordBlockExecutionOrder()}. */
+	/** 
+	 * Default value for {@link #getRecordBlockExecutionOrder()}:
+	 * {@value #RECORD_BLOCK_EXECUTION_ORDER_DEFAULT}
+	 */
 	public static final boolean RECORD_BLOCK_EXECUTION_ORDER_DEFAULT = true;
 
 	/** Default value for {@link #getInstrumentationScopeOverrideClassLevel()}. */
