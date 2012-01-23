@@ -23,7 +23,7 @@ public class ExecutionSettings implements Cloneable {
 	public static final Set<String> INTERNAL_CLASSES_DEFINITION_DEFAULT = null;
 	
 	/** Default value of {@link #getCountingResultCollectorMode()}. */
-	private static final CountingResultCollectorModeEnum COUNTING_RESULT_COLLECTOR_MODE_DEFAULT = CountingResultCollectorModeEnum.UseReportingMethodChoiceByInstrumentedMethods;
+	private static final CountingResultCollectorMode COUNTING_RESULT_COLLECTOR_MODE_DEFAULT = CountingResultCollectorMode.UseReportingMethodChoiceByInstrumentedMethods;
 
 	/**
 	 * Classes defined as internal when using recursive result retrieval.
@@ -35,7 +35,7 @@ public class ExecutionSettings implements Cloneable {
 	/**
 	 * Counting mode to use.
 	 */
-	private CountingResultCollectorModeEnum countingResultCollectorMode;
+	private CountingResultCollectorMode countingResultCollectorMode;
 	
 	/**
 	 * Construct {@link ExecutionSettings} by setting every field to it's 
@@ -139,7 +139,7 @@ public class ExecutionSettings implements Cloneable {
 	/**
 	 * @return The mode in which the {@link CountingResultCollector} operates.
 	 */
-	public CountingResultCollectorModeEnum getCountingResultCollectorMode() {
+	public CountingResultCollectorMode getCountingResultCollectorMode() {
 		return countingResultCollectorMode;
 	}
 
@@ -148,7 +148,7 @@ public class ExecutionSettings implements Cloneable {
 	 * {@link CountingResultCollector} operates.
 	 */
 	public void setCountingResultCollectorMode(
-			CountingResultCollectorModeEnum countingResultCollectorMode) {
+			CountingResultCollectorMode countingResultCollectorMode) {
 		this.countingResultCollectorMode = countingResultCollectorMode;
 	}
 

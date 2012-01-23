@@ -189,8 +189,6 @@ public final class MethodCountMethodAdapter extends MethodAdapter implements Opc
 	 */
 	private boolean useBlockCounters;
 
-	private boolean useRangeBlocks;
-
 	/**
 	 * The variable of the {@link ArrayList} created in 
 	 * {@link #initialiseBlockExecutionOrderArrayList()}.
@@ -238,7 +236,6 @@ public final class MethodCountMethodAdapter extends MethodAdapter implements Opc
 		this.methodDescriptor = method;
 		this.lVarManager = new LocalVariableManager(instrumentationParameters.getUseHighRegistersForCounting());
 		this.useBlockCounters = false;
-		this.useRangeBlocks = false;
 	}
 	
 	/**
@@ -604,22 +601,12 @@ public final class MethodCountMethodAdapter extends MethodAdapter implements Opc
 		log.fine("isInvariant ignored by instrumentation now...");
 		String protocolCountSignature = CountingResultCollector.SIGNATURE_protocolCount;
 		String protocolStructConstructorSignature = null;
-		String protocolCountMethodName = null;
+		String protocolCountMethodName = "protocolCount";
 		String directWritingToLogSignature = MethodCountClassAdapter.DIRECT_LOG_WRITE_SIGNATURE;
 		// Choose the proper protocolCountMethod depending on the precision
 		if(!instrumentationParameters.isCounterPrecisionIsLong()) {
-			if(inlineImmediately){
-				protocolCountMethodName = "protocolCountInt_inline";
-			}else{
-				protocolCountMethodName = "protocolCountInt";
-			}
 			protocolStructConstructorSignature = ProtocolCountStructure.SIGNATURE_CONSTRUCTOR_INT;
 		} else if(instrumentationParameters.isCounterPrecisionIsLong()) {
-			if(inlineImmediately){
-				protocolCountMethodName = "protocolCountLong_inline";
-			}else{
-				protocolCountMethodName = "protocolCountLong";
-			}
 			protocolStructConstructorSignature = ProtocolCountStructure.SIGNATURE_CONSTRUCTOR_LONG;
 		}
 		
@@ -640,15 +627,7 @@ public final class MethodCountMethodAdapter extends MethodAdapter implements Opc
 		mv.visitInsn(Opcodes.DUP);
 		
 		this.mv.visitVarInsn(Opcodes.LLOAD, this.timeVar); //converted to long --> taking two bytes!
-		if(this.useBlockCounters) {
-			if(!this.useRangeBlocks) { 
-				this.mv.visitLdcInsn(CountingResultCollector.BASIC_BLOCK_MAGIC_PREFIX + qualifyingMethodNameAndDesc);
-			} else {
-				this.mv.visitLdcInsn(CountingResultCollector.RANGE_BLOCK_MAGIC_PREFIX + qualifyingMethodNameAndDesc);
-			}
-		} else {
-			this.mv.visitLdcInsn(qualifyingMethodNameAndDesc);
-		}
+		this.mv.visitLdcInsn(qualifyingMethodNameAndDesc);
 		
 		if(this.useBlockCounters &&
 				this.instrumentationParameters.getRecordBlockExecutionOrder()) {
@@ -693,6 +672,12 @@ public final class MethodCountMethodAdapter extends MethodAdapter implements Opc
 			this.mv.visitInsn(Opcodes.ACONST_NULL);
 			this.mv.visitInsn(Opcodes.ACONST_NULL);
 			this.mv.visitInsn(Opcodes.ACONST_NULL);
+		}
+		
+		if(inlineImmediately) {
+			this.mv.visitInsn(Opcodes.ICONST_1); // inline == true
+		} else {
+			this.mv.visitInsn(Opcodes.ICONST_0); // inline == false
 		}
 		
 		// construct the new result object
@@ -876,10 +861,6 @@ public final class MethodCountMethodAdapter extends MethodAdapter implements Opc
 			this.useBlockCounters = false;
 		} else if(this.instrumentationParameters.getUseBasicBlocks()) {
 			this.useBlockCounters = true;
-			if(this.methodDescriptor.getCodeAreasToInstrument() != null
-					&& this.methodDescriptor.getCodeAreasToInstrument().length != 0) {
-				this.useRangeBlocks = true;
-			}
 			if(this.instrumentationParameters.getUseArrayParameterRecording()) {
 				throw new RuntimeException("Array parameter recording is not currently supported in block counting modes.");
 			}

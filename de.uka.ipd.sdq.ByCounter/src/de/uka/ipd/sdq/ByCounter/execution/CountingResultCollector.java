@@ -18,6 +18,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import de.uka.ipd.sdq.ByCounter.instrumentation.AdditionalOpcodeInformation;
+import de.uka.ipd.sdq.ByCounter.instrumentation.BlockCountingMode;
+import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentationParameters;
 import de.uka.ipd.sdq.ByCounter.reporting.ICountingResultWriter;
 import de.uka.ipd.sdq.ByCounter.utils.FullOpcodeMapper;
 
@@ -31,12 +33,6 @@ import de.uka.ipd.sdq.ByCounter.utils.FullOpcodeMapper;
  */
 public final class CountingResultCollector {
 
-	/**
-	 * Used by ByCounter to identify results from code instrumented to use 
-	 * basic blocks for counting.
-	 */
-	public static final String BASIC_BLOCK_MAGIC_PREFIX = "__BB__";
-	
 	private static final int DEFAULT_THRESHOLD_PER_REPORTING_METHOD = 100;
 
 	private static final int DEFAULT_TOTAL_THRESHOLD = 10000;
@@ -54,8 +50,7 @@ public final class CountingResultCollector {
 
 	/**
 	 * The bytecode parameter descriptor for
-	 * {@link #protocolCountInt(ProtocolCountStructure)} and for
-	 * {@link #protocolCountLong(ProtocolCountStructure)}.
+	 * {@link #protocolCount(ProtocolCountStructure)}.
 	 */
 	public static final String SIGNATURE_protocolCount = "(Lde/uka/ipd/sdq/ByCounter/execution/ProtocolCountStructure;)V";
 
@@ -153,7 +148,7 @@ public final class CountingResultCollector {
 	/**
 	 * The main flag which switches forced inlining on...
 	 */
-	private CountingResultCollectorModeEnum mode;
+	private CountingResultCollectorMode mode;
 
 	/**
 	 * For usage related to the class CountingResultCollectorMonitor...
@@ -235,7 +230,7 @@ public final class CountingResultCollector {
 				new String[]{}
 				);
 		this.inlined_methodsMap = new TreeMap<String, Integer>();
-		this.mode = CountingResultCollectorModeEnum.UseReportingMethodChoiceByInstrumentedMethods;
+		this.mode = CountingResultCollectorMode.UseReportingMethodChoiceByInstrumentedMethods;
 		this.resultWriters = new ArrayList<ICountingResultWriter>();
 		this.uncalculatedBBCounts_Index = new HashMap<String, Integer>();
 		
@@ -253,19 +248,8 @@ public final class CountingResultCollector {
 		SortedMap<String, Long> methodCounts = new TreeMap<String, Long>();
 		int numResults = 1;	// the number of results created from the values
 		
-		boolean convertCountsFromBasicBlockCounts = false;
-		boolean convertCountsFromRangeBlockCounts = false;
-		if(result.qualifyingMethodName.startsWith(BASIC_BLOCK_MAGIC_PREFIX)) {
-			convertCountsFromBasicBlockCounts = true;
-			result.qualifyingMethodName =
-				parseBBQualifyingMethodName(false, result.qualifyingMethodName);
-		} else if(result.qualifyingMethodName.startsWith(RANGE_BLOCK_MAGIC_PREFIX)) {
-			convertCountsFromRangeBlockCounts = true;
-			result.qualifyingMethodName = 
-				parseBBQualifyingMethodName(true, result.qualifyingMethodName);			
-		}
 		CalculatedCounts[] ccounts;
-		if(convertCountsFromBasicBlockCounts) {
+		if(result.blockCountingMode == BlockCountingMode.BasicBlocks) {
 			if(result.blockExecutionSequence != null) {
 				ccounts = blockCalculation.calculateCountsFromBlockExecutionSequence(
 						result, false);
@@ -279,7 +263,7 @@ public final class CountingResultCollector {
 						methodCounts)
 				};
 			}
-		} else if (convertCountsFromRangeBlockCounts) {//Ranges!
+		} else if (result.blockCountingMode == BlockCountingMode.RangeBlocks) {//Ranges!
 			if(result.blockExecutionSequence != null) {
 				ccounts = blockCalculation.calculateCountsFromBlockExecutionSequence(
 						result, true);
@@ -362,7 +346,7 @@ public final class CountingResultCollector {
 				newArrayDim,
 				newArrayType
 				);
-			if(convertCountsFromRangeBlockCounts) {
+			if(result.blockCountingMode == BlockCountingMode.RangeBlocks) {
 				// set the index of the range block, i.e. the number of the section as
 				// defined by the user in the instrumentation settings. This 
 				// enables the user to find the counts for specific sections.
@@ -562,16 +546,10 @@ public final class CountingResultCollector {
 		
 		// look for basic block counting
 		boolean convertCountsFromOpcodeCounts = false;
-		if(result.qualifyingMethodName.startsWith(BASIC_BLOCK_MAGIC_PREFIX)) {
+		if(result.blockCountingMode != BlockCountingMode.NoBlocks) {
 			convertCountsFromOpcodeCounts = true;
-			result.qualifyingMethodName =
-				parseBBQualifyingMethodName(false, result.qualifyingMethodName);
-		} else if(result.qualifyingMethodName.startsWith(RANGE_BLOCK_MAGIC_PREFIX)) {
 			// separate range block results make no sense for inlining because 
 			// the results are all added up anyways, so use basic block routines
-			convertCountsFromOpcodeCounts = true;
-			result.qualifyingMethodName =
-				parseBBQualifyingMethodName(true, result.qualifyingMethodName);
 		}
 		if(convertCountsFromOpcodeCounts) {
 			if(useDeferredBBcalculations) {
@@ -759,7 +737,7 @@ public final class CountingResultCollector {
 	 * @see BytecodeCounter#setExecutionSettings(ExecutionSettings)
 	 * @returnCurrent Counting mode.
 	 */
-	public CountingResultCollectorModeEnum getMode() {
+	public CountingResultCollectorMode getMode() {
 		return this.mode;
 	}
 
@@ -783,10 +761,10 @@ public final class CountingResultCollector {
 	}
 
 	public boolean isForceInliningIgnoringMethodWishes() {
-		if(mode.equals(CountingResultCollectorModeEnum.ForceInlineDisregardingInstrumentMethodWishes_InstructionAndMethodCounts)
-				|| mode.equals(CountingResultCollectorModeEnum.ForceInlineDisregardingInstrumentMethodWishes_InstructionAndMethodCounts_ButCountReportsPerSignature)
-				|| mode.equals(CountingResultCollectorModeEnum.UseThresholdPerReportingMethod_UntilTotalThresholdReachedThenForceInline)
-				|| mode.equals(CountingResultCollectorModeEnum.UseTotalThreshold_RegardlessOfIndividualMethodCountsThenForceInline)){
+		if(mode.equals(CountingResultCollectorMode.ForceInlineDisregardingInstrumentMethodWishes_InstructionAndMethodCounts)
+				|| mode.equals(CountingResultCollectorMode.ForceInlineDisregardingInstrumentMethodWishes_InstructionAndMethodCounts_ButCountReportsPerSignature)
+				|| mode.equals(CountingResultCollectorMode.UseThresholdPerReportingMethod_UntilTotalThresholdReachedThenForceInline)
+				|| mode.equals(CountingResultCollectorMode.UseTotalThreshold_RegardlessOfIndividualMethodCountsThenForceInline)){
 			return true;
 		}else{
 			return false;
@@ -1035,247 +1013,77 @@ public final class CountingResultCollector {
 		this.setMonitorShouldStop(true);
 	}
 
-	/**
-	 * Modifies the method name by cutting of the encoded meta information about
-	 * the basic blocks or code ranges.
-	 * @param qualifyingMethodName Qualifying method name as passed to the 
-	 * protocolCount methods.
-	 * @return the modified method name.
-	 */
-	private synchronized String parseBBQualifyingMethodName(boolean isRangeBlock, String qualifyingMethodName) {
-		// we have basic blocks; cut of the prefix
-		if(!isRangeBlock) {
-			qualifyingMethodName = 
-				qualifyingMethodName.substring(BASIC_BLOCK_MAGIC_PREFIX.length());
-		} else {
-			qualifyingMethodName = 
-				qualifyingMethodName.substring(RANGE_BLOCK_MAGIC_PREFIX.length());
-		}
-		return qualifyingMethodName;
-	}
-
-	private synchronized void protocol_forceInliningAlwaysAndCountReportingsPerSig(
+	private synchronized void protocol_inlining (
 			ProtocolCountStructure result, 
 			long reportingStart) {
-		forceInline(reportingStart, result, true);
-		Integer count;
-		if(result.qualifyingMethodName==null){
-			log.severe("Qualifying method name is null");
-		}else{
-			count = this.forcedInlining_OccurenceCountsReportingMethods.get(result.qualifyingMethodName);
-			if(count==null){
-				this.forcedInlining_OccurenceCountsReportingMethods.put(result.qualifyingMethodName, 1);
-			}else{
-				this.forcedInlining_OccurenceCountsReportingMethods.put(result.qualifyingMethodName, count+1);
-			}
-		}
-	}
-
-	private synchronized void protocol_forceInliningWhenReachingThresholdPerReportingMethodOrTotalThreshold(
-			ProtocolCountStructure result, long reportingStart) {
 		//TODO ignores newArray* as well as *IDs
-		Integer count=null;
-		if(result.qualifyingMethodName==null){
-			log.severe("Qualifying method name is null");
-		}else{
-			count = this.forcedInlining_OccurenceCountsReportingMethods.get(result.qualifyingMethodName);
-			if(count==null){
-				this.forcedInlining_OccurenceCountsReportingMethods.put(result.qualifyingMethodName, 1);
+		
+		boolean forceInlining = this.mode.getForceInliningAlways();
+		
+		if(this.mode.getCountReportsPerSignature()) {
+			Integer count=null;
+			if(result.qualifyingMethodName==null){
+				log.severe("Qualifying method name is null");
 			}else{
-				this.forcedInlining_OccurenceCountsReportingMethods.put(result.qualifyingMethodName, count+1);
+				count = this.forcedInlining_OccurenceCountsReportingMethods.get(result.qualifyingMethodName);
+				if(count==null){
+					this.forcedInlining_OccurenceCountsReportingMethods.put(result.qualifyingMethodName, 1);
+				}else{
+					this.forcedInlining_OccurenceCountsReportingMethods.put(result.qualifyingMethodName, count+1);
+				}
+			}
+			if(this.mode == CountingResultCollectorMode.UseThresholdPerReportingMethod_UntilTotalThresholdReachedThenForceInline
+					&& count!=null && count>=forcedInlining_thresholdPerReportingMethod){
+				if(verbose) log.info("Inlining counting result because "+result.qualifyingMethodName+
+						" already has "+forcedInlining_thresholdPerReportingMethod+" counting results");
+				forceInlining = true;
+			}else if(this.forcedInlining_totalOfUninlinedMethodsDespiteForcedInlining>=this.forcedInlining_thresholdTotalMaximum){
+				if(verbose) log.info("Inlining counting result because total number of stored counting results " +
+						" already reached "+forcedInlining_thresholdTotalMaximum);
+				forceInlining = true;
 			}
 		}
-		if(count!=null && count>=forcedInlining_thresholdPerReportingMethod){
-			if(verbose) log.info("Inlining counting result because "+result.qualifyingMethodName+
-					" already has "+forcedInlining_thresholdPerReportingMethod+" counting results");
+		
+		if(forceInlining) {
 			forceInline(reportingStart, result, false);
-		}else if(this.forcedInlining_totalOfUninlinedMethodsDespiteForcedInlining>=this.forcedInlining_thresholdTotalMaximum){
-			if (verbose) log.info("Inlining counting result because total number of stored counting results " +
-					" already reached "+forcedInlining_thresholdTotalMaximum);
-			forceInline(reportingStart, result, false);
-		}else{
+		} else {
 			this.forcedInlining_totalOfUninlinedMethodsDespiteForcedInlining++;
-			addToCountingResults(result,
-					reportingStart);
-		}
-	}
-
-	private synchronized void protocol_forceInliningWhenReachingTotalThreshold(
-			ProtocolCountStructure result,
-			long reportingStart) {
-		Integer count=null;
-		if(result.qualifyingMethodName==null){
-			log.severe("Qualifying method name is null");
-		}else{
-			count = this.forcedInlining_OccurenceCountsReportingMethods.get(result.qualifyingMethodName);
-			if(count==null){
-				this.forcedInlining_OccurenceCountsReportingMethods.put(result.qualifyingMethodName, 1);
-			}else{
-				this.forcedInlining_OccurenceCountsReportingMethods.put(result.qualifyingMethodName, count+1);
+			if(!result.inliningSpecified) {
+				addToCountingResults(result, reportingStart);
+			} else {
+				addToWishedInliningResult(result);
 			}
 		}
-		if(this.forcedInlining_totalOfUninlinedMethodsDespiteForcedInlining>=this.forcedInlining_thresholdTotalMaximum){
-			forceInline(reportingStart, result, false);
-		}else{
-			this.forcedInlining_totalOfUninlinedMethodsDespiteForcedInlining++;
-			addToCountingResults(result, reportingStart);
-		}
-	}
-	
-	private synchronized void protocol_normalInliningWished_forceInliningWhenReachingThresholdPerMethodOrTotalThreshold(
-			ProtocolCountStructure result, 
-			long reportingStart) {
-		Integer count=null;
-		if(result.qualifyingMethodName==null){
-			log.severe("Qualifying method name is null");
-		}else{
-			count = this.forcedInlining_OccurenceCountsReportingMethods.get(result.qualifyingMethodName);
-			if(count==null){
-				this.forcedInlining_OccurenceCountsReportingMethods.put(result.qualifyingMethodName, 1);
-			}else{
-				this.forcedInlining_OccurenceCountsReportingMethods.put(result.qualifyingMethodName, count+1);
-			}
-		}
-		if(count!=null && count>=forcedInlining_thresholdPerReportingMethod){
-			if(verbose) log.info("Inlining counting result because "+result.qualifyingMethodName+
-					" already has "+forcedInlining_thresholdPerReportingMethod+" counting results");
-			forceInline(reportingStart, result, false);
-		}else if(this.forcedInlining_totalOfUninlinedMethodsDespiteForcedInlining>=this.forcedInlining_thresholdTotalMaximum){
-			if(verbose) log.info("Inlining counting result because total number of stored counting results " +
-					" already reached "+forcedInlining_thresholdTotalMaximum);
-			forceInline(reportingStart, result, false);
-		}else{
-			this.forcedInlining_totalOfUninlinedMethodsDespiteForcedInlining++;
-			addToWishedInliningResult(result);
-		}
-	}
-
-	private synchronized void protocol_normalInliningWished_forceInliningWhenTotalThresholdReached(
-			ProtocolCountStructure result, long reportingStart) {
-		Integer count=null;
-		if(result.qualifyingMethodName==null){
-			log.severe("Qualifying method name is null");
-		}else{
-			count = this.forcedInlining_OccurenceCountsReportingMethods.get(result.qualifyingMethodName);
-			if(count==null){
-				this.forcedInlining_OccurenceCountsReportingMethods.put(result.qualifyingMethodName, 1);
-			}else{
-				this.forcedInlining_OccurenceCountsReportingMethods.put(result.qualifyingMethodName, count+1);
-			}
-		}
-		if(this.forcedInlining_totalOfUninlinedMethodsDespiteForcedInlining>=this.forcedInlining_thresholdTotalMaximum){
-			if(verbose) log.info("Inlining counting result because total number of stored counting results " +
-					" already reached "+forcedInlining_thresholdTotalMaximum);
-			forceInline(reportingStart, result, false);
-		}else{
-			this.forcedInlining_totalOfUninlinedMethodsDespiteForcedInlining++;
-			addToWishedInliningResult(result);
-		}
-	}
-
-	/**
-	 * Changing the signature of the protocolCount* methods
-	 * ====================================================
-	 *
-	 *  Changing the signature of the protocol methods requires a number of
-	 * additional changes in ByCounter.
-	 * 1) Make sure to extend _all_ of the protocol* methods in the same way if
-	 * appropriate.
-	 * 2) Adapt the signature in bytecode notation in the SIGNATURE_* constants
-	 * (i.e. as shown in the asmifier plugin) to match the new signature.
-	 * 3) In insertResultCollectorCall, make sure that the stack is filled
-	 * correctly before the visitMethodInsn calls to match the changed signature.
-	 * 4) The directResultWriting method that is inserted into instrumented
-	 * classes if chosen needs to be adapted as it mostly shares the parameter
-	 * list of the protocol method. For this, adapt the methods template in
-	 * MethodCountClassAdapter and follow the instructions in the javadoc of the
-	 * template that instruct you to change the asm code that is generated from
-	 * the template.
-	 *
-	 * An instrumented class calls this method to report the instruction and method call counts.
-	 * This version gathers integer counts
-	 * (the simpler "IINC" instrumentation has some performance advantages),
-	 * but the data is saved as "longs" in CountingResultCollector anyway.
-	 * @param result Information reported by an instrumented method.
-	 */
-	public synchronized void protocolCountInt(ProtocolCountStructure result) {
-		result.convertIntToLong();//TODO how expensive is this?
-		this.protocolCountLong(result);
-	}
-
-	/**
-	 * @param result The result as reported by an instrumented method.
-	 */
-	public synchronized void protocolCountInt_inline(ProtocolCountStructure result) {
-//		if(newArrayCounts!=null && newArrayTypeOrDim!=null && newArrayDescr!=null){
-//			assert(newArrayCounts.length== newArrayTypeOrDim.length 
-//					&& newArrayTypeOrDim.length== newArrayDescr.length);
-//		}
-		if(result.newArrayCounts!=null && result.newArrayCounts.length>0){
-			log.severe("Ignoring array counts reported for "+result.qualifyingMethodName+" at "+result.executionStart);
-		}else if(result.newArrayTypeOrDim!=null && result.newArrayTypeOrDim.length>0){
-			log.severe("Ignoring array counts reported for "+result.qualifyingMethodName+" at "+result.executionStart);
-		}else if(result.newArrayDescr!=null && result.newArrayDescr.length>0){
-			log.severe("Ignoring array counts reported for "+result.qualifyingMethodName+" at "+result.executionStart);
-		}
-		result.convertIntToLong();
-		this.protocolCountLong_inline(result);
 	}
 
 	/**
 	 * An instrumented class calls this method to report the instruction and method call counts.
-	 * This version gathers "long"-typed counts, instead of faster but limited "int"-typed counts.
+	 * TODO: how far is "synchronized" problematic in multi-threading?
 	 * @param result The result reported by an instrumented method.
 	 */
-	@SuppressWarnings("boxing")
-	public synchronized void protocolCountLong(ProtocolCountStructure result) {
+	public synchronized void protocolCount(ProtocolCountStructure result) {
 		long reportingStart = System.nanoTime();//TODO make this configurable and clear, move to an interface/class that is accessed
-		if(this.mode==CountingResultCollectorModeEnum.DiscardAllIncomingCountingResults){
+		if(result.counterPrecision == InstrumentationParameters.COUNTER_PRECISION_INT) {
+			result.convertIntToLong();
+		}
+		if(this.mode==CountingResultCollectorMode.DiscardAllIncomingCountingResults){
 			log.fine("Discarding counting result of method "+result.qualifyingMethodName+", which started execution " +
 					"at "+result.executionStart);
-		}else if(this.mode==CountingResultCollectorModeEnum.ForceInlineDisregardingInstrumentMethodWishes_InstructionAndMethodCounts){
-			//TODO ignores newArray* as well as *IDs
-			forceInline(reportingStart, result, false);
-		}else if(this.mode==CountingResultCollectorModeEnum.ForceInlineDisregardingInstrumentMethodWishes_InstructionAndMethodCounts_ButCountReportsPerSignature){
-			//TODO ignores newArray* as well as *IDs
-			protocol_forceInliningAlwaysAndCountReportingsPerSig(result, reportingStart);
-		}else if(this.mode==CountingResultCollectorModeEnum.UseThresholdPerReportingMethod_UntilTotalThresholdReachedThenForceInline){
-			protocol_forceInliningWhenReachingThresholdPerReportingMethodOrTotalThreshold(
-					result, reportingStart);
-		}else if(this.mode==CountingResultCollectorModeEnum.UseTotalThreshold_RegardlessOfIndividualMethodCountsThenForceInline){
-			protocol_forceInliningWhenReachingTotalThreshold(result, reportingStart);
+		}else if(this.mode.getForceInliningPossible()){
+			protocol_inlining(result, reportingStart);
 		}else{
-			addToCountingResults(result, reportingStart);
+			if(result.inliningSpecified) {
+				addToWishedInliningResult(result);
+			} else {
+				addToCountingResults(result, reportingStart);
+			}
 		}
 	}
 
 	/**
-	 * TODO test me...
-	 * how far is "synchronized" problematic in multi-threading?
-	 * @param result The result reported by the instrumented method
+	 * Adds an additional result writer used in {@link #logResult(CountingResult, boolean, boolean, Level)}.
+	 * @param resultWriter {@link ICountingResultWriter} used when logging result.
 	 */
-	public synchronized void protocolCountLong_inline(
-			ProtocolCountStructure result) {
-//		log.severe("Protocolling_long_inline: "+qualifyingMethodName);
-		long reportingStart = System.nanoTime();//TODO??? can be ignored
-		if(this.mode==CountingResultCollectorModeEnum.DiscardAllIncomingCountingResults){
-			if(verbose) log.fine("Discarding counting result of method "+result.qualifyingMethodName+", which started execution " +
-					"at "+result.executionStart);
-		}else if(this.mode==CountingResultCollectorModeEnum.ForceInlineDisregardingInstrumentMethodWishes_InstructionAndMethodCounts){
-			forceInline(reportingStart, result, false);
-		}else if(this.mode==CountingResultCollectorModeEnum.ForceInlineDisregardingInstrumentMethodWishes_InstructionAndMethodCounts_ButCountReportsPerSignature){
-			protocol_forceInliningAlwaysAndCountReportingsPerSig(result, reportingStart);
-		}else if(this.mode==CountingResultCollectorModeEnum.UseThresholdPerReportingMethod_UntilTotalThresholdReachedThenForceInline){
-			protocol_normalInliningWished_forceInliningWhenReachingThresholdPerMethodOrTotalThreshold(
-					result, reportingStart);
-		}else if(this.mode==CountingResultCollectorModeEnum.UseTotalThreshold_RegardlessOfIndividualMethodCountsThenForceInline){
-			protocol_normalInliningWished_forceInliningWhenTotalThresholdReached(
-					result, reportingStart);
-		}else{
-			addToWishedInliningResult(result);
-		}
-	}
-
 	public synchronized void registerWriter(ICountingResultWriter resultWriter){
 		if(resultWriter==null){
 			log.severe("Passed resultWriter is null, adding nonetheless");

@@ -100,7 +100,7 @@ public final class MethodSectionCountMethodAdapter extends MethodAdapter {
 		ProtocolCountStructure result = new ProtocolCountStructure();
 		result.qualifyingMethodName = this.owner;
 		result.opcodeCountsInt = opcodeCountsArray;
-		CountingResultCollector.getInstance().protocolCountInt(result);
+		CountingResultCollector.getInstance().protocolCount(result);
 
 		mn.accept(this.nextVisitor);
 	}
