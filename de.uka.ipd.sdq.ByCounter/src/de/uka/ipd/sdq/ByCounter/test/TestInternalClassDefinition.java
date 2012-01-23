@@ -16,7 +16,6 @@ import de.uka.ipd.sdq.ByCounter.execution.BytecodeCounter;
 import de.uka.ipd.sdq.ByCounter.execution.CountingResult;
 import de.uka.ipd.sdq.ByCounter.execution.CountingResultCollector;
 import de.uka.ipd.sdq.ByCounter.execution.ExecutionSettings;
-import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentationParameters;
 import de.uka.ipd.sdq.ByCounter.test.framework.expectations.Expectation;
 import de.uka.ipd.sdq.ByCounter.test.helpers.ClassZ;
 import de.uka.ipd.sdq.ByCounter.test.helpers.InterfaceX;
@@ -94,38 +93,26 @@ public class TestInternalClassDefinition {
 	/**
 	 * This unit test tries to instrument a class that is given as byte[].
 	 * In this case the .class file of ASMBytecodeOccurences is used.
-	 *
-	 *
-	 *TODO: TestSubjectInterfaces benutzen?
 	 */
 	@Test
 	public void testRetriveInternalResults() {
-		// define expectations (TODO no real expectations, this is what is counted)
+		// define expectations (extern call to ClassY should not get inlined)
 		Expectation e = new Expectation(true);
-		e.add().add(Opcodes.GETSTATIC, 1) // ClassY.methodX1()
-					 .add(Opcodes.INVOKEVIRTUAL, 1)
-					 .add(Opcodes.LDC, 1)
-					 .add(Opcodes.RETURN, 1)
-					 .add(PrintStream.class.getCanonicalName(), "public void println(java.lang.String x)", 1);
-		e.add().add(Opcodes.ALOAD, 1) // ClassZ.ClassZ()
-					 .add(Opcodes.RETURN, 1)
-					 .add(Opcodes.INVOKESPECIAL, 1)
-					 .add("java.lang.Object.Object()V", 1);
-		e.add().add(Opcodes.GETSTATIC, 1) // ClassZ.methodX1()
-					 .add(Opcodes.INVOKEVIRTUAL, 1)
-					 .add(Opcodes.LDC, 1)
-					 .add(Opcodes.RETURN, 1)
-					 .add(PrintStream.class.getCanonicalName(), "public void println(java.lang.String x)", 1);
-		e.add().add(Opcodes.ALOAD, 3) // TestSubjectInterfaceMethods.methodA1()
-					 .add(Opcodes.DUP, 1)
-					 .add(Opcodes.GETFIELD, 2)
-					 .add(Opcodes.NEW, 1)
-					 .add(Opcodes.PUTFIELD, 1)
-					 .add(Opcodes.RETURN, 1)
-					 .add(Opcodes.INVOKEINTERFACE, 2)
-					 .add(Opcodes.INVOKESPECIAL, 1)
-					 .add("de.uka.ipd.sdq.ByCounter.test.helpers.ClassZ.ClassZ()V", 1)
-					 .add(InterfaceX.class.getCanonicalName(), "void methodX1()", 2);
+		e.add().add(Opcodes.ALOAD, 4)
+			   .add(Opcodes.DUP, 1)
+			   .add(Opcodes.GETFIELD, 2)
+			   .add(Opcodes.GETSTATIC, 1)
+			   .add(Opcodes.INVOKEINTERFACE, 2)
+			   .add(Opcodes.INVOKESPECIAL, 2)
+			   .add(Opcodes.INVOKEVIRTUAL, 1)
+			   .add(Opcodes.LDC, 1)
+			   .add(Opcodes.NEW, 1)
+			   .add(Opcodes.PUTFIELD, 1)
+			   .add(Opcodes.RETURN, 3)
+			   .add("de.uka.ipd.sdq.ByCounter.test.helpers.ClassZ.ClassZ()V", 1)
+			   .add("java.lang.Object.Object()V", 1)
+			   .add(InterfaceX.class.getCanonicalName(), "void methodX1()", 2)
+			   .add(PrintStream.class.getCanonicalName(), "public void println(java.lang.String x)", 1);
 		
 		//1. Set up a BytecodeCounter instance to use ByCounter, using a parameterless constructor. 
 		BytecodeCounter counter = new BytecodeCounter();
@@ -142,6 +129,7 @@ public class TestInternalClassDefinition {
 
 		// define internal classes
 		Set<String> internalClassesDefinition = new HashSet<String>();
+		internalClassesDefinition.add(TEST_SUBJECT_CANONICAL);
 		internalClassesDefinition.add(INTERNAL_CLASS_CANONICAL);
 		counter.getExecutionSettings().setInternalClassesDefinition(internalClassesDefinition);
 		
