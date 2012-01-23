@@ -96,23 +96,24 @@ public class TestInternalClassDefinition {
 	 */
 	@Test
 	public void testRetriveInternalResults() {
-		// define expectations (extern call to ClassY should not get inlined)
+		// define expectations (the external call to ClassY should not be inlined)
+		// the comments behind add() state where the opcode comes from
 		Expectation e = new Expectation(true);
-		e.add().add(Opcodes.ALOAD, 4)
-			   .add(Opcodes.DUP, 1)
-			   .add(Opcodes.GETFIELD, 2)
-			   .add(Opcodes.GETSTATIC, 1)
-			   .add(Opcodes.INVOKEINTERFACE, 2)
-			   .add(Opcodes.INVOKESPECIAL, 2)
-			   .add(Opcodes.INVOKEVIRTUAL, 1)
-			   .add(Opcodes.LDC, 1)
-			   .add(Opcodes.NEW, 1)
-			   .add(Opcodes.PUTFIELD, 1)
-			   .add(Opcodes.RETURN, 3)
-			   .add("de.uka.ipd.sdq.ByCounter.test.helpers.ClassZ.ClassZ()V", 1)
-			   .add("java.lang.Object.Object()V", 1)
-			   .add(InterfaceX.class.getCanonicalName(), "void methodX1()", 2)
-			   .add(PrintStream.class.getCanonicalName(), "public void println(java.lang.String x)", 1);
+		e.add().add(Opcodes.ALOAD, 4) // 1x ClassZ(), 3x methodA1()
+			   .add(Opcodes.DUP, 1) // 1x methodA1()
+			   .add(Opcodes.GETFIELD, 2) // 2x methodA1()
+			   .add(Opcodes.GETSTATIC, 1) // 1x ClassZ.mexthodX1()
+			   .add(Opcodes.INVOKEINTERFACE, 2) // 2x methodA1()
+			   .add(Opcodes.INVOKESPECIAL, 2) // 1x ClassZ(), 1x methodA1()
+			   .add(Opcodes.INVOKEVIRTUAL, 1) // 1x ClassZ.mexthodX1()
+			   .add(Opcodes.LDC, 1) // 1x ClassZ.mexthodX1()
+			   .add(Opcodes.NEW, 1) // 1x methodA1()
+			   .add(Opcodes.PUTFIELD, 1) // 1x mexthodA1()
+			   .add(Opcodes.RETURN, 3) // 1x ClassZ.mexthodX1(), 1x ClassZ(), 1x methodA1()
+			   .add("de.uka.ipd.sdq.ByCounter.test.helpers.ClassZ.ClassZ()V", 1) // 1x methodA1()
+			   .add("java.lang.Object.Object()V", 1) // 1x ClassZ()
+			   .add(InterfaceX.class.getCanonicalName(), "void methodX1()", 2) // 2x methodA1()
+			   .add(PrintStream.class.getCanonicalName(), "public void println(java.lang.String x)", 1); // 1x ClassZ.methodX1()
 		
 		//1. Set up a BytecodeCounter instance to use ByCounter, using a parameterless constructor. 
 		BytecodeCounter counter = new BytecodeCounter();
