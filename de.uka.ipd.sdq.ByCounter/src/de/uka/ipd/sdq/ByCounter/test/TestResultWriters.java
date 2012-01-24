@@ -282,7 +282,8 @@ public class TestResultWriters {
 
 
 	/**
-	 * Test for writing to log file instead of using CountingResultCollector.
+	 * Test for writing to log file instead of or in addition to 
+	 * using CountingResultCollector.
 	 */
 	@Test
 	public void testDirectResultWriting() {
@@ -297,10 +298,9 @@ public class TestResultWriters {
 		Assert.assertEquals(false, counter.getInstrumentationParams().getUseResultCollector());
 
 		// set the file name for the result log
-		counter.getInstrumentationParams().setResultLogFileName(resultLogFileName);
+		counter.getInstrumentationParams().enableResultLogWriter(resultLogFileName);
 		counter.getInstrumentationParams().setUseArrayParameterRecording(true);
 		Assert.assertEquals(resultLogFileName, counter.getInstrumentationParams().getResultLogFileName());
-
 
 		// test with void method
 		MethodDescriptor methodDescriptor = new MethodDescriptor(
@@ -311,6 +311,19 @@ public class TestResultWriters {
 		// check whether a file was written
 		checkAndDeleteFile(resultLogFileName);
 		cleanResults();
+
+		// test with boolean method
+		methodDescriptor = new MethodDescriptor(testClassName,
+			testMethod2);
+		counter.instrument(methodDescriptor);
+		counter.execute(methodDescriptor,
+			new Object[]{2, 2, testClassName});
+
+		// check whether a file was written
+		checkAndDeleteFile(resultLogFileName);
+		
+		// enable CountingResultCollector additionally
+		counter.getInstrumentationParams().setUseResultCollector(true);
 
 		// test with boolean method
 		methodDescriptor = new MethodDescriptor(testClassName,

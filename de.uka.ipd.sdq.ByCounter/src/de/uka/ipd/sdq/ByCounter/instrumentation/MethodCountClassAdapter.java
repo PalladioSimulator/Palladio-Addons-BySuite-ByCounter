@@ -135,14 +135,18 @@ public final class MethodCountClassAdapter extends ClassAdapter {
 				+ "LOG_COMMENT_TOKEN + Qualifying methodname: " + result.qualifyingMethodName + lineSep
 				+ "LOG_COMMENT_TOKEN + Opcode counts:" + lineSep).getBytes());
 	
-			for(int i = 0; i < result.opcodeCounts.length; i++) {
-				out.write((ASMOpcodesMapper.getInstance().getOpcodeString(i)
-					+ "; " + result.opcodeCounts[i] + lineSep).getBytes());
+			if(result.opcodeCounts != null) {
+				for(int i = 0; i < result.opcodeCounts.length; i++) {
+					out.write((ASMOpcodesMapper.getInstance().getOpcodeString(i)
+						+ "; " + result.opcodeCounts[i] + lineSep).getBytes());
+				}
 			}
 			out.write(("LOG_COMMENT_TOKEN + Method counts:" + lineSep).getBytes());
-			for(int i = 0; i < result.methodCallCounts.length; i++) {
-				out.write(("LOG_COMMENT_TOKEN + " + result.calledMethods[i]
-					+ "; " + result.methodCallCounts[i] + lineSep).getBytes());
+			if(result.methodCallCounts != null) {
+				for(int i = 0; i < result.methodCallCounts.length; i++) {
+					out.write(("LOG_COMMENT_TOKEN + " + result.calledMethods[i]
+						+ "; " + result.methodCallCounts[i] + lineSep).getBytes());
+				}
 			}
 			if(result.newArrayCounts != null 
 					&& result.newArrayTypeOrDim != null) {
@@ -242,7 +246,7 @@ public final class MethodCountClassAdapter extends ClassAdapter {
 	 * @param qualifyingMethodName The qualifying name of the calling method.
 	 * @param timestamp A timestamp of the execution time.
 	 * @return The resulting file name string.
-	 * @see InstrumentationParameters#setResultLogFileName(String)
+	 * @see InstrumentationParameters#enableResultLogWriter(String)
 	 */
 	public static String constructResultLogFileName(
 			String resultLogFileNameTemplate,
@@ -314,14 +318,10 @@ public final class MethodCountClassAdapter extends ClassAdapter {
 			}
 		}
 
-		// When the result collector is used, nothing needs to be done
-		if(this.instrumentationParameters.getUseResultCollector()) {
-			this.cv.visitEnd();
-			return;
-		}
-		
-		// Result collector is not used: add a method for direct result log writing
-		this.insertLogWritingMethod();
+		// Insert the log writing method into the class.
+		if(this.instrumentationParameters.getUseResultLogWriter()) {
+			this.insertLogWritingMethod();
+		}		
 				
 		cv.visitEnd();
 	}
@@ -470,58 +470,58 @@ public final class MethodCountClassAdapter extends ClassAdapter {
 			mv.visitTryCatchBlock(l0, l1, l2, "java/lang/Exception");
 			Label l3 = new Label();
 			mv.visitLabel(l3);
-			mv.visitLineNumber(119, l3);
+			mv.visitLineNumber(115, l3);
 			mv.visitLdcInsn("line.separator");
 			mv.visitMethodInsn(INVOKESTATIC, "java/lang/System", "getProperty", "(Ljava/lang/String;)Ljava/lang/String;");
 			mv.visitVarInsn(ASTORE, 1);
 			Label l4 = new Label();
 			mv.visitLabel(l4);
-			mv.visitLineNumber(120, l4);
+			mv.visitLineNumber(116, l4);
 			mv.visitInsn(ACONST_NULL);
 			mv.visitVarInsn(ASTORE, 2);
 			mv.visitLabel(l0);
-			mv.visitLineNumber(122, l0);
+			mv.visitLineNumber(118, l0);
 			mv.visitTypeInsn(NEW, "java/io/File");
 			mv.visitInsn(DUP);
 			Label l5 = new Label();
 			mv.visitLabel(l5);
-			mv.visitLineNumber(123, l5);
+			mv.visitLineNumber(119, l5);
 			mv.visitLdcInsn(instrumentationParameters.getResultLogFileName());
 			Label l6 = new Label();
 			mv.visitLabel(l6);
-			mv.visitLineNumber(124, l6);
+			mv.visitLineNumber(120, l6);
 			mv.visitVarInsn(ALOAD, 0);
 			mv.visitFieldInsn(GETFIELD, "de/uka/ipd/sdq/ByCounter/execution/ProtocolCountStructure", "qualifyingMethodName", "Ljava/lang/String;");
 			mv.visitVarInsn(ALOAD, 0);
 			mv.visitFieldInsn(GETFIELD, "de/uka/ipd/sdq/ByCounter/execution/ProtocolCountStructure", "executionStart", "J");
 			Label l7 = new Label();
 			mv.visitLabel(l7);
-			mv.visitLineNumber(122, l7);
+			mv.visitLineNumber(118, l7);
 			mv.visitMethodInsn(INVOKESTATIC, "de/uka/ipd/sdq/ByCounter/instrumentation/MethodCountClassAdapter", "constructResultLogFileName", "(Ljava/lang/String;Ljava/lang/String;J)Ljava/lang/String;");
 			mv.visitMethodInsn(INVOKESPECIAL, "java/io/File", "<init>", "(Ljava/lang/String;)V");
 			mv.visitVarInsn(ASTORE, 3);
 			Label l8 = new Label();
 			mv.visitLabel(l8);
-			mv.visitLineNumber(125, l8);
+			mv.visitLineNumber(121, l8);
 			mv.visitVarInsn(ALOAD, 3);
 			mv.visitMethodInsn(INVOKEVIRTUAL, "java/io/File", "getParentFile", "()Ljava/io/File;");
 			mv.visitVarInsn(ASTORE, 4);
 			Label l9 = new Label();
 			mv.visitLabel(l9);
-			mv.visitLineNumber(126, l9);
+			mv.visitLineNumber(122, l9);
 			mv.visitVarInsn(ALOAD, 4);
 			Label l10 = new Label();
 			mv.visitJumpInsn(IFNONNULL, l10);
 			Label l11 = new Label();
 			mv.visitLabel(l11);
-			mv.visitLineNumber(127, l11);
+			mv.visitLineNumber(123, l11);
 			mv.visitTypeInsn(NEW, "java/io/File");
 			mv.visitInsn(DUP);
 			mv.visitLdcInsn(".");
 			mv.visitMethodInsn(INVOKESPECIAL, "java/io/File", "<init>", "(Ljava/lang/String;)V");
 			mv.visitVarInsn(ASTORE, 4);
 			mv.visitLabel(l10);
-			mv.visitLineNumber(129, l10);
+			mv.visitLineNumber(125, l10);
 			mv.visitFrame(Opcodes.F_FULL, 5, new Object[] {"de/uka/ipd/sdq/ByCounter/execution/ProtocolCountStructure", "java/lang/String", "java/io/FileOutputStream", "java/io/File", "java/io/File"}, 0, new Object[] {});
 			mv.visitVarInsn(ALOAD, 4);
 			mv.visitMethodInsn(INVOKEVIRTUAL, "java/io/File", "exists", "()Z");
@@ -532,12 +532,12 @@ public final class MethodCountClassAdapter extends ClassAdapter {
 			mv.visitJumpInsn(IFNE, l12);
 			Label l13 = new Label();
 			mv.visitLabel(l13);
-			mv.visitLineNumber(130, l13);
+			mv.visitLineNumber(126, l13);
 			mv.visitFieldInsn(GETSTATIC, "java/lang/System", "out", "Ljava/io/PrintStream;");
 			mv.visitLdcInsn("Could not create directory for log files.");
 			mv.visitMethodInsn(INVOKEVIRTUAL, "java/io/PrintStream", "println", "(Ljava/lang/String;)V");
 			mv.visitLabel(l12);
-			mv.visitLineNumber(132, l12);
+			mv.visitLineNumber(128, l12);
 			mv.visitFrame(Opcodes.F_SAME, 0, null, 0, null);
 			mv.visitTypeInsn(NEW, "java/io/FileOutputStream");
 			mv.visitInsn(DUP);
@@ -546,7 +546,7 @@ public final class MethodCountClassAdapter extends ClassAdapter {
 			mv.visitVarInsn(ASTORE, 2);
 			Label l14 = new Label();
 			mv.visitLabel(l14);
-			mv.visitLineNumber(133, l14);
+			mv.visitLineNumber(129, l14);
 			mv.visitFieldInsn(GETSTATIC, "java/lang/System", "out", "Ljava/io/PrintStream;");
 			mv.visitTypeInsn(NEW, "java/lang/StringBuilder");
 			mv.visitInsn(DUP);
@@ -554,22 +554,22 @@ public final class MethodCountClassAdapter extends ClassAdapter {
 			mv.visitMethodInsn(INVOKESPECIAL, "java/lang/StringBuilder", "<init>", "(Ljava/lang/String;)V");
 			Label l15 = new Label();
 			mv.visitLabel(l15);
-			mv.visitLineNumber(134, l15);
+			mv.visitLineNumber(130, l15);
 			mv.visitVarInsn(ALOAD, 3);
 			mv.visitMethodInsn(INVOKEVIRTUAL, "java/io/File", "getAbsolutePath", "()Ljava/lang/String;");
 			mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/StringBuilder", "append", "(Ljava/lang/String;)Ljava/lang/StringBuilder;");
 			mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/StringBuilder", "toString", "()Ljava/lang/String;");
 			Label l16 = new Label();
 			mv.visitLabel(l16);
-			mv.visitLineNumber(133, l16);
+			mv.visitLineNumber(129, l16);
 			mv.visitMethodInsn(INVOKEVIRTUAL, "java/io/PrintStream", "println", "(Ljava/lang/String;)V");
 			Label l17 = new Label();
 			mv.visitLabel(l17);
-			mv.visitLineNumber(135, l17);
+			mv.visitLineNumber(131, l17);
 			mv.visitVarInsn(ALOAD, 2);
 			mv.visitTypeInsn(NEW, "java/lang/StringBuilder");
 			mv.visitInsn(DUP);
-			mv.visitLdcInsn(LOG_COMMENT_TOKEN + "Timestamp: ");
+			mv.visitLdcInsn(LOG_COMMENT_TOKEN + "< Timestamp: ");
 			mv.visitMethodInsn(INVOKESPECIAL, "java/lang/StringBuilder", "<init>", "(Ljava/lang/String;)V");
 			mv.visitVarInsn(ALOAD, 0);
 			mv.visitFieldInsn(GETFIELD, "de/uka/ipd/sdq/ByCounter/execution/ProtocolCountStructure", "executionStart", "J");
@@ -578,8 +578,8 @@ public final class MethodCountClassAdapter extends ClassAdapter {
 			mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/StringBuilder", "append", "(Ljava/lang/String;)Ljava/lang/StringBuilder;");
 			Label l18 = new Label();
 			mv.visitLabel(l18);
-			mv.visitLineNumber(136, l18);
-			mv.visitLdcInsn(LOG_COMMENT_TOKEN + "RequestID: ");
+			mv.visitLineNumber(132, l18);
+			mv.visitLdcInsn(LOG_COMMENT_TOKEN + "< RequestID: ");
 			mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/StringBuilder", "append", "(Ljava/lang/String;)Ljava/lang/StringBuilder;");
 			mv.visitVarInsn(ALOAD, 0);
 			mv.visitFieldInsn(GETFIELD, "de/uka/ipd/sdq/ByCounter/execution/ProtocolCountStructure", "requestID", "Ljava/util/UUID;");
@@ -588,8 +588,8 @@ public final class MethodCountClassAdapter extends ClassAdapter {
 			mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/StringBuilder", "append", "(Ljava/lang/String;)Ljava/lang/StringBuilder;");
 			Label l19 = new Label();
 			mv.visitLabel(l19);
-			mv.visitLineNumber(137, l19);
-			mv.visitLdcInsn(LOG_COMMENT_TOKEN + "OwnID: ");
+			mv.visitLineNumber(133, l19);
+			mv.visitLdcInsn(LOG_COMMENT_TOKEN + "< OwnID: ");
 			mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/StringBuilder", "append", "(Ljava/lang/String;)Ljava/lang/StringBuilder;");
 			mv.visitVarInsn(ALOAD, 0);
 			mv.visitFieldInsn(GETFIELD, "de/uka/ipd/sdq/ByCounter/execution/ProtocolCountStructure", "ownID", "Ljava/util/UUID;");
@@ -598,8 +598,8 @@ public final class MethodCountClassAdapter extends ClassAdapter {
 			mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/StringBuilder", "append", "(Ljava/lang/String;)Ljava/lang/StringBuilder;");
 			Label l20 = new Label();
 			mv.visitLabel(l20);
-			mv.visitLineNumber(138, l20);
-			mv.visitLdcInsn(LOG_COMMENT_TOKEN + "CallerID: ");
+			mv.visitLineNumber(134, l20);
+			mv.visitLdcInsn(LOG_COMMENT_TOKEN + "< CallerID: ");
 			mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/StringBuilder", "append", "(Ljava/lang/String;)Ljava/lang/StringBuilder;");
 			mv.visitVarInsn(ALOAD, 0);
 			mv.visitFieldInsn(GETFIELD, "de/uka/ipd/sdq/ByCounter/execution/ProtocolCountStructure", "callerID", "Ljava/util/UUID;");
@@ -608,8 +608,8 @@ public final class MethodCountClassAdapter extends ClassAdapter {
 			mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/StringBuilder", "append", "(Ljava/lang/String;)Ljava/lang/StringBuilder;");
 			Label l21 = new Label();
 			mv.visitLabel(l21);
-			mv.visitLineNumber(139, l21);
-			mv.visitLdcInsn(LOG_COMMENT_TOKEN + "sQualifying methodname: ");
+			mv.visitLineNumber(135, l21);
+			mv.visitLdcInsn(LOG_COMMENT_TOKEN + "< Qualifying methodname: ");
 			mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/StringBuilder", "append", "(Ljava/lang/String;)Ljava/lang/StringBuilder;");
 			mv.visitVarInsn(ALOAD, 0);
 			mv.visitFieldInsn(GETFIELD, "de/uka/ipd/sdq/ByCounter/execution/ProtocolCountStructure", "qualifyingMethodName", "Ljava/lang/String;");
@@ -618,8 +618,8 @@ public final class MethodCountClassAdapter extends ClassAdapter {
 			mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/StringBuilder", "append", "(Ljava/lang/String;)Ljava/lang/StringBuilder;");
 			Label l22 = new Label();
 			mv.visitLabel(l22);
-			mv.visitLineNumber(140, l22);
-			mv.visitLdcInsn(LOG_COMMENT_TOKEN + "Opcode counts:");
+			mv.visitLineNumber(136, l22);
+			mv.visitLdcInsn(LOG_COMMENT_TOKEN + "< Opcode counts:");
 			mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/StringBuilder", "append", "(Ljava/lang/String;)Ljava/lang/StringBuilder;");
 			mv.visitVarInsn(ALOAD, 1);
 			mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/StringBuilder", "append", "(Ljava/lang/String;)Ljava/lang/StringBuilder;");
@@ -627,20 +627,27 @@ public final class MethodCountClassAdapter extends ClassAdapter {
 			mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/String", "getBytes", "()[B");
 			Label l23 = new Label();
 			mv.visitLabel(l23);
-			mv.visitLineNumber(135, l23);
+			mv.visitLineNumber(131, l23);
 			mv.visitMethodInsn(INVOKEVIRTUAL, "java/io/FileOutputStream", "write", "([B)V");
 			Label l24 = new Label();
 			mv.visitLabel(l24);
-			mv.visitLineNumber(142, l24);
+			mv.visitLineNumber(138, l24);
+			mv.visitVarInsn(ALOAD, 0);
+			mv.visitFieldInsn(GETFIELD, "de/uka/ipd/sdq/ByCounter/execution/ProtocolCountStructure", "opcodeCounts", "[J");
+			Label l25 = new Label();
+			mv.visitJumpInsn(IFNULL, l25);
+			Label l26 = new Label();
+			mv.visitLabel(l26);
+			mv.visitLineNumber(139, l26);
 			mv.visitInsn(ICONST_0);
 			mv.visitVarInsn(ISTORE, 5);
-			Label l25 = new Label();
-			mv.visitLabel(l25);
-			Label l26 = new Label();
-			mv.visitJumpInsn(GOTO, l26);
 			Label l27 = new Label();
 			mv.visitLabel(l27);
-			mv.visitLineNumber(143, l27);
+			Label l28 = new Label();
+			mv.visitJumpInsn(GOTO, l28);
+			Label l29 = new Label();
+			mv.visitLabel(l29);
+			mv.visitLineNumber(140, l29);
 			mv.visitFrame(Opcodes.F_APPEND,1, new Object[] {Opcodes.INTEGER}, 0, null);
 			mv.visitVarInsn(ALOAD, 2);
 			mv.visitTypeInsn(NEW, "java/lang/StringBuilder");
@@ -650,9 +657,9 @@ public final class MethodCountClassAdapter extends ClassAdapter {
 			mv.visitMethodInsn(INVOKEVIRTUAL, "de/uka/ipd/sdq/ByCounter/utils/ASMOpcodesMapper", "getOpcodeString", "(I)Ljava/lang/String;");
 			mv.visitMethodInsn(INVOKESTATIC, "java/lang/String", "valueOf", "(Ljava/lang/Object;)Ljava/lang/String;");
 			mv.visitMethodInsn(INVOKESPECIAL, "java/lang/StringBuilder", "<init>", "(Ljava/lang/String;)V");
-			Label l28 = new Label();
-			mv.visitLabel(l28);
-			mv.visitLineNumber(144, l28);
+			Label l30 = new Label();
+			mv.visitLabel(l30);
+			mv.visitLineNumber(141, l30);
 			mv.visitLdcInsn("; ");
 			mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/StringBuilder", "append", "(Ljava/lang/String;)Ljava/lang/StringBuilder;");
 			mv.visitVarInsn(ALOAD, 0);
@@ -664,60 +671,67 @@ public final class MethodCountClassAdapter extends ClassAdapter {
 			mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/StringBuilder", "append", "(Ljava/lang/String;)Ljava/lang/StringBuilder;");
 			mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/StringBuilder", "toString", "()Ljava/lang/String;");
 			mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/String", "getBytes", "()[B");
-			Label l29 = new Label();
-			mv.visitLabel(l29);
-			mv.visitLineNumber(143, l29);
+			Label l31 = new Label();
+			mv.visitLabel(l31);
+			mv.visitLineNumber(140, l31);
 			mv.visitMethodInsn(INVOKEVIRTUAL, "java/io/FileOutputStream", "write", "([B)V");
-			Label l30 = new Label();
-			mv.visitLabel(l30);
-			mv.visitLineNumber(142, l30);
+			Label l32 = new Label();
+			mv.visitLabel(l32);
+			mv.visitLineNumber(139, l32);
 			mv.visitIincInsn(5, 1);
-			mv.visitLabel(l26);
+			mv.visitLabel(l28);
 			mv.visitFrame(Opcodes.F_SAME, 0, null, 0, null);
 			mv.visitVarInsn(ILOAD, 5);
 			mv.visitVarInsn(ALOAD, 0);
 			mv.visitFieldInsn(GETFIELD, "de/uka/ipd/sdq/ByCounter/execution/ProtocolCountStructure", "opcodeCounts", "[J");
 			mv.visitInsn(ARRAYLENGTH);
-			mv.visitJumpInsn(IF_ICMPLT, l27);
-			Label l31 = new Label();
-			mv.visitLabel(l31);
-			mv.visitLineNumber(146, l31);
+			mv.visitJumpInsn(IF_ICMPLT, l29);
+			mv.visitLabel(l25);
+			mv.visitLineNumber(144, l25);
+			mv.visitFrame(Opcodes.F_CHOP,1, null, 0, null);
 			mv.visitVarInsn(ALOAD, 2);
 			mv.visitTypeInsn(NEW, "java/lang/StringBuilder");
 			mv.visitInsn(DUP);
-			mv.visitLdcInsn(LOG_COMMENT_TOKEN + "Method counts:");
+			mv.visitLdcInsn(LOG_COMMENT_TOKEN + "< Method counts:");
 			mv.visitMethodInsn(INVOKESPECIAL, "java/lang/StringBuilder", "<init>", "(Ljava/lang/String;)V");
 			mv.visitVarInsn(ALOAD, 1);
 			mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/StringBuilder", "append", "(Ljava/lang/String;)Ljava/lang/StringBuilder;");
 			mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/StringBuilder", "toString", "()Ljava/lang/String;");
 			mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/String", "getBytes", "()[B");
 			mv.visitMethodInsn(INVOKEVIRTUAL, "java/io/FileOutputStream", "write", "([B)V");
-			Label l32 = new Label();
-			mv.visitLabel(l32);
-			mv.visitLineNumber(147, l32);
-			mv.visitInsn(ICONST_0);
-			mv.visitVarInsn(ISTORE, 5);
 			Label l33 = new Label();
 			mv.visitLabel(l33);
+			mv.visitLineNumber(145, l33);
+			mv.visitVarInsn(ALOAD, 0);
+			mv.visitFieldInsn(GETFIELD, "de/uka/ipd/sdq/ByCounter/execution/ProtocolCountStructure", "methodCallCounts", "[J");
 			Label l34 = new Label();
-			mv.visitJumpInsn(GOTO, l34);
+			mv.visitJumpInsn(IFNULL, l34);
 			Label l35 = new Label();
 			mv.visitLabel(l35);
-			mv.visitLineNumber(148, l35);
-			mv.visitFrame(Opcodes.F_SAME, 0, null, 0, null);
+			mv.visitLineNumber(146, l35);
+			mv.visitInsn(ICONST_0);
+			mv.visitVarInsn(ISTORE, 5);
+			Label l36 = new Label();
+			mv.visitLabel(l36);
+			Label l37 = new Label();
+			mv.visitJumpInsn(GOTO, l37);
+			Label l38 = new Label();
+			mv.visitLabel(l38);
+			mv.visitLineNumber(147, l38);
+			mv.visitFrame(Opcodes.F_APPEND,1, new Object[] {Opcodes.INTEGER}, 0, null);
 			mv.visitVarInsn(ALOAD, 2);
 			mv.visitTypeInsn(NEW, "java/lang/StringBuilder");
 			mv.visitInsn(DUP);
-			mv.visitLdcInsn(LOG_COMMENT_TOKEN);
+			mv.visitLdcInsn(LOG_COMMENT_TOKEN + "< ");
 			mv.visitMethodInsn(INVOKESPECIAL, "java/lang/StringBuilder", "<init>", "(Ljava/lang/String;)V");
 			mv.visitVarInsn(ALOAD, 0);
 			mv.visitFieldInsn(GETFIELD, "de/uka/ipd/sdq/ByCounter/execution/ProtocolCountStructure", "calledMethods", "[Ljava/lang/String;");
 			mv.visitVarInsn(ILOAD, 5);
 			mv.visitInsn(AALOAD);
 			mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/StringBuilder", "append", "(Ljava/lang/String;)Ljava/lang/StringBuilder;");
-			Label l36 = new Label();
-			mv.visitLabel(l36);
-			mv.visitLineNumber(149, l36);
+			Label l39 = new Label();
+			mv.visitLabel(l39);
+			mv.visitLineNumber(148, l39);
 			mv.visitLdcInsn("; ");
 			mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/StringBuilder", "append", "(Ljava/lang/String;)Ljava/lang/StringBuilder;");
 			mv.visitVarInsn(ALOAD, 0);
@@ -729,73 +743,73 @@ public final class MethodCountClassAdapter extends ClassAdapter {
 			mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/StringBuilder", "append", "(Ljava/lang/String;)Ljava/lang/StringBuilder;");
 			mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/StringBuilder", "toString", "()Ljava/lang/String;");
 			mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/String", "getBytes", "()[B");
-			Label l37 = new Label();
-			mv.visitLabel(l37);
-			mv.visitLineNumber(148, l37);
+			Label l40 = new Label();
+			mv.visitLabel(l40);
+			mv.visitLineNumber(147, l40);
 			mv.visitMethodInsn(INVOKEVIRTUAL, "java/io/FileOutputStream", "write", "([B)V");
-			Label l38 = new Label();
-			mv.visitLabel(l38);
-			mv.visitLineNumber(147, l38);
+			Label l41 = new Label();
+			mv.visitLabel(l41);
+			mv.visitLineNumber(146, l41);
 			mv.visitIincInsn(5, 1);
-			mv.visitLabel(l34);
+			mv.visitLabel(l37);
 			mv.visitFrame(Opcodes.F_SAME, 0, null, 0, null);
 			mv.visitVarInsn(ILOAD, 5);
 			mv.visitVarInsn(ALOAD, 0);
 			mv.visitFieldInsn(GETFIELD, "de/uka/ipd/sdq/ByCounter/execution/ProtocolCountStructure", "methodCallCounts", "[J");
 			mv.visitInsn(ARRAYLENGTH);
-			mv.visitJumpInsn(IF_ICMPLT, l35);
-			Label l39 = new Label();
-			mv.visitLabel(l39);
-			mv.visitLineNumber(151, l39);
+			mv.visitJumpInsn(IF_ICMPLT, l38);
+			mv.visitLabel(l34);
+			mv.visitLineNumber(151, l34);
+			mv.visitFrame(Opcodes.F_CHOP,1, null, 0, null);
 			mv.visitVarInsn(ALOAD, 0);
 			mv.visitFieldInsn(GETFIELD, "de/uka/ipd/sdq/ByCounter/execution/ProtocolCountStructure", "newArrayCounts", "[J");
-			Label l40 = new Label();
-			mv.visitJumpInsn(IFNULL, l40);
-			Label l41 = new Label();
-			mv.visitLabel(l41);
-			mv.visitLineNumber(152, l41);
+			Label l42 = new Label();
+			mv.visitJumpInsn(IFNULL, l42);
+			Label l43 = new Label();
+			mv.visitLabel(l43);
+			mv.visitLineNumber(152, l43);
 			mv.visitVarInsn(ALOAD, 0);
 			mv.visitFieldInsn(GETFIELD, "de/uka/ipd/sdq/ByCounter/execution/ProtocolCountStructure", "newArrayTypeOrDim", "[I");
-			mv.visitJumpInsn(IFNULL, l40);
-			Label l42 = new Label();
-			mv.visitLabel(l42);
-			mv.visitLineNumber(153, l42);
+			mv.visitJumpInsn(IFNULL, l42);
+			Label l44 = new Label();
+			mv.visitLabel(l44);
+			mv.visitLineNumber(153, l44);
 			mv.visitVarInsn(ALOAD, 2);
 			mv.visitTypeInsn(NEW, "java/lang/StringBuilder");
 			mv.visitInsn(DUP);
-			mv.visitLdcInsn(LOG_COMMENT_TOKEN + "Array constructions:");
+			mv.visitLdcInsn(LOG_COMMENT_TOKEN + "< Array constructions:");
 			mv.visitMethodInsn(INVOKESPECIAL, "java/lang/StringBuilder", "<init>", "(Ljava/lang/String;)V");
 			mv.visitVarInsn(ALOAD, 1);
 			mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/StringBuilder", "append", "(Ljava/lang/String;)Ljava/lang/StringBuilder;");
 			mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/StringBuilder", "toString", "()Ljava/lang/String;");
 			mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/String", "getBytes", "()[B");
 			mv.visitMethodInsn(INVOKEVIRTUAL, "java/io/FileOutputStream", "write", "([B)V");
-			Label l43 = new Label();
-			mv.visitLabel(l43);
-			mv.visitLineNumber(154, l43);
+			Label l45 = new Label();
+			mv.visitLabel(l45);
+			mv.visitLineNumber(154, l45);
 			mv.visitInsn(ICONST_0);
 			mv.visitVarInsn(ISTORE, 5);
-			Label l44 = new Label();
-			mv.visitLabel(l44);
-			Label l45 = new Label();
-			mv.visitJumpInsn(GOTO, l45);
 			Label l46 = new Label();
 			mv.visitLabel(l46);
-			mv.visitLineNumber(156, l46);
-			mv.visitFrame(Opcodes.F_SAME, 0, null, 0, null);
+			Label l47 = new Label();
+			mv.visitJumpInsn(GOTO, l47);
+			Label l48 = new Label();
+			mv.visitLabel(l48);
+			mv.visitLineNumber(156, l48);
+			mv.visitFrame(Opcodes.F_APPEND,1, new Object[] {Opcodes.INTEGER}, 0, null);
 			mv.visitVarInsn(ALOAD, 2);
 			mv.visitTypeInsn(NEW, "java/lang/StringBuilder");
 			mv.visitInsn(DUP);
-			mv.visitLdcInsn(LOG_COMMENT_TOKEN + "type/dimension: '");
+			mv.visitLdcInsn(LOG_COMMENT_TOKEN + "< type/dimension: '");
 			mv.visitMethodInsn(INVOKESPECIAL, "java/lang/StringBuilder", "<init>", "(Ljava/lang/String;)V");
 			mv.visitVarInsn(ALOAD, 0);
 			mv.visitFieldInsn(GETFIELD, "de/uka/ipd/sdq/ByCounter/execution/ProtocolCountStructure", "newArrayDescr", "[Ljava/lang/String;");
 			mv.visitVarInsn(ILOAD, 5);
 			mv.visitInsn(AALOAD);
 			mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/StringBuilder", "append", "(Ljava/lang/String;)Ljava/lang/StringBuilder;");
-			Label l47 = new Label();
-			mv.visitLabel(l47);
-			mv.visitLineNumber(157, l47);
+			Label l49 = new Label();
+			mv.visitLabel(l49);
+			mv.visitLineNumber(157, l49);
 			mv.visitLdcInsn("'/");
 			mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/StringBuilder", "append", "(Ljava/lang/String;)Ljava/lang/StringBuilder;");
 			mv.visitVarInsn(ALOAD, 0);
@@ -805,9 +819,9 @@ public final class MethodCountClassAdapter extends ClassAdapter {
 			mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/StringBuilder", "append", "(I)Ljava/lang/StringBuilder;");
 			mv.visitLdcInsn(" ");
 			mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/StringBuilder", "append", "(Ljava/lang/String;)Ljava/lang/StringBuilder;");
-			Label l48 = new Label();
-			mv.visitLabel(l48);
-			mv.visitLineNumber(158, l48);
+			Label l50 = new Label();
+			mv.visitLabel(l50);
+			mv.visitLineNumber(158, l50);
 			mv.visitLdcInsn("count: ");
 			mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/StringBuilder", "append", "(Ljava/lang/String;)Ljava/lang/StringBuilder;");
 			mv.visitVarInsn(ALOAD, 0);
@@ -815,60 +829,60 @@ public final class MethodCountClassAdapter extends ClassAdapter {
 			mv.visitVarInsn(ILOAD, 5);
 			mv.visitInsn(LALOAD);
 			mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/StringBuilder", "append", "(J)Ljava/lang/StringBuilder;");
-			Label l49 = new Label();
-			mv.visitLabel(l49);
-			mv.visitLineNumber(159, l49);
+			Label l51 = new Label();
+			mv.visitLabel(l51);
+			mv.visitLineNumber(159, l51);
 			mv.visitVarInsn(ALOAD, 1);
 			mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/StringBuilder", "append", "(Ljava/lang/String;)Ljava/lang/StringBuilder;");
 			mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/StringBuilder", "toString", "()Ljava/lang/String;");
 			mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/String", "getBytes", "()[B");
-			Label l50 = new Label();
-			mv.visitLabel(l50);
-			mv.visitLineNumber(156, l50);
+			Label l52 = new Label();
+			mv.visitLabel(l52);
+			mv.visitLineNumber(156, l52);
 			mv.visitMethodInsn(INVOKEVIRTUAL, "java/io/FileOutputStream", "write", "([B)V");
-			Label l51 = new Label();
-			mv.visitLabel(l51);
-			mv.visitLineNumber(154, l51);
+			Label l53 = new Label();
+			mv.visitLabel(l53);
+			mv.visitLineNumber(154, l53);
 			mv.visitIincInsn(5, 1);
-			mv.visitLabel(l45);
+			mv.visitLabel(l47);
 			mv.visitFrame(Opcodes.F_SAME, 0, null, 0, null);
 			mv.visitVarInsn(ILOAD, 5);
 			mv.visitVarInsn(ALOAD, 0);
 			mv.visitFieldInsn(GETFIELD, "de/uka/ipd/sdq/ByCounter/execution/ProtocolCountStructure", "newArrayCounts", "[J");
 			mv.visitInsn(ARRAYLENGTH);
-			mv.visitJumpInsn(IF_ICMPLT, l46);
-			mv.visitLabel(l40);
-			mv.visitLineNumber(163, l40);
+			mv.visitJumpInsn(IF_ICMPLT, l48);
+			mv.visitLabel(l42);
+			mv.visitLineNumber(163, l42);
 			mv.visitFrame(Opcodes.F_CHOP,1, null, 0, null);
 			mv.visitVarInsn(ALOAD, 2);
 			mv.visitMethodInsn(INVOKEVIRTUAL, "java/io/FileOutputStream", "close", "()V");
 			mv.visitLabel(l1);
-			Label l52 = new Label();
-			mv.visitJumpInsn(GOTO, l52);
+			Label l54 = new Label();
+			mv.visitJumpInsn(GOTO, l54);
 			mv.visitLabel(l2);
 			mv.visitLineNumber(165, l2);
 			mv.visitFrame(Opcodes.F_FULL, 3, new Object[] {"de/uka/ipd/sdq/ByCounter/execution/ProtocolCountStructure", "java/lang/String", "java/io/FileOutputStream"}, 1, new Object[] {"java/lang/Exception"});
 			mv.visitVarInsn(ASTORE, 3);
-			Label l53 = new Label();
-			mv.visitLabel(l53);
-			mv.visitLineNumber(166, l53);
+			Label l55 = new Label();
+			mv.visitLabel(l55);
+			mv.visitLineNumber(166, l55);
 			mv.visitVarInsn(ALOAD, 3);
 			mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/Exception", "printStackTrace", "()V");
-			mv.visitLabel(l52);
-			mv.visitLineNumber(168, l52);
+			mv.visitLabel(l54);
+			mv.visitLineNumber(168, l54);
 			mv.visitFrame(Opcodes.F_SAME, 0, null, 0, null);
 			mv.visitInsn(RETURN);
-			Label l54 = new Label();
-			mv.visitLabel(l54);
-			mv.visitLocalVariable("result", "Lde/uka/ipd/sdq/ByCounter/execution/ProtocolCountStructure;", null, l3, l54, 0);
-			mv.visitLocalVariable("lineSep", "Ljava/lang/String;", null, l4, l54, 1);
-			mv.visitLocalVariable("out", "Ljava/io/FileOutputStream;", null, l0, l54, 2);
+			Label l56 = new Label();
+			mv.visitLabel(l56);
+			mv.visitLocalVariable("result", "Lde/uka/ipd/sdq/ByCounter/execution/ProtocolCountStructure;", null, l3, l56, 0);
+			mv.visitLocalVariable("lineSep", "Ljava/lang/String;", null, l4, l56, 1);
+			mv.visitLocalVariable("out", "Ljava/io/FileOutputStream;", null, l0, l56, 2);
 			mv.visitLocalVariable("resultFile", "Ljava/io/File;", null, l8, l2, 3);
 			mv.visitLocalVariable("directory", "Ljava/io/File;", null, l9, l2, 4);
-			mv.visitLocalVariable("i", "I", null, l25, l31, 5);
-			mv.visitLocalVariable("i", "I", null, l33, l39, 5);
-			mv.visitLocalVariable("i", "I", null, l44, l40, 5);
-			mv.visitLocalVariable("e", "Ljava/lang/Exception;", null, l53, l52, 3);
+			mv.visitLocalVariable("i", "I", null, l27, l25, 5);
+			mv.visitLocalVariable("i", "I", null, l36, l34, 5);
+			mv.visitLocalVariable("i", "I", null, l46, l42, 5);
+			mv.visitLocalVariable("e", "Ljava/lang/Exception;", null, l55, l54, 3);
 			mv.visitMaxs(6, 6);
 			mv.visitEnd();
 		} else {

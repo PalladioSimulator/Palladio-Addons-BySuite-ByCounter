@@ -590,7 +590,7 @@ implements Serializable, Cloneable, IFullCountingResult{
 		this.methodInvocationBeginning = methodInvocationBeginning;
 		this.methodReportingTime = methodReportingTime;
 		this.outputCharacterisation = outputCharacterisation;
-		assert(opcodeCounts.length==201);//TODO document, propagate...
+		assert(opcodeCounts.length==MAX_OPCODE);
 		this.opcodeCounts = opcodeCounts;
 		this.qualifyingMethodName = qualifyingMethodName; //should be a PRIVATE setter
 		this.SPECjvm2008_compress_fileType = fileType;
@@ -969,8 +969,8 @@ implements Serializable, Cloneable, IFullCountingResult{
 	}
 
 	/**
-	 * Flag indicating whether called methods are inlined (already part of bytecode counts)
-	 * @return TODO
+	 * @return Value of the flag indicating whether called methods are inlined 
+	 * (already part of bytecode counts)
 	 */
 	public boolean isInvariantMethodsAreInlined() {
 		return invariantMethodsAreInlined;

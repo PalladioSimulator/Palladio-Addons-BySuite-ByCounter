@@ -53,7 +53,8 @@ public enum CountingResultCollectorMode {
 		}
 		
 		/**
-		 * @return True, if inlining is forced in some or all cases.
+		 * @return True, if inlining is forced in some or all cases, ignoring 
+		 * the inlining settings specified for the method.
 		 */
 		public boolean getForceInliningPossible() {
 			return (getForceInliningAlways() 

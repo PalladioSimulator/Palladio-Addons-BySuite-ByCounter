@@ -28,9 +28,9 @@ import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentationParameters;
  */
 public class ProtocolCountStructure {
 	/** Signature of constructor.*/
-	public static final String SIGNATURE_CONSTRUCTOR_INT = "(JLjava/lang/String;[I[I[Ljava/lang/String;[I[I[Ljava/lang/String;Ljava/util/UUID;Ljava/util/UUID;Ljava/util/UUID;Z)V";
+	public static final String SIGNATURE_CONSTRUCTOR_INT = "(JLjava/lang/String;[I[I[Ljava/lang/String;[I[I[Ljava/lang/String;Ljava/util/UUID;Ljava/util/UUID;Ljava/util/UUID;ZI)V";
 	/** Signature of constructor.*/
-	public static final String SIGNATURE_CONSTRUCTOR_LONG = "(JLjava/lang/String;[J[J[Ljava/lang/String;[J[I[Ljava/lang/String;Ljava/util/UUID;Ljava/util/UUID;Ljava/util/UUID;Z)V"; 
+	public static final String SIGNATURE_CONSTRUCTOR_LONG = "(JLjava/lang/String;[J[J[Ljava/lang/String;[J[I[Ljava/lang/String;Ljava/util/UUID;Ljava/util/UUID;Ljava/util/UUID;ZI)V"; 
 	/** Time at which the reporting method started the execution */
 	public long executionStart;
 	/** Fully qualified method name. */
@@ -138,6 +138,7 @@ public class ProtocolCountStructure {
 	 * @param ownID {@link #ownID}
 	 * @param callerID {@link #callerID}
 	 * @param inliningSpecified {@link #inliningSpecified}
+	 * @param blockCountingMode {@link #blockCountingMode}
 	 */
 	public ProtocolCountStructure(
 			final long executionStart,
@@ -151,7 +152,8 @@ public class ProtocolCountStructure {
 			final UUID requestID,
 			final UUID ownID,
 			final UUID callerID,
-			final boolean inliningSpecified) {
+			final boolean inliningSpecified,
+			final int blockCountingMode) {
 		this.executionStart = executionStart;
 		this.qualifyingMethodName = qualifyingMethodName;
 		this.opcodeCountsInt = opcodeCounts;
@@ -165,6 +167,9 @@ public class ProtocolCountStructure {
 		this.callerID = callerID;
 		this.inliningSpecified = inliningSpecified;
 		this.counterPrecision = InstrumentationParameters.COUNTER_PRECISION_INT;
+		this.blockCountingMode = BlockCountingMode.values[blockCountingMode];
+		
+		this.convertIntToLong();
 	}
 	
 
@@ -181,7 +186,8 @@ public class ProtocolCountStructure {
 	 * @param requestID {@link #requestID}
 	 * @param ownID {@link #ownID}
 	 * @param callerID {@link #callerID}
-	 * @param inliningSpecified {@link #inliningSpecified} 
+	 * @param inliningSpecified {@link #inliningSpecified}
+	 * @param blockCountingMode {@link #blockCountingMode} 
 	 */
 	public ProtocolCountStructure(
 			final long executionStart,
@@ -195,7 +201,8 @@ public class ProtocolCountStructure {
 			final UUID requestID,
 			final UUID ownID,
 			final UUID callerID, 
-			final boolean inliningSpecified) {
+			final boolean inliningSpecified,
+			final int blockCountingMode) {
 		this.executionStart = executionStart;
 		this.qualifyingMethodName = qualifyingMethodName;
 		this.opcodeCounts = opcodeCounts;
@@ -209,6 +216,7 @@ public class ProtocolCountStructure {
 		this.callerID = callerID;
 		this.inliningSpecified = inliningSpecified;
 		this.counterPrecision = InstrumentationParameters.COUNTER_PRECISION_LONG;
+		this.blockCountingMode = BlockCountingMode.values[blockCountingMode];
 	}
 	
 	/**
@@ -216,7 +224,7 @@ public class ProtocolCountStructure {
 	 * {@link #newArrayCountsInt} to the respective long variants and nulls the 
 	 * *Int fields.
 	 */
-	public void convertIntToLong() {
+	private void convertIntToLong() {
 		if(opcodeCounts != null) {
 			this.opcodeCounts = convertIntArrayToLongArray(this.opcodeCountsInt);
 			this.opcodeCountsInt = null;

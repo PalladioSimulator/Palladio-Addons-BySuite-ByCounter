@@ -459,9 +459,10 @@ public class ByLoaderGUI extends JFrame {
 		// use of result log:
 		if(optResultLogCheckBox.isSelected()) {
 			params.setUseResultCollector(false);
+			params.enableResultLogWriter(optResultLogFileTextField.getText());
 		} else {
 			params.setUseResultCollector(true);
-			params.setResultLogFileName(optResultLogFileTextField.getText());
+			params.disableResultLogWriter();
 		}
 
 		// record array params

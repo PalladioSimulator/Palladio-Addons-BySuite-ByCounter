@@ -15,7 +15,6 @@ import de.uka.ipd.sdq.ByCounter.utils.MethodDescriptor;
  * Some combination of parameters only make sense in combination with others.
  * The following list summarizes these dependencies.
  * <ul>
- * <li>{@link #setResultLogFileName(String)} only applies if {@link #getUseResultCollector()} == false</li>
  * <li>{@link #setWriteClassesToDiskDirectory(File)} only applies if {@link #getWriteClassesToDisk()} == true</li>
  * <li>{@link #setRecordBlockExecutionOrder(boolean)} only applies if either range blocks or basic blocks are used, i.e. if {@link #getUseBasicBlocks()} == true</li>
  * <li>{@link #setUseArrayParameterRecording(boolean)} is currently only supported when not using basic/range blocks.</li>
@@ -79,6 +78,9 @@ public final class InstrumentationParameters implements Cloneable {
 
 	/** Default value for {@link #getUseResultCollector()}. */
 	public static final boolean USE_RESULT_COLLECTOR_DEFAULT = true;
+
+	/** Default value for {@link #getUseResultLogWriter()}. */
+	public static final boolean USE_RESULT_LOG_WRITER_DEFAULT = false;
 
 	/** Default value for {@link #getUseArrayParameterRecording()}. */
 	public static final boolean USE_ARRAY_PARAMETER_RECORDING = false;
@@ -166,6 +168,9 @@ public final class InstrumentationParameters implements Cloneable {
 	
 	/** Decides whether to use the CountingResultCollector framework. */
 	private boolean useResultCollector;
+	
+	/** Decides whether to write the instrumentation results into log files. */
+	private boolean useResultLogWriter;
 	
 	/**
 	 * When true, ByCounter will write the instrumented class files
@@ -268,6 +273,8 @@ public final class InstrumentationParameters implements Cloneable {
 		this.setUseBasicBlocks(USE_BASIC_BLOCKS_DEFAULT);
 		this.setUseHighRegistersForCounting(pUseHighRegistersForCounting);
 		this.setUseResultCollector(pUseResultCollector);
+		this.useResultLogWriter = USE_RESULT_LOG_WRITER_DEFAULT;
+		this.resultLogFileName = RESULT_LOG_DEFAULT_PREFIX;
 		this.setCountStatically(countStatically);
 		this.setUseArrayParameterRecording(pUseArrayParameterRecording);
 		this.counterPrecisionIsLong = counterPrecision;
@@ -312,6 +319,7 @@ public final class InstrumentationParameters implements Cloneable {
 		copy.useBasicBlocks = this.useBasicBlocks;
 		copy.useHighRegistersForCounting = this.useHighRegistersForCounting;
 		copy.useResultCollector = this.useResultCollector;
+		copy.useResultLogWriter = this.useResultLogWriter;
 		copy.writeClassesToDisk = this.writeClassesToDisk;
 		copy.writeClassesToDiskDirectory = this.writeClassesToDiskDirectory;
 		
@@ -343,10 +351,12 @@ public final class InstrumentationParameters implements Cloneable {
 	}
 
 	/**
-	 * @return The result log filename used if useResultCollector == false.
+	 * @return The result log filename used if 
+	 * {@link #getUseResultLogWriter()} == true.
 	 * The given filename is a prefix to the generated filename that includes 
 	 * the method descriptor and a timestamp.
-	 * @see #setResultLogFileName(String)
+	 * @see #enableResultLogWriter(String)
+	 * @see #getUseResultLogWriter()
 	 */
 	public String getResultLogFileName() {
 		return this.resultLogFileName;
@@ -368,10 +378,19 @@ public final class InstrumentationParameters implements Cloneable {
 	}
 
 	/**
-	 * @return useResultCollector
+	 * @return When true, results will be collected using 
+	 * {@link CountingResultCollector}.
 	 */
 	public boolean getUseResultCollector() {
 		return this.useResultCollector;
+	}
+	
+	/**
+	 * @return When true, a log file will be written when instrumented methods 
+	 * are executed.
+	 */
+	public boolean getUseResultLogWriter() {
+		return this.useResultLogWriter;
 	}
 
 	/**
@@ -404,19 +423,30 @@ public final class InstrumentationParameters implements Cloneable {
 
 
 	/**
-	 * Sets the filename for the log that is created if useResultCollector == false.
+	 * Enable writing of result logs and
+	 * set the filename for the log that is created.
 	 * Use this if you want to override the default file name 
 	 * {@link #RESULT_LOG_DEFAULT_PREFIX}
-	 * that consists a time stamp and the class and method name,
+	 * that consists of a time stamp and the class and method name,
 	 * and will be written to
 	 * the {@link InstrumentationParameters#RESULT_LOG_DEFAULT_DIRECTORY} directory.
 	 * The given filename is a prefix to the generated filename that includes 
 	 * the method descriptor and a timestamp.
 	 * 
-	 * @param resultLogFileName the resultLogFileName to set
+	 * @param resultLogFileName The prefix of written log files.
 	 */
-	public void setResultLogFileName(String resultLogFileName) {
+	public void enableResultLogWriter(String resultLogFileName) {
+		this.useResultLogWriter = true;
 		this.resultLogFileName = resultLogFileName;
+	}
+	
+	/**
+	 * Disable result log writing.
+	 * @see #enableResultLogWriter(String)
+	 * @see #setUseResultCollector(boolean)
+	 */
+	public void disableResultLogWriter() {
+		this.useResultLogWriter = false;
 	}
 
 
@@ -441,18 +471,14 @@ public final class InstrumentationParameters implements Cloneable {
 
 	/**
 	 * @param useResultCollector Set whether to use the 
-	 * <code>CountingResultCollector</code>. When false, a log file is written.
-	 * @see #setResultLogFileName(String)
+	 * <code>CountingResultCollector</code>.
+	 * @see #getUseResultCollector()
+	 * @see #getUseResultLogWriter()
+	 * @see #enableResultLogWriter(String)
+	 * @see #disableResultLogWriter()
 	 */
 	public void setUseResultCollector(boolean useResultCollector) {
 		this.useResultCollector = useResultCollector;
-
-		if(useResultCollector == false 
-				&& (this.resultLogFileName == null 
-					|| this.resultLogFileName.isEmpty())) {
-			this.setResultLogFileName( 
-				RESULT_LOG_DEFAULT_PREFIX);
-		}
 	}
 
 	/**
@@ -469,7 +495,7 @@ public final class InstrumentationParameters implements Cloneable {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public String toString() {//TODO replace tabs with whitespaces, possibly using getTabs method used in printing counting results
+	public String toString() {
 		StringBuilder b = new StringBuilder("InstrumentationParameters {\n");
 		b.append("counterPrecisionIsLong:             " + this.counterPrecisionIsLong + ", \n");
 		b.append("countStatically:                    " + this.countStatically + ", \n");
@@ -484,6 +510,7 @@ public final class InstrumentationParameters implements Cloneable {
 		b.append("useBasicBlocks:                     " + this.useBasicBlocks + ", \n");
 		b.append("useHighRegistersForCounting:        " + this.useHighRegistersForCounting + ", \n");
 		b.append("useResultCollector:                 " + this.useResultCollector + ", \n");
+		b.append("useResultLogWriter:                 " + this.useResultLogWriter + ", \n");
 		b.append("writeClassesToDisk:                 " + this.writeClassesToDisk + ", \n");
 		b.append("writeClassesToDiskDirectory:        " + this.writeClassesToDiskDirectory + "\n");
 		b.append("}");

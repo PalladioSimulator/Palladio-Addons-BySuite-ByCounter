@@ -247,20 +247,13 @@ public class TestBytecodeCounter {
 		
 		// disable usage of result collector
 		Assert.assertNotNull(counter.getInstrumentationParams());
-		boolean oldUseResultCollector = 
-			counter.getInstrumentationParams().getUseResultCollector();
 		counter.getInstrumentationParams().setUseResultCollector(false);
 		Assert.assertEquals(false, counter.getInstrumentationParams().getUseResultCollector());
 		
 		// set the file name for the result log
-		String oldResultLogFileName = 
-			counter.getInstrumentationParams().getResultLogFileName();
-		counter.getInstrumentationParams().setResultLogFileName(resultLogFileName);
-		boolean oldUseArrayParameterRecording = 
-			counter.getInstrumentationParams().getUseArrayParameterRecording();
+		counter.getInstrumentationParams().enableResultLogWriter(resultLogFileName);
 		counter.getInstrumentationParams().setUseArrayParameterRecording(true);
 		Assert.assertEquals(resultLogFileName, counter.getInstrumentationParams().getResultLogFileName());
-
 
 		// test with void method
 		MethodDescriptor methodDescriptor = new MethodDescriptor(
@@ -277,11 +270,6 @@ public class TestBytecodeCounter {
 		counter.instrument(methodDescriptor);
 		counter.execute(methodDescriptor, 
 			new Object[]{2, 2, TestSubject.class.getCanonicalName()});
-				
-		// reset to old instrumentation parameters
-		this.instrumentationParameters.setUseResultCollector(oldUseResultCollector);
-		this.instrumentationParameters.setResultLogFileName(oldResultLogFileName);
-		this.instrumentationParameters.setUseArrayParameterRecording(oldUseArrayParameterRecording);
 	}
 	
 	/**

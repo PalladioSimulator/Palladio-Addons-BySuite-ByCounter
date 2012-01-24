@@ -190,6 +190,11 @@ public final class MethodCountMethodAdapter extends MethodAdapter implements Opc
 	private boolean useBlockCounters;
 
 	/**
+	 * When true, this specific method uses range blocks.
+	 */
+	private boolean useRangeBlocks;
+
+	/**
 	 * The variable of the {@link ArrayList} created in 
 	 * {@link #initialiseBlockExecutionOrderArrayList()}.
 	 */
@@ -236,6 +241,7 @@ public final class MethodCountMethodAdapter extends MethodAdapter implements Opc
 		this.methodDescriptor = method;
 		this.lVarManager = new LocalVariableManager(instrumentationParameters.getUseHighRegistersForCounting());
 		this.useBlockCounters = false;
+		this.useRangeBlocks = false;
 	}
 	
 	/**
@@ -555,6 +561,11 @@ public final class MethodCountMethodAdapter extends MethodAdapter implements Opc
 //		if(skip) {
 //			return;
 //		}
+		if(!instrumentationParameters.getUseResultCollector()
+				&& !instrumentationParameters.getUseResultLogWriter()) {
+			log.info("Not using ResultCollector or result logs since both are disabled.");
+			return;
+		}
 		
 		int opcodeOrBasicBlockListVar = -1;
 		int methodListVar = -1;
@@ -680,6 +691,17 @@ public final class MethodCountMethodAdapter extends MethodAdapter implements Opc
 			this.mv.visitInsn(Opcodes.ICONST_0); // inline == false
 		}
 		
+		// specify block counting mode
+		if(useBlockCounters) {
+			if(useRangeBlocks) {
+				this.mv.visitIntInsn(Opcodes.BIPUSH, BlockCountingMode.RangeBlocks.ordinal());
+			} else {
+				this.mv.visitIntInsn(Opcodes.BIPUSH, BlockCountingMode.BasicBlocks.ordinal());
+			}
+		} else {
+			this.mv.visitIntInsn(Opcodes.BIPUSH, BlockCountingMode.NoBlocks.ordinal());
+		}
+		
 		// construct the new result object
 		mv.visitMethodInsn(Opcodes.INVOKESPECIAL, protocolCountStructClassName, "<init>", protocolStructConstructorSignature);
 
@@ -692,23 +714,10 @@ public final class MethodCountMethodAdapter extends MethodAdapter implements Opc
 		}
 		
 
-		if(instrumentationParameters.getUseResultCollector()) {
-			//in fact, CountingResultCollector.protocolCount(....) is static - 
-			//no target CountingResultCollector instance is on the stack
-			this.mv.visitMethodInsn(//note that the stack contents are taken as input parameters! (see method signature in CountingResultCollector)
-					Opcodes.INVOKEVIRTUAL, 
-					CountingResultCollectorCanonicalNameDescriptor, 
-					protocolCountMethodName, 
-					protocolCountSignature
-					);
-				
-		} else {
-			if(this.instrumentationParameters.isCounterPrecisionIsLong()) {
-				// convert from int[] to long[] since the direct writing method
-				// writes the long[] value to the log
-				mv.visitInsn(Opcodes.DUP);
-				mv.visitMethodInsn(INVOKEVIRTUAL, protocolCountStructClassName, 
-						"convertIntToLong", "()V");
+		if(instrumentationParameters.getUseResultLogWriter()) {
+			if(instrumentationParameters.getUseResultCollector()) {
+				// we need to dup the result object for the result collector
+				this.mv.visitInsn(Opcodes.DUP);
 			}
 			
 			String classname = qualifyingMethodName.substring
@@ -718,6 +727,15 @@ public final class MethodCountMethodAdapter extends MethodAdapter implements Opc
 					classname, 
 					"___directWritingToLog___", 
 					directWritingToLogSignature);
+		}
+		if(instrumentationParameters.getUseResultCollector()) {
+			this.mv.visitMethodInsn(//note that the stack contents are taken as input parameters! (see method signature in CountingResultCollector)
+					Opcodes.INVOKEVIRTUAL, 
+					CountingResultCollectorCanonicalNameDescriptor, 
+					protocolCountMethodName, 
+					protocolCountSignature
+					);
+				
 		}
 	}
 
@@ -861,6 +879,10 @@ public final class MethodCountMethodAdapter extends MethodAdapter implements Opc
 			this.useBlockCounters = false;
 		} else if(this.instrumentationParameters.getUseBasicBlocks()) {
 			this.useBlockCounters = true;
+			if(this.methodDescriptor.getCodeAreasToInstrument() != null
+					&& this.methodDescriptor.getCodeAreasToInstrument().length != 0) {
+				this.useRangeBlocks = true;
+			}
 			if(this.instrumentationParameters.getUseArrayParameterRecording()) {
 				throw new RuntimeException("Array parameter recording is not currently supported in block counting modes.");
 			}

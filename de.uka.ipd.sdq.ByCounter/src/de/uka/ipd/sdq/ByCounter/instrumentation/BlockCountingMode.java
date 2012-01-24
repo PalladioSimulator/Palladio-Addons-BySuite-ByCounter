@@ -19,5 +19,10 @@ public enum BlockCountingMode {
 	/**
 	 * Instructions are grouped into line number ranges.
 	 */
-	RangeBlocks
+	RangeBlocks;
+	
+	/**
+	 * Statically set version of {@link #values()}
+	 */
+	public static BlockCountingMode[] values = values();
 }

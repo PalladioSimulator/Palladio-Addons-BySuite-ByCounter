@@ -19,7 +19,6 @@ import java.util.logging.Logger;
 
 import de.uka.ipd.sdq.ByCounter.instrumentation.AdditionalOpcodeInformation;
 import de.uka.ipd.sdq.ByCounter.instrumentation.BlockCountingMode;
-import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentationParameters;
 import de.uka.ipd.sdq.ByCounter.reporting.ICountingResultWriter;
 import de.uka.ipd.sdq.ByCounter.utils.FullOpcodeMapper;
 
@@ -760,17 +759,6 @@ public final class CountingResultCollector {
 		return tabs.toString();
 	}
 
-	public boolean isForceInliningIgnoringMethodWishes() {
-		if(mode.equals(CountingResultCollectorMode.ForceInlineDisregardingInstrumentMethodWishes_InstructionAndMethodCounts)
-				|| mode.equals(CountingResultCollectorMode.ForceInlineDisregardingInstrumentMethodWishes_InstructionAndMethodCounts_ButCountReportsPerSignature)
-				|| mode.equals(CountingResultCollectorMode.UseThresholdPerReportingMethod_UntilTotalThresholdReachedThenForceInline)
-				|| mode.equals(CountingResultCollectorMode.UseTotalThreshold_RegardlessOfIndividualMethodCountsThenForceInline)){
-			return true;
-		}else{
-			return false;
-		}
-	}
-
 	/**
 	 * @deprecated because only GUI-used but the GUI is outdated
 	 */
@@ -1063,9 +1051,6 @@ public final class CountingResultCollector {
 	 */
 	public synchronized void protocolCount(ProtocolCountStructure result) {
 		long reportingStart = System.nanoTime();//TODO make this configurable and clear, move to an interface/class that is accessed
-		if(result.counterPrecision == InstrumentationParameters.COUNTER_PRECISION_INT) {
-			result.convertIntToLong();
-		}
 		if(this.mode==CountingResultCollectorMode.DiscardAllIncomingCountingResults){
 			log.fine("Discarding counting result of method "+result.qualifyingMethodName+", which started execution " +
 					"at "+result.executionStart);
