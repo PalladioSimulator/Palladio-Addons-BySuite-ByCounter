@@ -13,6 +13,7 @@ import org.junit.runners.Parameterized.Parameters;
 import de.uka.ipd.sdq.ByCounter.execution.BytecodeCounter;
 import de.uka.ipd.sdq.ByCounter.execution.CountingResult;
 import de.uka.ipd.sdq.ByCounter.execution.CountingResultCollector;
+import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentationCounterPrecision;
 import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentationParameters;
 import de.uka.ipd.sdq.ByCounter.test.TestASMBytecodes;
 import de.uka.ipd.sdq.ByCounter.utils.MethodDescriptor;
@@ -36,7 +37,7 @@ public class TestNativeInstrumentation {
 	 * @return The parameter collection for calling the test constructor.
 	 * @see #TestASMBytecodes.parameterSetup()
 	 */
-	@SuppressWarnings({ "unchecked"})
+	@SuppressWarnings({"rawtypes"})
 	@Parameters
 	public static Collection parameterSetup() {
 		return TestASMBytecodes.parameterSetup();
@@ -101,7 +102,7 @@ public class TestNativeInstrumentation {
 		
 		long start = System.nanoTime();
 		log.fine("(NOT INITIALISED)" + this.counter.getInstrumentationParams().toString());
-		this.counter.getInstrumentationParams().setCounterPrecisionIsLong(InstrumentationParameters.COUNTER_PRECISION_INT);
+		this.counter.getInstrumentationParams().setCounterPrecision(InstrumentationCounterPrecision.Integer);
 		this.counter.instrument(methDesc);
 		if(EXECUTE) {
 			this.counter.execute(this.methodToExecute, 

@@ -328,7 +328,7 @@ public final class MethodCountMethodAdapter extends MethodAdapter implements Opc
 	 * @return The index of the new variable.
 	 */
 	private int getNewCounterVar() {
-		if(this.instrumentationParameters.isCounterPrecisionIsLong()) {
+		if(this.instrumentationParameters.getCounterPrecision() == InstrumentationCounterPrecision.Long) {
 			return this.lVarManager.getNewLongVar(this.mv);
 		}
 		return this.lVarManager.getNewIntVar(this.mv);
@@ -444,7 +444,7 @@ public final class MethodCountMethodAdapter extends MethodAdapter implements Opc
 		insertIntegerPushInsn(numElements); //load array size - has NOTHING to do with the counter type		
 
 		// choose the instructions by precision:
-		if(this.instrumentationParameters.isCounterPrecisionIsLong()) {
+		if(this.instrumentationParameters.getCounterPrecision() == InstrumentationCounterPrecision.Long) {
 			this.mv.visitIntInsn(Opcodes.NEWARRAY, Opcodes.T_LONG);
 			index = this.lVarManager.getNewLongArrayVar(this.mv);
 			this.mv.visitVarInsn(Opcodes.ASTORE, index);	// store the array
@@ -527,7 +527,7 @@ public final class MethodCountMethodAdapter extends MethodAdapter implements Opc
 	 */
 	private void insertCounterIncrement(int index) {
 		// choose the counter incrementation instructions by precision:
-		if(instrumentationParameters.isCounterPrecisionIsLong()) {
+		if(this.instrumentationParameters.getCounterPrecision() == InstrumentationCounterPrecision.Long) {
 			this.mv.visitVarInsn(Opcodes.LLOAD, index);
 			this.mv.visitInsn(LCONST_1);
 			this.mv.visitInsn(LADD);
@@ -615,9 +615,9 @@ public final class MethodCountMethodAdapter extends MethodAdapter implements Opc
 		String protocolCountMethodName = "protocolCount";
 		String directWritingToLogSignature = MethodCountClassAdapter.DIRECT_LOG_WRITE_SIGNATURE;
 		// Choose the proper protocolCountMethod depending on the precision
-		if(!instrumentationParameters.isCounterPrecisionIsLong()) {
+		if(this.instrumentationParameters.getCounterPrecision() == InstrumentationCounterPrecision.Integer) {
 			protocolStructConstructorSignature = ProtocolCountStructure.SIGNATURE_CONSTRUCTOR_INT;
-		} else if(instrumentationParameters.isCounterPrecisionIsLong()) {
+		} else if(this.instrumentationParameters.getCounterPrecision() == InstrumentationCounterPrecision.Long) {
 			protocolStructConstructorSignature = ProtocolCountStructure.SIGNATURE_CONSTRUCTOR_LONG;
 		}
 		
@@ -658,7 +658,7 @@ public final class MethodCountMethodAdapter extends MethodAdapter implements Opc
 		}
 
 		if(!(inlineImmediately 
-				&& instrumentationParameters.isCounterPrecisionIsLong())) {
+				&& this.instrumentationParameters.getCounterPrecision() == InstrumentationCounterPrecision.Long)) {
 			if(instrumentationParameters.getUseArrayParameterRecording()) {
 				this.mv.visitVarInsn(Opcodes.ALOAD, newArrayListVar);
 				this.mv.visitVarInsn(Opcodes.ALOAD, newArrayTypeOrDimListVar);

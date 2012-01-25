@@ -36,6 +36,10 @@ public final class InstrumentationParameters implements Cloneable {
 			"org/w3c/dom"
 		};
 
+	/** Default value for {@link #getCounterPrecision()}:
+	 * {@value #COUNTER_PRECISION_DEFAULT} */
+	private static final InstrumentationCounterPrecision COUNTER_PRECISION_DEFAULT = InstrumentationCounterPrecision.Long;
+
 	/** Default value for {@link #getUseBasicBlocks()}:
 	 * {@value #USE_BASIC_BLOCKS_DEFAULT} */
 	public static final boolean USE_BASIC_BLOCKS_DEFAULT = false;
@@ -88,17 +92,6 @@ public final class InstrumentationParameters implements Cloneable {
 	/** Default value for {@link #getCountStatically()}. */
 	public static final boolean COUNT_STATICALLY_DEFAULT = false;
 	
-	
-	/**
-	 * Use integer variables as counters.
-	 */
-	public static final boolean COUNTER_PRECISION_INT = false;
-
-	/**
-	 * Use long variables as counters.
-	 */
-	public static final boolean COUNTER_PRECISION_LONG = true;
-
 	/**
 	 * Directory in which result log files are written by default.
 	 * This only applies if 
@@ -126,8 +119,9 @@ public final class InstrumentationParameters implements Cloneable {
 
 	/** Decides on the precision of the variables used for counting. For 
 	 * very high counts integers might not be enough and you want to use 
-	 * long variables instead. See the COUNTER_PRECISION_ constants. */
-	private boolean counterPrecisionIsLong;
+	 * long variables instead. On the other hand, integer counting offers
+	 * better performance. */
+	private InstrumentationCounterPrecision counterPrecision;
 
 	/** When true, ByCounter makes a static analysis of the specified code. */
 	@Deprecated
@@ -230,7 +224,7 @@ public final class InstrumentationParameters implements Cloneable {
 				USE_RESULT_COLLECTOR_DEFAULT,	// use CountingResultCollector instead of result log
 				USE_ARRAY_PARAMETER_RECORDING,
 				COUNT_STATICALLY_DEFAULT,
-				COUNTER_PRECISION_LONG
+				COUNTER_PRECISION_DEFAULT
 			);
 	}
 	
@@ -248,7 +242,7 @@ public final class InstrumentationParameters implements Cloneable {
 				USE_RESULT_COLLECTOR_DEFAULT,	// use CountingResultCollector instead of result log
 				USE_ARRAY_PARAMETER_RECORDING,
 				COUNT_STATICALLY_DEFAULT,
-				COUNTER_PRECISION_LONG
+				COUNTER_PRECISION_DEFAULT
 				);
 	}
 	
@@ -267,7 +261,7 @@ public final class InstrumentationParameters implements Cloneable {
 			boolean pUseResultCollector,
 			boolean pUseArrayParameterRecording,
 			boolean countStatically,
-			boolean counterPrecision) {
+			InstrumentationCounterPrecision counterPrecision) {
 		this.setMethodsToInstrument(pMethodsToInstrument);
 		this.setParentClassLoader(PARENT_CLASS_LOADER_DEFAULT);
 		this.setUseBasicBlocks(USE_BASIC_BLOCKS_DEFAULT);
@@ -277,7 +271,7 @@ public final class InstrumentationParameters implements Cloneable {
 		this.resultLogFileName = RESULT_LOG_DEFAULT_PREFIX;
 		this.setCountStatically(countStatically);
 		this.setUseArrayParameterRecording(pUseArrayParameterRecording);
-		this.counterPrecisionIsLong = counterPrecision;
+		this.counterPrecision = counterPrecision;
 		this.writeClassesToDisk = WRITE_CLASSES_TO_DISK_DEFAULT;
 		this.traceAndIdentifyRequests = TRACE_AND_IDENTIFY_REQUESTS_DEFAULT;
 		this.writeClassesToDiskDirectory = WRITE_CLASSES_TO_DISK_DIRECTORY_DEFAULT;
@@ -303,7 +297,7 @@ public final class InstrumentationParameters implements Cloneable {
 		}
 		
 		// shallow copy all fields
-		copy.counterPrecisionIsLong = this.counterPrecisionIsLong;
+		copy.counterPrecision = this.counterPrecision;
 		copy.countStatically = this.countStatically;
 		copy.instrumentationScopeOverrideClassLevel = this.instrumentationScopeOverrideClassLevel;
 		copy.instrumentationScopeOverrideMethodLevel = this.instrumentationScopeOverrideMethodLevel;
@@ -497,7 +491,7 @@ public final class InstrumentationParameters implements Cloneable {
 	@Override
 	public String toString() {
 		StringBuilder b = new StringBuilder("InstrumentationParameters {\n");
-		b.append("counterPrecisionIsLong:             " + this.counterPrecisionIsLong + ", \n");
+		b.append("counterPrecisionIsLong:             " + this.counterPrecision + ", \n");
 		b.append("countStatically:                    " + this.countStatically + ", \n");
 		b.append("instrumentRecursively:              " + this.instrumentRecursively + ", \n");
 		b.append("instrumentRecursivelyMaxDepth:      " + this.instrumentRecursivelyMaxDepth + ", \n");
@@ -644,21 +638,19 @@ public final class InstrumentationParameters implements Cloneable {
 	}
 
 	/**
-	 * @see #COUNTER_PRECISION_INT
-	 * @see #COUNTER_PRECISION_LONG
-	 * @return The precision.
+	 * @see InstrumentationCounterPrecision
+	 * @return The precision currently set.
 	 */
-	public boolean isCounterPrecisionIsLong() {
-		return this.counterPrecisionIsLong;
+	public InstrumentationCounterPrecision getCounterPrecision() {
+		return this.counterPrecision;
 	}
 
 	/**
-	 * @see #COUNTER_PRECISION_INT
-	 * @see #COUNTER_PRECISION_LONG
-	 * @param counterPrecisionIsLong The precision to set.
+	 * @see InstrumentationCounterPrecision
+	 * @param counterPrecision The precision to set.
 	 */
-	public void setCounterPrecisionIsLong(boolean counterPrecisionIsLong) {
-		this.counterPrecisionIsLong = counterPrecisionIsLong;
+	public void setCounterPrecision(InstrumentationCounterPrecision counterPrecision) {
+		this.counterPrecision = counterPrecision;
 	}
 
 	/**

@@ -38,6 +38,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeModel;
 
+import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentationCounterPrecision;
 import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentationParameters;
 import de.uka.ipd.sdq.ByCounter.utils.Barrier;
 import de.uka.ipd.sdq.ByCounter.utils.MethodDescriptor;
@@ -445,15 +446,15 @@ public class ByLoaderGUI extends JFrame {
 		for(int i = 0; i < methodListModel.getSize(); i++) {
 			methods.add((MethodDescriptor)methodListModel.elementAt(i));
 		}
-		params = new InstrumentationParameters(methods, true, true, false, false, InstrumentationParameters.COUNTER_PRECISION_LONG);
+		params = new InstrumentationParameters(methods, true, true, false, false, InstrumentationCounterPrecision.Long);
 		log.fine("Instrumentation params after adding methods, before setting conf: "+params);
 
 		// set options
 		// precision:
 		if(optPrecisionInt.isSelected()) {
-			params.setCounterPrecisionIsLong(InstrumentationParameters.COUNTER_PRECISION_INT);
+			params.setCounterPrecision(InstrumentationCounterPrecision.Integer);
 		} else if(optPrecisionLong.isSelected()) {
-			params.setCounterPrecisionIsLong(InstrumentationParameters.COUNTER_PRECISION_LONG);
+			params.setCounterPrecision(InstrumentationCounterPrecision.Long);
 		}
 
 		// use of result log:

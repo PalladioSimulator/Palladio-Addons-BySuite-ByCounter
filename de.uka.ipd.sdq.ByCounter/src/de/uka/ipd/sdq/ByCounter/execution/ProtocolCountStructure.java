@@ -30,16 +30,24 @@ public class ProtocolCountStructure {
 	/** Signature of constructor.*/
 	public static final String SIGNATURE_CONSTRUCTOR_INT = "(JLjava/lang/String;[I[I[Ljava/lang/String;[I[I[Ljava/lang/String;Ljava/util/UUID;Ljava/util/UUID;Ljava/util/UUID;ZI)V";
 	/** Signature of constructor.*/
-	public static final String SIGNATURE_CONSTRUCTOR_LONG = "(JLjava/lang/String;[J[J[Ljava/lang/String;[J[I[Ljava/lang/String;Ljava/util/UUID;Ljava/util/UUID;Ljava/util/UUID;ZI)V"; 
+	public static final String SIGNATURE_CONSTRUCTOR_LONG = "(JLjava/lang/String;[J[J[Ljava/lang/String;[J[I[Ljava/lang/String;Ljava/util/UUID;Ljava/util/UUID;Ljava/util/UUID;ZI)V";
+	/**
+	 * Use integer variables as counters.
+	 */
+	public static final boolean COUNTER_PRECISION_INT = false;
+	/**
+	 * Use long variables as counters.
+	 */
+	public static final boolean COUNTER_PRECISION_LONG = true;
 	/** Time at which the reporting method started the execution */
 	public long executionStart;
 	/** Fully qualified method name. */
 	public String qualifyingMethodName;
 	/** 
 	 * Counter precision
-	 * @see InstrumentationParameters#isCounterPrecisionIsLong()
+	 * @see InstrumentationParameters#getCounterPrecision()
 	 */
-	public boolean counterPrecision;
+	public boolean counterPrecisionLong;
 	/**
 	 * An array of integers where each bytecode instruction is
 	 * the index for which the value represents the number of calls to a
@@ -120,7 +128,7 @@ public class ProtocolCountStructure {
 		this.ownID = null;
 		this.callerID = null;
 		this.blockCountingMode = null;
-		this.counterPrecision = false;
+		this.counterPrecisionLong = false;
 		this.inliningSpecified = false;
 	}
 	
@@ -166,7 +174,7 @@ public class ProtocolCountStructure {
 		this.ownID = ownID;
 		this.callerID = callerID;
 		this.inliningSpecified = inliningSpecified;
-		this.counterPrecision = InstrumentationParameters.COUNTER_PRECISION_INT;
+		this.counterPrecisionLong = COUNTER_PRECISION_INT;
 		this.blockCountingMode = BlockCountingMode.values[blockCountingMode];
 		
 		this.convertIntToLong();
@@ -215,7 +223,7 @@ public class ProtocolCountStructure {
 		this.ownID = ownID;
 		this.callerID = callerID;
 		this.inliningSpecified = inliningSpecified;
-		this.counterPrecision = InstrumentationParameters.COUNTER_PRECISION_LONG;
+		this.counterPrecisionLong = COUNTER_PRECISION_LONG;
 		this.blockCountingMode = BlockCountingMode.values[blockCountingMode];
 	}
 	

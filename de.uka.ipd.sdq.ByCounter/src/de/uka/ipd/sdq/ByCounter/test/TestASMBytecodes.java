@@ -19,6 +19,7 @@ import org.objectweb.asm.Opcodes;
 import de.uka.ipd.sdq.ByCounter.execution.BytecodeCounter;
 import de.uka.ipd.sdq.ByCounter.execution.CountingResult;
 import de.uka.ipd.sdq.ByCounter.execution.CountingResultCollector;
+import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentationCounterPrecision;
 import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentationParameters;
 import de.uka.ipd.sdq.ByCounter.test.framework.expectations.Expectation;
 import de.uka.ipd.sdq.ByCounter.test.helpers.ASMBytecodeOccurences;
@@ -67,7 +68,7 @@ public class TestASMBytecodes {
 		p2.setUseHighRegistersForCounting(false);
 //		p3.setCounterPrecision(InstrumentationParameters.COUNTER_PRECISION_LONG);
 //		p3.setUseHighRegistersForCounting(true);
-		p4.setCounterPrecisionIsLong(InstrumentationParameters.COUNTER_PRECISION_LONG);
+		p4.setCounterPrecision(InstrumentationCounterPrecision.Long);
 		p4.setUseHighRegistersForCounting(false);
 
 		return Arrays.asList(new Object[][] { {p2}, {p4} });
