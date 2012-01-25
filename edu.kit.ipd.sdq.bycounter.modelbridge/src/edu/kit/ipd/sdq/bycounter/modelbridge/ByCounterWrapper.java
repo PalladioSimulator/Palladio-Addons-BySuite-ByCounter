@@ -23,6 +23,7 @@ import de.fzi.gast.variables.FormalParameter;
 import de.uka.ipd.sdq.ByCounter.execution.BytecodeCounter;
 import de.uka.ipd.sdq.ByCounter.execution.CountingResult;
 import de.uka.ipd.sdq.ByCounter.execution.CountingResultCollector;
+import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentationCounterPrecision;
 import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentationParameters;
 import de.uka.ipd.sdq.ByCounter.parsing.LineNumberRange;
 import de.uka.ipd.sdq.ByCounter.utils.ASMOpcodesMapper;
@@ -101,7 +102,6 @@ public class ByCounterWrapper {
 	 * The configuration is applied to the wrapped {@link BytecodeCounter} instance.
 	 * @param input The configuration.
 	 */
-	@SuppressWarnings("deprecation")
 	public void setInstrumentationConfiguration(InstrumentationProfile input) {
 		if (input == null) {
 			throw new IllegalArgumentException("input must not be null.");
@@ -168,9 +168,9 @@ public class ByCounterWrapper {
 		instrumentationParams.setUseBasicBlocks(instrumentationProfile.isInstrumentUsingBasicBlocks());
 		// set the counter precision specified in the input model
 		if(instrumentationProfile.isInstrumentUsingLongCounters()) {
-			instrumentationParams.setCounterPrecisionIsLong(true);
+			instrumentationParams.setCounterPrecision(InstrumentationCounterPrecision.Long);
 		} else {
-			instrumentationParams.setCounterPrecisionIsLong(false);
+			instrumentationParams.setCounterPrecision(InstrumentationCounterPrecision.Integer);
 		}
 		instrumentationParams.setTraceAndIdentifyRequests(instrumentationProfile.isTraceAndIdentifyRequests());
 	}
