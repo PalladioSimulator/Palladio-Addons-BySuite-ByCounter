@@ -3,6 +3,7 @@ package de.uka.ipd.sdq.ByCounter.test.helpers;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.SortedSet;
 
 import junit.framework.Assert;
 import de.uka.ipd.sdq.ByCounter.execution.BytecodeCounter;
@@ -22,13 +23,12 @@ public class Utils {
 
 	/**
 	 * Gets the results from CountingResultCollector, assures (asserts) 
-	 * that there is only one and then returns that.
-	 * @param recursive As in {@link CountingResultCollector}.getResult. 
+	 * that there is only one and then returns that. 
 	 */
-	public static CountingResult getAssertedResult(boolean recursive) {
-		CountingResult[] r = CountingResultCollector.getInstance().retrieveAllCountingResultsAsArray_noInlining(recursive);
+	public static CountingResult getAssertedResult() {
+		SortedSet<CountingResult> r = CountingResultCollector.getInstance().retrieveAllCountingResults();
 //		Assert.assertEquals(1, r.length);
-		return r[0];
+		return r.first();
 	}
 
 	/**
@@ -40,21 +40,7 @@ public class Utils {
 	 */
 	public static CountingResult getCountingResultForTest(BytecodeCounter c, 
 			MethodDescriptor methodToInstrument) {
-		return getCountingResultForTest(c, methodToInstrument, methodToInstrument, false);
-	}
-
-	/**
-	 * Instruments the test method with name methodToInstrument, runs it and returns the
-	 * opcode counts.
-	 * @param c BytecodeCounter to use for counting.
-	 * @param methodToInstrument The method to instrument.
-	 * @param recursive Get recursive (calling tree respecting) result? See CountingResultCollector.
-	 * @return The de.uka.ipd.sdq.ByCount result.
-	 */
-	public static IFullCountingResult getCountingResultForTest(BytecodeCounter c, 
-			MethodDescriptor methodToInstrument, 
-			boolean recursive) {
-		return getCountingResultForTest(c, methodToInstrument, methodToInstrument, recursive);
+		return getCountingResultForTest(c, methodToInstrument, methodToInstrument);
 	}
 
 	/**
@@ -69,28 +55,10 @@ public class Utils {
 	public static CountingResult getCountingResultForTest(BytecodeCounter c, 
 			MethodDescriptor methodToInstrument,
 			MethodDescriptor methodToExecute) {
-		return getCountingResultForTest(c, methodToInstrument, methodToExecute, false);
-	}
-	
-
-	/**
-	 * Instruments the test method with name methodToInstrument, runs the
-	 * method with the name methodToExecute and returns the
-	 * opcode counts.
-	 * @param c BytecodeCounter to use for counting.
-	 * @param methodToInstrument The method to instrument.
-	 * @param methodToExecute The method to execute.
-	 * @param recursive Get recursive (calling tree respecting) result? See CountingResultCollector. 
-	 * @return The de.uka.ipd.sdq.ByCount result.
-	 */
-	public static CountingResult getCountingResultForTest(BytecodeCounter c, 
-			MethodDescriptor methodToInstrument,
-			MethodDescriptor methodToExecute, 
-			boolean recursive) {
 		c.instrument(methodToInstrument);
 		c.execute(methodToExecute, new Object[0]);
 	
-		CountingResult r = getAssertedResult(recursive);
+		CountingResult r = getAssertedResult();
 		//resultCollector.logResult(r);
 		return r;
 	}

@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.Collection;
+import java.util.SortedSet;
 import java.util.logging.Logger;
 
 import junit.framework.Assert;
@@ -124,11 +125,11 @@ public class TestResultWriters {
 
 
 
-		CountingResult[] finalResults = resultColl.retrieveAllCountingResultsAsArray_noInlining(false);
-		Assert.assertEquals(1, finalResults.length);
-		log.info(finalResults.length+" counting results found, logging them: ");
+		SortedSet<CountingResult> finalResults = resultColl.retrieveAllCountingResults();
+		Assert.assertEquals(1, finalResults.size());
+		log.info(finalResults.size()+" counting results found, logging them: ");
 		for(CountingResult r : finalResults) {
-			resultColl.logResult(r, true, true); //including delegation to registered writers
+			r.logResult(true, true); //including delegation to registered writers
 		}
 		// clear all collected results - they should not be output during the next run
 		resultColl.clearResults();
@@ -185,11 +186,11 @@ public class TestResultWriters {
 
 
 
-		CountingResult[] finalResults = resultColl.retrieveAllCountingResultsAsArray_noInlining(false);
-		Assert.assertEquals(1, finalResults.length);
-		log.info(finalResults.length+" counting results found, logging them: ");
+		SortedSet<CountingResult> finalResults = resultColl.retrieveAllCountingResults();
+		Assert.assertEquals(1, finalResults.size());
+		log.info(finalResults.size()+" counting results found, logging them: ");
 		for(CountingResult r : finalResults) {
-			resultColl.logResult(r, true, true); //including delegation to registered writers
+			r.logResult(true, true); //including delegation to registered writers
 		}
 		// clear all collected results - they should not be output during the next run
 		resultColl.clearResults();
@@ -206,7 +207,7 @@ public class TestResultWriters {
 			CountingResult cr =
 				CountingResultCSVWriter.readCountingResultFromCSV(
 						csvFile);
-			CountingResultCollector.getInstance().logResult(cr, false, true);
+			cr.logResult(false, true);
 		} catch (IOException e) {
 			e.printStackTrace();
 			Assert.fail();
@@ -259,11 +260,11 @@ public class TestResultWriters {
 
 
 
-		CountingResult[] finalResults = resultColl.retrieveAllCountingResultsAsArray_noInlining(false);
-		Assert.assertEquals(1, finalResults.length);
-		log.info(finalResults.length+" counting results found, logging them: ");
+		SortedSet<CountingResult> finalResults = resultColl.retrieveAllCountingResults();
+		Assert.assertEquals(1, finalResults.size());
+		log.info(finalResults.size()+" counting results found, logging them: ");
 		for(CountingResult r : finalResults) {
-			resultColl.logResult(r, true, true); //including delegation to registered writers
+			r.logResult(true, true); //including delegation to registered writers
 		}
 		// clear all collected results - they should not be output during the next run
 		resultColl.clearResults();
@@ -362,11 +363,11 @@ public class TestResultWriters {
 
 
 
-		CountingResult[] finalResults = resultColl.retrieveAllCountingResultsAsArray_noInlining(false);
-		Assert.assertEquals(1, finalResults.length);
-		log.info(finalResults.length+" counting results found, logging them: ");
+		SortedSet<CountingResult> finalResults = resultColl.retrieveAllCountingResults();
+		Assert.assertEquals(1, finalResults.size());
+		log.info(finalResults.size()+" counting results found, logging them: ");
 		for(CountingResult r : finalResults) {
-			resultColl.logResult(r, true, true); //including delegation to registered writers
+			r.logResult(true, true); //including delegation to registered writers
 		}
 		// clear all collected results - they should not be output during the next run
 		resultColl.clearResults();

@@ -58,7 +58,7 @@ public class SectionExpectation {
 	 *          The line number range of the new section. If the range is unknown, this should be <code>null</code>.
 	 */
 	protected SectionExpectation(final int sectionNumber, final LineNumberRange range) {
-		assert sectionNumber >= 0 : "sectionNumber has to be greater or equal zero.";
+//		assert sectionNumber >= 0 : "sectionNumber has to be greater or equal zero.";
 
 		this.sectionNumber = sectionNumber;
 		this.range = range;

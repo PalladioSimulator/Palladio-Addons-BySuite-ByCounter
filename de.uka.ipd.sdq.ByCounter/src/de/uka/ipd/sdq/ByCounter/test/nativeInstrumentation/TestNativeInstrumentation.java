@@ -1,6 +1,7 @@
 package de.uka.ipd.sdq.ByCounter.test.nativeInstrumentation;
 
 import java.util.Collection;
+import java.util.SortedSet;
 import java.util.logging.Logger;
 
 import junit.framework.Assert;
@@ -117,11 +118,11 @@ public class TestNativeInstrumentation {
 				Math.round((double) counting/1000000)+"ms aka \t"+
 				Math.round((double) counting/1000000000)+"s)");
 		if(EXECUTE) {
-			CountingResult[] finalResults = this.resultColl.retrieveAllCountingResultsAsArray(false);
-			Assert.assertNotSame("Number of results must be != 0.", 0, finalResults.length);
-			log.info(finalResults.length+" counting results found, logging them: ");
+			SortedSet<CountingResult> finalResults = this.resultColl.retrieveAllCountingResults();
+			Assert.assertNotSame("Number of results must be != 0.", 0, finalResults.size());
+			log.info(finalResults.size()+" counting results found, logging them: ");
 			for(CountingResult r : finalResults) {
-				this.resultColl.logResult(r, true, true); //from Martin
+				r.logResult(true, true); //from Martin
 			}
 			// clear all collected results
 			this.resultColl.clearResults();

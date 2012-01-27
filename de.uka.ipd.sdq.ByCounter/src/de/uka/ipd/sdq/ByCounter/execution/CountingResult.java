@@ -7,9 +7,14 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.SortedMap;
+import java.util.SortedSet;
 import java.util.TreeMap;
+import java.util.TreeSet;
 import java.util.UUID;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
+import de.uka.ipd.sdq.ByCounter.reporting.ICountingResultWriter;
 import de.uka.ipd.sdq.ByCounter.utils.FullOpcodeMapper;
 import de.uka.ipd.sdq.ByCounter.utils.IAllJavaOpcodes;
 
@@ -25,7 +30,7 @@ import de.uka.ipd.sdq.ByCounter.utils.IAllJavaOpcodes;
  * @version 1.2
  */
 public final class CountingResult
-implements Serializable, Cloneable, IFullCountingResult{
+implements Serializable, Cloneable, IFullCountingResult, Comparable<IFullCountingResult>{
 
 	/**
 	 * Version for {@link Serializable} interface.
@@ -36,6 +41,15 @@ implements Serializable, Cloneable, IFullCountingResult{
 	 * The highest possible number of a Java bytecode opcode.
 	 */
 	public static final int MAX_OPCODE = FullOpcodeMapper.mnemonics.length;
+	
+	/** Newline character for log output. */
+	private static final String NEWLINE = System.getProperty("line.separator");
+
+	/**
+	 * see http://en.wikipedia.org/wiki/Data_log
+	 */
+	private static Logger log = Logger.getLogger(CountingResult.class.getCanonicalName());
+
 
 	/**
 	 * The returned CountingResult is completely different from the summands
@@ -1270,4 +1284,247 @@ implements Serializable, Cloneable, IFullCountingResult{
 		return this.totalCountsAlreadyComputed;
 	}
 
+	/**
+	 * Return an appropriate number of tabs to follow the given string.
+	 * This is for log formatting purposes only.
+	 * @param str String after which the tabs shall follow
+	 * @param maxNumTabs maximum number of tabs to return.
+	 * @return A string containing a fitting number of tabs.
+	 */
+	private static synchronized String getTabs(String str, int maxNumTabs) {
+		StringBuilder tabs = new StringBuilder();
+		for(int i = maxNumTabs; i > 0; i--) {
+			if(str.length() < 8*i) {//TODO encode tab width variably?
+				tabs.append("\t");
+			} else {
+				break;
+			}
+		}
+		return tabs.toString();
+	}
+
+	/**
+	 * Print a log message that reports the result, listing all counts and
+	 * data that was collected.
+	 * @param printZeros When true, opcodes with an execution count of 0 are printed.
+	 * @param vertically When true, print as one opcode/method count per line.
+	 * @return The string with the logged message.
+	 */
+	public synchronized String logResult(
+			boolean printZeros, //eigentlich 3 Abstufungen: gar nicht; wie gespeichert; alle opcodes (auch wenn nicht gespeichert)
+			boolean vertically //TODO currently ignored
+			){
+		return logResult(printZeros, vertically, Level.INFO);
+	}
+
+	/**
+	 * Print a log message that reports the result, listing all counts and
+	 * data that was collected.
+	 * @param printZeros When true, opcodes with an execution count of 0 are printed.
+	 * @param vertically When true, print as one opcode/method count per line.
+	 * @param loggingLevel {@link Level} used to log the message.
+	 * @return The string with the logged message.
+	 */
+	public synchronized String logResult(
+			boolean printZeros, //eigentlich 3 Abstufungen: gar nicht; wie gespeichert; alle opcodes (auch wenn nicht gespeichert)
+			boolean vertically, //TODO currently ignored
+			Level loggingLevel
+			) {
+		StringBuffer sb = new StringBuffer();
+		sb.append("\n==START========= Logging CountingResult ================");
+		sb.append(NEWLINE);
+		String qualifyingMethodName = getQualifyingMethodName();
+		if(qualifyingMethodName==null || qualifyingMethodName.equals("")) {
+			log.severe("Qualifying method name is null or empty, EXITING");
+			sb.append("== END ========= Logging CountingResult ================");
+			sb.append(NEWLINE);
+			log.info(sb.toString());
+			return sb.toString();
+		}
+		sb.append("qualifyingMethodName: ");
+		sb.append(qualifyingMethodName);
+		sb.append(NEWLINE);
+		sb.append("requestID: ");
+		sb.append(getRequestID());
+		sb.append(", ownID: ");
+		sb.append(getOwnID());
+		sb.append(", callerID: ");
+		sb.append(getCallerID());
+		sb.append(NEWLINE);
+		if (getIndexOfRangeBlock() == -1) {
+			sb.append("The whole method was measured (cr.getIndexOfRangeBlock() == -1 in CountingResultCollector.logResult)");
+			sb.append(NEWLINE);
+		} else {
+			sb.append("Section number ");
+			sb.append(getIndexOfRangeBlock());
+			sb.append(" was measured.");
+			sb.append(NEWLINE);
+		}
+//		if(cr==null){
+//			log.severe("The CountingResult to log is null - nothing to do, returning immediately.");
+//			log.info("== END ========= Logging CountingResult ================");
+//			return;
+//		}
+
+		long[] opcodeCounts = getOpcodeCounts();
+		if(opcodeCounts == null) {
+			log.severe("Opcode counts is null... EXITING");
+			sb.append("== END ========= Logging CountingResult ================");
+			sb.append(NEWLINE);
+			log.info(sb.toString());
+			return sb.toString();
+		}
+
+		SortedMap<String, Long> methodCallCounts = getMethodCallCounts();
+		if(methodCallCounts == null) {
+			log.severe("Method counts hashmap is null... EXITING");
+			sb.append("== END ========= Logging CountingResult ================");
+			sb.append(NEWLINE);
+			log.info(sb.toString());
+			return sb.toString();
+		}
+
+		long time = getMethodInvocationBeginning();
+		if(time<0) {
+			log.severe("Wrong time: "+time);//TODO which kind of time is this?
+			sb.append("== END ========= Logging CountingResult ================");
+			sb.append(NEWLINE);
+			log.info(sb.toString());
+			return sb.toString();
+		}
+
+		List<ICountingResultWriter> resultWriters = CountingResultCollector.getInstance().getAllResultWriters();
+		if(resultWriters.size()>0){
+			log.fine("Logging CountinResult using "+resultWriters.size()+
+					" registered result writers");
+			for(ICountingResultWriter rw : resultWriters){
+				rw.writeResultToFile(this, false, -1);//TODO make this better/parameterised
+			}
+		}
+
+		long[] newArrayCounts 						= getNewArrayCounts();
+		int[] newArrayDims 							= getNewArrayDim();
+		String[] newArrayTypes 						= getNewArrayTypes();
+
+		// No checks here (but below!) for array results, because null is also
+		// returned when array parameter recording is disabled.
+
+		// make sure DisplayOpcodes does not interfere with the output...?
+		long totalCountOfAllOpcodes = 0; //you need longs for that...
+		long totalCountOfAllMethods = 0; //you need longs for that...
+
+		String 	tabs;					// tabulators (for logging)
+		String 	currentOpcodeString;	// opcode as string
+		long 	currentOpcodeCount;		// opcode count
+		long 	currentMethodCount = 0;	// method count
+
+
+		int numberOfOpcodesWithNonzeroFrequencies=0;
+		for(int i = 0; i < CountingResult.MAX_OPCODE; i++) {
+			currentOpcodeString = FullOpcodeMapper.getMnemonicOfOpcode(i);
+			currentOpcodeCount 	= opcodeCounts[i];
+			tabs 				= getTabs(currentOpcodeString + ":", 2);
+//			dataset.addValue(currentOpcodeCount, qualifyingMethodName+": instructions", currentOpcodeString);
+			if(currentOpcodeCount!=0 || printZeros){
+				sb.append(currentOpcodeString);
+				sb.append(":");
+				sb.append(tabs);
+				sb.append(currentOpcodeCount);
+				sb.append(NEWLINE);
+			}
+			if((totalCountOfAllOpcodes+currentOpcodeCount)<totalCountOfAllOpcodes){
+				log.severe("OVERFLOW while adding opcode counts... use BigInteger instead");
+			}else{
+				totalCountOfAllOpcodes += currentOpcodeCount;
+				if(currentOpcodeCount>0){
+					numberOfOpcodesWithNonzeroFrequencies++;
+				}
+			}
+		}
+
+		Iterator<String> methodSigs = methodCallCounts.keySet().iterator();
+		SortedSet<String> classesContainingMethodSigs = new TreeSet<String>();
+		String currentSig, className;
+		while(methodSigs.hasNext()) {
+			currentSig = methodSigs.next();
+			className = currentSig.split("\\.")[0];
+			classesContainingMethodSigs.add(className);
+			currentMethodCount = methodCallCounts.get(currentSig);
+			tabs = getTabs(currentSig + ":", 9);
+//			dataset.addValue(currentMethodCount, qualifyingMethodName+": methods", currentMethodSignature);
+			sb.append(currentSig);
+			sb.append(":");
+			sb.append(tabs);
+			sb.append(currentMethodCount);
+//			sb.append(" (class: "+className+")");
+			sb.append(NEWLINE);
+			if(totalCountOfAllMethods + currentMethodCount<totalCountOfAllMethods){
+				log.severe("OVERFLOW while adding method counts");
+			}else{
+				totalCountOfAllMethods += currentMethodCount;
+			}
+//			instrnames_texSB.append(currentMethodSignature+" & ");
+//			instrcounts_texSB.append(currentMethodCount+" & ");
+		}
+//		instrnames_texSB.append("total \\\\");
+//		instrcounts_texSB.append(totalCountOfAllMethods+" \\\\");
+
+		// because null is a valid value for the array*Something* arrays,
+		// we need to be carefull here.
+		if(newArrayCounts != null
+				&& newArrayDims != null
+				&& newArrayTypes != null) {
+			for(int i = 0; i < newArrayCounts.length; i++) {
+				sb.append("new array of type '");
+				sb.append(newArrayTypes[i]);
+				sb.append("'");
+				sb.append((newArrayDims[i] > 0 ? ", dim " + newArrayDims[i] : ""));
+				sb.append(": ");
+				sb.append(newArrayCounts[i]);
+				sb.append(NEWLINE);
+			}
+		}
+		sb.append("====================================================");
+		sb.append(NEWLINE);
+		sb.append(totalCountOfAllOpcodes);
+		sb.append(" instruc. executions of ");
+		sb.append(numberOfOpcodesWithNonzeroFrequencies);
+		sb.append(" different opcodes were counted.");
+		sb.append(NEWLINE);
+		sb.append(totalCountOfAllMethods);
+		sb.append(" methods invocations of ");
+		sb.append(methodCallCounts.size());
+		sb.append(" different signatures were counted, from "+classesContainingMethodSigs.size()+" classes.");
+		sb.append(NEWLINE);
+		sb.append(NEWLINE);
+		int i=1;
+		int approxNrOfJavaPlatformClasses = 0;
+		StringBuffer sb2 = new StringBuffer();
+		sb.append("API / platform classes: \n");
+		for(String classs : classesContainingMethodSigs){
+			if(classs.startsWith("java/") || classs.startsWith("javax/") || classs.startsWith("sun/")){
+				approxNrOfJavaPlatformClasses++;
+				sb.append("class "+i+": "+classs+"\n");
+			}else{
+				sb2.append("class "+i+": "+classs+"\n");
+			}
+			i++;
+		}
+		sb.append((classesContainingMethodSigs.size()-approxNrOfJavaPlatformClasses)+
+				" are 'business' classes outside of the Java platform:\n");
+		sb.append(sb2.toString());
+		sb.append(NEWLINE);
+		sb.append(NEWLINE);
+		sb.append("== END ========= Logging CountingResult ================");
+		sb.append(NEWLINE);
+		String ret = sb.toString();
+		log.log(loggingLevel, sb.toString());
+		return ret;
+	}
+
+	/** Compares {@link #getMethodInvocationBeginning()}. */
+	@Override
+	public int compareTo(IFullCountingResult o) {
+		return new Long(methodInvocationBeginning).compareTo(o.getMethodInvocationBeginning());
+	}
 }

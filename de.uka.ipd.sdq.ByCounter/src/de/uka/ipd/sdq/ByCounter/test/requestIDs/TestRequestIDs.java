@@ -3,6 +3,7 @@ package de.uka.ipd.sdq.ByCounter.test.requestIDs;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.SortedSet;
 import java.util.logging.Logger;
 
 import junit.framework.Assert;
@@ -122,11 +123,11 @@ public class TestRequestIDs {
 				Math.round((double) counting/1000)+"us aka \t"+
 				Math.round((double) counting/1000000)+"ms aka \t"+
 				Math.round((double) counting/1000000000)+"s)");
-		CountingResult[] finalResults = this.resultColl.retrieveAllCountingResultsAsArray(false);
-		Assert.assertNotSame("Number of results must be != 0.", 0, finalResults.length);
-		log.info(finalResults.length+" counting results found, logging them: ");
+		SortedSet<CountingResult> finalResults = this.resultColl.retrieveAllCountingResults();
+		Assert.assertNotSame("Number of results must be != 0.", 0, finalResults.size());
+		log.info(finalResults.size()+" counting results found, logging them: ");
 		for(CountingResult r : finalResults) {
-			this.resultColl.logResult(r, true, true);
+			r.logResult(true, true);
 		}
 		// clear all collected results
 		this.resultColl.clearResults();

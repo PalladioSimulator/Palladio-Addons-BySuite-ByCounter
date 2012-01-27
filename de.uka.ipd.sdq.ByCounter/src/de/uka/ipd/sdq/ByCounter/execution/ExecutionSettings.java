@@ -25,6 +25,9 @@ public class ExecutionSettings implements Cloneable {
 	/** Default value of {@link #getCountingResultCollectorMode()}. */
 	private static final CountingResultCollectorMode COUNTING_RESULT_COLLECTOR_MODE_DEFAULT = CountingResultCollectorMode.UseReportingMethodChoiceByInstrumentedMethods;
 
+	/** Default value of {@link #getAddUpResultsRecursively()}. */
+	private static final boolean ADD_UP_RESULTS_RECURSIVELY_DEFAULT = false;
+
 	/**
 	 * Classes defined as internal when using recursive result retrieval.
 	 * 
@@ -38,12 +41,22 @@ public class ExecutionSettings implements Cloneable {
 	private CountingResultCollectorMode countingResultCollectorMode;
 	
 	/**
+	 * When true, result retrieval adds up counting results recursively.
+	 * This means that results for methods that call other methods include the 
+	 * counts of these called methods, i.e. of the entire calling tree.
+	 * When false, only the counts for operation done in the method itself
+	 * - not those by called methods - are returned.
+	 */
+	private boolean addUpResultsRecursively;
+
+	/**
 	 * Construct {@link ExecutionSettings} by setting every field to it's 
 	 * default value. 
 	 */
 	public ExecutionSettings() {
 		this.countingResultCollectorMode = COUNTING_RESULT_COLLECTOR_MODE_DEFAULT;
 		this.internalClassesDefinition = INTERNAL_CLASSES_DEFINITION_DEFAULT;
+		this.addUpResultsRecursively = ADD_UP_RESULTS_RECURSIVELY_DEFAULT;
 	}
 	
 	/* (non-Javadoc)
@@ -150,6 +163,29 @@ public class ExecutionSettings implements Cloneable {
 	public void setCountingResultCollectorMode(
 			CountingResultCollectorMode countingResultCollectorMode) {
 		this.countingResultCollectorMode = countingResultCollectorMode;
+	}
+
+	/**
+	 * @return True, when result retrieval adds up counting results recursively.
+	 * This means that results for methods that call other methods include the 
+	 * counts of these called methods, i.e. of the entire calling tree.
+	 * When false, only the counts for operation done in the method itself
+	 * - not those by called methods - are returned.
+	 */
+	public boolean getAddUpResultsRecursively() {
+		return addUpResultsRecursively;
+	}
+
+	/**
+	 * @param addUpResultsRecursively 
+	 * When true, result retrieval adds up counting results recursively.
+	 * This means that results for methods that call other methods include the 
+	 * counts of these called methods, i.e. of the entire calling tree.
+	 * When false, only the counts for operation done in the method itself
+	 * - not those by called methods - are returned.
+	 */
+	public void setAddUpResultsRecursively(boolean addUpResultsRecursively) {
+		this.addUpResultsRecursively = addUpResultsRecursively;
 	}
 
 }

@@ -7,7 +7,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
+import java.util.SortedSet;
 import java.util.logging.Logger;
 
 import junit.framework.Assert;
@@ -175,14 +175,16 @@ public class TestBytecodeCounter {
 		
 		// do the de.uka.ipd.sdq.ByCount
 		// let the counter do its work on a method
-		counter.instrument(new MethodDescriptor(ASMBytecodeOccurences.class.getCanonicalName(), METHOD_SIGNATURE));
+		MethodDescriptor methodToInstrument = new MethodDescriptor(ASMBytecodeOccurences.class.getCanonicalName(), METHOD_SIGNATURE);
+		counter.instrument(methodToInstrument);
 
+		counter.execute(methodToInstrument, new Object[0]);
 		
-		Assert.assertNotNull(resultColl.retrieveAllCountingResults_nonRecursively());
+		Assert.assertNotNull(resultColl.retrieveAllCountingResults());
 		// print the results into the log
-		for(CountingResult r : resultColl.retrieveAllCountingResults_nonRecursively()) {
+		for(CountingResult r : resultColl.retrieveAllCountingResults()) {
 			Assert.assertNotSame(r.getOpcodeCounts().length, 0);
-			resultColl.logResult(r, false, true);
+			r.logResult(false, true);
 		}
 		// clear all collected results
 		resultColl.clearResults();
@@ -222,17 +224,18 @@ public class TestBytecodeCounter {
 		counter.execute(methodDescriptorMCT, new Object[0]);
 
 		CountingResult[] countingResults = 
-			CountingResultCollector.getInstance().retrieveAllCountingResultsAsArray_noInlining(false);
+			CountingResultCollector.getInstance().retrieveAllCountingResults().toArray(new CountingResult[0]);
 		Assert.assertTrue("Could not get any counting results.", countingResults.length > 0);
 		CountingResult r1 = countingResults[countingResults.length-1];	// last is methodCallTest
-		CountingResultCollector.getInstance().logResult(r1, false, true);
+		r1.logResult(false, true);
 		CountingResultCollector.getInstance().clearResults();
 		// calling tree results
+		counter.getExecutionSettings().setAddUpResultsRecursively(true);
 		counter.execute(methodDescriptorMCT, new Object[0]);
 		
-		countingResults = CountingResultCollector.getInstance().retrieveAllCountingResultsAsArray_noInlining(true);
+		countingResults = CountingResultCollector.getInstance().retrieveAllCountingResults().toArray(new CountingResult[0]);
 		CountingResult r2 = countingResults[countingResults.length-1];
-		CountingResultCollector.getInstance().logResult(r2, false, true);
+		r2.logResult(false, true);
 	}
 
 	/**
@@ -291,13 +294,15 @@ public class TestBytecodeCounter {
 		
 		//3. now tell ByCounter to instrument the specified method
 		counter.instrument(myMethod);
-		
+		// enable recursive result counting
+		counter.getExecutionSettings().setAddUpResultsRecursively(true);
 		counter.execute(myMethod, new Object[0]);
 
-		Assert.assertNotNull(CountingResultCollector.getInstance().retrieveAllCountingResults_recursively());
-		Assert.assertTrue(CountingResultCollector.getInstance().retrieveAllCountingResults_recursively().size() > 1);
-		for(CountingResult newResult: CountingResultCollector.getInstance().retrieveAllCountingResults_recursively()) {
-			CountingResultCollector.getInstance().logResult(newResult, false, true);
+		SortedSet<CountingResult> countingResults = CountingResultCollector.getInstance().retrieveAllCountingResults();
+		Assert.assertNotNull(countingResults);
+		Assert.assertTrue(countingResults.size() > 1);
+		for(CountingResult newResult : countingResults) {
+			newResult.logResult(false, true);
 		}
 		
 		counter.getInstrumentationParams().setInstrumentRecursively(false, 0);
@@ -318,12 +323,14 @@ public class TestBytecodeCounter {
 		MethodDescriptor myMethod = new MethodDescriptor(
 				testClass.getCanonicalName(),
 				testClassMethodCallTest);
+		counter.getExecutionSettings().setAddUpResultsRecursively(true);
 		counter.execute(myMethod, new Object[0]);
 
-		Assert.assertNotNull(CountingResultCollector.getInstance().retrieveAllCountingResults_recursively());
-		Assert.assertTrue(CountingResultCollector.getInstance().retrieveAllCountingResults_recursively().size() > 1);
-		for(CountingResult newResult: CountingResultCollector.getInstance().retrieveAllCountingResults_recursively()) {
-			CountingResultCollector.getInstance().logResult(newResult, false, true);
+		SortedSet<CountingResult> countingResults = CountingResultCollector.getInstance().retrieveAllCountingResults();
+		Assert.assertNotNull(countingResults);
+		Assert.assertTrue(countingResults.size() > 1);
+		for(CountingResult newResult: countingResults) {
+			newResult.logResult(false, true);
 		}
 		
 		counter.getInstrumentationParams().setInstrumentRecursively(false, 0);
@@ -403,7 +410,7 @@ public class TestBytecodeCounter {
 				new MethodDescriptor(TestSubject.class.getCanonicalName(), 
 						nestedClassRunMethodSig));
 
-		CountingResultCollector.getInstance().logResult(r, false, true);
+		r.logResult(false, true);
 		
 		cleanResults();
 		
@@ -415,7 +422,7 @@ public class TestBytecodeCounter {
 				new MethodDescriptor(TestSubject.class.getCanonicalName(), 
 						nestedClassRunMethodSig));
 
-		CountingResultCollector.getInstance().logResult(r, false, true);
+		r.logResult(false, true);
 	}
 	
 
@@ -438,14 +445,15 @@ public class TestBytecodeCounter {
 		
 		//3. now tell ByCounter to instrument the specified method
 		counter.instrument(myMethod);
-		
+		counter.getExecutionSettings().setAddUpResultsRecursively(true);
 		counter.execute(myMethod, new Object[0]);
 
-		List<CountingResult> allCountingResultsRecursively = CountingResultCollector.getInstance().retrieveAllCountingResults_recursively();
+		SortedSet<CountingResult> allCountingResultsRecursively = CountingResultCollector.getInstance().retrieveAllCountingResults();
 		Assert.assertNotNull(allCountingResultsRecursively);
+		allCountingResultsRecursively.first().logResult(false, false);
 		Assert.assertTrue("More counting results are expected.", allCountingResultsRecursively.size() > 1);
 		for(CountingResult newResult: allCountingResultsRecursively) {
-			CountingResultCollector.getInstance().logResult(newResult, false, true);
+			newResult.logResult(false, true);
 		}
 		
 		counter.getInstrumentationParams().setInstrumentRecursively(false, 0);
@@ -469,12 +477,13 @@ public class TestBytecodeCounter {
 		
 		//3. now tell ByCounter to instrument the specified method
 		counter.instrument(myMethod);
+		counter.getExecutionSettings().setAddUpResultsRecursively(true);
 		counter.execute(myMethod, new Object[]{new String[0]});
 
-		List<CountingResult> allCountingResultsRecursively = CountingResultCollector.getInstance().retrieveAllCountingResults_recursively();
+		SortedSet<CountingResult> allCountingResultsRecursively = CountingResultCollector.getInstance().retrieveAllCountingResults();
 		Assert.assertNotNull(allCountingResultsRecursively);
 		for(CountingResult newResult: allCountingResultsRecursively) {
-			CountingResultCollector.getInstance().logResult(newResult, false, true);
+			newResult.logResult(false, true);
 		}
 	}
 	

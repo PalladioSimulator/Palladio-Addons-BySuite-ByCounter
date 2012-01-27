@@ -113,8 +113,8 @@ public class TestLineNumbers {
         Object[] executionParameters = new Object[] { 5 };
         counter.execute(methodNormalise, executionParameters);
 
-        CountingResult originalResult = Utils.getAssertedResult(false);
-        CountingResultCollector.getInstance().logResult(originalResult, false, true);
+        CountingResult originalResult = Utils.getAssertedResult();
+        originalResult.logResult(false, true);
         CountingResultCollector.getInstance().clearResults();
 
         // enable usage of basic blocks and count again
@@ -124,8 +124,8 @@ public class TestLineNumbers {
         counter.instrument(methodNormalise);
         counter.execute(methodNormalise, executionParameters);
 
-        CountingResult newResult = Utils.getAssertedResult(false);
-        CountingResultCollector.getInstance().logResult(newResult, false, true);
+        CountingResult newResult = Utils.getAssertedResult();
+        newResult.logResult(false, true);
 
         // now assert that the results are equal
         Assert.assertEquals(originalResult.getMethodCallCounts().size(), newResult.getMethodCallCounts().size());
@@ -184,10 +184,10 @@ public class TestLineNumbers {
         Object[] executionParameters = new Object[] { 10 };
         counter.execute(methodRanged, executionParameters);
 
-        CountingResult[] results = CountingResultCollector.getInstance().retrieveAllCountingResultsAsArray_noInlining(false);
+        CountingResult[] results = CountingResultCollector.getInstance().retrieveAllCountingResults().toArray(new CountingResult[0]);
         Assert.assertTrue("No or not enough results counted", results.length > 1);
         for (CountingResult r : results) {
-            CountingResultCollector.getInstance().logResult(r, false, true);
+        	r.logResult(false, true);
         }
         CountingResultCollector.getInstance().clearResults();
         // compare
@@ -239,10 +239,10 @@ public class TestLineNumbers {
         Object[] executionParameters = new Object[] { 10 };
         counter.execute(methodRanged, executionParameters);
 
-        CountingResult[] results = CountingResultCollector.getInstance().retrieveAllCountingResultsAsArray_noInlining(false);
+        CountingResult[] results = CountingResultCollector.getInstance().retrieveAllCountingResults().toArray(new CountingResult[0]);
         Assert.assertTrue("No or not enough results counted", results.length > 1);
         for (CountingResult r : results) {
-            CountingResultCollector.getInstance().logResult(r, false, true);
+        	r.logResult(false, true);
         }
         CountingResultCollector.getInstance().clearResults();
         // compare
@@ -292,10 +292,10 @@ public class TestLineNumbers {
         Object[] executionParameters = new Object[] {};
         counter.execute(methodForeach, executionParameters);
 
-        CountingResult[] results = CountingResultCollector.getInstance().retrieveAllCountingResultsAsArray_noInlining(false);
+        CountingResult[] results = CountingResultCollector.getInstance().retrieveAllCountingResults().toArray(new CountingResult[0]);
         Assert.assertTrue("No or too many results counted", results.length == 1);
         for (CountingResult r : results) {
-            CountingResultCollector.getInstance().logResult(r, false, true);
+        	r.logResult(false, true);
         }
         CountingResultCollector.getInstance().clearResults();
         // compare
@@ -333,9 +333,9 @@ public class TestLineNumbers {
         Object[] executionParameters = new Object[] { 10 };
         counter.execute(methodRanged, executionParameters);
 
-        CountingResult[] results = CountingResultCollector.getInstance().retrieveAllCountingResultsAsArray_noInlining(false);
+        CountingResult[] results = CountingResultCollector.getInstance().retrieveAllCountingResults().toArray(new CountingResult[0]);
         for (CountingResult r : results) {
-            CountingResultCollector.getInstance().logResult(r, false, true);
+        	r.logResult(false, true);
         }
         CountingResultCollector.getInstance().clearResults();
         // compare

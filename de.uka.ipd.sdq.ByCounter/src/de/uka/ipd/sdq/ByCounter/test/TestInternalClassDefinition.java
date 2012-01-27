@@ -3,8 +3,8 @@ package de.uka.ipd.sdq.ByCounter.test;
 import java.io.PrintStream;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
+import java.util.SortedSet;
 import java.util.logging.Logger;
 
 import org.junit.After;
@@ -125,7 +125,8 @@ public class TestInternalClassDefinition {
 		
 		//3. now tell ByCounter to instrument the specified method
 		counter.instrument(myMethod);
-		
+
+		counter.getExecutionSettings().setAddUpResultsRecursively(true);
 		counter.execute(myMethod, new Object[0]);
 
 		// define internal classes
@@ -135,14 +136,14 @@ public class TestInternalClassDefinition {
 		counter.getExecutionSettings().setInternalClassesDefinition(internalClassesDefinition);
 		
 		// retrieve results TODO does not work for recursive = true
-		CountingResult[] results = CountingResultCollector.getInstance().retrieveAllCountingResultsAsArray_noInlining(false);
+		CountingResult[] results = CountingResultCollector.getInstance().retrieveAllCountingResults().toArray(new CountingResult[0]);
 		e.compare(results);
     
-		List<CountingResult> resultsList = CountingResultCollector.getInstance().retrieveAllCountingResults_recursively();
+		SortedSet<CountingResult> resultsList = CountingResultCollector.getInstance().retrieveAllCountingResults();
 		Assert.assertNotNull(resultsList);
 		Assert.assertTrue(resultsList.size() > 1);
 		for(CountingResult newResult: resultsList) {
-			CountingResultCollector.getInstance().logResult(newResult, false, true);
+			newResult.logResult(false, true);
 		}
 		
 		counter.getInstrumentationParams().setInstrumentRecursively(false, 0);

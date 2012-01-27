@@ -14,16 +14,16 @@ public final class CountingArtefactInformation
 implements Comparable<CountingArtefactInformation>{
 	
 	/**
-	 * Static instance of the corresponding <code>CountingResultCollector</code>
+	 * Instance of the corresponding {@link CountingResultIndexing}.
 	 */
-	private static CountingResultCollector myCollector;
+	private CountingResultIndexing myIndexing;
 	
 	/**
 	 * A simple getter 
-	 * @return the underlying static instance of <code>CountingResultCollector</code>
+	 * @return the underlying instance of {@link CountingResultIndexing}.
 	 */
-	public static CountingResultCollector getMyCollector() {
-		return myCollector;
+	public CountingResultIndexing getMyIndexing() {
+		return myIndexing;
 	}
 	
 	/**
@@ -66,10 +66,11 @@ implements Comparable<CountingArtefactInformation>{
     private Long time_resultsReceivedByCollector;
     
     /**
-     * The default constructor (inside, it gets an instance of the {@link CountingResultCollector})
+     * The default constructor.
+     * @param indexing The corresponding indexing infrastructure.
      */
-    public CountingArtefactInformation(){
-		myCollector = CountingResultCollector.getInstance();
+    public CountingArtefactInformation(CountingResultIndexing indexing) {
+		myIndexing = indexing;
 	}
     
     /** Parametrised constructor
@@ -83,12 +84,13 @@ implements Comparable<CountingArtefactInformation>{
      * @param outputPrms output parameters of the method
      */
     public CountingArtefactInformation(
+    		CountingResultIndexing indexing,
 			String methodName,
 			Long invocationReceivedTime,
 			List<RuntimeMethodParameters> inputPrms,
 			Long resultsReceivedByCollectorTime,
 			List<RuntimeMethodParameters> outputPrms){
-		this(); //there, Collector instance is obtained
+		this(indexing);
 //		this.exitingTime = null;//field removed
 		this.inputPrms = inputPrms;
 		//TODO isInstrumented is missing
@@ -129,8 +131,8 @@ implements Comparable<CountingArtefactInformation>{
 	/** Delegating getter for counting results that correspond to this artefact
 	 * @return counting results that correspond to this artefact
 	 */
-	public CountingResult getCountingResult(){
-		return myCollector.getCountingResultByArtefact(this);
+	public CountingResult getCountingResult() {
+		return myIndexing.getAllCountingResultsByArtefacts().get(this);
 	}
 
 	/**Simple getter

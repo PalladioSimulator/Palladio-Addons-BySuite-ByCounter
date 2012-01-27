@@ -28,14 +28,16 @@ public class BlockResultCalculation {
 	 * see http://en.wikipedia.org/wiki/Data_log
 	 */
 	private Logger log;
-	private BlockDefinitionContext blockContext;
+
+	/** Basic block and range block definitions. */
+	private BlockDefinitionContext blockContext;	
 	/** The basic blocks defined for the current method */
 	private InstructionBlockDescriptor[] currentBasicBlocks;
 	/** The range blocks defined for the current method */
 	private InstructionBlockDescriptor[] currentRangeBlocks;
 	
 	/**
-	 * @param blockContext Definition context of the range/basic blocks.
+	 * New {@link BlockResultCalculation} context.
 	 */
 	public BlockResultCalculation(BlockDefinitionContext blockContext) {
 		this.log = Logger.getLogger(this.getClass().getCanonicalName());

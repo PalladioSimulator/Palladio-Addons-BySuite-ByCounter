@@ -1,6 +1,6 @@
 package de.uka.ipd.sdq.ByCounter.example.fibonacci;
 
-import java.util.List;
+import java.util.SortedSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -43,11 +43,11 @@ public class RunExample {
 		counter.execute(fibonacciTestRunner, executionParameters);
 
 		// Output
-		List<CountingResult> results =
-			CountingResultCollector.getInstance().retrieveAllCountingResults_nonRecursively();
+		SortedSet<CountingResult> results =
+			CountingResultCollector.getInstance().retrieveAllCountingResults();
 		// output the results to the console/log
 		for(CountingResult r : results) {
-			CountingResultCollector.getInstance().logResult(r, false, true);
+			r.logResult(false, true);
 		}
 
 		// clear the results as we do not need them anymore
@@ -76,11 +76,11 @@ public class RunExample {
 		counter.execute(fibonacciTestRunner, executionParameters);
 
 		// Output
-		List<CountingResult> results =
-			CountingResultCollector.getInstance().retrieveAllCountingResults_nonRecursively();
+		SortedSet<CountingResult> results =
+			CountingResultCollector.getInstance().retrieveAllCountingResults();
 		// output the results to the console/log
 		for(CountingResult r : results) {
-			CountingResultCollector.getInstance().logResult(r, false, true);
+			r.logResult(false, true);
 		}
 
 		// clear the results as we do not need them anymore
@@ -112,11 +112,11 @@ public class RunExample {
 		counter.execute(fibonacciTestRunner, executionParameters);
 
 		// Output
-		CountingResult[] results =
-			CountingResultCollector.getInstance().retrieveAllCountingResultsAsArray_noInlining(false);
+		SortedSet<CountingResult> results =
+			CountingResultCollector.getInstance().retrieveAllCountingResults();
 		// output the results to the console/log
 		for(CountingResult r : results) {
-			CountingResultCollector.getInstance().logResult(r, false, true);
+			r.logResult(false, true);
 		}
 
 		// clear the results as we do not need them anymore

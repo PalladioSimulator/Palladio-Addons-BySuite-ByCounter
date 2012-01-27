@@ -411,7 +411,7 @@ public final class BytecodeCounter {
 		// create a set of class names to instrument
 		Set<String> classesToInstrument = new HashSet<String>();
 		for(MethodDescriptor m : instrumentationParameters.getMethodsToInstrument()) {
-			success = findClassToInstrument(classesToInstrument, classMethodDefinitions, m)
+			success = findClassesToInstrument(classesToInstrument, classMethodDefinitions, m)
 						&& success;
 		}
 
@@ -431,14 +431,14 @@ public final class BytecodeCounter {
 			}
 			// since we created the call graph, we may now have to instrument
 			// additional classes, so add them to the list here
-			for(MethodDescriptor m : instrumentationParameters.getMethodsToInstrument()) {
-				success = findClassToInstrument(classesToInstrument, classMethodDefinitions, m)
+			for(MethodDescriptor m : instrumentationState.getMethodsToInstrumentCalculated()) {
+				success = findClassesToInstrument(classesToInstrument, classMethodDefinitions, m)
 				 		&& success;
 			}
 		} else {
 			this.instrumentationState.setMethodsToInstrumentCalculated(this.instrumentationParameters.getMethodsToInstrument());
 		}
-		log.fine("Instrumenting following methods: " + instrumentationState.getMethodsToInstrumentCalculated());
+		log.info("Instrumenting following methods: " + instrumentationState.getMethodsToInstrumentCalculated());
 		
     	this.successFullyInstrumentedMethods = new ArrayList<MethodDescriptor>();
     	
@@ -449,7 +449,7 @@ public final class BytecodeCounter {
 		// iterate through all selected classes
 		for(String className : classesToInstrument) {
 			success = instrumentSingleClass(
-					instrumentationParameters.getMethodsToInstrument(), 
+					instrumentationState.getMethodsToInstrumentCalculated(), 
 					className) && success;
 		}
 		this.printInstrumentationSummary();
@@ -466,7 +466,7 @@ public final class BytecodeCounter {
 	 * the list of classes to instrument, it will be added.
 	 * @return True, if the method has an implementation. False otherwise.
 	 */
-	private boolean findClassToInstrument(Set<String> classesToInstrument,
+	private boolean findClassesToInstrument(Set<String> classesToInstrument,
 			Map<String, ClassMethodImplementations> classMethodDefinitions, 
 			MethodDescriptor methodToAnalyse) {
 		FindMethodDefinitionsClassAdapter findMethods = 

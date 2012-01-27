@@ -1,7 +1,7 @@
 package de.uka.ipd.sdq.ByCounter.example;
 
 import java.io.File;
-import java.util.List;
+import java.util.SortedSet;
 
 import de.uka.ipd.sdq.ByCounter.execution.BytecodeCounter;
 import de.uka.ipd.sdq.ByCounter.execution.CountingResult;
@@ -77,12 +77,12 @@ public class ByCounterExample {
 		//"nonRecursively" means that even if the instrumented methods called 
 		//other instrumented methods, the CountingResults of the callees are 
 		//not inlined into those of callers
-		List<CountingResult> results = 
-			CountingResultCollector.getInstance().retrieveAllCountingResults_nonRecursively();
+		SortedSet<CountingResult> results = 
+			CountingResultCollector.getInstance().retrieveAllCountingResults();
 		
 		//7. output the results to the console/log
 		for(CountingResult r : results) {
-			CountingResultCollector.getInstance().logResult(r, false, true);
+			r.logResult(false, true);
 		}
 		
 		//8. clear the results as we do not need them anymore

@@ -132,7 +132,7 @@ public class Expectation {
 	 * @return The new <code>SectionExpectation</code>.
 	 */
 	private SectionExpectation add(final int sectionNumber, final LineNumberRange range) {
-		assert sectionNumber >= 0 : "sectionNumber must not be less than zero";
+//		assert sectionNumber >= 0 : "sectionNumber must not be less than zero";
 
 		if (sectionNumber > this.biggestSectionNumber) {
 			this.biggestSectionNumber = sectionNumber;
