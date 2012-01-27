@@ -8,6 +8,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.SortedSet;
 import java.util.logging.Logger;
 
 import org.eclipse.emf.common.util.EList;
@@ -222,6 +223,8 @@ public class ByCounterWrapper {
 		MethodDescriptor methodToExecute = new MethodDescriptor(
 				m.getSurroundingClass().getQualifiedName(),
 				ByCounterWrapper.constructSignature(m));
+
+		this.bycounter.getExecutionSettings().setAddUpResultsRecursively(this.inputModel.isInstrumentRecursively());
 		return this.bycounter.execute(methodToExecute, target, params).returnValue;
 	}
 	
@@ -258,14 +261,8 @@ public class ByCounterWrapper {
 		EnvironmentDescription environmentDesc = null;
 		run.setEnvironmentCharacterisation(environmentDesc);
 		
-		CountingResult[] results = null;
-		if(this.inputModel.isInstrumentRecursively()) {
-			// query all results with recursive=true
-			results = CountingResultCollector.getInstance().retrieveAllCountingResultsAsArray_noInlining(true);
-		} else {
-			// query all results with recursive=false
-			results = CountingResultCollector.getInstance().retrieveAllCountingResultsAsArray_noInlining(false);
-		}
+		SortedSet<CountingResult> results;
+		results = CountingResultCollector.getInstance().retrieveAllCountingResults();
 		
 		Request req = outputFactory.createRequest();
 		run.getRequests().add(req);
