@@ -1523,7 +1523,6 @@ implements Serializable, Cloneable, IFullCountingResult, Comparable<IFullCountin
 	}
 
 	/** Compares {@link #getMethodInvocationBeginning()}. */
-	@Override
 	public int compareTo(IFullCountingResult o) {
 		return new Long(methodInvocationBeginning).compareTo(o.getMethodInvocationBeginning());
 	}
