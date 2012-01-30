@@ -215,7 +215,7 @@ public class CountingResultIndexing {
 		// skip all result of methods executed before callerStartTime
 		Iterator<Long> iter = keysCopy.iterator();
 		candidateStartTime = iter.next();
-		CountingResult totalCountingResult = this.retrieveCountingResultByMethodStartTime(callerStartTime);
+		CountingResult totalCountingResult = this.retrieveCountingResultByMethodStartTime(callerStartTime).clone();
 		this.log.fine("Counting result before Type2 addition: "+totalCountingResult);
 
 		while(candidateStartTime<callerStartTime){//ECHT kleiner!
@@ -223,14 +223,14 @@ public class CountingResultIndexing {
 			candidateStartTime=iter.next();
 		}
 
-		boolean firstIt = true;
+		boolean firstIteration = true;
 		// now add the results of the methods executed before the current
 		// result was reported.
 		do {
-			if(!firstIt) {
+			if(!firstIteration) {
 				candidateStartTime = iter.next();
 			}
-			firstIt = false;
+			firstIteration = false;
 			canditateCAI = this.countingInformationsByBeginning.get(candidateStartTime);
 			candidateReportingTime = canditateCAI.getResultsReceivedByCollectorTime();
 			if(!suppressDebugMessages) this.log.fine("Considering for addition: "+canditateCAI+"");

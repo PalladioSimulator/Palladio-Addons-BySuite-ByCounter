@@ -31,14 +31,10 @@ import de.uka.ipd.sdq.ByCounter.utils.MethodDescriptor;
  */
 public class TestInternalClassDefinition {
 	
-	private static final String TEST_SUITE_CANONCICAL = TestInternalClassDefinition.class.getCanonicalName();
-	private static final String TEST_SUBJECT_CANONICAL = TestSubjectInterfaceMethods.class.getCanonicalName();
-	
-	private static final String INTERNAL_CLASS_CANONICAL = ClassZ.class.getCanonicalName();
 	private static final String SIGNATURE_METHOD = "public void methodA1()";
 	
 	/** This logger is used to log all kinds of messages of this test suite. */
-	private static final Logger LOG = Logger.getLogger(TEST_SUITE_CANONCICAL);
+	private static final Logger LOG = Logger.getLogger(TestInternalClassDefinition.class.getCanonicalName());
 
 
   /**
@@ -102,24 +98,24 @@ public class TestInternalClassDefinition {
 		e.add().add(Opcodes.ALOAD, 4) // 1x ClassZ(), 3x methodA1()
 			   .add(Opcodes.DUP, 1) // 1x methodA1()
 			   .add(Opcodes.GETFIELD, 2) // 2x methodA1()
-			   .add(Opcodes.GETSTATIC, 1) // 1x ClassZ.mexthodX1()
+			   .add(Opcodes.GETSTATIC, 2) // 1x ClassY.mexthodX1(), 1x ClassZ.mexthodX1()
 			   .add(Opcodes.INVOKEINTERFACE, 2) // 2x methodA1()
 			   .add(Opcodes.INVOKESPECIAL, 2) // 1x ClassZ(), 1x methodA1()
-			   .add(Opcodes.INVOKEVIRTUAL, 1) // 1x ClassZ.mexthodX1()
-			   .add(Opcodes.LDC, 1) // 1x ClassZ.mexthodX1()
+			   .add(Opcodes.INVOKEVIRTUAL, 2) // 1x ClassY.mexthodX1(), 1x ClassZ.mexthodX1()
+			   .add(Opcodes.LDC, 2) // 1x ClassZ.mexthodX1(), 1x ClassY.methodX1()
 			   .add(Opcodes.NEW, 1) // 1x methodA1()
 			   .add(Opcodes.PUTFIELD, 1) // 1x mexthodA1()
-			   .add(Opcodes.RETURN, 3) // 1x ClassZ.mexthodX1(), 1x ClassZ(), 1x methodA1()
+			   .add(Opcodes.RETURN, 4) // 1x ClassY.mexthodX1(), 1x ClassZ.mexthodX1(), 1x ClassZ(), 1x methodA1()
 			   .add("de.uka.ipd.sdq.ByCounter.test.helpers.ClassZ.ClassZ()V", 1) // 1x methodA1()
 			   .add("java.lang.Object.Object()V", 1) // 1x ClassZ()
 			   .add(InterfaceX.class.getCanonicalName(), "void methodX1()", 2) // 2x methodA1()
-			   .add(PrintStream.class.getCanonicalName(), "public void println(java.lang.String x)", 1); // 1x ClassZ.methodX1()
+			   .add(PrintStream.class.getCanonicalName(), "public void println(java.lang.String x)", 2); // 1x ClassY.methodX1(), 1x ClassZ.methodX1()
 		
 		//1. Set up a BytecodeCounter instance to use ByCounter, using a parameterless constructor. 
 		BytecodeCounter counter = new BytecodeCounter();
 
 		//2. Specify the method to be instrumented (several methods are supported as well)
-		MethodDescriptor myMethod = new MethodDescriptor(TEST_SUBJECT_CANONICAL, SIGNATURE_METHOD);
+		MethodDescriptor myMethod = new MethodDescriptor(TestSubjectInterfaceMethods.class.getCanonicalName(), SIGNATURE_METHOD);
 		
 		counter.getInstrumentationParams().setInstrumentRecursively(true, 5);
 		
@@ -131,22 +127,22 @@ public class TestInternalClassDefinition {
 
 		// define internal classes
 		Set<String> internalClassesDefinition = new HashSet<String>();
-		internalClassesDefinition.add(TEST_SUBJECT_CANONICAL);
-		internalClassesDefinition.add(INTERNAL_CLASS_CANONICAL);
+		internalClassesDefinition.add(TestSubjectInterfaceMethods.class.getCanonicalName());
+		internalClassesDefinition.add(ClassZ.class.getCanonicalName());
 		counter.getExecutionSettings().setInternalClassesDefinition(internalClassesDefinition);
 		
-		// retrieve results TODO does not work for recursive = true
+		// retrieve results
 		CountingResult[] results = CountingResultCollector.getInstance().retrieveAllCountingResults().toArray(new CountingResult[0]);
 		e.compare(results);
-    
-		SortedSet<CountingResult> resultsList = CountingResultCollector.getInstance().retrieveAllCountingResults();
-		Assert.assertNotNull(resultsList);
-		Assert.assertTrue(resultsList.size() > 1);
-		for(CountingResult newResult: resultsList) {
+		// try retrieving results again and make sure they still match
+		results = CountingResultCollector.getInstance().retrieveAllCountingResults().toArray(new CountingResult[0]);
+		e.compare(results);
+
+		Assert.assertNotNull(results);
+		Assert.assertTrue(results.length >= 1);
+		for(CountingResult newResult: results) {
 			newResult.logResult(false, true);
 		}
-		
-		counter.getInstrumentationParams().setInstrumentRecursively(false, 0);
 	}
 
 }

@@ -1,8 +1,6 @@
 package de.uka.ipd.sdq.ByCounter.execution;
 
-import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 import java.util.SortedMap;
 import java.util.SortedSet;
 import java.util.TreeMap;
@@ -33,9 +31,9 @@ public class CollectionStrategyDefault extends AbstractCollectionStrategy {
 	
 
 	/**
-	 *	A simple {@link List} that holds the results.
+	 *	A {@link SortedSet} that holds the results.
 	 */
-	private List<CountingResult> countingResults;
+	private SortedSet<CountingResult> countingResults;
 	
 	/** {@link BlockResultCalculation} helper. */
 	private BlockResultCalculation blockCalculation;
@@ -46,7 +44,7 @@ public class CollectionStrategyDefault extends AbstractCollectionStrategy {
 	 */
 	public CollectionStrategyDefault(CountingResultCollector parent) {
 		super(parent);
-		this.countingResults = new ArrayList<CountingResult>();
+		this.countingResults = new TreeSet<CountingResult>();
 		this.blockCalculation = new BlockResultCalculation(parentResultCollector.blockContext);
 	}
 
@@ -248,6 +246,7 @@ public class CollectionStrategyDefault extends AbstractCollectionStrategy {
 	public SortedSet<CountingResult> retrieveAllCountingResults() {
 		SortedSet<CountingResult> ret = new TreeSet<CountingResult>();
 		if(!parentResultCollector.getLastMethodExecutionDetails().executionSettings.getAddUpResultsRecursively()) {
+			// no more calculation is necessary; return results
 			Iterator<CountingResult> iter = this.countingResults.iterator();
 			while(iter.hasNext()){
 				ret.add(iter.next());
@@ -255,12 +254,24 @@ public class CollectionStrategyDefault extends AbstractCollectionStrategy {
 		}else{
 			// calculate the sums for all results
 			long callerStartTime;
-			for(int i = 0; i < this.countingResults.size(); i++) {
-				callerStartTime = this.countingResults.get(i).getMethodInvocationBeginning();
-				CountingResult cr = parentResultCollector.getCountingResultIndexing().retrieveCountingResultByStartTime_evaluateCallingTree(callerStartTime, true);
+			long callerReportTime;
+			long prevCallerReportTime = Long.MIN_VALUE;
+			for(CountingResult cr : this.countingResults) {
+				cr.logResult(false, true);
+			}
+			for(CountingResult cr : this.countingResults) {
+				// countingResults are ordered by callerStartTime!
+				callerStartTime = cr.getMethodInvocationBeginning();
+				callerReportTime = cr.getMethodReportingTime();
+				if(prevCallerReportTime > callerReportTime) {
+					// do not return results that have been added up into a previous result already
+					continue;
+				}
+				CountingResult crSum = parentResultCollector.getCountingResultIndexing().retrieveCountingResultByStartTime_evaluateCallingTree(callerStartTime, true);
 				if(parentResultCollector.getLastMethodExecutionDetails().executionSettings.isInternalClass(
-						cr.getQualifyingMethodName())) {
-					ret.add(cr);
+						crSum.getQualifyingMethodName())) {
+					ret.add(crSum);
+					prevCallerReportTime = callerReportTime;
 				}
 			}
 		}

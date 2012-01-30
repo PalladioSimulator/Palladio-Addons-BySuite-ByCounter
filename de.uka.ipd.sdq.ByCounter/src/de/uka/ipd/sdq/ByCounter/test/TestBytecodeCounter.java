@@ -300,12 +300,10 @@ public class TestBytecodeCounter {
 
 		SortedSet<CountingResult> countingResults = CountingResultCollector.getInstance().retrieveAllCountingResults();
 		Assert.assertNotNull(countingResults);
-		Assert.assertTrue(countingResults.size() > 1);
+		Assert.assertTrue(countingResults.size() == 1);
 		for(CountingResult newResult : countingResults) {
 			newResult.logResult(false, true);
 		}
-		
-		counter.getInstrumentationParams().setInstrumentRecursively(false, 0);
 	}
 
 	/**
@@ -332,8 +330,6 @@ public class TestBytecodeCounter {
 		for(CountingResult newResult: countingResults) {
 			newResult.logResult(false, true);
 		}
-		
-		counter.getInstrumentationParams().setInstrumentRecursively(false, 0);
 	}
 	
 	
@@ -451,7 +447,7 @@ public class TestBytecodeCounter {
 		SortedSet<CountingResult> allCountingResultsRecursively = CountingResultCollector.getInstance().retrieveAllCountingResults();
 		Assert.assertNotNull(allCountingResultsRecursively);
 		allCountingResultsRecursively.first().logResult(false, false);
-		Assert.assertTrue("More counting results are expected.", allCountingResultsRecursively.size() > 1);
+		Assert.assertTrue("One counting result is expected.", allCountingResultsRecursively.size() == 1);
 		for(CountingResult newResult: allCountingResultsRecursively) {
 			newResult.logResult(false, true);
 		}

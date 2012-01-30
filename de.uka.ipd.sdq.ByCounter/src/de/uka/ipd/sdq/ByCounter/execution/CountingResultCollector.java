@@ -197,7 +197,7 @@ public final class CountingResultCollector {
 	 * call <code>clearResults()</code> if that is your intention.
 	 * @return A <code>Result</code> list.
 	 */
-	public synchronized SortedSet<CountingResult> retrieveAllCountingResults() {//TODO the returned result should be a sorted set
+	public synchronized SortedSet<CountingResult> retrieveAllCountingResults() {
 		SortedSet<CountingResult> ret = new TreeSet<CountingResult>();
 
 		// add the results of all strategies
