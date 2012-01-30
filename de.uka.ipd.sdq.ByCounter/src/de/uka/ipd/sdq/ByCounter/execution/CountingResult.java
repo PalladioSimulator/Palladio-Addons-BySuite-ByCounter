@@ -677,26 +677,45 @@ implements Serializable, Cloneable, IFullCountingResult, Comparable<IFullCountin
 	 * @see java.lang.Object#clone()
 	 */
 	@Override
-	@SuppressWarnings("unchecked")
-	public Object clone(){ //TODO fix/test/coverage-test this!
-//		SortedMap<String,Long> clonedMap = 
-		return new CountingResult(
-				UUID.fromString(this.getRequestID().toString()),
-				UUID.fromString(this.getOwnID().toString()),
-				UUID.fromString(this.getCallerID().toString()),
-				new String(this.ID),
-				new String(this.qualifyingMethodName),
+	public CountingResult clone(){ //TODO fix/test/coverage-test this!
+		CountingResult copy = null;
+
+		try {
+			copy = (CountingResult) super.clone();
+		} catch (CloneNotSupportedException e) {
+			// object.clone() cannot fail
+			return null;
+		}
+		long[] copyOfArrayCreationCounts = null;
+		int[] copyOfArrayCreationDimensions = null;
+		String[] copyOfArrayCreationTypeInfo = null;
+		
+		if(this.arrayCreationCounts != null
+				&& this.arrayCreationDimensions != null
+				&& this.arrayCreationTypeInfo != null) {
+			copyOfArrayCreationCounts = Arrays.copyOf(this.arrayCreationCounts, this.arrayCreationCounts.length);
+			copyOfArrayCreationDimensions = Arrays.copyOf(this.arrayCreationDimensions, this.arrayCreationDimensions.length);
+			copyOfArrayCreationTypeInfo = Arrays.copyOf(this.arrayCreationTypeInfo, this.arrayCreationTypeInfo.length);
+		}
+		
+		copy = new CountingResult(
+				this.getRequestID(),
+				this.getOwnID(),
+				this.getCallerID(),
+				this.ID,
+				this.qualifyingMethodName,
 				this.SPECjvm2008_compress_fileType,
 				this.inputCharacterisation,
 				this.outputCharacterisation,
 				this.methodInvocationBeginning,
 				this.methodReportingTime,
 				Arrays.copyOf(this.opcodeCounts, this.opcodeCounts.length),
-				(TreeMap<String,Long>) ((TreeMap<String,Long>) this.methodCallCounts).clone(),
-				null, //this.arrayCreationCounts.clone(),
-				null, //this.arrayCreationDimensions.clone(),
-				null //this.arrayCreationTypeInfo.clone()
+				new TreeMap<String,Long>(this.methodCallCounts),
+				copyOfArrayCreationCounts,
+				copyOfArrayCreationDimensions,
+				copyOfArrayCreationTypeInfo
 				);
+		return copy;
 	}
 
 	/**
