@@ -13,10 +13,6 @@ public final class ProxyLogger implements InvocationHandler {
 		this.obj = obj;
 	}
 
-	/** Class version */
-	private static final long serialVersionUID = 1L;
-
-
     public static Object newInstance(Object obj) {
 		return Proxy.newProxyInstance(
 		    obj.getClass().getClassLoader(),

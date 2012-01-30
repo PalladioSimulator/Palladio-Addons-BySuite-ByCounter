@@ -119,7 +119,6 @@ public class CountingResultPersistance {
 					boolean useTimestampParameter,
 					Long timestampToUse
 					) {
-		long fileSize = -1;
 		if(cr==null){
 			log.severe("Null counting result passed - skipping seralization");
 			return null;
@@ -189,7 +188,6 @@ public class CountingResultPersistance {
 			fos = new FileOutputStream(file);
 			ObjectOutputStream oos = new ObjectOutputStream(fos);
 			oos.writeObject(cr);
-			fileSize = file.length();
 		}catch (Exception e) {
 			e.printStackTrace();
 		}finally{

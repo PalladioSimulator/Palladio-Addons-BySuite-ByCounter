@@ -248,10 +248,6 @@ public class CountingResultCSVWriter implements ICountingResultWriter {
 			return -1/*null*/;
 		}
 		this.log.info("qualifyingMethodName: " + qualifyingMethodName);
-		if(opcodeCounts == null) {
-			this.log.severe("Opcode counts hashmap is null... EXITING");
-			return -1/*null*/;
-		}
 		if(methodCallCounts == null) {
 			this.log.severe("Method counts hashmap is null... EXITING");
 			return -1/*null*/;

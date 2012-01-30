@@ -10,7 +10,7 @@ import de.uka.ipd.sdq.ByCounter.execution.CountingResultCollector;
  * {@link CountingResultCollector#registerWriter(ICountingResultWriter)}. All
  * result writers registered in this way
  * will then be used for calls to 
- * {@link CountingResultCollector#logResult(CountingResult, boolean, boolean)}.
+ * {@link CountingResult#logResult(boolean, boolean)}.
  * @author Martin Krogmann
  * @author Michael Kuperberg
  * @since 0.1

@@ -17,9 +17,9 @@ public final class TracingCharacterisationHook implements ICharacterisationHook 
 	Logger log = Logger.getLogger(this.getClass().getCanonicalName());
 
 	public void methodCallHook(
-			@SuppressWarnings("unused") MethodCountMethodAdapter methodCountMethodAdapter,
-			@SuppressWarnings("unused") InstrumentationParameters instrumentationParameters, 
-			@SuppressWarnings("unused") int opcode,
+			MethodCountMethodAdapter methodCountMethodAdapter,
+			InstrumentationParameters instrumentationParameters, 
+			int opcode,
 			String owner, 
 			String name, 
 			String desc) {
@@ -28,15 +28,15 @@ public final class TracingCharacterisationHook implements ICharacterisationHook 
 	}
 
 	public void methodReturnHook(
-			@SuppressWarnings("unused") MethodCountMethodAdapter methodCountMethodAdapter, 
-			@SuppressWarnings("unused") InstrumentationParameters instrumentationParameters) {
+			MethodCountMethodAdapter methodCountMethodAdapter, 
+			InstrumentationParameters instrumentationParameters) {
 		this.log.info("[TracingCharacterisationHook] Method return");
 	}
 
 	public void methodStartHook(
-			@SuppressWarnings("unused") MethodCountMethodAdapter methodCountMethodAdapter,
-			@SuppressWarnings("unused") InstrumentationParameters instrumentationParameters, 
-			@SuppressWarnings("unused") int access,
+			MethodCountMethodAdapter methodCountMethodAdapter,
+			InstrumentationParameters instrumentationParameters, 
+			int access,
 			String name, 
 			String desc, 
 			String signature,
