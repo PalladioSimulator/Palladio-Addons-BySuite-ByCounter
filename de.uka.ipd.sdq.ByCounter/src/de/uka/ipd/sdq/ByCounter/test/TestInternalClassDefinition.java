@@ -4,7 +4,6 @@ import java.io.PrintStream;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.SortedSet;
 import java.util.logging.Logger;
 
 import org.junit.After;

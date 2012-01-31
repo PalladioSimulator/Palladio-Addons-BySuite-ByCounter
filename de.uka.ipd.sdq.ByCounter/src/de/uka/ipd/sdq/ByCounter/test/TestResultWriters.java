@@ -43,6 +43,8 @@ public class TestResultWriters {
 	private static final String testChartName = "testMyChart";
 
 	private static final String testChartsDirectory = "testCharts";
+	
+	private static final String TEST_CSV_DIRECTORY = "outputCsv";
 
 	private static String testClassName = TestSubject.class.getCanonicalName();
 
@@ -151,6 +153,10 @@ public class TestResultWriters {
 	 */
 	@Test
 	public void testCSVReading() {
+		File csvDirectory = new File(TEST_CSV_DIRECTORY);
+		if(!csvDirectory.exists()) {
+			csvDirectory.mkdir();
+		}
 
 		// create a BytecodeCounter
 		BytecodeCounter counter = new BytecodeCounter();
@@ -167,7 +173,7 @@ public class TestResultWriters {
 				true, 	// performIntegrityCheckOnInvokeOpcodes
 				"Test."+resultFileNameSpecifier, // CSV file name "core"
 				"csv", 	// CSV file name "suffix" (file extension)
-				".", 	// path to CSV file
+				TEST_CSV_DIRECTORY, 	// path to CSV file
 				true, 	// write booleans as integers
 				true, 	// write opcodes as integers (not as String pseudonames)
 				true, 	// write unused opcodes, too (i.e. those with count 0)
@@ -224,7 +230,10 @@ public class TestResultWriters {
 	 */
 	@Test
 	public void testCSVWriter() {
-
+		File csvDirectory = new File(TEST_CSV_DIRECTORY);
+		if(!csvDirectory.exists()) {
+			csvDirectory.mkdir();
+		}
 
 		// create a BytecodeCounter
 		BytecodeCounter counter = new BytecodeCounter();
@@ -241,7 +250,7 @@ public class TestResultWriters {
 				true, 	// performIntegrityCheckOnInvokeOpcodes
 				"Test."+resultFileNameSpecifier, // CSV file name "core"
 				"csv", 	// CSV file name "suffix" (file extension)
-				".", 	// path to CSV file
+				TEST_CSV_DIRECTORY, 	// path to CSV file
 				true, 	// write booleans as integers
 				true, 	// write opcodes as integers (not as String pseudonames)
 				true, 	// write unused opcodes, too (i.e. those with count 0)

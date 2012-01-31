@@ -186,23 +186,29 @@ public class CountingResultIndexing {
 
 	}
 
-	/**TODO
-	 * Gets a {@link CountingResult} that is the accumulation of all
+	/**
+	 * Gets a {@link CountingResult} that is the accumulation of all reported 
+	 * results of the calling tree specified by the callerStartTime. A method
+	 * that reported a result at callerStartTime is the root node of the calling 
+	 * tree. All methods invoked from that method, and also reported results, 
+	 * are accumulated for the returned result.
 	 *
-	 * @param callerStartTime
-	 * @param suppressDebugMessages
+	 * @param callerStartTime Start time of the method invocation for the method 
+	 * that is the root node of the calling tree.
+	 * @param suppressDebugMessages Debug messages require additional 
+	 * computations. When true, these calculations will be stopped.
 	 * @return The calculated {@link CountingResult}.
 	 */
 	public synchronized CountingResult retrieveCountingResultByStartTime_evaluateCallingTree(
-			Long callerStartTime,
+			long callerStartTime,
 			boolean suppressDebugMessages){
 		this.log.info("Evaluating calling tree for method start time "+callerStartTime);
 		CountingResult candidateCountingResult;		// The currently considered counting result
 		CountingArtefactInformation canditateCAI;	// corresponding CAI
-		Long candidateStartTime;					// the start time of the considered result
-		Long candidateReportingTime;				// the reporting time of the considered result
+		long candidateStartTime;					// the start time of the considered result
+		long candidateReportingTime;				// the reporting time of the considered result
 
-		Long callerReportingTime
+		long callerReportingTime
 			= this.countingInformationsByBeginning
 				.get(callerStartTime)
 					.getResultsReceivedByCollectorTime();
@@ -241,7 +247,7 @@ public class CountingResultIndexing {
 			}
 			// candidate results were reported before the caller was
 			// assume that the caller has called the candidate and add it
-			if(candidateReportingTime.longValue()<callerReportingTime.longValue()){
+			if(candidateReportingTime < callerReportingTime) {
 				if(!suppressDebugMessages){
 					this.log.fine("Adding callee counts of time "+candidateStartTime+
 						" because its start >"+callerStartTime+
@@ -253,24 +259,20 @@ public class CountingResultIndexing {
 				if(!suppressDebugMessages) this.log.fine("Added counting result: "+candidateCountingResult);
 				totalCountingResult.add(candidateCountingResult);
 				if(!suppressDebugMessages) this.log.fine("Intermediate total counting result: "+totalCountingResult);
-			}else if(candidateReportingTime.longValue()>callerReportingTime.longValue()){
+			} else if(candidateReportingTime > callerReportingTime) {
 				if(!suppressDebugMessages) this.log.fine("Skipping callee counts of time "+candidateStartTime+
 						" because, while its start time >"+callerStartTime+
 						", its reporting time " +
 						"("+canditateCAI.getResultsReceivedByCollectorTime()+")> " +
 						"caller reporting time ("+callerReportingTime+").");
-			}else if(candidateReportingTime.longValue()==callerReportingTime.longValue()){
-				if(candidateStartTime.longValue()==callerStartTime.longValue()){
+			} else if(candidateReportingTime == callerReportingTime) {
+				if(candidateStartTime == callerStartTime){
 					if(!suppressDebugMessages) this.log.fine("Potential callee is the caller herself -> skipping");
-				}else{
+				} else{
 					if(!suppressDebugMessages) this.log.fine("A real callee that ends at the same instant " +
 							"that the caller --> SKIPPING");
 				}
-			}else{
-				this.log.severe("This should not happen :-)");//TODO document better...
 			}
-			//do something with the total counting result
-//			candidateStartTime = iter.next();
 		} while (candidateStartTime<callerReportingTime && iter.hasNext());
 		if(!suppressDebugMessages) this.log.fine("Finished the active part");
 

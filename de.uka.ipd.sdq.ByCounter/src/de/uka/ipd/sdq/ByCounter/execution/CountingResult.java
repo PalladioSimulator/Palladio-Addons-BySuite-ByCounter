@@ -62,7 +62,6 @@ implements Serializable, Cloneable, IFullCountingResult, Comparable<IFullCountin
 	 */
 	@SuppressWarnings("dep-ann")
 	public synchronized static CountingResult add(CountingResult left, CountingResult right){
-		//TODO replace cloning
 		long[] resultOpcodeCounts = new long[MAX_OPCODE];
 		SortedMap<String,Long>  resultMethodCallCounts = new TreeMap<String, Long>();
 
@@ -73,8 +72,7 @@ implements Serializable, Cloneable, IFullCountingResult, Comparable<IFullCountin
 		// add up all array creation parameters
 		ArrayParameters leftAP = ArrayParameters.copyFromCountingResult(left);
 		ArrayParameters rightAP = ArrayParameters.copyFromCountingResult(right);
-		ArrayParameters arrayParameters = addArrayParameters(leftAP, rightAP);
-		
+		ArrayParameters arrayParameters = ArrayParameters.add(leftAP, rightAP);
 
 		CountingResult cr;
 		cr = new CountingResult(
@@ -95,73 +93,6 @@ implements Serializable, Cloneable, IFullCountingResult, Comparable<IFullCountin
 				arrayParameters.newArrayTypes);
 
 		return cr;
-	}
-	
-	private static ArrayParameters addArrayParameters(
-			ArrayParameters left,
-			ArrayParameters right
-			) {
-		
-		ArrayParameters result = new ArrayParameters();
-		
-		if(left.newArrayCounts == null || right.newArrayCounts == null) {
-			// nothing to add
-			return result;
-		}
-		
-		ArrayList<Long> resultNewArrayCounts = new ArrayList<Long>();
-		ArrayList<Integer> resultNewArrayDim = new ArrayList<Integer>();
-		ArrayList<String> resultNewArrayType = new ArrayList<String>();
-		// copy array counts from 'left':
-		for(int i = 0; i < left.newArrayCounts.length; i++) {
-			resultNewArrayCounts .add(left.newArrayCounts[i]);
-			resultNewArrayDim.add(left.newArrayDim[i]);
-			resultNewArrayType.add(left.newArrayTypes[i]);
-		}
-
-		int rightDim;
-		String rightType;
-		long rightCount;
-		int resultDim;
-		String resultType;
-		boolean currentCountDone;
-		// now merge in the array counts from 'right'
-		for(int i = 0; i < right.newArrayCounts.length; i++) {
-			rightDim = right.newArrayDim[i];
-			rightType = right.newArrayTypes[i];
-			rightCount = right.newArrayCounts[i];
-			currentCountDone = false;
-			// is this entry in the list already?
-			for(int j = 0; j < resultNewArrayCounts.size() && !currentCountDone; j++) {
-				resultDim = resultNewArrayDim.get(j);
-				resultType = resultNewArrayType.get(j);
-				if(rightDim == resultDim
-						&& rightType.equals(resultType)) {
-					// add the count value
-					resultNewArrayCounts.set(j,
-							resultNewArrayCounts.get(j) + rightCount);
-					currentCountDone = true;
-				}
-			}
-			if(!currentCountDone) {
-				// we have a new type/dimension; add it to the result
-				resultNewArrayCounts.add(rightCount);
-				resultNewArrayDim.add(rightDim);
-				resultNewArrayType.add(rightType);
-			}
-		}
-		// create arrays from the arraylists
-		final int numOfNewArray = resultNewArrayCounts.size();
-		result.newArrayCounts = new long[numOfNewArray];
-		result.newArrayDim = new int[numOfNewArray];
-		result.newArrayTypes = resultNewArrayType.toArray(new String[numOfNewArray]);
-		for(int i = 0; i < numOfNewArray; i++) {
-			result.newArrayCounts[i] = resultNewArrayCounts.get(i);
-			result.newArrayDim[i] = resultNewArrayDim.get(i);
-			result.newArrayTypes[i] = resultNewArrayType.get(i);
-		}
-		
-		return result;
 	}
 
 	/**
@@ -230,9 +161,8 @@ implements Serializable, Cloneable, IFullCountingResult, Comparable<IFullCountin
 	 * @return an instance of {@link CountingResult} where only counts are initialised
 	 */
 	@SuppressWarnings("dep-ann")
-	public synchronized static CountingResult add_methodsAndInstructionsOnly(
+	public synchronized static CountingResult addMethodsAndInstructionsOnly(
 			CountingResult left, CountingResult right){
-		//TODO replace cloning
 		long[] resultOpcodeCounts = new long[MAX_OPCODE];
 		SortedMap<String,Long>  resultMethodCallCounts = new TreeMap<String, Long>();
 
@@ -454,15 +384,9 @@ implements Serializable, Cloneable, IFullCountingResult, Comparable<IFullCountin
 
 	/**
 	 * This Map contains counts of method invocations, where the key is the
-	 * method signature
+	 * method signature, the value is the invocation count.
 	 */
 	private SortedMap<String, Long> methodCallCounts = null;
-
-	/**
-	 * This Map says whether the counts of the methods have been computed and
-	 * integrated into this CountingResults's method and instruction counts TODO
-	 */
-	private SortedMap<String, Boolean> methodCountsExpansionStatus = null;
 
 	/**
 	 * The timestamp which marks the beginning of execution (i.e. run)
@@ -644,7 +568,7 @@ implements Serializable, Cloneable, IFullCountingResult, Comparable<IFullCountin
 	 */
 	@SuppressWarnings("dep-ann")
 	public synchronized void add_methodsInstructionsOnly(CountingResult toBeAdded){
-		CountingResult skeletonResult = add_methodsAndInstructionsOnly(this,toBeAdded);
+		CountingResult skeletonResult = addMethodsAndInstructionsOnly(this,toBeAdded);
 		this.methodCallCounts = skeletonResult.getMethodCallCounts();
 		this.opcodeCounts = skeletonResult.getOpcodeCounts();
 		skeletonResult = null;
@@ -1293,10 +1217,6 @@ implements Serializable, Cloneable, IFullCountingResult, Comparable<IFullCountin
 
 	public long getForcedInlining_earliestStartOfInlinedMethod() {
 		return this.forcedInlining_earliestStartOfInlinedMethod;
-	}
-
-	public SortedMap<String, Boolean> getMethodCountsExpansionStatus() {
-		return this.methodCountsExpansionStatus;
 	}
 
 	public boolean isTotalCountsAlreadyComputed() {

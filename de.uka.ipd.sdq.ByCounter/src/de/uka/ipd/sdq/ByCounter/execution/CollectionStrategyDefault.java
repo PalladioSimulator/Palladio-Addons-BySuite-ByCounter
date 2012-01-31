@@ -48,6 +48,7 @@ public class CollectionStrategyDefault extends AbstractCollectionStrategy {
 		this.blockCalculation = new BlockResultCalculation(parentResultCollector.blockContext);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void clearResults() {
 		this.log.fine("Used to have "+this.countingResults.size()+" results before clearing");
@@ -57,9 +58,9 @@ public class CollectionStrategyDefault extends AbstractCollectionStrategy {
 	
 	/**
 	 * Decode the information saved for array parameters.
-	 * @param newArrayCounts
-	 * @param newArrayDescr
-	 * @param newArrayTypeOrDim
+	 * @param newArrayCounts Array initialisation counts reported from ByCounter
+	 * @param newArrayDescr Array descriptors reported from ByCounter
+	 * @param newArrayTypeOrDim Array types/dimensions reported from ByCounter
 	 */
 	public static synchronized NewArrayTypeAndDimension analyzeArrayParams(long[] newArrayCounts, String[] newArrayDescr,
 			int[] newArrayTypeOrDim) {
@@ -119,9 +120,14 @@ public class CollectionStrategyDefault extends AbstractCollectionStrategy {
 	@Override
 	public boolean protocolCount(ProtocolCountStructure result,
 			long reportingStart) {
-		//TODO assert equal length of newarray inputs
+		if(result.newArrayCounts != null) {
+			// assert equal length of newarray inputs
+			if(result.newArrayCounts.length != result.newArrayDescr.length
+					|| result.newArrayDescr.length != result.newArrayTypeOrDim.length) {
+				throw new IllegalArgumentException("Reported new array count structures must match in length.");
+			}
+		}
 		
-		long[] filteredCounts = new long[CountingResult.MAX_OPCODE];
 		SortedMap<String, Long> methodCounts = new TreeMap<String, Long>();
 		int numResults = 1;	// the number of results created from the values
 		
@@ -136,7 +142,7 @@ public class CollectionStrategyDefault extends AbstractCollectionStrategy {
 						blockCalculation.calculateCountsFromBBCounts(
 						result.qualifyingMethodName, 
 						result.opcodeCounts,
-						filteredCounts,
+						new long[CountingResult.MAX_OPCODE], // opcode counts
 						methodCounts)
 				};
 			}
@@ -149,29 +155,24 @@ public class CollectionStrategyDefault extends AbstractCollectionStrategy {
 				ccounts = blockCalculation.calculateCountsFromRBCounts(
 						result.qualifyingMethodName, 
 						result.opcodeCounts,
-						filteredCounts,
+						new long[CountingResult.MAX_OPCODE], // opcode counts
 						methodCounts);
 				numResults = ccounts.length;
 			}
 		} else {
-			//TODO check proper length
-			// remove all 0 counts
-			for(int opcode = 0; opcode < result.opcodeCounts.length; opcode++) {
-				if(result.opcodeCounts[opcode] != 0) {
-					filteredCounts[opcode] = result.opcodeCounts[opcode];//TODO why filtering???
-				}
+			// check proper length
+			if(result.methodCallCounts.length != result.calledMethods.length) {
+				throw new IllegalArgumentException("Reported method call count structures must match in length.");
 			}
-
-			assert result.methodCallCounts.length == result.calledMethods.length;
 			// create a HashMap for the method signatures and their counts
 			for(int i = 0; i < result.methodCallCounts.length; i++) {
 				methodCounts.put(result.calledMethods[i], result.methodCallCounts[i]);//TODO too much effort...
 			}
 			ccounts = new CalculatedCounts[1];//again, too many conversions...
 			ccounts[0] = new CalculatedCounts();
-			ccounts[0].opcodeCounts = filteredCounts;
+			ccounts[0].opcodeCounts = result.opcodeCounts;
 			ccounts[0].methodCounts = methodCounts;
-//			numResults = ccounts.length;//not needed, because already set to 1 above
+			// numResults is already set to 1 above
 		}
 
 		for(int i = 0; i < numResults; i++) {
