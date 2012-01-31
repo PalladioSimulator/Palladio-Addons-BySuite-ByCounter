@@ -8,10 +8,16 @@ import de.uka.ipd.sdq.ByCounter.utils.MethodDescriptor;
 /**
  * @author Martin Krogmann
  * @author Michael Kuperberg
+ * @author Florian Schreier
  * @since 0.1
- * @version 1.2
+ * @version 1.3
  */
 public class TestMethodDescriptor {
+	
+	private static final String CLASS_NAME = "de.test.TestSubject";
+
+	private static final String DESCRIPTOR_METHOD = CLASS_NAME + ".getInteger()I";
+	private static final String DESCRIPTOR_CONSTRUCTOR = CLASS_NAME + ".TestSubject()V";
 
 	/**
 	 * Test MethodDescriptor construction from a Java signature.
@@ -138,5 +144,36 @@ public class TestMethodDescriptor {
 			exceptionCaught = true;
 		}
 		Assert.assertTrue("MethodDescriptor did not throw expected exception", exceptionCaught);
+	}
+	
+	@Test
+	public void testMethodSignatureParser() {
+		MethodDescriptor md;
+		
+		md = new MethodDescriptor(CLASS_NAME, "public static int getInteger()");
+		Assert.assertEquals(DESCRIPTOR_METHOD, md.getCanonicalMethodName());
+		
+		md = new MethodDescriptor(CLASS_NAME, "static int getInteger()");
+		Assert.assertEquals(DESCRIPTOR_METHOD, md.getCanonicalMethodName());
+		
+		md = new MethodDescriptor(CLASS_NAME, "public int getInteger()");
+		Assert.assertEquals(DESCRIPTOR_METHOD, md.getCanonicalMethodName());
+		
+		md = new MethodDescriptor(CLASS_NAME, "int getInteger()");
+		Assert.assertEquals(DESCRIPTOR_METHOD, md.getCanonicalMethodName());
+		
+		md = new MethodDescriptor(CLASS_NAME, "protected static int getInteger()");
+		Assert.assertEquals(DESCRIPTOR_METHOD, md.getCanonicalMethodName());
+	}
+	
+	@Test
+	public void testConstructorSignatureParser() {
+		MethodDescriptor md;
+		
+		md = new MethodDescriptor(CLASS_NAME, "TestSubject()");
+		Assert.assertEquals(DESCRIPTOR_CONSTRUCTOR, md.getCanonicalMethodName());
+		
+		md = new MethodDescriptor(CLASS_NAME, "public TestSubject()");
+		Assert.assertEquals(DESCRIPTOR_CONSTRUCTOR, md.getCanonicalMethodName());
 	}
 }

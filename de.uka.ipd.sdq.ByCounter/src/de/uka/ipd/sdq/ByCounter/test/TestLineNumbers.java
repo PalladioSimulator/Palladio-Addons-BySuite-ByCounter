@@ -279,8 +279,8 @@ public class TestLineNumbers {
                        .add(Opcodes.LDC, 3)
                        .add(Opcodes.NEW, 3)
                        .add(String.class.getCanonicalName(), "public static java.lang.String valueOf(java.lang.Object obj)", 3)
-                       .add("java.lang.StringBuilder.StringBuilder(Ljava/lang/String;)V", 3)
-                       .add("java.lang.StringBuilder.toString()Ljava/lang/String;", 3);
+                       .add(StringBuilder.class.getCanonicalName(), "public StringBuilder(java.lang.String str)", 3)
+                       .add(StringBuilder.class.getCanonicalName(), "public java.lang.String toString()", 3);
         // initialize ByCounter
         BytecodeCounter counter = new BytecodeCounter();
         counter.setInstrumentationParams(this.instrumentationParameters);
