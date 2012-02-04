@@ -95,7 +95,7 @@ public class TestRequestIDs {
 		MethodDescriptor methDesc5 = new MethodDescriptor(this.testClassName, "public static boolean doSthDifferent(short s)");
 		MethodDescriptor methDesc6 = new MethodDescriptor(this.testClassName, "public static byte doSthStatic()");
 		MethodDescriptor methDesc7 = new MethodDescriptor(this.testClassName, "public boolean parameterTest(int i, float f, java.lang.String s)");
-		MethodDescriptor methDesc8 = MethodDescriptor.forConstructor(de.uka.ipd.sdq.ByCounter.test.requestIDs.A.class.getCanonicalName(), "public A(int param)");
+		MethodDescriptor methDesc8 = new MethodDescriptor(de.uka.ipd.sdq.ByCounter.test.requestIDs.A.class.getCanonicalName(), "public A(int param)");
 		
 		counter.setInstrumentationParams(this.instrumentationParameters);
 		counter.getInstrumentationParams().setTraceAndIdentifyRequests(true);

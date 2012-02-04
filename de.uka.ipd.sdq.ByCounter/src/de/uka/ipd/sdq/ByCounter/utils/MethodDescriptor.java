@@ -163,22 +163,6 @@ public final class MethodDescriptor implements Comparable<MethodDescriptor>, Ser
 	}
 
 	/**
-	 * Creates a new MethodDescriptor for the constructor method specified by the signature parameter.
-	 * 
-	 * @see #MethodDescriptor(String, String)
-	 * @param className
-	 *            The canonical name of the class declaring the constructor.
-	 * @param signature
-	 *            The signature of the constructor.
-	 * @return The created MethodDescriptor
-	 */
-	public static MethodDescriptor forConstructor(String className, String signature) {
-		MethodDescriptor d = new MethodDescriptor(className, signature);
-		d.descriptor = d.descriptor + "V"; // Java reflection treats constructors as void returning methods.
-		return d;
-	}
-
-	/**
 	 * @param canonicalClassName
 	 *            Fully qualified class name.
 	 * @return The Java method name of the constructor for a given class name.

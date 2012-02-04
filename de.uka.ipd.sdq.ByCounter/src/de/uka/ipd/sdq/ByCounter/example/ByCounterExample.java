@@ -64,7 +64,7 @@ public class ByCounterExample {
 		// provide construction parameters.
 		// If a default constructor is available or the method you want to 
 		// execute is static, you can skip this step.
-		MethodDescriptor constructor = MethodDescriptor.forConstructor(
+		MethodDescriptor constructor = new MethodDescriptor(
 				ByCounterExample.class.getCanonicalName(), 
 				"public ByCounterExample(int number)");
 		counter.setConstructionParameters(constructor, new Object[]{8});
@@ -111,7 +111,7 @@ public class ByCounterExample {
 		// has no default constructor, we need to provide construction parameters.
 		// If a default constructor is available or the method you want to 
 		// execute is static, you can skip this step.
-		MethodDescriptor constructor = MethodDescriptor.forConstructor(
+		MethodDescriptor constructor = new MethodDescriptor(
 				ByCounterExample.class.getCanonicalName(), 
 				"public ByCounterExample(int number)");
 		counter.setConstructionParameters(constructor, new Object[]{8});

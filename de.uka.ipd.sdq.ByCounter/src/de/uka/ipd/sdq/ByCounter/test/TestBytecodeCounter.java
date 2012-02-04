@@ -72,7 +72,7 @@ public class TestBytecodeCounter {
 	 * @return The parameter collection for calling the test constructor.
 	 * @see #TestASMBytecodes.parameterSetup()
 	 */
-	@SuppressWarnings({ "rawtypes"})
+	@SuppressWarnings("unchecked")
 	@Parameters
 	public static Collection parameterSetup() {
 		return TestASMBytecodes.parameterSetup();
@@ -401,7 +401,7 @@ public class TestBytecodeCounter {
 		// instrument the constructor of the nested class		
 		CountingResult r = Utils.getCountingResultForTest(
 				counter,
-				MethodDescriptor.forConstructor(classNameInnerClassLevel2, 
+				new MethodDescriptor(classNameInnerClassLevel2, 
 						nestedClassMethodSig1),
 				new MethodDescriptor(TestSubject.class.getCanonicalName(), 
 						nestedClassRunMethodSig));
