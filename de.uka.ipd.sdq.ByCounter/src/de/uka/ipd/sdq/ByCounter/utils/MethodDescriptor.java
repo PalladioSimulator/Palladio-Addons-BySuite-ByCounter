@@ -484,26 +484,26 @@ public final class MethodDescriptor implements Comparable<MethodDescriptor>, Ser
 	}
 
 	/**
-	 * Construct a MethodDescriptor from a Java method signature.
+	 * Construct a MethodDescriptor from a Java method signature. It is able to handle both static and non-static method
+	 * and constructors.
 	 * 
 	 * @param canonicalClassName
 	 *            The canonical name of the class declaring the method.
 	 * @param signature
-	 *            A string containing a standard Java method signature with fully qualified types. For example: <br />
-	 *            <code>public static java-lang.String[] canonicalClassNameToPackageAndSimpleName(java-lang.String className)</code>
-	 * <br />
-	 *            Object types need to be specified with the full canonical name. Specifically, only the two tokens
-	 *            before the first '(', as well as everything between '(' and ')' is evaluated. Whitespaces and
-	 *            qualifiers like "public", "static" are ignored. Generic types may be omitted (and are ignored) so that
-	 *            "List" and "List<Integer>" are treated as the same since bytecode signatures ignore generics. For
-	 *            method parameters, only one or two tokens are allowed (example: "int[]" or "int[] abc"). It is advised
-	 *            to take the method declaration from sourcecode or from documentation and only adapt it, if necessary.
+	 *            A string containing a standard Java method signature with fully qualified types. For example:
+	 *            <code>public static java.lang.String[] canonicalClassNameToPackageAndSimpleName(java.lang.String className)</code>
 	 *            <p>
-	 *            <b>Important: </b> The type names for object types need to be adapted. So instead of giving the String
-	 *            "String myString", this has to be expanded to "java.lang.String". Note that inner/nested classes need
-	 *            to be specified using the '$' symbol as in the following example:
+	 *            Qualifiers defining visibility (like <code>public</code>) may be omitted (and are ignored), while the
+	 *            qualifier <code>static</code> is handled. For method parameters, it is allowed to provide just the
+	 *            type or the type and its name (example: <code>int[]</code> or <code>int[] abc</code>). Generic types
+	 *            may be omitted (and are ignored) so that <code>List</code> and <code>List&lt;Integer&gt;</code> are
+	 *            treated as the same since bytecode signatures ignore generics. It is advised to take the method
+	 *            signature from source code or from documentation and only adapt it, if necessary.
+	 *            <p>
+	 *            <b>Important:</b> The names of object types need to be adapted! So instead of giving the String
+	 *            <code>String myString</code>, this has to be expanded to <code>java.lang.String myString</code>. Note
+	 *            that inner/nested classes need to be specified using the '$' symbol as in the following example:
 	 *            <code>my.packagename.OutClass$InnerClass</code>.
-	 *            </p>
 	 */
 	public MethodDescriptor(String canonicalClassName, String signature) {
 		// do some error checks
@@ -545,19 +545,24 @@ public final class MethodDescriptor implements Comparable<MethodDescriptor>, Ser
 			// the last token should be the method name.
 			simpleMethodName = tokens[tokens.length - 1];
 			// check if method is a constructor
-			if (simpleMethodName.equals(mClassName)) {
+			if (simpleMethodName.equals(getConstructorName(canonicalClassName))) {
+				if (tokens.length > 2) {
+					throw new IllegalArgumentException("Error parsing constructor. Expecting one or two tokens before"
+							+ " '(' for constructors.");
+				}
 				this.isConstructor = true;
-				retType = String.valueOf(TYPE_VOID); // in java byte code constructors have return type void
+				// in java byte code constructors have return type void
+				retType = String.valueOf(TYPE_VOID);
 			} else {
-				// try to parse out the return type
 				if (tokens.length < 2) {
 					throw new IllegalArgumentException("Error parsing return type for Java signature. "
-							+ "Expecting at least two tokens before '(' " + "for non-constructor methods.");
-				} else {
-					// the second last token should be the type.
-					// example: "public static void main"
-					retType = parseType(tokens[tokens.length - 2]);
+							+ "Expecting at least two tokens before '(' for non-constructor methods.");
 				}
+				this.isConstructor = false;
+				// parse the return type (the second last token should be the type)
+				// example: "public static void main"
+				retType = parseType(tokens[tokens.length - 2]);
+
 			}
 			// look for modifiers
 			for (int i = 0; i < tokens.length - 2; i++) {
