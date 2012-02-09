@@ -57,6 +57,13 @@ public class Expectation {
 
 	/** All expected sections without order. Only if <code>ordered == false</code>. */
 	private final Map<Integer, SectionExpectation> unorderedSections;
+	
+	/**
+	 * Creates a new Expectation with ordered sections. Same behavior as Expectation(true).
+	 */
+	public Expectation() {
+		this(true);
+	}
 
 	/**
 	 * Creates a new Expectation.
