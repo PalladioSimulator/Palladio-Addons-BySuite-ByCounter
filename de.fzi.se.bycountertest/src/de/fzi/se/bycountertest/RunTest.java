@@ -4,6 +4,7 @@
 package de.fzi.se.bycountertest;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.SortedSet;
 
@@ -24,12 +25,18 @@ import de.uka.ipd.sdq.ByCounter.utils.OpcodeToMethodMapper;
 /**
  * Demonstrates unexpected behavior of Bytecode Counter.
  * 
- * @author groenda
+ * @author Henning Groenda
+ * @author Florian Schreier
  */
 public class RunTest {
 	
-	private static final String SIGNATURE_METHOD = "void process()";
-
+	/** The basic signature of the method which is instrumented in various test cases. Do not use this directly. */
+	private static final String SIGNATURE_METHOD_BASIC = "%s process(%s)";
+	/** This is the method signature without any parameter and return type void. */
+	private static final String SIGNATURE_METHOD = String.format(SIGNATURE_METHOD_BASIC, "void", "");
+	/** This is the method signature with an int as parameter and return type int. */
+	private static final String SIGNATURE_METHOD_INT = String.format(SIGNATURE_METHOD_BASIC, "int", "int input");
+	
 	/** Bytecode Counter instance used for testing. */
 	BytecodeCounter counter;
 
@@ -106,7 +113,7 @@ public class RunTest {
 	 */
 	@Test
 	public void summationOfClassInternalCallsTransparent() {
-		MethodDescriptor descriptor = new MethodDescriptor(TestSummation.class.getCanonicalName(), "void process()");
+		MethodDescriptor descriptor = new MethodDescriptor(TestSummation.class.getCanonicalName(), SIGNATURE_METHOD);
 		ArrayList<LineNumberRange> lnrs = new ArrayList<LineNumberRange>();
 		lnrs.add(new LineNumberRange(22, 22));
 		Object target = instrumentAndInstantiate(descriptor, lnrs);
@@ -131,7 +138,7 @@ public class RunTest {
 	 */
 	@Test
 	public void summationOfClassInternalCallsTransparentExcludedMethods() {
-		MethodDescriptor descriptor = new MethodDescriptor(TestSummation.class.getCanonicalName(), "void process()");
+		MethodDescriptor descriptor = new MethodDescriptor(TestSummation.class.getCanonicalName(), SIGNATURE_METHOD);
 		ArrayList<LineNumberRange> lnrs = new ArrayList<LineNumberRange>();
 		lnrs.add(new LineNumberRange(22, 22));
 		// TODO: Exclude method from instrumentation. Adapt following method by adding an additional parameter.
@@ -166,7 +173,7 @@ public class RunTest {
 	 */
 	@Test
 	public void summationOfClassExternalCallsTransparent() {
-		MethodDescriptor descriptor = new MethodDescriptor(TestSummation.class.getCanonicalName(), "void process()");
+		MethodDescriptor descriptor = new MethodDescriptor(TestSummation.class.getCanonicalName(), SIGNATURE_METHOD);
 		ArrayList<LineNumberRange> lnrs = new ArrayList<LineNumberRange>();
 		lnrs.add(new LineNumberRange(23, 23));
 		// TODO: Include external class in transparent instrumentation. Adapt following method by adding an additional
@@ -191,7 +198,7 @@ public class RunTest {
 	 */
 	@Test
 	public void summationOfClassExternalCallsTransparentExcludedMethods() {
-		MethodDescriptor descriptor = new MethodDescriptor(TestSummation.class.getCanonicalName(), "void process()");
+		MethodDescriptor descriptor = new MethodDescriptor(TestSummation.class.getCanonicalName(), SIGNATURE_METHOD);
 		ArrayList<LineNumberRange> lnrs = new ArrayList<LineNumberRange>();
 		lnrs.add(new LineNumberRange(23, 23));
 		// TODO: Exclude method from transparent instrumentation. Adapt following method by adding an additional
@@ -227,8 +234,7 @@ public class RunTest {
 	 */
 	@Test
 	public void dependencyResolutionOfClassUnderTest() {
-		MethodDescriptor descriptor = new MethodDescriptor(TestLoopExternalAction.class.getCanonicalName(),
-				"void process()");
+		MethodDescriptor descriptor = new MethodDescriptor(TestLoopExternalAction.class.getCanonicalName(), SIGNATURE_METHOD);
 		ArrayList<LineNumberRange> lnrs = new ArrayList<LineNumberRange>();
 		lnrs.add(new LineNumberRange(28, 30)); // loop
 		lnrs.add(new LineNumberRange(31, 31)); // external call within loop
@@ -247,29 +253,24 @@ public class RunTest {
 	}
 
 	/**
-	 * Tests if instrumentation of a single line work correctly.
+	 * Tests if instrumentation of a single line works correctly.
 	 */
 	@Test
 	public void singleLineInstrumentation() {
-		MethodDescriptor descriptor = new MethodDescriptor(TestExecutionOrder.class.getCanonicalName(),
-				"void process()");
-		ArrayList<LineNumberRange> lnrs = new ArrayList<LineNumberRange>();
-		lnrs.add(new LineNumberRange(17, 17));
-		Object target = instrumentAndInstantiate(descriptor, lnrs);
+		Expectation e = new Expectation();
+		e.add(17, 17).add(Opcodes.ICONST_0, 1)
+					 .add(Opcodes.ISTORE, 1);
+		
+		MethodDescriptor descriptor = new MethodDescriptor(TestExecutionOrder.class.getCanonicalName(), SIGNATURE_METHOD);
+		Object target = instrumentAndInstantiate(descriptor, Arrays.asList(e.getRanges()));
 		counter.execute(descriptor, target, new Object[0]);
-		CountingResult[] results = CountingResultCollector.getInstance().retrieveAllCountingResults().toArray(
-				new CountingResult[0]);
-		assertNotNull("Results must not be null.", results);
-		assertEquals("Number of results for LNRs must be equal.", 1, results.length);
-		assertEquals("Result 0: Invocations of ICONST_0 must be equal.", Long.valueOf(1), results[0]
-				.getOpcodeCount(OpcodeToMethodMapper.ICONST_0));
-		assertEquals("Result 0: Invocations of ISTORE must be equal.", Long.valueOf(1), results[0]
-				.getOpcodeCount(OpcodeToMethodMapper.ISTORE));
-		assertEquals("Overall number of opcode counts must be equal.", 2, sumUpOpcodeInvocations(results));
+		CountingResult[] results = CountingResultCollector.getInstance().retrieveAllCountingResults().toArray(new CountingResult[0]);
+		
+		e.compare(results);
 	}
 
 	/**
-	 * Test if the order of execution during runtime is preserved in the results. This test case is different from
+	 * Tests if the order of execution during runtime is preserved in the results. This test case is different from
 	 * {@link #preserveExecutionOrderOfMeasurements_21()} in the order of the defined line number ranges.
 	 */
 	@Test
@@ -295,7 +296,7 @@ public class RunTest {
 	}
 
 	/**
-	 * Test if the order of execution during runtime is preserved in the results. This test case is different from
+	 * Tests if the order of execution during runtime is preserved in the results. This test case is different from
 	 * {@link #preserveExecutionOrderOfMeasurements_12()} in the order of the defined line number ranges.
 	 */
 	@Test
@@ -462,8 +463,7 @@ public class RunTest {
 	 * @return Counting results after measurement.
 	 */
 	private CountingResult[] runTestBranch(int inputValue) {
-		MethodDescriptor descriptor = new MethodDescriptor(TestBranch.class.getCanonicalName(),
-				"int process(int input)");
+		MethodDescriptor descriptor = new MethodDescriptor(TestBranch.class.getCanonicalName(), SIGNATURE_METHOD_INT);
 		ArrayList<LineNumberRange> lnrs = new ArrayList<LineNumberRange>();
 		lnrs.add(new LineNumberRange(14, 14)); // first branch
 		lnrs.add(new LineNumberRange(17, 17)); // second branch
