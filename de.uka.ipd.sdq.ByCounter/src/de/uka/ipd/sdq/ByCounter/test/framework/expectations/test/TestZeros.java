@@ -15,13 +15,13 @@ import de.uka.ipd.sdq.ByCounter.test.framework.expectations.Expectation;
  * 
  * @author Florian Schreier
  */
-public class TestZeroMethodCount {
+public class TestZeros {
 
 	/**
 	 * This test tests if the expectation framework handles zero counted method calls correctly.
 	 */
 	@Test
-	public void testZeroCountIsError() {
+	public void testZeroMethodCountIsError() {
 		// create expectations
 		Expectation e = new Expectation(false);
 		e.add().add("testMethodTwo", 2L);

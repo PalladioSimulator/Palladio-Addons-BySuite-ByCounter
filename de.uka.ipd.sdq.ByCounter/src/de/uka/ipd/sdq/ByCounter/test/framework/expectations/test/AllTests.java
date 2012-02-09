@@ -10,7 +10,7 @@ import org.junit.runners.Suite.SuiteClasses;
  * @author Florian Schreier
  */
 @RunWith(Suite.class)
-@SuiteClasses( { TestZeroMethodCount.class })
+@SuiteClasses( { TestZeros.class })
 public class AllTests {
 
 }
