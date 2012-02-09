@@ -320,191 +320,38 @@ public class RunTest {
 		e.compare(results);
 	}
 
-	/**
-	 * Helper function to check the TestLoop: Tests the initialization expression of the loop.
-	 * 
-	 * @param results
-	 *            Counting results.
-	 * @param resultsIndex
-	 *            Index position of result within counting results.
-	 * @param expectedIndexLNR
-	 *            Expected LNR for the result.
-	 * @return Expected number of opcode counts.
-	 */
-	private long checkExpectation_Loop_Init(CountingResult[] results, int resultsIndex, int expectedIndexLNR) {
-		long expectedOpcodeInvocations = 2;
-		assertEquals("Result " + resultsIndex + " must be for LNR " + expectedIndexLNR + ".", expectedIndexLNR,
-				results[resultsIndex].getIndexOfRangeBlock());
-		assertEquals("Result " + resultsIndex + ": Invocations of ICONST_0 must be equal.", Long.valueOf(1),
-				results[resultsIndex].getOpcodeCount(OpcodeToMethodMapper.ICONST_0));
-		assertEquals("Result " + resultsIndex + ": Invocations of ISTORE must be equal.", Long.valueOf(1),
-				results[resultsIndex].getOpcodeCount(OpcodeToMethodMapper.ISTORE));
-		assertTrue("Result " + resultsIndex + ": Overall number of opcode counts must be bigger or equal "
-				+ expectedOpcodeInvocations + ".",
-				expectedOpcodeInvocations <= sumUpOpcpdeInvocations(results[resultsIndex]));
-		return expectedOpcodeInvocations;
-	}
-
-	/**
-	 * Helper function to check the TestLoop: Tests the abort condition expression of the loop.
-	 * 
-	 * @param results
-	 *            Counting results.
-	 * @param resultsIndex
-	 *            Index position of result within counting results.
-	 * @param expectedIndexLNR
-	 *            Expected LNR for the result.
-	 * @return Expected number of opcode counts.
-	 */
-	private long checkExpectation_Loop_CheckAbortCondition(CountingResult[] results, int resultsIndex,
-			int expectedIndexLNR) {
-		long expectedOpcodeInvocations = 4;
-		assertEquals("Result " + resultsIndex + " must be for LNR " + expectedIndexLNR + ".", expectedIndexLNR,
-				results[resultsIndex].getIndexOfRangeBlock());
-		assertEquals("Result " + resultsIndex + ": Invocations of GOTO must be equal.", Long.valueOf(1),
-				results[resultsIndex].getOpcodeCount(OpcodeToMethodMapper.GOTO));
-		assertEquals("Result " + resultsIndex + ": Invocations of ILOAD must be equal.", Long.valueOf(1),
-				results[resultsIndex].getOpcodeCount(OpcodeToMethodMapper.ILOAD));
-		assertEquals("Result " + resultsIndex + ": Invocations of ICONST_5 must be equal.", Long.valueOf(1),
-				results[resultsIndex].getOpcodeCount(OpcodeToMethodMapper.ICONST_5));
-		assertEquals("Result " + resultsIndex + ": Invocations of IF_CMPLT must be equal.", Long.valueOf(1),
-				results[resultsIndex].getOpcodeCount(OpcodeToMethodMapper.IF_ICMPLT));
-		assertTrue("Result " + resultsIndex + ": Overall number of opcode counts must be bigger or equal "
-				+ expectedOpcodeInvocations + ".",
-				expectedOpcodeInvocations <= sumUpOpcpdeInvocations(results[resultsIndex]));
-		return expectedOpcodeInvocations;
-	}
-
-	/**
-	 * Helper function to check the TestLoop: Tests the body of the example loop.
-	 * 
-	 * @param results
-	 *            Counting results.
-	 * @param resultsIndex
-	 *            Index position of result within counting results.
-	 * @param expectedIndexLNR
-	 *            Expected LNR for the result.
-	 * @return Expected number of opcode counts.
-	 */
-	private long checkExpectation_Loop_Body(CountingResult[] results, int resultsIndex, int expectedIndexLNR) {
-		long expectedOpcodeInvocations = 3;
-		assertEquals("Result " + resultsIndex + " must be for LNR " + expectedIndexLNR + ".", expectedIndexLNR,
-				results[resultsIndex].getIndexOfRangeBlock());
-		assertEquals("Result " + resultsIndex + ": Invocations of ALOAD must be equal.", Long.valueOf(1),
-				results[resultsIndex].getOpcodeCount(OpcodeToMethodMapper.ALOAD));
-		assertEquals("Result " + resultsIndex + ": Invocations of GETFIELD must be equal.", Long.valueOf(1),
-				results[resultsIndex].getOpcodeCount(OpcodeToMethodMapper.GETFIELD));
-		assertEquals("Result " + resultsIndex + ": Invocations of INVOKEINTERFACE must be equal.", Long.valueOf(1),
-				results[resultsIndex].getOpcodeCount(OpcodeToMethodMapper.INVOKEINTERFACE));
-		assertTrue("Result " + resultsIndex + ": Overall number of opcode counts must be bigger or equal "
-				+ expectedOpcodeInvocations + ".",
-				expectedOpcodeInvocations <= sumUpOpcpdeInvocations(results[resultsIndex]));
-		return expectedOpcodeInvocations;
-	}
-
-	/**
-	 * Helper function to check the TestLoop: Tests the increment expression of the loop.
-	 * 
-	 * @param results
-	 *            Counting results.
-	 * @param resultsIndex
-	 *            Index position of result within counting results.
-	 * @param expectedIndexLNR
-	 *            Expected LNR for the result.
-	 * @return Expected number of opcode counts.
-	 */
-	private long checkExpectation_Loop_Increment(CountingResult[] results, int resultsIndex, int expectedIndexLNR) {
-		long expectedOpcodeInvocations = 1;
-		assertEquals("Result " + resultsIndex + " must be for LNR " + expectedIndexLNR + ".", expectedIndexLNR,
-				results[resultsIndex].getIndexOfRangeBlock());
-		assertEquals("Result " + resultsIndex + ": Invocations of IINC must be equal.", Long.valueOf(1),
-				results[resultsIndex].getOpcodeCount(OpcodeToMethodMapper.IINC));
-		assertTrue("Result " + resultsIndex + ": Overall number of opcode counts must be bigger or equal "
-				+ expectedOpcodeInvocations + ".",
-				expectedOpcodeInvocations <= sumUpOpcpdeInvocations(results[resultsIndex]));
-		return expectedOpcodeInvocations;
-	}
-
-	/**
-	 * Checks and asserts that the expected number of opcode invocations was measured.
-	 * 
-	 * @param results
-	 *            Results.
-	 * @param resultsIndex
-	 *            Index of the result to check in the results array.
-	 * @param expectedOpcodeInvocations
-	 *            Expected number of opcodes.
-	 */
-	private void checkExpectationsNumberOpcode(CountingResult[] results, int resultsIndex,
-			long expectedOpcodeInvocations) {
-		assertTrue("Result " + resultsIndex + ": Overall number of opcode counts must be equal.",
-				expectedOpcodeInvocations <= sumUpOpcpdeInvocations(results[resultsIndex]));
-	}
-
 	@Test
 	public void preserveExecutionOrderOfMeasurements_Loop() {
-		MethodDescriptor descriptor = new MethodDescriptor(TestLoopExternalActionNoDependency.class.getCanonicalName(),
-				"void process()");
+		Expectation e = new Expectation();
+		e.add(15, 15).add(Opcodes.GOTO, 1)
+					 .add(Opcodes.ICONST_0, 1)
+					 .add(Opcodes.ICONST_2, 1)
+					 .add(Opcodes.IF_ICMPLT, 1)
+					 .add(Opcodes.ILOAD, 1)
+					 .add(Opcodes.ISTORE, 1);
+		for (int i = 0; i < 5; i++) {
+			e.add(16, 16).add(Opcodes.DUP, 1)
+						 .add(Opcodes.GETSTATIC, 1)
+						 .add(Opcodes.ILOAD, 1)
+						 .add(Opcodes.INVOKESPECIAL, 1)
+						 .add(Opcodes.INVOKEVIRTUAL, 3)
+						 .add(Opcodes.LDC, 1)
+						 .add(Opcodes.NEW, 1);
+			e.add(15, 15).add(Opcodes.IINC, 1)
+						 .add(Opcodes.ICONST_2, 1)
+						 .add(Opcodes.IF_ICMPLT, 1)
+						 .add(Opcodes.ILOAD, 1);
+		}
+		
+		MethodDescriptor descriptor = new MethodDescriptor(TestLoopExternalActionNoDependency.class.getCanonicalName(), SIGNATURE_METHOD);
 		ArrayList<LineNumberRange> lnrs = new ArrayList<LineNumberRange>();
 		lnrs.add(new LineNumberRange(28, 30)); // loop
 		lnrs.add(new LineNumberRange(31, 31)); // body | external call within loop
 		Object target = instrumentAndInstantiate(descriptor, lnrs);
 		counter.execute(descriptor, target, new Object[0]);
-		// show non-null results
-		CountingResult[] results = CountingResultCollector.getInstance().retrieveAllCountingResults().toArray(
-				new CountingResult[0]);
-		assertNotNull("Results must not be null.", results);
-		assertTrue("Number of results must be bigger than 0.", results.length > 0);
-		long noOpcodesBlock = 0;
-		long sumOpcodes = 0;
-		// init
-		noOpcodesBlock = checkExpectation_Loop_Init(results, 0, 0);
-		// loop iteration 1
-		noOpcodesBlock += checkExpectation_Loop_CheckAbortCondition(results, 0, 0);
-		checkExpectationsNumberOpcode(results, 0, noOpcodesBlock);
-		sumOpcodes += noOpcodesBlock;
-		noOpcodesBlock = checkExpectation_Loop_Body(results, 1, 1);
-		checkExpectationsNumberOpcode(results, 1, noOpcodesBlock);
-		sumOpcodes += noOpcodesBlock;
-		noOpcodesBlock = checkExpectation_Loop_Increment(results, 2, 0);
-		// loop iteration 2
-		noOpcodesBlock += checkExpectation_Loop_CheckAbortCondition(results, 2, 0);
-		checkExpectationsNumberOpcode(results, 2, noOpcodesBlock);
-		sumOpcodes += noOpcodesBlock;
-		noOpcodesBlock = checkExpectation_Loop_Body(results, 3, 1);
-		checkExpectationsNumberOpcode(results, 3, noOpcodesBlock);
-		sumOpcodes += noOpcodesBlock;
-		noOpcodesBlock = checkExpectation_Loop_Increment(results, 4, 0);
-		// loop iteration 3
-		noOpcodesBlock += checkExpectation_Loop_CheckAbortCondition(results, 4, 0);
-		checkExpectationsNumberOpcode(results, 4, noOpcodesBlock);
-		sumOpcodes += noOpcodesBlock;
-		noOpcodesBlock = checkExpectation_Loop_Body(results, 5, 1);
-		checkExpectationsNumberOpcode(results, 5, noOpcodesBlock);
-		sumOpcodes += noOpcodesBlock;
-		noOpcodesBlock = checkExpectation_Loop_Increment(results, 6, 0);
-		// loop iteration 4
-		noOpcodesBlock += checkExpectation_Loop_CheckAbortCondition(results, 6, 0);
-		checkExpectationsNumberOpcode(results, 6, noOpcodesBlock);
-		sumOpcodes += noOpcodesBlock;
-		noOpcodesBlock = checkExpectation_Loop_Body(results, 7, 1);
-		checkExpectationsNumberOpcode(results, 7, noOpcodesBlock);
-		sumOpcodes += noOpcodesBlock;
-		noOpcodesBlock = checkExpectation_Loop_Increment(results, 8, 0);
-		// loop iteration 5
-		noOpcodesBlock += checkExpectation_Loop_CheckAbortCondition(results, 8, 0);
-		checkExpectationsNumberOpcode(results, 8, noOpcodesBlock);
-		sumOpcodes += noOpcodesBlock;
-		noOpcodesBlock = checkExpectation_Loop_Body(results, 9, 1);
-		checkExpectationsNumberOpcode(results, 9, noOpcodesBlock);
-		sumOpcodes += noOpcodesBlock;
-		noOpcodesBlock = checkExpectation_Loop_Increment(results, 10, 0);
-		// abort
-		noOpcodesBlock += checkExpectation_Loop_CheckAbortCondition(results, 10, 0);
-		checkExpectationsNumberOpcode(results, 10, noOpcodesBlock);
-		sumOpcodes += noOpcodesBlock;
-		long sumMeasured = sumUpOpcodeInvocations(results);
-		assertEquals("Overall number of opcode counts must be equal.", sumOpcodes, sumMeasured);
+		CountingResult[] results = CountingResultCollector.getInstance().retrieveAllCountingResults().toArray(new CountingResult[0]);
+		
+		e.compare(results);
 	}
 
 	/**
