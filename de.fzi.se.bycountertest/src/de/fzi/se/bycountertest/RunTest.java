@@ -28,6 +28,8 @@ import de.uka.ipd.sdq.ByCounter.utils.OpcodeToMethodMapper;
  */
 public class RunTest {
 	
+	private static final String SIGNATURE_METHOD = "void process()";
+
 	/** Bytecode Counter instance used for testing. */
 	BytecodeCounter counter;
 
@@ -267,43 +269,55 @@ public class RunTest {
 	}
 
 	/**
-	 * Test if the order of execution during runtime is preserved in the results.
+	 * Test if the order of execution during runtime is preserved in the results. This test case is different from
+	 * {@link #preserveExecutionOrderOfMeasurements_21()} in the order of the defined line number ranges.
 	 */
 	@Test
 	public void preserveExecutionOrderOfMeasurements_12() {
-		MethodDescriptor descriptor = new MethodDescriptor(TestExecutionOrder.class.getCanonicalName(),
-				"void process()");
+		Expectation e = new Expectation(true);
+		e.add(0).add(Opcodes.ICONST_0, 1) // first two lines
+				.add(Opcodes.IINC, 1)
+				.add(Opcodes.ISTORE, 1);
+		e.add(1).add(Opcodes.ICONST_1, 1) // third line
+				.add(Opcodes.ILOAD, 1)
+				.add(Opcodes.IMUL, 1)
+				.add(Opcodes.ISTORE, 1);
+		
+		MethodDescriptor descriptor = new MethodDescriptor(TestExecutionOrder.class.getCanonicalName(), SIGNATURE_METHOD);
 		ArrayList<LineNumberRange> lnrs = new ArrayList<LineNumberRange>();
 		lnrs.add(new LineNumberRange(17, 18)); // first two lines
 		lnrs.add(new LineNumberRange(19, 19)); // third line
 		Object target = instrumentAndInstantiate(descriptor, lnrs);
 		counter.execute(descriptor, target, new Object[0]);
-		CountingResult[] results = CountingResultCollector.getInstance().retrieveAllCountingResults().toArray(
-				new CountingResult[0]);
-		assertNotNull("Results must not be null.", results);
-		assertEquals("Number of results for LNRs must be equal.", 2, results.length);
-		assertEquals("Result 0 must be for LNR 0.", 0, results[0].getIndexOfRangeBlock());
-		assertEquals("Result 1 must be for LNR 1.", 1, results[1].getIndexOfRangeBlock());
+		CountingResult[] results = CountingResultCollector.getInstance().retrieveAllCountingResults().toArray(new CountingResult[0]);
+		
+		e.compare(results);
 	}
 
 	/**
-	 * Test if the order of execution during runtime is preserved in the results.
+	 * Test if the order of execution during runtime is preserved in the results. This test case is different from
+	 * {@link #preserveExecutionOrderOfMeasurements_12()} in the order of the defined line number ranges.
 	 */
 	@Test
 	public void preserveExecutionOrderOfMeasurements_21() {
-		MethodDescriptor descriptor = new MethodDescriptor(TestExecutionOrder.class.getCanonicalName(),
-				"void process()");
+		Expectation e = new Expectation(true);
+		e.add(1).add(Opcodes.ICONST_0, 1) // first two lines
+				.add(Opcodes.IINC, 1)
+				.add(Opcodes.ISTORE, 1);
+		e.add(0).add(Opcodes.ICONST_1, 1) // third line
+				.add(Opcodes.ILOAD, 1)
+				.add(Opcodes.IMUL, 1)
+				.add(Opcodes.ISTORE, 1);
+		
+		MethodDescriptor descriptor = new MethodDescriptor(TestExecutionOrder.class.getCanonicalName(), SIGNATURE_METHOD);
 		ArrayList<LineNumberRange> lnrs = new ArrayList<LineNumberRange>();
 		lnrs.add(new LineNumberRange(19, 19)); // third line
 		lnrs.add(new LineNumberRange(17, 18)); // first two lines
 		Object target = instrumentAndInstantiate(descriptor, lnrs);
 		counter.execute(descriptor, target, new Object[0]);
-		CountingResult[] results = CountingResultCollector.getInstance().retrieveAllCountingResults().toArray(
-				new CountingResult[0]);
-		assertNotNull("Results must not be null.", results);
-		assertEquals("Number of results for LNRs must be equal.", 2, results.length);
-		assertEquals("Result 0 must be for LNR 1.", 1, results[0].getIndexOfRangeBlock());
-		assertEquals("Result 1 must be for LNR 0.", 0, results[1].getIndexOfRangeBlock());
+		CountingResult[] results = CountingResultCollector.getInstance().retrieveAllCountingResults().toArray(new CountingResult[0]);
+		
+		e.compare(results);
 	}
 
 	/**
@@ -502,7 +516,7 @@ public class RunTest {
 	 *            LineNumberRanges to instrument.
 	 * @return Instantiated and instrumented class.
 	 */
-	private Object instrumentAndInstantiate(MethodDescriptor descriptor, ArrayList<LineNumberRange> lineNumberRanges) {
+	private Object instrumentAndInstantiate(MethodDescriptor descriptor, List<LineNumberRange> lineNumberRanges) {
 		// instrument
 		InstrumentationParameters instrumentationParams = new InstrumentationParameters();
 		instrumentationParams.setInstrumentRecursively(true, 50);
@@ -554,7 +568,7 @@ public class RunTest {
 	public void measureMultipleLNRForOneMethod_NoResults() {
 		Expectation e = new Expectation(true);
 		// expect no sections at all
-		
+
 		CountingResult[] results = runTestBranch(-1);
 		e.compare(results);
 	}
@@ -563,7 +577,7 @@ public class RunTest {
 	public void measureMultipleLNRForOneMethod_ResultsLNR1() {
 		Expectation e = new Expectation(true);
 		e.add(0).add(Opcodes.IINC, 1);
-		
+
 		CountingResult[] results = runTestBranch(1);
 		e.compare(results);
 	}
@@ -611,7 +625,7 @@ public class RunTest {
 		Object[] params = new Object[1];
 		params[0] = new Integer(inputValue);
 		counter.execute(descriptor, target, params);
-		
+
 		return CountingResultCollector.getInstance().retrieveAllCountingResults().toArray(new CountingResult[0]);
 	}
 
