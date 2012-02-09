@@ -394,7 +394,7 @@ public class RunTest {
 		cut.process();
 		// instrument and execute
 		MethodDescriptor descriptor = new MethodDescriptor(
-				TestLoopExternalActionStackOverflow.class.getCanonicalName(), "void process()");
+				TestLoopExternalActionStackOverflow.class.getCanonicalName(), SIGNATURE_METHOD);
 		ArrayList<LineNumberRange> lnrs = new ArrayList<LineNumberRange>();
 		lnrs.add(new LineNumberRange(28, 30)); // loop
 		lnrs.add(new LineNumberRange(31, 31)); // external call within loop
@@ -413,7 +413,7 @@ public class RunTest {
 
 	@Test
 	public void measureMultipleLNRForOneMethod_NoResults() {
-		Expectation e = new Expectation(true);
+		Expectation e = new Expectation();
 		// expect no sections at all
 
 		CountingResult[] results = runTestBranch(-1);
@@ -422,7 +422,7 @@ public class RunTest {
 
 	@Test
 	public void measureMultipleLNRForOneMethod_ResultsLNR1() {
-		Expectation e = new Expectation(true);
+		Expectation e = new Expectation();
 		e.add(0).add(Opcodes.IINC, 1);
 
 		CountingResult[] results = runTestBranch(1);
@@ -431,7 +431,7 @@ public class RunTest {
 
 	@Test
 	public void measureMultipleLNRForOneMethod_ResultsLNR2() {
-		Expectation e = new Expectation(true);
+		Expectation e = new Expectation();
 		e.add(1).add(Opcodes.ICONST_1, 1)
 				.add(Opcodes.ILOAD, 1)
 				.add(Opcodes.ISTORE, 1)
@@ -443,7 +443,7 @@ public class RunTest {
 
 	@Test
 	public void measureMultipleLNRForOneMethod_ResultsLNR12() {
-		Expectation e = new Expectation(true);
+		Expectation e = new Expectation();
 		e.add(0).add(Opcodes.IINC, 1);
 		e.add(1).add(Opcodes.ICONST_1, 1)
 				.add(Opcodes.ILOAD, 1)
@@ -465,8 +465,8 @@ public class RunTest {
 		MethodDescriptor descriptor = new MethodDescriptor(TestBranch.class.getCanonicalName(),
 				"int process(int input)");
 		ArrayList<LineNumberRange> lnrs = new ArrayList<LineNumberRange>();
-		lnrs.add(new LineNumberRange(13, 13)); // first branch
-		lnrs.add(new LineNumberRange(16, 16)); // second branch
+		lnrs.add(new LineNumberRange(14, 14)); // first branch
+		lnrs.add(new LineNumberRange(17, 17)); // second branch
 		Object target = instrumentAndInstantiate(descriptor, lnrs);
 		// execute
 		Object[] params = new Object[1];
