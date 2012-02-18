@@ -1,7 +1,7 @@
 /**
  * 
  */
-package de.fzi.se.bycountertest;
+package de.uka.ipd.sdq.ByCounter.test.helpers;
 
 /**
  * Test for branches (return value)

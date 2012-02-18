@@ -1,5 +1,6 @@
 package de.uka.ipd.sdq.ByCounter.test;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 import junit.framework.Assert;
@@ -16,8 +17,10 @@ import de.uka.ipd.sdq.ByCounter.execution.BytecodeCounter;
 import de.uka.ipd.sdq.ByCounter.execution.CountingResult;
 import de.uka.ipd.sdq.ByCounter.execution.CountingResultCollector;
 import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentationParameters;
+import de.uka.ipd.sdq.ByCounter.parsing.LineNumberRange;
 import de.uka.ipd.sdq.ByCounter.test.TestASMBytecodes;
 import de.uka.ipd.sdq.ByCounter.test.framework.expectations.Expectation;
+import de.uka.ipd.sdq.ByCounter.test.helpers.TestBranch;
 import de.uka.ipd.sdq.ByCounter.test.helpers.TestSubjectLineNumbers;
 import de.uka.ipd.sdq.ByCounter.test.helpers.Utils;
 import de.uka.ipd.sdq.ByCounter.utils.ASMOpcodesMapper;
@@ -353,5 +356,75 @@ public class TestLineNumbers {
         counter.execute(d, new Object[0]);
         CountingResultCollector.getInstance().clearResults();
     }
+
+	@Test
+	public void measureMultipleLNRForOneMethod_NoResults() {
+		Expectation e = new Expectation();
+		// expect no sections at all
+
+		CountingResult[] results = runTestBranch(-1);
+		e.compare(results);
+	}
+
+	@Test
+	public void measureMultipleLNRForOneMethod_ResultsLNR1() {
+		Expectation e = new Expectation();
+		e.add(0).add(Opcodes.IINC, 1);
+
+		CountingResult[] results = runTestBranch(1);
+		e.compare(results);
+	}
+
+	@Test
+	public void measureMultipleLNRForOneMethod_ResultsLNR2() {
+		Expectation e = new Expectation();
+		e.add(1).add(Opcodes.ICONST_1, 1)
+				.add(Opcodes.ILOAD, 1)
+				.add(Opcodes.ISTORE, 1)
+				.add(Opcodes.IMUL, 1);
+		
+		CountingResult[] results = runTestBranch(10);
+		e.compare(results);
+	}
+
+	@Test
+	public void measureMultipleLNRForOneMethod_ResultsLNR12() {
+		Expectation e = new Expectation();
+		e.add(0).add(Opcodes.IINC, 1);
+		e.add(1).add(Opcodes.ICONST_1, 1)
+				.add(Opcodes.ILOAD, 1)
+				.add(Opcodes.ISTORE, 1)
+				.add(Opcodes.IMUL, 1);
+
+		CountingResult[] results = runTestBranch(9);
+		e.compare(results);
+	}
+
+	/**
+	 * Runs the method {@link TestBranch#process(int)} with the given parameter.
+	 * 
+	 * @param inputValue
+	 *            Input parameter.
+	 * @return Counting results after measurement.
+	 */
+	private CountingResult[] runTestBranch(int inputValue) {
+		ArrayList<LineNumberRange> lnrs = new ArrayList<LineNumberRange>();
+		lnrs.add(new LineNumberRange(14, 14)); // first branch
+		lnrs.add(new LineNumberRange(17, 17)); // second branch
+		// initialize ByCounter
+		BytecodeCounter counter = new BytecodeCounter();
+		counter.setInstrumentationParams(this.instrumentationParameters);
+		counter.getInstrumentationParams().setInstrumentRecursively(true, 50);
+		counter.getInstrumentationParams().setUseBasicBlocks(true);
+		MethodDescriptor methodRanged = new MethodDescriptor(TestBranch.class.getCanonicalName(), "public int process(int input)");
+		methodRanged.setCodeAreasToInstrument(lnrs.toArray(new LineNumberRange[0]));
+		counter.instrument(methodRanged);
+		// execute
+		Object[] executionParameters = new Object[1];
+		executionParameters[0] = new Integer(inputValue);
+		counter.execute(methodRanged, executionParameters);
+
+		return CountingResultCollector.getInstance().retrieveAllCountingResults().toArray(new CountingResult[0]);
+	}
 
 }
