@@ -2,8 +2,6 @@ package de.uka.ipd.sdq.ByCounter.test;
 
 import java.lang.reflect.Proxy;
 
-import junit.framework.Assert;
-
 import org.junit.Test;
 
 import de.uka.ipd.sdq.ByCounter.execution.BytecodeCounter;
