@@ -184,8 +184,7 @@ public class RunTest {
 				new CountingResult[0]);
 		assertNotNull("Results must not be null.", results);
 		assertEquals("Number of results must be equal.", 1, results.length);
-		long expectedOpcodes = 0;
-		expectedOpcodes += checkExpectation_Summation_ExternalMethod(results, 0, 0);
+		long expectedOpcodes = checkExpectation_Summation_ExternalMethod(results, 0, 0);
 		long sumMeasured = sumUpOpcodeInvocations(results);
 		assertEquals("Overall number of opcode counts must be equal.", expectedOpcodes, sumMeasured);
 		assertEquals("Overall method invocations must be equal.", Long.valueOf(0), results[0].methodCountSum());
