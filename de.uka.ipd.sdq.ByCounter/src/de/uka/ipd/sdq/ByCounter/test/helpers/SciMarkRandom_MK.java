@@ -62,13 +62,11 @@ public class SciMarkRandom_MK {
 	 * given half-open interval [left,right) with a seed based on the system
 	 * clock.
 	 *
-	 * @param <B>left
-	 *            </B> (double)<BR>
+	 * @param left (double)<BR>
 	 *
 	 * The left endpoint of the half-open interval [left,right).
 	 *
-	 * @param <B>right
-	 *            </B> (double)<BR>
+	 * @param right (double)<BR>
 	 *
 	 * The right endpoint of the half-open interval [left,right).
 	 */
@@ -84,8 +82,7 @@ public class SciMarkRandom_MK {
 	 * Initializes a sequence of uniformly distributed quasi random numbers with
 	 * a given seed.
 	 *
-	 * @param <B>seed
-	 *            </B> (int)<BR>
+	 * @param seed (int)<BR>
 	 *
 	 * The seed of the random number generator. Two sequences with the same seed
 	 * will be identical.
@@ -98,19 +95,16 @@ public class SciMarkRandom_MK {
 	 * Initializes a sequence of uniformly distributed quasi random numbers with
 	 * a given seed on a given half-open interval [left,right).
 	 *
-	 * @param <B>seed
-	 *            </B> (int)<BR>
+	 * @param seed (int)<BR>
 	 *
 	 * The seed of the random number generator. Two sequences with the same seed
 	 * will be identical.
 	 *
-	 * @param <B>left
-	 *            </B> (double)<BR>
+	 * @param left (double)<BR>
 	 *
 	 * The left endpoint of the half-open interval [left,right).
 	 *
-	 * @param <B>right
-	 *            </B> (double)<BR>
+	 * @param right (double)<BR>
 	 *
 	 * The right endpoint of the half-open interval [left,right).
 	 */
