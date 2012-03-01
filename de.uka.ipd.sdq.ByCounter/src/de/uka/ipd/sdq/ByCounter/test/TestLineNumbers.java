@@ -20,7 +20,7 @@ import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentationParameters;
 import de.uka.ipd.sdq.ByCounter.parsing.LineNumberRange;
 import de.uka.ipd.sdq.ByCounter.test.TestASMBytecodes;
 import de.uka.ipd.sdq.ByCounter.test.framework.expectations.Expectation;
-import de.uka.ipd.sdq.ByCounter.test.helpers.TestBranch;
+import de.uka.ipd.sdq.ByCounter.test.helpers.TestSubjectBranch;
 import de.uka.ipd.sdq.ByCounter.test.helpers.TestSubjectLineNumbers;
 import de.uka.ipd.sdq.ByCounter.test.helpers.Utils;
 import de.uka.ipd.sdq.ByCounter.utils.ASMOpcodesMapper;
@@ -401,7 +401,7 @@ public class TestLineNumbers {
 	}
 
 	/**
-	 * Runs the method {@link TestBranch#process(int)} with the given parameter.
+	 * Runs the method {@link TestSubjectBranch#process(int)} with the given parameter.
 	 * 
 	 * @param inputValue
 	 *            Input parameter.
@@ -416,7 +416,7 @@ public class TestLineNumbers {
 		counter.setInstrumentationParams(this.instrumentationParameters);
 		counter.getInstrumentationParams().setInstrumentRecursively(true, 50);
 		counter.getInstrumentationParams().setUseBasicBlocks(true);
-		MethodDescriptor methodRanged = new MethodDescriptor(TestBranch.class.getCanonicalName(), "public int process(int input)");
+		MethodDescriptor methodRanged = new MethodDescriptor(TestSubjectBranch.class.getCanonicalName(), "public int process(int input)");
 		methodRanged.setCodeAreasToInstrument(lnrs.toArray(new LineNumberRange[0]));
 		counter.instrument(methodRanged);
 		// execute

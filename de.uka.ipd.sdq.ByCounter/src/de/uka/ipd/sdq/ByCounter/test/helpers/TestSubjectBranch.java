@@ -8,7 +8,7 @@ package de.uka.ipd.sdq.ByCounter.test.helpers;
  * 
  * @author groenda
  */
-public class TestBranch {
+public class TestSubjectBranch {
 	public int process(int input) {
 		if (input > 0 && input < 10) {
 			input++;
