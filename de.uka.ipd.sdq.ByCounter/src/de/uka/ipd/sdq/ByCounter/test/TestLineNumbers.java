@@ -7,6 +7,7 @@ import junit.framework.Assert;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -22,6 +23,7 @@ import de.uka.ipd.sdq.ByCounter.test.TestASMBytecodes;
 import de.uka.ipd.sdq.ByCounter.test.framework.expectations.Expectation;
 import de.uka.ipd.sdq.ByCounter.test.helpers.TestSubjectBranch;
 import de.uka.ipd.sdq.ByCounter.test.helpers.TestSubjectLineNumbers;
+import de.uka.ipd.sdq.ByCounter.test.helpers.TestSubjectUncommonFormatting;
 import de.uka.ipd.sdq.ByCounter.test.helpers.Utils;
 import de.uka.ipd.sdq.ByCounter.utils.ASMOpcodesMapper;
 import de.uka.ipd.sdq.ByCounter.utils.MethodDescriptor;
@@ -230,20 +232,8 @@ public class TestLineNumbers {
         e.add(54, 54).add(Opcodes.BIPUSH, 1)
                      .add(Opcodes.IF_ICMPLT, 1)
                      .add(Opcodes.ILOAD, 1);
-        // initialize ByCounter
-        BytecodeCounter counter = new BytecodeCounter();
-        counter.setInstrumentationParams(this.instrumentationParameters);
-        counter.getInstrumentationParams().setUseBasicBlocks(true);
-        counter.getInstrumentationParams().setRecordBlockExecutionOrder(true);
-        MethodDescriptor methodRanged = new MethodDescriptor(TEST_SUBJECT_CANONICAL, SIGNATURE_RANGE_BLOCK);
-        methodRanged.setCodeAreasToInstrument(e.getRanges());
-        counter.instrument(methodRanged);
-        // execute with (10)
-        Object[] executionParameters = new Object[] { 10 };
-        counter.execute(methodRanged, executionParameters);
-
-        CountingResult[] results = CountingResultCollector.getInstance().retrieveAllCountingResults().toArray(new CountingResult[0]);
-        Assert.assertTrue("No or not enough results counted", results.length > 1);
+        // run ByCounter
+        CountingResult[] results = this.instrumentAndExecute(e.getRanges());
         for (CountingResult r : results) {
         	r.logResult(false, true);
         }
@@ -324,19 +314,8 @@ public class TestLineNumbers {
                      .add(Opcodes.INVOKESPECIAL, 1)
                      .add(TEST_SUBJECT_CANONICAL + ".extCall1()V", 1);
         e.add(57, 57).add(Opcodes.IINC, 1);
-        // initialize ByCounter
-        BytecodeCounter counter = new BytecodeCounter();
-        counter.setInstrumentationParams(this.instrumentationParameters);
-        counter.getInstrumentationParams().setUseBasicBlocks(true);
-        counter.getInstrumentationParams().setRecordBlockExecutionOrder(true);
-        MethodDescriptor methodRanged = new MethodDescriptor(TEST_SUBJECT_CANONICAL, SIGNATURE_METHOD_CALLS);
-        methodRanged.setCodeAreasToInstrument(e.getRanges());
-        counter.instrument(methodRanged);
-        // execute with (10)
-        Object[] executionParameters = new Object[] { 10 };
-        counter.execute(methodRanged, executionParameters);
-
-        CountingResult[] results = CountingResultCollector.getInstance().retrieveAllCountingResults().toArray(new CountingResult[0]);
+        // run ByCounter
+        CountingResult[] results = this.instrumentAndExecute(e.getRanges());
         for (CountingResult r : results) {
         	r.logResult(false, true);
         }
@@ -355,6 +334,35 @@ public class TestLineNumbers {
         counter.instrument(d);
         counter.execute(d, new Object[0]);
         CountingResultCollector.getInstance().clearResults();
+    }
+
+    @Ignore
+    @Test
+    public void testUncommonFormatting() {
+        // define expectations
+        Expectation e = new Expectation(true);
+        e.add(6, 6);
+        e.add(10, 15);
+        // initialize ByCounter
+        BytecodeCounter counter = new BytecodeCounter();
+        counter.setInstrumentationParams(this.instrumentationParameters);
+        counter.getInstrumentationParams().setUseBasicBlocks(true);
+        counter.getInstrumentationParams().setRecordBlockExecutionOrder(true);
+        MethodDescriptor methodRanged = new MethodDescriptor(TestSubjectUncommonFormatting.class.getCanonicalName(), "public void process()");
+        methodRanged.setCodeAreasToInstrument(e.getRanges());
+        counter.instrument(methodRanged);
+        // execute with (10)
+        Object[] executionParameters = new Object[] { 10 };
+        counter.execute(methodRanged, executionParameters);
+
+        CountingResult[] results = CountingResultCollector.getInstance().retrieveAllCountingResults().toArray(new CountingResult[0]);
+        Assert.assertTrue("No or not enough results counted", results.length > 1);
+        for (CountingResult r : results) {
+        	r.logResult(false, true);
+        }
+        CountingResultCollector.getInstance().clearResults();
+		// compare
+		// e.compare(results);
     }
 
 	@Test
@@ -398,6 +406,22 @@ public class TestLineNumbers {
 
 		CountingResult[] results = runTestBranch(9);
 		e.compare(results);
+	}
+	
+	private CountingResult[] instrumentAndExecute(LineNumberRange[] codeAreasToInstrument) {
+		// initialize ByCounter
+        BytecodeCounter counter = new BytecodeCounter();
+        counter.setInstrumentationParams(this.instrumentationParameters);
+        counter.getInstrumentationParams().setUseBasicBlocks(true);
+        counter.getInstrumentationParams().setRecordBlockExecutionOrder(true);
+        MethodDescriptor methodRanged = new MethodDescriptor(TEST_SUBJECT_CANONICAL, SIGNATURE_METHOD_CALLS);
+        methodRanged.setCodeAreasToInstrument(codeAreasToInstrument);
+        counter.instrument(methodRanged);
+        // execute with (10)
+        Object[] executionParameters = new Object[] { 10 };
+        counter.execute(methodRanged, executionParameters);
+
+        return CountingResultCollector.getInstance().retrieveAllCountingResults().toArray(new CountingResult[0]);
 	}
 
 	/**
