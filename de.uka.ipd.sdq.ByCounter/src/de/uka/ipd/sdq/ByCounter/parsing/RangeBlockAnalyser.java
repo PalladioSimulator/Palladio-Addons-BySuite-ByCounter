@@ -76,12 +76,12 @@ public final class RangeBlockAnalyser implements IInstructionAnalyser {
 	 * The instrumentation state that define how to analyse the method.
 	 */
 	private InstrumentationState instrumentationState;
-	
+		
 	/**
-	 * Labels for the basic blocks found by the 
-	 * {@link BasicBlockAnalyser}. The index is used to refer to the basic block.
+	 * Labels that are visited first when entering a range block.
+	 * Maps to the range block index.
 	 */
-	private Label[] basicBlockLabels = null;
+	private Map<Label, Integer> rangeBlockStartLabels;
 	
 
 	/** The smallest value for linenumber in the analysed method.
@@ -92,6 +92,13 @@ public final class RangeBlockAnalyser implements IInstructionAnalyser {
 	 */
 	private int maxLineNumber = Integer.MAX_VALUE;
 	
+	/**
+	 * Construct the {@link RangeBlockAnalyser} and prepare it for analysing the 
+	 * specified method.
+	 * @param currentMethod {@link MethodDescriptor} for the method to analyse.
+	 * @param instrumentationState State information used for the 
+	 * instrumentation.
+	 */
 	public RangeBlockAnalyser(
 			MethodDescriptor currentMethod, 
 			InstrumentationState instrumentationState) {
@@ -103,6 +110,7 @@ public final class RangeBlockAnalyser implements IInstructionAnalyser {
 		this.labelBlocks = new ArrayList<InstructionBlockLocation>();
 		this.findLabelBlockByLabel = new HashMap<Label, InstructionBlockLocation>();
 		this.findLabelBlockByLine = new HashMap<Integer, List<InstructionBlockLocation>>();
+		this.rangeBlockStartLabels = new HashMap<Label, Integer>();
 		
 		this.lineNumbersNotYetFound = new HashSet<Integer>();
 		// construct the set of all specified line numbers for error checking
@@ -215,7 +223,8 @@ public final class RangeBlockAnalyser implements IInstructionAnalyser {
 		
 		// initialise range blocks
 		for(int i = 0; i < this.ranges.length; i++) {
-			rangeBlocks[i] = new RangeBlockDescriptor(basicBlockLabels.length);
+			rangeBlocks[i] = new RangeBlockDescriptor(
+					instrumentationState.getBasicBlockLabels().length);
 			rangeBlocks[i].setBlockIndex(i);
 		}
 				
@@ -235,7 +244,8 @@ public final class RangeBlockAnalyser implements IInstructionAnalyser {
 			
 
 			// look for a basic block start labeltype filter textype filter textt
-			int bbFind = findLabelIndex(this.basicBlockLabels, currentLabel);
+			int bbFind = findLabelIndex(instrumentationState.getBasicBlockLabels(), 
+					currentLabel);
 			if(bbFind >= 0) {
 				// a new basic block starts
 				currentBasicBlockIndex = bbFind;
@@ -262,6 +272,7 @@ public final class RangeBlockAnalyser implements IInstructionAnalyser {
 					if(!rangeWasEntered[r]) {
 						// this is the first time we are in this range
 						rangeWasEntered[r] = true;
+						
 						BasicBlockOffset bbOffset = rangeBlocks[r].new BasicBlockOffset();
 						bbOffset.offset = 
 							InstructionBlockDescriptor.subtract(	// offset=-partialBB
@@ -287,6 +298,17 @@ public final class RangeBlockAnalyser implements IInstructionAnalyser {
 			
 			// add the instructions for this label to the partialBB
 			partialBB.add(labelBlock.labelBlock);
+		}
+		
+		// find start labels for each range
+		for(int i = 0; i < ranges.length; i++) {
+			List<InstructionBlockLocation> locs = findLabelBlockByLine.get(ranges[i].firstLine);
+			Iterator<InstructionBlockLocation> iter = locs.iterator();
+			Label lastLocLabel = null;
+			while(iter.hasNext()) {
+				lastLocLabel = iter.next().label;
+			}
+			rangeBlockStartLabels.put(lastLocLabel, i); // range r is first visited
 		}
 				
 		// serialise the detected blocks
@@ -377,7 +399,7 @@ public final class RangeBlockAnalyser implements IInstructionAnalyser {
 
 //	@Override
 	public void postAnalysisEvent(InsnList instructions) {
-		if(this.basicBlockLabels == null) {
+		if(this.instrumentationState.getBasicBlockLabels() == null) {
 			throw new IllegalStateException("RangeBlockAnalyser: basic block labels have not been specified.");
 		}
 		
@@ -402,13 +424,7 @@ public final class RangeBlockAnalyser implements IInstructionAnalyser {
 		// * then, in a second step: merge label blocks to range blocks
 		//   (take care of the goto containing label blocks there)
 		this.constructRangeBlocks();
-	}
-
-	/**
-	 * @param basicBlockLabels Labels for the basic blocks found by the 
-	 * {@link BasicBlockAnalyser}. The index is used to refer to the basic block.
-	 */
-	public void setBasicBlockLabels(Label[] basicBlockLabels) {
-		this.basicBlockLabels = basicBlockLabels;
+		
+		this.instrumentationState.setRangeBlockStartLabels(this.rangeBlockStartLabels);
 	}
 }

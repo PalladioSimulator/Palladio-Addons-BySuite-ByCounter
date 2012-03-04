@@ -3,6 +3,7 @@ package de.uka.ipd.sdq.ByCounter.execution;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -172,6 +173,7 @@ public class BlockResultCalculation {
 	/**
 	 * Uses the results blockExecutionSequence to calculate counting results.
 	 * @param result Result as reported by an instrumented method.
+	 * @param calculateRangeBlocks True: range blocks; False: basic blocks
 	 * @return {@link CalculatedCounts}.
 	 */
 	public CalculatedCounts[] calculateCountsFromBlockExecutionSequence(
@@ -182,7 +184,7 @@ public class BlockResultCalculation {
 		
 
 		// possibly more than one counting result per item in the sequence
-		ArrayList<CalculatedCounts> resultCounts = new ArrayList<CalculatedCounts>();
+		List<CalculatedCounts> resultCounts = new ArrayList<CalculatedCounts>();
 		
 		if(!calculateRangeBlocks) {
 			// just add the complete basic block
@@ -253,8 +255,47 @@ public class BlockResultCalculation {
 				resultCounts.add(getCountsForRangeBlock(rbec.rbd, rbec.basicBlockExecutionCounts));
 			}
 			
+			resultCounts = sortResultsByRangeExecutionOrder((ArrayList<CalculatedCounts>)resultCounts, result.rangeBlockExecutionSequence);
+			
 		}
 		return resultCounts.toArray(new CalculatedCounts[resultCounts.size()]);
+	}
+
+	/**
+	 * Since the execution order of basic blocks is insufficient to calculate 
+	 * the correct order of range block execution in all cases, use the explicit 
+	 * range block execution sequence to sort the results in execution order.
+	 * @param resultCounts Results, only sorted by basic block execution order.
+	 * @param rangeBlockExecutionSequence Correct order of range block 
+	 * executions.
+	 */
+	private List<CalculatedCounts> sortResultsByRangeExecutionOrder(
+			ArrayList<CalculatedCounts> resultCounts,
+			ArrayList<Integer> rangeBlockExecutionSequence) {
+		if(resultCounts.size() != rangeBlockExecutionSequence.size()) {
+			throw new IllegalStateException("Range block result representations must have the same amount of results.");
+		}
+		LinkedList<CalculatedCounts> orderedResult = new LinkedList<CalculatedCounts>();
+		for(int rbIndex : rangeBlockExecutionSequence) {
+			int foundIndex = -1;
+			int i = 0; // index in resultCounts
+			for(CalculatedCounts cc : resultCounts) {
+				if(cc.indexOfRangeBlock == rbIndex) {
+					// move the result to the ordered list
+					orderedResult.add(cc);
+					foundIndex = i;
+					break;
+				}
+				i++;
+			}
+			if(foundIndex >= 0) {
+				resultCounts.remove(foundIndex);
+			} else {
+				// when this happens, the algorithm above is probably broken
+				throw new IllegalStateException("Could not find range block index in the computed range block results.");
+			}
+		}
+		return orderedResult;
 	}
 
 	/**

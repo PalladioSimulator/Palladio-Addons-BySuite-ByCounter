@@ -5,6 +5,9 @@ package de.uka.ipd.sdq.ByCounter.instrumentation;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+
+import org.objectweb.asm.Label;
 
 import de.uka.ipd.sdq.ByCounter.parsing.BasicBlockSerialisation;
 import de.uka.ipd.sdq.ByCounter.parsing.LineNumberRange;
@@ -41,6 +44,16 @@ public class InstrumentationState {
 	 * List of methods that have been instrumented successfully.
 	 */
 	private List<MethodDescriptor> successFullyInstrumentedMethods;
+
+	/**
+	 * The labels that start a basic block.
+	 */
+	private Label[] basicBlockLabels;
+	
+	/**
+	 * The labels that start a range block.
+	 */
+	private Map<Label, Integer> rangeBlockStartLabels;
 
 	/**
 	 * Initialises all fields.
@@ -97,5 +110,34 @@ public class InstrumentationState {
 	public void setSuccessFullyInstrumentedMethods(
 			List<MethodDescriptor> successFullyInstrumentedMethods) {
 		this.successFullyInstrumentedMethods = successFullyInstrumentedMethods;
+	}
+
+	/**
+	 * @return The labels that start a basic block.
+	 */
+	public Label[] getBasicBlockLabels() {
+		return basicBlockLabels;
+	}
+
+	/**
+	 * @param basicBlockLabels The labels that start a basic block.
+	 */
+	public void setBasicBlockLabels(Label[] basicBlockLabels) {
+		this.basicBlockLabels = basicBlockLabels;
+	}
+	
+	/**
+	 * @return The labels that start a range block.
+	 */
+	public Map<Label, Integer> getRangeBlockStartLabels() {
+		return this.rangeBlockStartLabels;
+	}
+
+	/**
+	 * @param rangeBlockStartLabels The labels that start a range block.
+	 */
+	public void setRangeBlockStartLabels(
+			Map<Label, Integer> rangeBlockStartLabels) {
+		this.rangeBlockStartLabels = rangeBlockStartLabels;
 	}
 }

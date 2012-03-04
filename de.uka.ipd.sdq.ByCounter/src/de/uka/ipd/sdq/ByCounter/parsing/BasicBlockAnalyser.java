@@ -21,7 +21,7 @@ import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentationState;
 /**
  * An implementation of {@link IInstructionAnalyser} that analyses instructions 
  * in order to find basicBlocks. The results of this {@link IInstructionAnalyser}
- * can be queried with the method {@link #getBasicBlockLabels()}.  
+ * can be queried with the method {@link InstrumentationState#getBasicBlockLabels()}.  
  *
  */
 public final class BasicBlockAnalyser implements IInstructionAnalyser {
@@ -216,12 +216,7 @@ public final class BasicBlockAnalyser implements IInstructionAnalyser {
 	@SuppressWarnings("unchecked")
 	public void postAnalysisEvent(InsnList instructions) {
 		this.constructBasicBlocks(instructions.iterator());
-	}
-	
-	/**
-	 * @return An array of labels that start a basic block in the analysed method.
-	 */
-	public Label[] getBasicBlockLabels() {
-		return this.basicBlockLabels.toArray(new Label[this.basicBlockLabels.size()]);
+		this.instrumentationState.setBasicBlockLabels(
+				this.basicBlockLabels.toArray(new Label[this.basicBlockLabels.size()]));
 	}
 }

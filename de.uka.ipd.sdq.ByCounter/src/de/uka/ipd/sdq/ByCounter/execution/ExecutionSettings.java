@@ -120,7 +120,7 @@ public class ExecutionSettings implements Cloneable {
 	 * internal. A value of null means all classes are considered internal.
 	 * <p>
 	 * For each string, specifying a 
-	 * '{@value #INTERNAL_CLASSES_DEFINITION_WILDCARD_CHAR}' at the end enabled 
+	 * '{@value #INTERNAL_CLASSES_DEFINITION_WILDCARD_CHAR}' at the end enables 
 	 * prefix matching, 
 	 * i.e. all classes with the prefix are matched. If a string specifies a 
 	 * class name, non-public/internal classes are also considered internal.

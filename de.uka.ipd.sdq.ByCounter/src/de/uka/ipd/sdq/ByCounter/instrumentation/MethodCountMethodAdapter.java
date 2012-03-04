@@ -135,12 +135,6 @@ public final class MethodCountMethodAdapter extends MethodAdapter implements Opc
 	 */
 	private boolean isAlreadyInstrumented = false;
 	
-
-	/**
-	 * The labels that start a basic block.
-	 */
-	private Label[] basicBlockLabels;
-
 	/**
 	 * Index of the local variable that holds the requestID.
 	 */
@@ -199,6 +193,13 @@ public final class MethodCountMethodAdapter extends MethodAdapter implements Opc
 	 * {@link #initialiseBlockExecutionOrderArrayList()}.
 	 */
 	private int blockExecutionOrderArrayListVar;
+	
+	/**
+	 * The variable of the {@link ArrayList} created in 
+	 * {@link #initialiseBlockExecutionOrderArrayList()} for ordering of 
+	 * defined ranges.
+	 */
+	private int rangeBlockExecutionOrderArrayListVar;
 
 	/**
 	 * Intermediate instrumentation state.
@@ -371,8 +372,15 @@ public final class MethodCountMethodAdapter extends MethodAdapter implements Opc
 		mv.visitMethodInsn(INVOKESPECIAL, TYPE_ARRAYLIST, "<init>", "()V");
 		mv.visitVarInsn(ASTORE, blockExecutionOrderArrayListVar);
 		
-		java.util.ArrayList<Long> myList = new java.util.ArrayList<Long>();
-		myList.add(34L);
+		if(this.useRangeBlocks) {
+			this.rangeBlockExecutionOrderArrayListVar = this.lVarManager.getNewVarFor(
+					"ArrayList", mv, Type.getType(java.util.ArrayList.class), 1);
+
+			mv.visitTypeInsn(NEW, TYPE_ARRAYLIST);
+			mv.visitInsn(DUP);
+			mv.visitMethodInsn(INVOKESPECIAL, TYPE_ARRAYLIST, "<init>", "()V");
+			mv.visitVarInsn(ASTORE, rangeBlockExecutionOrderArrayListVar);
+		}
 	}
 
 	/**
@@ -389,13 +397,14 @@ public final class MethodCountMethodAdapter extends MethodAdapter implements Opc
 		this.instructionCountersInitialised = true;
 		
 		if(this.useBlockCounters) {
-			for(int i = 0; i < this.basicBlockLabels.length; i++) {
+			Label[] basicBlockLabels = this.instrumentationState.getBasicBlockLabels();
+			for(int i = 0; i < basicBlockLabels.length; i++) {
 				BlockCounterData d = new BlockCounterData();
 				d.blockIndex = i;
 				if(!this.instrumentationParameters.getRecordBlockExecutionOrder()) {
 					d.variableIndex = getNewCounterVar();	// the index for the new variable
 				}
-				this.basicBlockCounters.put(this.basicBlockLabels[i], d);
+				this.basicBlockCounters.put(basicBlockLabels[i], d);
 			}
 		} else {
 			// Initialize registers for all possible opcodes.
@@ -711,6 +720,14 @@ public final class MethodCountMethodAdapter extends MethodAdapter implements Opc
 			mv.visitVarInsn(ALOAD, this.blockExecutionOrderArrayListVar);
 			mv.visitFieldInsn(PUTFIELD, protocolCountStructClassName, 
 					"blockExecutionSequence", "Ljava/util/ArrayList;");
+			
+			if(this.useRangeBlocks) {
+				// set value of range order arraylist
+				mv.visitInsn(Opcodes.DUP);
+				mv.visitVarInsn(ALOAD, this.rangeBlockExecutionOrderArrayListVar);
+				mv.visitFieldInsn(PUTFIELD, protocolCountStructClassName, 
+						"rangeBlockExecutionSequence", "Ljava/util/ArrayList;");
+			}
 		}
 		
 
@@ -766,8 +783,9 @@ public final class MethodCountMethodAdapter extends MethodAdapter implements Opc
 	private int insertResultCollectorCall_createBasicBlockCountsArray() {
 		// set up an index array that holds the variable indices for the basic block counters
 		int[] indicesOfBasicBlockCounters = new int[this.basicBlockCounters.size()];
-		for(int i = 0; i < this.basicBlockLabels.length; i++) {
-			indicesOfBasicBlockCounters[i] = this.basicBlockCounters.get(this.basicBlockLabels[i]).variableIndex;
+		Label[] basicBlockLabels = this.instrumentationState.getBasicBlockLabels();
+		for(int i = 0; i < basicBlockLabels.length; i++) {
+			indicesOfBasicBlockCounters[i] = this.basicBlockCounters.get(basicBlockLabels[i]).variableIndex;
 		}
 		// store the basic block counts
 		int basicBlockListVar = insertAndFillCounterArrayFromRegisters(indicesOfBasicBlockCounters);
@@ -874,7 +892,8 @@ public final class MethodCountMethodAdapter extends MethodAdapter implements Opc
 		
 		// at this point, setBasicBlockLabels has been called, if it is called
 		// therefore we know whether or not to use blocks
-		if(this.basicBlockLabels == null || this.basicBlockLabels.length == 0) {
+		Label[] basicBlockLabels = this.instrumentationState.getBasicBlockLabels();
+		if(basicBlockLabels == null || basicBlockLabels.length == 0) {
 			// only use blocks if according labels have been specified
 			this.useBlockCounters = false;
 		} else if(this.instrumentationParameters.getUseBasicBlocks()) {
@@ -1084,6 +1103,18 @@ public final class MethodCountMethodAdapter extends MethodAdapter implements Opc
 					}	
 				}
 			}
+			if(this.useRangeBlocks 
+					&& this.instrumentationParameters.getRecordBlockExecutionOrder()) {
+				Integer newRangeBlockIndex = this.instrumentationState.getRangeBlockStartLabels().get(label);
+				if(newRangeBlockIndex != null) {
+					// label does start a new range block
+					mv.visitVarInsn(ALOAD, this.rangeBlockExecutionOrderArrayListVar);
+					mv.visitLdcInsn(newRangeBlockIndex);
+					mv.visitMethodInsn(INVOKESTATIC, "java/lang/Integer", "valueOf", "(I)Ljava/lang/Integer;");
+					mv.visitMethodInsn(INVOKEVIRTUAL, "java/util/ArrayList", "add", "(Ljava/lang/Object;)Z");
+					mv.visitInsn(POP); // pop the return value of add
+				}
+			}
 		}
 	}
 
@@ -1211,15 +1242,6 @@ public final class MethodCountMethodAdapter extends MethodAdapter implements Opc
 				e.printStackTrace();
 			}
 		}
-		
-	}
-
-	/**
-	 * Sets up the basic blocks for this method.
-	 * @param labels The labels that start the basic blocks.
-	 */
-	public void setBasicBlockLabels(Label[] labels) {
-		this.basicBlockLabels = labels;
 		
 	}
 }

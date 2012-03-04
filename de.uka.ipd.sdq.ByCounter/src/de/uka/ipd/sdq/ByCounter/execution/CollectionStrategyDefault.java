@@ -252,7 +252,7 @@ public class CollectionStrategyDefault extends AbstractCollectionStrategy {
 			while(iter.hasNext()){
 				ret.add(iter.next());
 			}
-		}else{
+		} else {
 			// calculate the sums for all results
 			long callerStartTime;
 			long callerReportTime;

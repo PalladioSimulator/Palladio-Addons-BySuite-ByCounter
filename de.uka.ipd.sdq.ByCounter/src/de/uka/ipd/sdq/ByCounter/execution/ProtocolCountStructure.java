@@ -102,6 +102,10 @@ public class ProtocolCountStructure {
 	 * in which each item represents the execution of a block with the index of 
 	 * that number. */
 	public ArrayList<Integer> blockExecutionSequence;
+	/** When execution order recording is enabled, this is a list of integers
+	 * in which each item represents the execution of a range block with the 
+	 * index of that number. */
+	public ArrayList<Integer> rangeBlockExecutionSequence;
 	/**
 	 * Mode in which the instructions have been grouped for counting.
 	 */
@@ -303,6 +307,8 @@ public class ProtocolCountStructure {
 		builder.append(this.callerID);
 		builder.append(", blockExecutionSequence=");
 		builder.append(this.blockExecutionSequence);
+		builder.append(", rangeBlockExecutionSequence=");
+		builder.append(this.rangeBlockExecutionSequence);
 		builder.append("]");
 		return builder.toString();
 	}

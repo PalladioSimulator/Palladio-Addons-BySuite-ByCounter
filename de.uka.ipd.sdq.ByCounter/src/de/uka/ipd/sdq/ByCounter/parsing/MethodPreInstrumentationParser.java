@@ -6,7 +6,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Logger;
 
-import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodAdapter;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
@@ -162,7 +161,6 @@ public final class MethodPreInstrumentationParser extends MethodAdapter {
 			// range block analyser depends on the basic block analyser
 			this.basicBlockAnalyser.postAnalysisEvent(mn.instructions);
 			if(this.hasRangeBlocks) {
-				this.rangeBlockAnalyser.setBasicBlockLabels(this.basicBlockAnalyser.getBasicBlockLabels());
 				this.rangeBlockAnalyser.postAnalysisEvent(mn.instructions);
 			}
 		}
@@ -174,12 +172,6 @@ public final class MethodPreInstrumentationParser extends MethodAdapter {
 				continue;
 			}
 			analyser.postAnalysisEvent(mn.instructions);
-		}
-		
-		if(this.instrumentationParameters.getUseBasicBlocks()) {
-			Label[] basicBlockLabels = ((BasicBlockAnalyser)this.basicBlockAnalyser).getBasicBlockLabels();
-			this.methodCountMethodAdapter.setBasicBlockLabels(
-					basicBlockLabels);
 		}
 		
 		// pass the gathered information to the methodCountMethodAdapter
