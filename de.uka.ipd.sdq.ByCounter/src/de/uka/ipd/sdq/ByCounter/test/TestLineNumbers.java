@@ -7,7 +7,6 @@ import junit.framework.Assert;
 
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -336,13 +335,12 @@ public class TestLineNumbers {
         CountingResultCollector.getInstance().clearResults();
     }
 
-    @Ignore
     @Test
     public void testUncommonFormatting() {
         // define expectations
         Expectation e = new Expectation(true);
         e.add(6, 6);
-        e.add(10, 15);
+        e.add(11, 15);
         // initialize ByCounter
         BytecodeCounter counter = new BytecodeCounter();
         counter.setInstrumentationParams(this.instrumentationParameters);
@@ -351,8 +349,8 @@ public class TestLineNumbers {
         MethodDescriptor methodRanged = new MethodDescriptor(TestSubjectUncommonFormatting.class.getCanonicalName(), "public void process()");
         methodRanged.setCodeAreasToInstrument(e.getRanges());
         counter.instrument(methodRanged);
-        // execute with (10)
-        Object[] executionParameters = new Object[] { 10 };
+        // execute with ()
+        Object[] executionParameters = new Object[] {  };
         counter.execute(methodRanged, executionParameters);
 
         CountingResult[] results = CountingResultCollector.getInstance().retrieveAllCountingResults().toArray(new CountingResult[0]);

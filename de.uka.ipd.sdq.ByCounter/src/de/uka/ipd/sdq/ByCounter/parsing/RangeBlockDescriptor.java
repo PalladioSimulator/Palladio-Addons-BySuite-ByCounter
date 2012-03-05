@@ -120,7 +120,8 @@ public class RangeBlockDescriptor extends InstructionBlockDescriptor {
 	 */
 	@Override
 	public String toString() {
-		return "RangeBlockDescriptor [basicBlockCounts="
+		return "RangeBlockDescriptor(" 
+				+ this.getBlockIndex() + ") [basicBlockCounts="
 				+ Arrays.toString(this.basicBlockCounts) + ", bbOffsets="
 				+ this.bbOffsets + "]";
 	}

@@ -322,34 +322,8 @@ public final class RangeBlockAnalyser implements IInstructionAnalyser {
 	 * These are saved in {@link #labelBlocks}.
 	 * @param instructions
 	 */
-	private void createInstructionBlocks(InsnList instructions) {
-		Label currentLabel = null;
-		// build a map that saves from where labels are jumped to
-		// so that jumpSourceMap(toLabel) == fromLabel
-		Map<Label, List<Label>> jumpSourceMap = new HashMap<Label, List<Label>>();
-		
-		// go through all instructions
-		for (	@SuppressWarnings("unchecked")
-				Iterator<AbstractInsnNode> iterator = instructions.iterator(); 
-				iterator.hasNext();
-			) {
-			AbstractInsnNode insn = iterator.next();
-			if(insn instanceof LabelNode) {
-				currentLabel = ((LabelNode)insn).getLabel();
-			} else if(insn instanceof JumpInsnNode) {
-				// save the fact that there is a jump from the current label 
-				// block to the target label
-				JumpInsnNode jump = (JumpInsnNode)insn;
-				Label target = jump.label.getLabel();
-				List<Label> sourceList = jumpSourceMap.get(target);
-				if(sourceList == null) {
-					sourceList = new LinkedList<Label>();
-					jumpSourceMap.put(target, sourceList);
-				}
-				sourceList.add(currentLabel);
-			}
-		}
-		currentLabel = null; // no longer needed
+	private void createInstructionBlocks(InsnList instructions) {		
+		final Map<Label, List<Label>> jumpSourceMap = buildJumpSourceMap(instructions);
 
 		InstructionBlockLocation currentIB = null;
 		// go through all instructions again
@@ -368,18 +342,92 @@ public final class RangeBlockAnalyser implements IInstructionAnalyser {
 				currentIB = findLabelBlockByLabel.get(label);
 			} else {
 				if(currentIB.lineNumber < 0) {
-					// the label has no line number assigned
-					// find it in the label map
-					List<Label> sourceLabels = jumpSourceMap.get(currentIB.label);
-					assert sourceLabels.size() == 1 : "Expected exactly one jump source.";
-					Label jumpSource = sourceLabels.get(0);
-					currentIB.lineNumber = 
-						findLabelBlockByLabel.get(jumpSource).lineNumber;
+					currentIB.lineNumber = findLineNumberFromJumpContext(jumpSourceMap, currentIB);
 				}
 				// add the instruction to the block
 				InstructionBlockDescriptor.addInstruction(currentIB.labelBlock, insn);
 			}
 		}
+	}
+
+
+	/**
+	 * Finds the line number for the specified instruction block using the 
+	 * jump source map.
+	 * @param jumpSourceMap Inverse control flow description for labels where 
+	 * for each key label, all labels with control flow to it are found.
+	 * @param currentIB
+	 * @return The line number.
+	 */
+	private int findLineNumberFromJumpContext(final Map<Label, List<Label>> jumpSourceMap,
+			InstructionBlockLocation currentIB) {
+		// the label has no line number assigned
+		// find it in the label map
+		List<Label> sourceLabels = jumpSourceMap.get(currentIB.label);
+		if(sourceLabels.size() != 1) {
+			throw new IllegalStateException("Expected exactly one jump source.");
+		}
+		Label jumpSource = sourceLabels.get(0);
+		InstructionBlockLocation jumpSourceBlockLocation = findLabelBlockByLabel.get(jumpSource);
+		if(jumpSourceBlockLocation.lineNumber < 0) {
+			return findLineNumberFromJumpContext(jumpSourceMap, jumpSourceBlockLocation);
+		}
+		return jumpSourceBlockLocation.lineNumber;
+	}
+
+
+	/**
+	 * Build a map that saves from where labels are jumped to
+	 * so that jumpSourceMap(toLabel) == fromLabel.
+	 * Jumps can be explicit jump instructions but also the normal fall-through 
+	 * order of labels.
+	 * @param instructions The methods instructions
+	 * @return The build map.
+	 */
+	private Map<Label, List<Label>> buildJumpSourceMap(InsnList instructions) {
+		Label currentLabel = null;
+		Map<Label, List<Label>> jumpSourceMap = new HashMap<Label, List<Label>>();
+
+		boolean jumpedAway = false; // true when the control flow jumped away from the current label
+		// go through all instructions
+		for (	@SuppressWarnings("unchecked")
+				Iterator<AbstractInsnNode> iterator = instructions.iterator(); 
+				iterator.hasNext();
+			) {
+			AbstractInsnNode insn = iterator.next();
+			if(insn instanceof LabelNode) {
+				Label lastLabel = currentLabel;
+				currentLabel = ((LabelNode)insn).getLabel();
+				if(lastLabel != null && !jumpedAway) {
+					addJumpSourceToMap(jumpSourceMap, lastLabel, currentLabel);
+				}
+			} else if(insn instanceof JumpInsnNode) {
+				jumpedAway = true;
+				// save the fact that there is a jump from the current label 
+				// block to the target label
+				JumpInsnNode jump = (JumpInsnNode)insn;
+				Label target = jump.label.getLabel();
+				addJumpSourceToMap(jumpSourceMap, currentLabel, target);
+			}
+		}
+		return jumpSourceMap;
+	}
+
+
+	/**
+	 * Add the jump relation to the map.
+	 * @param jumpSourceMap Map as produced by {@link #buildJumpSourceMap(InsnList)}.
+	 * @param jumpSource Source of the jump.
+	 * @param destination Destination of the jump.
+	 */
+	private void addJumpSourceToMap(Map<Label, List<Label>> jumpSourceMap,
+			Label jumpSource, Label destination) {
+		List<Label> sourceList = jumpSourceMap.get(destination);
+		if(sourceList == null) {
+			sourceList = new LinkedList<Label>();
+			jumpSourceMap.put(destination, sourceList);
+		}
+		sourceList.add(jumpSource);
 	}
 
 	/**
@@ -397,6 +445,7 @@ public final class RangeBlockAnalyser implements IInstructionAnalyser {
 		return -1;
 	}
 
+	/** {@inheritDoc} */
 //	@Override
 	public void postAnalysisEvent(InsnList instructions) {
 		if(this.instrumentationState.getBasicBlockLabels() == null) {
