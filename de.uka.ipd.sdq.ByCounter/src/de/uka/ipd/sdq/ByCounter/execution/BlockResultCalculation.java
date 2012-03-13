@@ -271,8 +271,8 @@ public class BlockResultCalculation {
 	private List<CalculatedCounts> sortResultsByRangeExecutionOrder(
 			ArrayList<CalculatedCounts> resultCounts,
 			ArrayList<Integer> rangeBlockExecutionSequence) {
-		if(resultCounts.size() != rangeBlockExecutionSequence.size()) {
-			throw new IllegalStateException("Range block result representations must have the same amount of results.");
+		if(resultCounts.size() < rangeBlockExecutionSequence.size()) {
+			throw new IllegalStateException("Not enough range block result results.");
 		}
 		LinkedList<CalculatedCounts> orderedResult = new LinkedList<CalculatedCounts>();
 		for(int rbIndex : rangeBlockExecutionSequence) {
