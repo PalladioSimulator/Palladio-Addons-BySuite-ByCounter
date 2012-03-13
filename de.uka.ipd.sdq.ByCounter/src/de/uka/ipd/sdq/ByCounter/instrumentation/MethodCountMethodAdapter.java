@@ -441,6 +441,20 @@ public final class MethodCountMethodAdapter extends MethodAdapter implements Opc
 	}
 
 	/**
+	 * Insert code that calls the {@link ArrayList#add(Object)} method on the 
+	 * specified array list to add the given integer as a constant.
+	 * @param arrayListVar Variable index of the {@link ArrayList}.
+	 * @param integer {@link Integer} value to add to the array list.
+	 */
+	private void insertAddIntegerToArrayList(int arrayListVar, Integer integer) {
+		mv.visitVarInsn(ALOAD, arrayListVar);
+		mv.visitLdcInsn(integer);
+		mv.visitMethodInsn(INVOKESTATIC, "java/lang/Integer", "valueOf", "(I)Ljava/lang/Integer;");
+		mv.visitMethodInsn(INVOKEVIRTUAL, "java/util/ArrayList", "add", "(Ljava/lang/Object;)Z");
+		mv.visitInsn(POP); // pop the return value of add
+	}
+
+	/**
 	 * Inserts bytecode that creates a new array and fills it with the
 	 * contents of the locals for which the indices are given.
 	 * @param indicesOfArrayCounters The indices of the counter registers.
@@ -1092,11 +1106,9 @@ public final class MethodCountMethodAdapter extends MethodAdapter implements Opc
 				BlockCounterData blockData = this.basicBlockCounters.get(label);
 				if(blockData != null) {
 					if(this.instrumentationParameters.getRecordBlockExecutionOrder()) {
-						mv.visitVarInsn(ALOAD, this.blockExecutionOrderArrayListVar);
-						mv.visitLdcInsn(new Integer(blockData.blockIndex));
-						mv.visitMethodInsn(INVOKESTATIC, "java/lang/Integer", "valueOf", "(I)Ljava/lang/Integer;");
-						mv.visitMethodInsn(INVOKEVIRTUAL, "java/util/ArrayList", "add", "(Ljava/lang/Object;)Z");
-						mv.visitInsn(POP); // pop the return value of add
+						this.insertAddIntegerToArrayList(
+								this.blockExecutionOrderArrayListVar, 
+								new Integer(blockData.blockIndex));
 					} else {
 						// a new basic block or range block starts
 						this.insertCounterIncrement(blockData.variableIndex);
@@ -1108,11 +1120,9 @@ public final class MethodCountMethodAdapter extends MethodAdapter implements Opc
 				Integer newRangeBlockIndex = this.instrumentationState.getRangeBlockStartLabels().get(label);
 				if(newRangeBlockIndex != null) {
 					// label does start a new range block
-					mv.visitVarInsn(ALOAD, this.rangeBlockExecutionOrderArrayListVar);
-					mv.visitLdcInsn(newRangeBlockIndex);
-					mv.visitMethodInsn(INVOKESTATIC, "java/lang/Integer", "valueOf", "(I)Ljava/lang/Integer;");
-					mv.visitMethodInsn(INVOKEVIRTUAL, "java/util/ArrayList", "add", "(Ljava/lang/Object;)Z");
-					mv.visitInsn(POP); // pop the return value of add
+					this.insertAddIntegerToArrayList(
+							this.rangeBlockExecutionOrderArrayListVar, 
+							newRangeBlockIndex);
 				}
 			}
 		}
