@@ -325,7 +325,7 @@ public class RunTest {
 		Expectation e = new Expectation();
 		e.add(28, 30).add(Opcodes.GOTO, 1)
 					 .add(Opcodes.ICONST_0, 1)
-					 .add(Opcodes.ICONST_2, 1)
+					 .add(Opcodes.ICONST_5, 1)
 					 .add(Opcodes.IF_ICMPLT, 1)
 					 .add(Opcodes.ILOAD, 1)
 					 .add(Opcodes.ISTORE, 1);
@@ -336,9 +336,13 @@ public class RunTest {
 						 .add(Opcodes.INVOKESPECIAL, 1)
 						 .add(Opcodes.INVOKEVIRTUAL, 3)
 						 .add(Opcodes.LDC, 1)
-						 .add(Opcodes.NEW, 1);
+						 .add(Opcodes.NEW, 1)
+						 .add("java.io.PrintStream", "public void println(java.lang.String obj)", 1)
+						 .add("java.lang.StringBuilder", "public StringBuilder(java.lang.String obj)", 1)
+						 .add("java.lang.StringBuilder", "public java.lang.StringBuilder append(int obj)", 1)
+						 .add("java.lang.StringBuilder", "public java.lang.String toString()", 1);
 			e.add(28, 30).add(Opcodes.IINC, 1)
-						 .add(Opcodes.ICONST_2, 1)
+						 .add(Opcodes.ICONST_5, 1)
 						 .add(Opcodes.IF_ICMPLT, 1)
 						 .add(Opcodes.ILOAD, 1);
 		}
