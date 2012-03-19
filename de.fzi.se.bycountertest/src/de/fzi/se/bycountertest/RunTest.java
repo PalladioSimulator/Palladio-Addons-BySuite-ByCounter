@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package de.fzi.se.bycountertest;
 
@@ -24,19 +24,19 @@ import de.uka.ipd.sdq.ByCounter.utils.OpcodeToMethodMapper;
 
 /**
  * Demonstrates unexpected behavior of Bytecode Counter.
- * 
+ *
  * @author Henning Groenda
  * @author Florian Schreier
  */
 public class RunTest {
-	
+
 	/** The basic signature of the method which is instrumented in various test cases. Do not use this directly. */
 	private static final String SIGNATURE_METHOD_BASIC = "%s process(%s)";
 	/** This is the method signature without any parameter and return type void. */
 	private static final String SIGNATURE_METHOD = String.format(SIGNATURE_METHOD_BASIC, "void", "");
 	/** This is the method signature with an int as parameter and return type int. */
 	private static final String SIGNATURE_METHOD_INT = String.format(SIGNATURE_METHOD_BASIC, "int", "int input");
-	
+
 	/** Bytecode Counter instance used for testing. */
 	BytecodeCounter counter;
 
@@ -48,7 +48,7 @@ public class RunTest {
 
 	/**
 	 * Helper function to check the TestSummation: Tests the helperMethod().
-	 * 
+	 *
 	 * @param results
 	 *            Counting results.
 	 * @param resultsIndex
@@ -78,7 +78,7 @@ public class RunTest {
 
 	/**
 	 * Helper function to check the TestSummation: Tests the method in the dependent class.
-	 * 
+	 *
 	 * @param results
 	 *            Counting results.
 	 * @param resultsIndex
@@ -259,12 +259,12 @@ public class RunTest {
 		Expectation e = new Expectation();
 		e.add(17, 17).add(Opcodes.ICONST_0, 1)
 					 .add(Opcodes.ISTORE, 1);
-		
+
 		MethodDescriptor descriptor = new MethodDescriptor(TestExecutionOrder.class.getCanonicalName(), SIGNATURE_METHOD);
 		Object target = instrumentAndInstantiate(descriptor, Arrays.asList(e.getRanges()));
 		counter.execute(descriptor, target, new Object[0]);
 		CountingResult[] results = CountingResultCollector.getInstance().retrieveAllCountingResults().toArray(new CountingResult[0]);
-		
+
 		e.compare(results);
 	}
 
@@ -282,7 +282,7 @@ public class RunTest {
 				.add(Opcodes.ILOAD, 1)
 				.add(Opcodes.IMUL, 1)
 				.add(Opcodes.ISTORE, 1);
-		
+
 		MethodDescriptor descriptor = new MethodDescriptor(TestExecutionOrder.class.getCanonicalName(), SIGNATURE_METHOD);
 		ArrayList<LineNumberRange> lnrs = new ArrayList<LineNumberRange>();
 		lnrs.add(new LineNumberRange(17, 18)); // first two lines
@@ -290,7 +290,7 @@ public class RunTest {
 		Object target = instrumentAndInstantiate(descriptor, lnrs);
 		counter.execute(descriptor, target, new Object[0]);
 		CountingResult[] results = CountingResultCollector.getInstance().retrieveAllCountingResults().toArray(new CountingResult[0]);
-		
+
 		e.compare(results);
 	}
 
@@ -308,7 +308,7 @@ public class RunTest {
 				.add(Opcodes.ILOAD, 1)
 				.add(Opcodes.IMUL, 1)
 				.add(Opcodes.ISTORE, 1);
-		
+
 		MethodDescriptor descriptor = new MethodDescriptor(TestExecutionOrder.class.getCanonicalName(), SIGNATURE_METHOD);
 		ArrayList<LineNumberRange> lnrs = new ArrayList<LineNumberRange>();
 		lnrs.add(new LineNumberRange(19, 19)); // third line
@@ -316,33 +316,33 @@ public class RunTest {
 		Object target = instrumentAndInstantiate(descriptor, lnrs);
 		counter.execute(descriptor, target, new Object[0]);
 		CountingResult[] results = CountingResultCollector.getInstance().retrieveAllCountingResults().toArray(new CountingResult[0]);
-		
+
 		e.compare(results);
 	}
 
 	@Test
 	public void preserveExecutionOrderOfMeasurements_Loop() {
 		Expectation e = new Expectation();
-		e.add(15, 15).add(Opcodes.GOTO, 1)
+		e.add(28, 30).add(Opcodes.GOTO, 1)
 					 .add(Opcodes.ICONST_0, 1)
 					 .add(Opcodes.ICONST_2, 1)
 					 .add(Opcodes.IF_ICMPLT, 1)
 					 .add(Opcodes.ILOAD, 1)
 					 .add(Opcodes.ISTORE, 1);
 		for (int i = 0; i < 5; i++) {
-			e.add(16, 16).add(Opcodes.DUP, 1)
+			e.add(31, 31).add(Opcodes.DUP, 1)
 						 .add(Opcodes.GETSTATIC, 1)
 						 .add(Opcodes.ILOAD, 1)
 						 .add(Opcodes.INVOKESPECIAL, 1)
 						 .add(Opcodes.INVOKEVIRTUAL, 3)
 						 .add(Opcodes.LDC, 1)
 						 .add(Opcodes.NEW, 1);
-			e.add(15, 15).add(Opcodes.IINC, 1)
+			e.add(28, 30).add(Opcodes.IINC, 1)
 						 .add(Opcodes.ICONST_2, 1)
 						 .add(Opcodes.IF_ICMPLT, 1)
 						 .add(Opcodes.ILOAD, 1);
 		}
-		
+
 		MethodDescriptor descriptor = new MethodDescriptor(TestLoopExternalActionNoDependency.class.getCanonicalName(), SIGNATURE_METHOD);
 		ArrayList<LineNumberRange> lnrs = new ArrayList<LineNumberRange>();
 		lnrs.add(new LineNumberRange(28, 30)); // loop
@@ -350,13 +350,13 @@ public class RunTest {
 		Object target = instrumentAndInstantiate(descriptor, lnrs);
 		counter.execute(descriptor, target, new Object[0]);
 		CountingResult[] results = CountingResultCollector.getInstance().retrieveAllCountingResults().toArray(new CountingResult[0]);
-		
+
 		e.compare(results);
 	}
 
 	/**
 	 * Uses ByCounter to instrument and instantiate the class containing the provided method and LNRs.
-	 * 
+	 *
 	 * @param descriptor
 	 *            Method descriptor.
 	 * @param lineNumberRanges
@@ -413,7 +413,7 @@ public class RunTest {
 
 	/**
 	 * Sums up all invocations on opcode counts for all results.
-	 * 
+	 *
 	 * @param results
 	 *            Result set.
 	 * @return Sum.
@@ -434,7 +434,7 @@ public class RunTest {
 
 	/**
 	 * Sums up all invocations on opcodes for a result.
-	 * 
+	 *
 	 * @param result
 	 *            Counting result.
 	 * @return sum.
