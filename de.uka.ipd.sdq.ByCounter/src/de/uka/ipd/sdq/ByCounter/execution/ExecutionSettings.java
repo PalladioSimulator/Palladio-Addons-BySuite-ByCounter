@@ -28,6 +28,9 @@ public class ExecutionSettings implements Cloneable {
 	/** Default value of {@link #getAddUpResultsRecursively()}. */
 	private static final boolean ADD_UP_RESULTS_RECURSIVELY_DEFAULT = false;
 
+	/** Default value for {@link #getParentClassLoader()}. */
+	public static final ClassLoader PARENT_CLASS_LOADER_DEFAULT = null;
+
 	/**
 	 * Classes defined as internal when using recursive result retrieval.
 	 * 
@@ -50,6 +53,11 @@ public class ExecutionSettings implements Cloneable {
 	private boolean addUpResultsRecursively;
 
 	/**
+	 * @see #getParentClassLoader()
+	 */
+	private ClassLoader parentClassLoader;
+
+	/**
 	 * Construct {@link ExecutionSettings} by setting every field to it's 
 	 * default value. 
 	 */
@@ -57,6 +65,7 @@ public class ExecutionSettings implements Cloneable {
 		this.countingResultCollectorMode = COUNTING_RESULT_COLLECTOR_MODE_DEFAULT;
 		this.internalClassesDefinition = INTERNAL_CLASSES_DEFINITION_DEFAULT;
 		this.addUpResultsRecursively = ADD_UP_RESULTS_RECURSIVELY_DEFAULT;
+		this.setParentClassLoader(PARENT_CLASS_LOADER_DEFAULT);
 	}
 	
 	/* (non-Javadoc)
@@ -75,6 +84,7 @@ public class ExecutionSettings implements Cloneable {
 		// copy fields
 		copy.internalClassesDefinition = this.internalClassesDefinition;
 		copy.countingResultCollectorMode = this.countingResultCollectorMode;
+		copy.parentClassLoader = this.parentClassLoader;
 		
 		return copy;
 	}
@@ -188,4 +198,23 @@ public class ExecutionSettings implements Cloneable {
 		this.addUpResultsRecursively = addUpResultsRecursively;
 	}
 
+	/**
+	 * This is used for instantiation of classes that are set to execute.
+	 * For some applications it may be necessary to use a different ClassLoader 
+	 * than the SystemClassLoader. For instance Eclipse plugins each have their 
+	 * own ClassLoader which means Class.forName() may not have access to the 
+	 * correct classpath.
+	 * @param parentClassLoader The {@link ClassLoader} that will be used to 
+	 * create instances of the classes to execute.
+	 */
+	public void setParentClassLoader(ClassLoader parentClassLoader) {
+		this.parentClassLoader = parentClassLoader;
+	}
+
+	/**
+	 * @return The {@link ClassLoader} set using {@link #setParentClassLoader(ClassLoader)}.
+	 */
+	public ClassLoader getParentClassLoader() {
+		return parentClassLoader;
+	}
 }

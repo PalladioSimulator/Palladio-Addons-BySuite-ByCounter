@@ -165,4 +165,23 @@ public class InstructionBlockDescriptor implements Serializable {
 		}
 		return result;
 	}
+	
+	/**
+	 * @return True if neither opcode offsets nor methodCallCount offsets exist.
+	 * False otherwise.
+	 */
+	public boolean isEmpty() {
+		if(!methodCallCounts.isEmpty()) {
+			return false;
+		}
+		if(opcodeCounts.length == 0) {
+			return true;
+		}
+		for(int i : opcodeCounts) {
+			if(i != 0) {
+				return false;
+			}
+		}
+		return true;
+	}
 }

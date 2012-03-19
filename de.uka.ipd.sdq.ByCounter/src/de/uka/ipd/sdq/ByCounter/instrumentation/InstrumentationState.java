@@ -53,7 +53,7 @@ public class InstrumentationState {
 	/**
 	 * The labels that start a range block.
 	 */
-	private Map<Label, Integer> rangeBlockStartLabels;
+	private Map<Label, Integer> rangeBlockContainsLabels;
 
 	/**
 	 * Initialises all fields.
@@ -127,17 +127,17 @@ public class InstrumentationState {
 	}
 	
 	/**
-	 * @return The labels that start a range block.
+	 * @return The labels that are part of a range block.
 	 */
-	public Map<Label, Integer> getRangeBlockStartLabels() {
-		return this.rangeBlockStartLabels;
+	public Map<Label, Integer> getRangeBlockContainsLabels() {
+		return this.rangeBlockContainsLabels;
 	}
 
 	/**
-	 * @param rangeBlockStartLabels The labels that start a range block.
+	 * @param rangeBlockContainsLabels The labels that are part of a range block.
 	 */
-	public void setRangeBlockStartLabels(
-			Map<Label, Integer> rangeBlockStartLabels) {
-		this.rangeBlockStartLabels = rangeBlockStartLabels;
+	public void setRangeBlockContainsLabels(
+			Map<Label, Integer> rangeBlockContainsLabels) {
+		this.rangeBlockContainsLabels = rangeBlockContainsLabels;
 	}
 }

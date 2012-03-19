@@ -65,9 +65,6 @@ public final class InstrumentationParameters implements Cloneable {
 	/** Default value for {@link #getWriteClassesToDisk()}. */
 	public static final boolean WRITE_CLASSES_TO_DISK_DEFAULT = false;
 
-	/** Default value for {@link #getParentClassLoader()}. */
-	public static final ClassLoader PARENT_CLASS_LOADER_DEFAULT = null;
-
 	/** Default value for {@link #getInstrumentRecursively()}. */
 	public static final boolean INSTRUMENT_RECURSIVELY_DEFAULT = false;
 	
@@ -91,6 +88,10 @@ public final class InstrumentationParameters implements Cloneable {
 
 	/** Default value for {@link #getCountStatically()}. */
 	public static final boolean COUNT_STATICALLY_DEFAULT = false;
+
+	/** Default value for {@link #getProvideOnlineSectionExecutionUpdates()}. */
+	private static final boolean PROVIDE_ONLINE_SECTION_EXECUTION_UPDATES_DEFAULT = false;
+
 	
 	/**
 	 * Directory in which result log files are written by default.
@@ -110,7 +111,7 @@ public final class InstrumentationParameters implements Cloneable {
 	public static final String RESULT_LOG_DEFAULT_PREFIX = 
 		RESULT_LOG_DEFAULT_DIRECTORY + 
 		File.separatorChar;
-	
+
 	/**
 	 * A list of strings that cause a class to be ignored in the parsing 
 	 * when found at the start of a package name.
@@ -173,11 +174,6 @@ public final class InstrumentationParameters implements Cloneable {
 	private boolean writeClassesToDisk;
 
 	/**
-	 * @see #getParentClassLoader()
-	 */
-	private ClassLoader parentClassLoader;
-
-	/**
 	 * @see #getRangeBlocks()
 	 */
 	private LineNumberRange[] rangeBlocks;
@@ -186,6 +182,11 @@ public final class InstrumentationParameters implements Cloneable {
 	 * @see #getRecordBlockExecutionOrder()
 	 */
 	private boolean recordBlockExecutionOrder;
+	
+	/**
+	 * @see #getProvideOnlineSectionExecutionUpdates()
+	 */
+	private boolean provideOnlineSectionExecutionUpdates;
 	
 	/**
 	 * @see #getTraceAndIdentifyRequests()
@@ -263,7 +264,6 @@ public final class InstrumentationParameters implements Cloneable {
 			boolean countStatically,
 			InstrumentationCounterPrecision counterPrecision) {
 		this.setMethodsToInstrument(pMethodsToInstrument);
-		this.setParentClassLoader(PARENT_CLASS_LOADER_DEFAULT);
 		this.setUseBasicBlocks(USE_BASIC_BLOCKS_DEFAULT);
 		this.setUseHighRegistersForCounting(pUseHighRegistersForCounting);
 		this.setUseResultCollector(pUseResultCollector);
@@ -280,6 +280,7 @@ public final class InstrumentationParameters implements Cloneable {
 		this.recordBlockExecutionOrder = RECORD_BLOCK_EXECUTION_ORDER_DEFAULT;
 		this.instrumentRecursively = INSTRUMENT_RECURSIVELY_DEFAULT;
 		this.instrumentRecursivelyMaxDepth = INSTRUMENT_RECURSIVELY_MAX_DEPTH_DEFAULT;
+		this.provideOnlineSectionExecutionUpdates = PROVIDE_ONLINE_SECTION_EXECUTION_UPDATES_DEFAULT;
 	}
 	
 	/* (non-Javadoc)
@@ -304,7 +305,7 @@ public final class InstrumentationParameters implements Cloneable {
 		copy.instrumentRecursively = this.instrumentRecursively;
 		copy.instrumentRecursivelyMaxDepth = this.instrumentRecursivelyMaxDepth;
 		copy.methodsToInstrument = this.methodsToInstrument;
-		copy.parentClassLoader = this.parentClassLoader;
+		copy.provideOnlineSectionExecutionUpdates = this.provideOnlineSectionExecutionUpdates;
 		copy.rangeBlocks = this.rangeBlocks;
 		copy.recordBlockExecutionOrder = this.recordBlockExecutionOrder;
 		copy.resultLogFileName = this.resultLogFileName;
@@ -512,26 +513,6 @@ public final class InstrumentationParameters implements Cloneable {
 	}
 
 	/**
-	 * This is used for instantiation of classes that are set to execute.
-	 * For some applications it may be necessary to use a different ClassLoader 
-	 * than the SystemClassLoader. For instance Eclipse plugins each have their 
-	 * own ClassLoader which means Class.forName() may not have access to the 
-	 * correct classpath.
-	 * @param parentClassLoader The {@link ClassLoader} that will be used to 
-	 * create instances of the classes to execute.
-	 */
-	public void setParentClassLoader(ClassLoader parentClassLoader) {
-		this.parentClassLoader = parentClassLoader;
-	}
-
-	/**
-	 * @return The {@link ClassLoader} set using {@link #setParentClassLoader(ClassLoader)}.
-	 */
-	public ClassLoader getParentClassLoader() {
-		return parentClassLoader;
-	}
-
-	/**
 	 * When true, bytecode instructions will be counted in groups made up of 
 	 * identified basic blocks. The execution numbers of single instructions 
 	 * are calculated after the execution.
@@ -715,6 +696,32 @@ public final class InstrumentationParameters implements Cloneable {
 	 */
 	public boolean getRecordBlockExecutionOrder() {
 		return recordBlockExecutionOrder;
+	}
+
+	/**
+	 * {@link CountingResultCollector} provides a mechanism for monitoring 
+	 * online updates on incoming results.
+	 * @see CountingResultCollector#addObserver(java.util.Observer)
+	 * @return When true, the instrumentation for providing updates on the 
+	 * execution of user specified code sections is inserted. This only applies 
+	 * when {@link #getRecordBlockExecutionOrder()} is also set to true.
+	 */
+	public boolean getProvideOnlineSectionExecutionUpdates() {
+		return provideOnlineSectionExecutionUpdates;
+	}
+
+	/**
+	 * @see #getRecordBlockExecutionOrder()
+	 * @see #getProvideOnlineSectionExecutionUpdates()
+	 * @param provideOnlineSectionExecutionUpdates When true, instrumentation 
+	 * for providing updates is added.
+	 */
+	public void setProvideOnlineSectionExecutionUpdates(
+			boolean provideOnlineSectionExecutionUpdates) {
+		if(provideOnlineSectionExecutionUpdates && !this.recordBlockExecutionOrder) {
+			throw new IllegalArgumentException("Cannot provide online section execution updates with recordBlockExecutionOrder set to false.");
+		}
+		this.provideOnlineSectionExecutionUpdates = provideOnlineSectionExecutionUpdates;
 	}
 
 	/**

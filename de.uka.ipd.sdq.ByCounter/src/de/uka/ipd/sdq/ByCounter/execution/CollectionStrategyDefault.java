@@ -1,5 +1,6 @@
 package de.uka.ipd.sdq.ByCounter.execution;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.SortedMap;
 import java.util.SortedSet;
@@ -148,6 +149,7 @@ public class CollectionStrategyDefault extends AbstractCollectionStrategy {
 			}
 		} else if (result.blockCountingMode == BlockCountingMode.RangeBlocks) {//Ranges!
 			if(result.blockExecutionSequence != null) {
+				result.rangeBlockExecutionSequence = removeDuplicateSequencesFromList(result.rangeBlockExecutionSequence);
 				ccounts = blockCalculation.calculateCountsFromBlockExecutionSequence(
 						result, true);
 				numResults = ccounts.length;
@@ -241,6 +243,28 @@ public class CollectionStrategyDefault extends AbstractCollectionStrategy {
 					res, reportingStart);
 		}
 		return true;
+	}
+
+	/**
+	 * Remove duplicate sequences from the list and return the filtered result.
+	 * Duplicate sequences are identical values that appear multiple times in 
+	 * the list with no other values in between. I.e. in the list [1,2,3,3,3,4],
+	 * [3,3,3] are duplicate sequences and will be replaced by [3].
+	 * @param list List to remove the duplicate sequences from.
+	 * @return Filtered list.
+	 */
+	private <T> ArrayList<T> removeDuplicateSequencesFromList(
+			ArrayList<T> list) {
+		ArrayList<T> result = new ArrayList<T>();
+		T lastEntry = null;
+		for(T entry : list) {
+			if(lastEntry == entry) {
+				continue;
+			}
+			result.add(entry);
+			lastEntry = entry;
+		}
+		return result;
 	}
 
 	@Override

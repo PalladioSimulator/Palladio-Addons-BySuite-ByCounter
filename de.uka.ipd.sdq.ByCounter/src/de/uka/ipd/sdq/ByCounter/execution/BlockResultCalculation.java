@@ -204,17 +204,20 @@ public class BlockResultCalculation {
 			List<RangeBlocksBBExecutionCounts> currentRBECs = new LinkedList<RangeBlocksBBExecutionCounts>();
 			
 			for(Integer blockIndex : result.blockExecutionSequence) {
+
 				List<RangeBlockDescriptor> rangeBlocksContainingBBblockIndex = 
 					rangeBlocksByBasicBlock.get(blockIndex);	// can be null!
 				
 				// list of range blocks that end
 				List<RangeBlocksBBExecutionCounts> toRemoveFromCurrentRBs = new LinkedList<BlockResultCalculation.RangeBlocksBBExecutionCounts>();
 				
-				// 1. Find active range blocks that do not contain the new basic block.
+				// 1. Find active range blocks that do not contain the new basic block
+				// or have offsets for the basic block.
 				// These range blocks end.
 				for(RangeBlocksBBExecutionCounts rbec : currentRBECs) {
 					if(rangeBlocksContainingBBblockIndex == null
-							|| !rangeBlocksContainingBBblockIndex.contains(rbec.rbd)) {
+							|| !rangeBlocksContainingBBblockIndex.contains(rbec.rbd)
+							|| rbec.rbd.getBasicBlockIndexesWithOffsets().contains(blockIndex)) {
 						// range block ends
 						resultCounts.add(getCountsForRangeBlock(rbec.rbd, rbec.basicBlockExecutionCounts));
 						// mark for removal

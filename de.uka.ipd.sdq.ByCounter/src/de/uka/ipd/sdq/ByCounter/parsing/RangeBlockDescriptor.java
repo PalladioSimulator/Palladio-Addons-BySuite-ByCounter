@@ -114,6 +114,21 @@ public class RangeBlockDescriptor extends InstructionBlockDescriptor {
 	public List<BasicBlockOffset> getBasicBlockOffsets() {
 		return this.bbOffsets;
 	}
+	
+	/**
+	 * @return A list of basic block indices. For each index in the list 
+	 * there exists a non-empty basic block offset.
+	 * @see #getBasicBlockOffsets()
+	 */
+	public List<Integer> getBasicBlockIndexesWithOffsets() {
+		List<Integer> result = new LinkedList<Integer>();
+		for(BasicBlockOffset o : getBasicBlockOffsets()) {
+			if(!o.offset.isEmpty()) {
+				result.add(o.basicBlockIndex);
+			}
+		}
+		return result;
+	}
 
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()

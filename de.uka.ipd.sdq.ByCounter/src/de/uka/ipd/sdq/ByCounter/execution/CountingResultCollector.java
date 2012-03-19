@@ -3,6 +3,7 @@ package de.uka.ipd.sdq.ByCounter.execution;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Observable;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.logging.Level;
@@ -12,13 +13,37 @@ import de.uka.ipd.sdq.ByCounter.reporting.ICountingResultWriter;
 
 /**
  * Class used to collect statistics about an instrumented method.
+ * <p>
+ * This class is observable ({@link #addObserver(java.util.Observer)}) and can 
+ * provide online updates on the collection of results. The following update 
+ * types are currently available:
+ * <ul>
+ * <li>{@link ObservedSectionExecutionUpdate}</li>
+ * </ul>
+ * </p>
  * TODO implement an "adaptation-oriented inlining", where after a certain (threshold) number of invocations, a method is inlined (callees independently, too)
  * @author Martin Krogmann
  * @author Michael Kuperberg
  * @since 0.1
  * @version 1.2
  */
-public final class CountingResultCollector {
+public final class CountingResultCollector extends Observable {
+	
+	/**
+	 * This class is used to update observers registered to 
+	 * {@link CountingResultCollector} when a section has been executed.
+	 * @author Martin Krogmann
+	 */
+	public class ObservedSectionExecutionUpdate {
+		public final Integer sectionIndex;
+		public ObservedSectionExecutionUpdate(final Integer sectionIndex) {
+			this.sectionIndex = sectionIndex;
+		}
+		@Override
+		public String toString() {
+			return "ObservedSectionExecutionUpdate[sectionIndex=" + sectionIndex +"]";
+		}
+	}
 
 	/** Default value for {@link #getMode()}. */
 	public static final CountingResultCollectorMode MODE_DEFAULT = CountingResultCollectorMode.UseReportingMethodChoiceByInstrumentedMethods;
@@ -176,6 +201,16 @@ public final class CountingResultCollector {
 			} else {
 				this.strategyDefault.protocolCount(result, reportingStart);
 			}
+		}
+
+		if(result.rangeBlockExecutionSequence != null 
+				&& !result.rangeBlockExecutionSequence.isEmpty()) {
+			// notify observers
+			this.setChanged();
+			// TODO: NEED TO KNOW WHAT KIND OF RESULT WAS REPORTED TO HAVE USEFUL UPDATE TYPES
+			this.notifyObservers(new ObservedSectionExecutionUpdate(
+					result.rangeBlockExecutionSequence.get(
+							result.rangeBlockExecutionSequence.size()-1))); // last executed section
 		}
 	}
 

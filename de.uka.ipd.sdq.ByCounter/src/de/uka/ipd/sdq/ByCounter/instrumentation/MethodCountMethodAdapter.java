@@ -1117,12 +1117,15 @@ public final class MethodCountMethodAdapter extends MethodAdapter implements Opc
 			}
 			if(this.useRangeBlocks 
 					&& this.instrumentationParameters.getRecordBlockExecutionOrder()) {
-				Integer newRangeBlockIndex = this.instrumentationState.getRangeBlockStartLabels().get(label);
-				if(newRangeBlockIndex != null) {
-					// label does start a new range block
+				Integer rngeBlockIndex = this.instrumentationState.getRangeBlockContainsLabels().get(label);
+				if(rngeBlockIndex != null) {
+					// label is part of a range block
 					this.insertAddIntegerToArrayList(
 							this.rangeBlockExecutionOrderArrayListVar, 
-							newRangeBlockIndex);
+							rngeBlockIndex);
+					if(this.instrumentationParameters.getProvideOnlineSectionExecutionUpdates()) {
+						this.insertResultCollectorCall();
+					}
 				}
 			}
 		}

@@ -995,10 +995,10 @@ public final class BytecodeCounter {
 		
 		// use the supplied classloader if necessary (i.e. for eclipse plugin)
 		Loader loader;
-		if(this.getInstrumentationParams().getParentClassLoader() == null) {
+		if(this.getExecutionSettings().getParentClassLoader() == null) {
 			loader = new Loader(this.classPool);
 		} else {
-			loader = new Loader(this.instrumentationParameters.getParentClassLoader(), this.classPool);
+			loader = new Loader(this.executionSettings.getParentClassLoader(), this.classPool);
 		}
 		// make sure that the CountingResultCollector (important!) and all other 
 		// ByCounter classes do not get reloaded.

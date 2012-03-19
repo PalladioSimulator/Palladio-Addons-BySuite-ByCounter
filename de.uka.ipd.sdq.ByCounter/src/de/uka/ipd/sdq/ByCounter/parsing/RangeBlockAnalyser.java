@@ -81,7 +81,7 @@ public final class RangeBlockAnalyser implements IInstructionAnalyser {
 	 * Labels that are visited first when entering a range block.
 	 * Maps to the range block index.
 	 */
-	private Map<Label, Integer> rangeBlockStartLabels;
+	private Map<Label, Integer> rangeBlockContainsLabels;
 	
 
 	/** The smallest value for linenumber in the analysed method.
@@ -110,7 +110,7 @@ public final class RangeBlockAnalyser implements IInstructionAnalyser {
 		this.labelBlocks = new ArrayList<InstructionBlockLocation>();
 		this.findLabelBlockByLabel = new HashMap<Label, InstructionBlockLocation>();
 		this.findLabelBlockByLine = new HashMap<Integer, List<InstructionBlockLocation>>();
-		this.rangeBlockStartLabels = new HashMap<Label, Integer>();
+		this.rangeBlockContainsLabels = new HashMap<Label, Integer>();
 		
 		this.lineNumbersNotYetFound = new HashSet<Integer>();
 		// construct the set of all specified line numbers for error checking
@@ -200,10 +200,15 @@ public final class RangeBlockAnalyser implements IInstructionAnalyser {
 	 */
 	private void constructRangeBlocks() {
 		RangeBlockDescriptor[] rangeBlocks = new RangeBlockDescriptor[this.ranges.length];
-		boolean[] rangeWasEntered = new boolean[rangeBlocks.length];
+		boolean[] rangeWasEnteredSinceBasicBlockStarted = new boolean[rangeBlocks.length];
+		boolean[] rangeWasLeftSinceBasicBlockStarted = new boolean[rangeBlocks.length];
 		for(int i = 0; i < rangeBlocks.length; i++) {
-			rangeWasEntered[i] = false;
+			rangeWasEnteredSinceBasicBlockStarted[i] = false;
 		}
+		for(int i = 0; i < rangeBlocks.length; i++) {
+			rangeWasLeftSinceBasicBlockStarted[i] = false;
+		}
+
 		
 		// go through all labels by line number and find the basic blocks that 
 		// need to be included in a linenumber range
@@ -234,16 +239,11 @@ public final class RangeBlockAnalyser implements IInstructionAnalyser {
 					.getBasicBlocksByMethod().get(this.methodDescriptorString);
 		
 		for(InstructionBlockLocation labelBlock : this.labelBlocks) {
-			Label currentLabel =  labelBlock.label;
-			// ranges where firstLine <= currentLine <= lastLine
-			// this needs to be rebuild for every new line because the order
-			// of the linenumbers is not the same as the order of the labels
-			List<Integer> currentRanges = new ArrayList<Integer>();
-			
+			final Label currentLabel =  labelBlock.label;
 			final int currentLine = labelBlock.lineNumber;
 			
 
-			// look for a basic block start labeltype filter textype filter textt
+			// look for a basic block start label
 			int bbFind = findLabelIndex(instrumentationState.getBasicBlockLabels(), 
 					currentLabel);
 			if(bbFind >= 0) {
@@ -252,6 +252,13 @@ public final class RangeBlockAnalyser implements IInstructionAnalyser {
 				// since a new basic block starts, the old basic block is complete
 				// start a new partialBB
 				partialBB = new InstructionBlockDescriptor();
+				// reset range flags
+				for(int i = 0; i < rangeBlocks.length; i++) {
+					rangeWasEnteredSinceBasicBlockStarted[i] = false;
+				}
+				for(int i = 0; i < rangeBlocks.length; i++) {
+					rangeWasLeftSinceBasicBlockStarted[i] = false;
+				}
 			}
 			
 			// TODO: at this point, currentLine may be -1, so we need to find 
@@ -262,27 +269,31 @@ public final class RangeBlockAnalyser implements IInstructionAnalyser {
 			for(int r  = 0; r < ranges.length; r++) {
 				if(currentLine >= this.ranges[r].firstLine
 						&& currentLine <= this.ranges[r].lastLine) {
-					// move range to currentRanges
-					currentRanges.add(r);
 
 					// add the basic block to all current ranges
 					RangeBlockDescriptor.setUsesBasicBlock(
 							rangeBlocks[r], currentBasicBlockIndex);
 					
-					if(!rangeWasEntered[r]) {
+					// add the label to the labels of the range
+					rangeBlockContainsLabels.put(currentLabel, r); // range r is visited
+					
+					if(!rangeWasEnteredSinceBasicBlockStarted[r]) {
 						// this is the first time we are in this range
-						rangeWasEntered[r] = true;
+						rangeWasEnteredSinceBasicBlockStarted[r] = true;
 						
 						BasicBlockOffset bbOffset = rangeBlocks[r].new BasicBlockOffset();
 						bbOffset.offset = 
 							InstructionBlockDescriptor.subtract(	// offset=-partialBB
 									new InstructionBlockDescriptor(), partialBB);
-						bbOffset.basicBlockIndex = currentBasicBlockIndex;
-						rangeBlocks[r].getBasicBlockOffsets().add(bbOffset);
+						if(!bbOffset.offset.isEmpty()) {
+							// no need to add empty offsets
+							bbOffset.basicBlockIndex = currentBasicBlockIndex;
+							rangeBlocks[r].getBasicBlockOffsets().add(bbOffset);
+						}
 					}
-				} else if(currentLine == this.ranges[r].lastLine + 1
+				} else if(!rangeWasLeftSinceBasicBlockStarted[r]
 						&& rangeBlocks[r].getBasicBlockCounts()[currentBasicBlockIndex] != 0) {
-					// Assume this is the label directly after the range.
+					// This label is not part of the range.
 					// Handle the partial basic block instructions by					
 					// subtracting the instructions that are in the basic block, 
 					// but not yet in the partialBB from the range.
@@ -291,24 +302,18 @@ public final class RangeBlockAnalyser implements IInstructionAnalyser {
 					bbOffset.offset = 
 						InstructionBlockDescriptor.subtract(
 								partialBB, basicBlocks[currentBasicBlockIndex]);
-					bbOffset.basicBlockIndex = currentBasicBlockIndex;
-					rangeBlocks[r].getBasicBlockOffsets().add(bbOffset);
+					if(!bbOffset.offset.isEmpty()) {
+						// no need to add empty offsets
+						bbOffset.basicBlockIndex = currentBasicBlockIndex;
+						rangeBlocks[r].getBasicBlockOffsets().add(bbOffset);
+					}
+					// the range was left
+					rangeWasLeftSinceBasicBlockStarted[r] = true;
 				}
 			}
 			
 			// add the instructions for this label to the partialBB
 			partialBB.add(labelBlock.labelBlock);
-		}
-		
-		// find start labels for each range
-		for(int i = 0; i < ranges.length; i++) {
-			List<InstructionBlockLocation> locs = findLabelBlockByLine.get(ranges[i].firstLine);
-			Iterator<InstructionBlockLocation> iter = locs.iterator();
-			Label lastLocLabel = null;
-			while(iter.hasNext()) {
-				lastLocLabel = iter.next().label;
-			}
-			rangeBlockStartLabels.put(lastLocLabel, i); // range r is first visited
 		}
 				
 		// serialise the detected blocks
@@ -474,6 +479,6 @@ public final class RangeBlockAnalyser implements IInstructionAnalyser {
 		//   (take care of the goto containing label blocks there)
 		this.constructRangeBlocks();
 		
-		this.instrumentationState.setRangeBlockStartLabels(this.rangeBlockStartLabels);
+		this.instrumentationState.setRangeBlockContainsLabels(this.rangeBlockContainsLabels);
 	}
 }
