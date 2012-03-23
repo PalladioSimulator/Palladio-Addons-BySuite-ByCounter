@@ -51,7 +51,7 @@ public class TestSubjectLineNumbers {
 		int j = 0;
 		int k = 0;
 		int m = 0;
-		while(i < 11) { //mit dieser Zeile sind zwei Labelblocks markiert! --> "single goto"-labelblocl schlagen wir dem range [51-53] in der ersten Variante zu!
+		while(i < 11) { //mit dieser Zeile sind zwei Labelblocks markiert! --> "single goto"-labelblock schlagen wir dem range [51-53] in der ersten Variante zu!
 			k += 1;
 			extCall1();
 			m++;

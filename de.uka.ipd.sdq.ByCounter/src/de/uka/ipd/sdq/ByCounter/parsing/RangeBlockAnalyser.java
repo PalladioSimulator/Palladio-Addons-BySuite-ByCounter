@@ -82,7 +82,6 @@ public final class RangeBlockAnalyser implements IInstructionAnalyser {
 	 * Maps to the range block index.
 	 */
 	private Map<Label, Integer> rangeBlockContainsLabels;
-	
 
 	/** The smallest value for linenumber in the analysed method.
 	 */
@@ -265,7 +264,7 @@ public final class RangeBlockAnalyser implements IInstructionAnalyser {
 			// to which line the label belongs so we can answer whether the 
 			// instructions belong to a range or not.
 
-			// calculate currentRanges
+			// calculate current ranges
 			for(int r  = 0; r < ranges.length; r++) {
 				if(currentLine >= this.ranges[r].firstLine
 						&& currentLine <= this.ranges[r].lastLine) {

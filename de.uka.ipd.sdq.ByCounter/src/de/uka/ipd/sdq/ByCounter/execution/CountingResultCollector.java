@@ -15,10 +15,13 @@ import de.uka.ipd.sdq.ByCounter.reporting.ICountingResultWriter;
  * Class used to collect statistics about an instrumented method.
  * <p>
  * This class is observable ({@link #addObserver(java.util.Observer)}) and can 
- * provide online updates on the collection of results. The following update 
+ * provide online updates on the collection of results. Updates consist of 
+ * update objects with types implementing the {@link ObservedEvent} interface.
+ * The following update 
  * types are currently available:
  * <ul>
  * <li>{@link ObservedSectionExecutionUpdate}</li>
+ * <li>{@link ObservedCompleteMethodExecutionUpdate}</li>
  * </ul>
  * </p>
  * TODO implement an "adaptation-oriented inlining", where after a certain (threshold) number of invocations, a method is inlined (callees independently, too)
@@ -30,11 +33,18 @@ import de.uka.ipd.sdq.ByCounter.reporting.ICountingResultWriter;
 public final class CountingResultCollector extends Observable {
 	
 	/**
+	 * This is the common interface of {@link CountingResultCollector} events 
+	 * that can be observed.
+	 * @author Martin Krogmann
+	 */
+	public interface ObservedEvent {}
+	
+	/**
 	 * This class is used to update observers registered to 
 	 * {@link CountingResultCollector} when a section has been executed.
 	 * @author Martin Krogmann
 	 */
-	public class ObservedSectionExecutionUpdate {
+	public class ObservedSectionExecutionUpdate implements ObservedEvent {
 		public final Integer sectionIndex;
 		public ObservedSectionExecutionUpdate(final Integer sectionIndex) {
 			this.sectionIndex = sectionIndex;
@@ -43,6 +53,16 @@ public final class CountingResultCollector extends Observable {
 		public String toString() {
 			return "ObservedSectionExecutionUpdate[sectionIndex=" + sectionIndex +"]";
 		}
+	}
+	
+	/**
+	 * This class is used to update observers registered to 
+	 * {@link CountingResultCollector} when a complete method has been executed,
+	 * i.e. reached a return statement or a throw statement.
+	 * @author Martin Krogmann
+	 */
+	public class ObservedCompleteMethodExecutionUpdate implements ObservedEvent {
+		
 	}
 
 	/** Default value for {@link #getMode()}. */
@@ -184,35 +204,49 @@ public final class CountingResultCollector extends Observable {
 	 * @param result The result reported by an instrumented method.
 	 */
 	public synchronized void protocolCount(ProtocolCountStructure result) {
-		long reportingStart = System.nanoTime();//TODO make this configurable and clear, move to an interface/class that is accessed
-		boolean handledResult = false;
-		if(this.mode==CountingResultCollectorMode.DiscardAllIncomingCountingResults){
-			log.fine("Discarding counting result of method "+result.qualifyingMethodName+", which started execution " +
-					"at "+result.executionStart);
-			handledResult = true;
-		} else if(this.mode.getForceInliningPossible()){
-			handledResult = this.inliningStrategyForced.protocolCount(result, reportingStart);
-		}
-		
-		if(!handledResult) {
-			// the result was not accepted by a strategy yet
-			if(result.inliningSpecified) {
-				this.inliningStrategyWished.protocolCount(result, reportingStart);
-			} else {
-				this.strategyDefault.protocolCount(result, reportingStart);
+		if(!(result instanceof ProtocolCountUpdateStructure)) {
+			long reportingStart = System.nanoTime();//TODO make this configurable and clear, move to an interface/class that is accessed
+			boolean handledResult = false;
+			if(this.mode==CountingResultCollectorMode.DiscardAllIncomingCountingResults){
+				log.fine("Discarding counting result of method "+result.qualifyingMethodName+", which started execution " +
+						"at "+result.executionStart);
+				handledResult = true;
+			} else if(this.mode.getForceInliningPossible()){
+				handledResult = this.inliningStrategyForced.protocolCount(result, reportingStart);
+			}
+			
+			if(!handledResult) {
+				// the result was not accepted by a strategy yet
+				if(result.inliningSpecified) {
+					this.inliningStrategyWished.protocolCount(result, reportingStart);
+				} else {
+					this.strategyDefault.protocolCount(result, reportingStart);
+				}
 			}
 		}
 
-		if(result.rangeBlockExecutionSequence != null 
-				&& !result.rangeBlockExecutionSequence.isEmpty()) {
-			// notify observers
-			this.setChanged();
-			// TODO: NEED TO KNOW WHAT KIND OF RESULT WAS REPORTED TO HAVE USEFUL UPDATE TYPES
-			this.notifyObservers(new ObservedSectionExecutionUpdate(
+		// notify observers
+		this.setChanged();
+		if(result instanceof ProtocolCountUpdateStructure) {
+			// A section has been executed.
+			final Integer lastExecutedSection = 
 					result.rangeBlockExecutionSequence.get(
-							result.rangeBlockExecutionSequence.size()-1))); // last executed section
+					result.rangeBlockExecutionSequence.size()-1);
+			if(lastUpdatedSection != lastExecutedSection) {
+				lastUpdatedSection = lastExecutedSection;
+				this.notifyObservers(
+					new ObservedSectionExecutionUpdate(lastExecutedSection));
+			}
+		} else {
+			this.notifyObservers(
+					new ObservedCompleteMethodExecutionUpdate());
 		}
 	}
+	/**
+	 * For updates on section execution this holds the last executed section 
+	 * number.
+	 */
+	private Integer lastUpdatedSection;
 
 	/**
 	 * Adds an additional result writer used in {@link CountingResult#logResult(boolean, boolean, Level)}.

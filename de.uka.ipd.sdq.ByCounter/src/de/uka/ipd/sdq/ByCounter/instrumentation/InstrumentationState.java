@@ -51,7 +51,7 @@ public class InstrumentationState {
 	private Label[] basicBlockLabels;
 	
 	/**
-	 * The labels that start a range block.
+	 * The labels that are part of a range block.
 	 */
 	private Map<Label, Integer> rangeBlockContainsLabels;
 

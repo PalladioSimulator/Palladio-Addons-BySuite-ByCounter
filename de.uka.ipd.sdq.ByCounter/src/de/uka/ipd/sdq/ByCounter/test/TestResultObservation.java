@@ -125,7 +125,9 @@ public class TestResultObservation {
 			@Override
 			public void update(Observable crc, Object updateData) {
 				System.out.println("Notification received: " + updateData);
-				CountingResultCollector.getInstance().retrieveAllCountingResults().last().logResult(false, false);
+//				if(updateData instanceof CountingResultCollector.ObservedSectionExecutionUpdate) {
+//					CountingResultCollector.getInstance().retrieveAllCountingResults().last().logResult(false, false);
+//				}
 			}
         });
         

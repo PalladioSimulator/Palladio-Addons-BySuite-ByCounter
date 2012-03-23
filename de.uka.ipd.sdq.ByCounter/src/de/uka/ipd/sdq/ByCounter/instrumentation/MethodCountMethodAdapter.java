@@ -19,6 +19,7 @@ import org.objectweb.asm.commons.LocalVariablesSorter;
 import de.uka.ipd.sdq.ByCounter.execution.CountingResult;
 import de.uka.ipd.sdq.ByCounter.execution.CountingResultCollector;
 import de.uka.ipd.sdq.ByCounter.execution.ProtocolCountStructure;
+import de.uka.ipd.sdq.ByCounter.execution.ProtocolCountUpdateStructure;
 import de.uka.ipd.sdq.ByCounter.utils.JavaType;
 import de.uka.ipd.sdq.ByCounter.utils.JavaTypeEnum;
 import de.uka.ipd.sdq.ByCounter.utils.MethodDescriptor;
@@ -574,12 +575,29 @@ public final class MethodCountMethodAdapter extends MethodAdapter implements Opc
 			mv.visitIntInsn(Opcodes.SIPUSH, i);
 		}
 	}
+	
+	/**
+	 * Calls the result collector after the method has been completed.
+	 * @see #insertResultCollectorCall(String)
+	 */
+	private void insertResultCollectorCompleteCall() {
+		this.insertResultCollectorCall(ProtocolCountStructure.class.getCanonicalName().replace('.', '/'));
+	}
+	
+	/**
+	 * Calls the result collector after a part of the method has been completed.
+	 * @see #insertResultCollectorCall(String)
+	 */
+	private void insertResultCollectorUpdateCall() {
+		this.insertResultCollectorCall(ProtocolCountUpdateStructure.class.getCanonicalName().replace('.', '/'));
+	}
 
 	/**
 	 * This is being called at the end of the method to report the resulting counts.
+	 * @param protocolCountStructClassName Canonical class name of the result structure.
 	 */
 	@SuppressWarnings("boxing")
-	private void insertResultCollectorCall() {
+	private void insertResultCollectorCall(final String protocolCountStructClassName) {
 //		boolean skip = true;
 //		if(skip) {
 //			return;
@@ -656,7 +674,6 @@ public final class MethodCountMethodAdapter extends MethodAdapter implements Opc
 		}
 
 		// create result object
-		final String protocolCountStructClassName = ProtocolCountStructure.class.getCanonicalName().replace('.', '/');
 		mv.visitTypeInsn(Opcodes.NEW, protocolCountStructClassName);
 		mv.visitInsn(Opcodes.DUP);
 		
@@ -1061,7 +1078,7 @@ public final class MethodCountMethodAdapter extends MethodAdapter implements Opc
 					hook.methodReturnHook(this, instrumentationParameters);
 				}
 				// method ends, so report the results
-				insertResultCollectorCall();
+				insertResultCollectorCompleteCall();
 			}
 		}
 		// visit statement
@@ -1124,7 +1141,7 @@ public final class MethodCountMethodAdapter extends MethodAdapter implements Opc
 							this.rangeBlockExecutionOrderArrayListVar, 
 							rngeBlockIndex);
 					if(this.instrumentationParameters.getProvideOnlineSectionExecutionUpdates()) {
-						this.insertResultCollectorCall();
+						this.insertResultCollectorUpdateCall();
 					}
 				}
 			}
