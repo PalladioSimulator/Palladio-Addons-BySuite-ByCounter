@@ -339,8 +339,13 @@ public class TestLineNumbers {
     public void testUncommonFormatting() {
         // define expectations
         Expectation e = new Expectation(true);
-        e.add(6, 6);
-        e.add(11, 15);
+        e.add(7, 8).add(Opcodes.ICONST_3, 1)
+        		   .add(Opcodes.ISTORE, 1);
+        e.add(9, 11).add(Opcodes.GOTO, 1)
+					.add(Opcodes.ICONST_4, 2)
+					.add(Opcodes.IF_ICMPLT, 2)
+					.add(Opcodes.IINC, 1)
+        			.add(Opcodes.ILOAD, 2);
         // initialize ByCounter
         BytecodeCounter counter = new BytecodeCounter();
         counter.setInstrumentationParams(this.instrumentationParameters);
@@ -360,7 +365,7 @@ public class TestLineNumbers {
         }
         CountingResultCollector.getInstance().clearResults();
 		// compare
-		// e.compare(results);
+		e.compare(results);
     }
 
 	@Test
