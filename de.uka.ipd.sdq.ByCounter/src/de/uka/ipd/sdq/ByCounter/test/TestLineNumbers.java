@@ -116,7 +116,7 @@ public class TestLineNumbers {
         // run ByCounter
 		String canonicalClassName = TestSubjectExecutionOrder.class.getCanonicalName();
 		String methodSignature = "void process()";
-        CountingResult[] results = this.instrumentAndExecute(e.getRanges(), canonicalClassName, methodSignature);
+        CountingResult[] results = this.instrumentAndExecute(e.getRanges(), canonicalClassName, methodSignature, new Object[0]);
         for (CountingResult r : results) {
         	r.logResult(false, true);
         }
@@ -435,8 +435,12 @@ public class TestLineNumbers {
 	private CountingResult[] instrumentAndExecute(LineNumberRange[] codeAreasToInstrument) {
 		return this.instrumentAndExecute(codeAreasToInstrument, TEST_SUBJECT_CANONICAL, SIGNATURE_METHOD_CALLS);
 	}
-	
 	private CountingResult[] instrumentAndExecute(LineNumberRange[] codeAreasToInstrument, String canonicalClassName, String methodSignature) {
+        // execute with (10)
+		return this.instrumentAndExecute(codeAreasToInstrument, canonicalClassName, methodSignature, new Object[] { 10 });
+	}
+	
+	private CountingResult[] instrumentAndExecute(LineNumberRange[] codeAreasToInstrument, String canonicalClassName, String methodSignature, Object[] executionParameters) {
 		// initialize ByCounter
         BytecodeCounter counter = new BytecodeCounter();
         counter.setInstrumentationParams(this.instrumentationParameters);
@@ -445,8 +449,6 @@ public class TestLineNumbers {
         MethodDescriptor methodRanged = new MethodDescriptor(canonicalClassName, methodSignature);
         methodRanged.setCodeAreasToInstrument(codeAreasToInstrument);
         counter.instrument(methodRanged);
-        // execute with (10)
-        Object[] executionParameters = new Object[] { 10 };
         counter.execute(methodRanged, executionParameters);
 
         return CountingResultCollector.getInstance().retrieveAllCountingResults().toArray(new CountingResult[0]);
