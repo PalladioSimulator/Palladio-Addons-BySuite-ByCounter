@@ -30,13 +30,9 @@ import de.uka.ipd.sdq.ByCounter.utils.OpcodeToMethodMapper;
  */
 public class RunTest {
 
-	/** The basic signature of the method which is instrumented in various test cases. Do not use this directly. */
-	private static final String SIGNATURE_METHOD_BASIC = "%s process(%s)";
 	/** This is the method signature without any parameter and return type void. */
-	private static final String SIGNATURE_METHOD = String.format(SIGNATURE_METHOD_BASIC, "void", "");
-	/** This is the method signature with an int as parameter and return type int. */
-	private static final String SIGNATURE_METHOD_INT = String.format(SIGNATURE_METHOD_BASIC, "int", "int input");
-
+	private static final String SIGNATURE_METHOD = "void process()";
+	
 	/** Bytecode Counter instance used for testing. */
 	BytecodeCounter counter;
 
@@ -253,6 +249,8 @@ public class RunTest {
 
 	/**
 	 * Tests if instrumentation of a single line works correctly.
+	 * 
+	 * @deprecated moved to main project's test package
 	 */
 	@Test
 	public void singleLineInstrumentation() {
