@@ -21,6 +21,7 @@ import de.uka.ipd.sdq.ByCounter.parsing.LineNumberRange;
 import de.uka.ipd.sdq.ByCounter.test.TestASMBytecodes;
 import de.uka.ipd.sdq.ByCounter.test.framework.expectations.Expectation;
 import de.uka.ipd.sdq.ByCounter.test.helpers.TestSubjectBranch;
+import de.uka.ipd.sdq.ByCounter.test.helpers.TestSubjectExecutionOrder;
 import de.uka.ipd.sdq.ByCounter.test.helpers.TestSubjectLineNumbers;
 import de.uka.ipd.sdq.ByCounter.test.helpers.TestSubjectUncommonFormatting;
 import de.uka.ipd.sdq.ByCounter.test.helpers.Utils;
@@ -102,6 +103,26 @@ public class TestLineNumbers {
         // clear all collected results
         CountingResultCollector.getInstance().clearResults();
     }
+
+	/**
+	 * Tests if instrumentation of a single line works correctly.
+	 */
+	@Test
+	public void singleLineInstrumentation() {
+		// define expectations
+		Expectation e = new Expectation();
+		e.add(15, 15).add(Opcodes.ICONST_0, 1)
+					 .add(Opcodes.ISTORE, 1);
+        // run ByCounter
+		String canonicalClassName = TestSubjectExecutionOrder.class.getCanonicalName();
+		String methodSignature = "void process()";
+        CountingResult[] results = this.instrumentAndExecute(e.getRanges(), canonicalClassName, methodSignature);
+        for (CountingResult r : results) {
+        	r.logResult(false, true);
+        }
+        // compare
+        e.compare(results);
+	}
 
     /**
      * Tests for counting a method using the detected invariant sections aka basic blocks.
@@ -412,12 +433,16 @@ public class TestLineNumbers {
 	}
 	
 	private CountingResult[] instrumentAndExecute(LineNumberRange[] codeAreasToInstrument) {
+		return this.instrumentAndExecute(codeAreasToInstrument, TEST_SUBJECT_CANONICAL, SIGNATURE_METHOD_CALLS);
+	}
+	
+	private CountingResult[] instrumentAndExecute(LineNumberRange[] codeAreasToInstrument, String canonicalClassName, String methodSignature) {
 		// initialize ByCounter
         BytecodeCounter counter = new BytecodeCounter();
         counter.setInstrumentationParams(this.instrumentationParameters);
         counter.getInstrumentationParams().setUseBasicBlocks(true);
         counter.getInstrumentationParams().setRecordBlockExecutionOrder(true);
-        MethodDescriptor methodRanged = new MethodDescriptor(TEST_SUBJECT_CANONICAL, SIGNATURE_METHOD_CALLS);
+        MethodDescriptor methodRanged = new MethodDescriptor(canonicalClassName, methodSignature);
         methodRanged.setCodeAreasToInstrument(codeAreasToInstrument);
         counter.instrument(methodRanged);
         // execute with (10)
