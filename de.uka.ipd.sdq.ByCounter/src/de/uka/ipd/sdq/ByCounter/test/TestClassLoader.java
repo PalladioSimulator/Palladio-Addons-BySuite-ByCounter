@@ -19,7 +19,7 @@ import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentationParameters;
 import de.uka.ipd.sdq.ByCounter.parsing.LineNumberRange;
 import de.uka.ipd.sdq.ByCounter.test.helpers.ClassLoadTime2;
 import de.uka.ipd.sdq.ByCounter.test.helpers.subjects.DoNothing;
-import de.uka.ipd.sdq.ByCounter.test.helpers.subjects.TestLoopExternalAction;
+import de.uka.ipd.sdq.ByCounter.test.helpers.subjects.LoopExternalAction;
 import de.uka.ipd.sdq.ByCounter.utils.MethodDescriptor;
 
 public class TestClassLoader {
@@ -73,7 +73,7 @@ public class TestClassLoader {
 		BytecodeCounter counter = new BytecodeCounter();
 		
 		String methodSignature = "void process()";
-		MethodDescriptor descriptor = new MethodDescriptor(TestLoopExternalAction.class.getCanonicalName(), methodSignature);
+		MethodDescriptor descriptor = new MethodDescriptor(LoopExternalAction.class.getCanonicalName(), methodSignature);
 		ArrayList<LineNumberRange> lnrs = new ArrayList<LineNumberRange>();
 		lnrs.add(new LineNumberRange(28, 30)); // loop
 		lnrs.add(new LineNumberRange(31, 31)); // external call within loop
@@ -93,7 +93,7 @@ public class TestClassLoader {
 		Object targetObject = counter.instantiate(descriptor);
 		// resolve dependencies
 		DoNothing doNothing = new DoNothing();
-		TestLoopExternalAction target = (TestLoopExternalAction) targetObject;
+		LoopExternalAction target = (LoopExternalAction) targetObject;
 		target.setRequiredComponent(doNothing);
 		// execute
 		counter.execute(descriptor, target, new Object[0]);

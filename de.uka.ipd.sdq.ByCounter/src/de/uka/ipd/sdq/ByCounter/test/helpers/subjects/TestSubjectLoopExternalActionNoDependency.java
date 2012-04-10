@@ -8,16 +8,16 @@ package de.uka.ipd.sdq.ByCounter.test.helpers.subjects;
  * 
  * 
  */
-public class TestLoopExternalAction implements ISimple {
+public class TestSubjectLoopExternalActionNoDependency implements ISimple {
 	/**Connected external component.
 	 */
-	protected ISimple requiredComponent;
+	//protected ISimple requiredComponent = new DoNothing();
 
 	/**
 	 * @param requiredComponent the requiredComponent to set
 	 */
 	public void setRequiredComponent(ISimple requiredComponent) {
-		this.requiredComponent = requiredComponent;
+		//this.requiredComponent = requiredComponent;
 	}
 
 	/* (non-Javadoc)
@@ -28,7 +28,7 @@ public class TestLoopExternalAction implements ISimple {
 		for (	int i = 0; 
 				i < 5; 
 				i++) {
-			requiredComponent.process();
+			System.out.println("Loop iteration number " + i);
 		}
 	}
 

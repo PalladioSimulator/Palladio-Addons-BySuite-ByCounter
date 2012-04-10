@@ -1,4 +1,4 @@
-package de.uka.ipd.sdq.ByCounter.test.helpers;
+package de.uka.ipd.sdq.ByCounter.test.helpers.subjects;
 
 public class TestSubjectUncommonFormatting {
 

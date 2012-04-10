@@ -23,9 +23,9 @@ import de.uka.ipd.sdq.ByCounter.test.framework.expectations.Expectation;
 import de.uka.ipd.sdq.ByCounter.test.helpers.TestSubjectBranch;
 import de.uka.ipd.sdq.ByCounter.test.helpers.TestSubjectExecutionOrder;
 import de.uka.ipd.sdq.ByCounter.test.helpers.TestSubjectLineNumbers;
-import de.uka.ipd.sdq.ByCounter.test.helpers.TestSubjectLoopExternalActionNoDependency;
-import de.uka.ipd.sdq.ByCounter.test.helpers.TestSubjectUncommonFormatting;
 import de.uka.ipd.sdq.ByCounter.test.helpers.Utils;
+import de.uka.ipd.sdq.ByCounter.test.helpers.subjects.TestSubjectLoopExternalActionNoDependency;
+import de.uka.ipd.sdq.ByCounter.test.helpers.subjects.TestSubjectUncommonFormatting;
 import de.uka.ipd.sdq.ByCounter.utils.ASMOpcodesMapper;
 import de.uka.ipd.sdq.ByCounter.utils.MethodDescriptor;
 

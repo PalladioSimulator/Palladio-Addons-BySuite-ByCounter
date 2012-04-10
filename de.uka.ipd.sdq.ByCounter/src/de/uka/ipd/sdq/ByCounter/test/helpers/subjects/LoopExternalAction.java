@@ -1,23 +1,23 @@
 /**
  * 
  */
-package de.uka.ipd.sdq.ByCounter.test.helpers;
+package de.uka.ipd.sdq.ByCounter.test.helpers.subjects;
 
 /**Implementation used to test Loops (containing an external action).
  * @author groenda
  * 
  * 
  */
-public class TestSubjectLoopExternalActionNoDependency implements ISimple {
+public class LoopExternalAction implements ISimple {
 	/**Connected external component.
 	 */
-	//protected ISimple requiredComponent = new DoNothing();
+	protected ISimple requiredComponent;
 
 	/**
 	 * @param requiredComponent the requiredComponent to set
 	 */
 	public void setRequiredComponent(ISimple requiredComponent) {
-		//this.requiredComponent = requiredComponent;
+		this.requiredComponent = requiredComponent;
 	}
 
 	/* (non-Javadoc)
@@ -28,7 +28,7 @@ public class TestSubjectLoopExternalActionNoDependency implements ISimple {
 		for (	int i = 0; 
 				i < 5; 
 				i++) {
-			System.out.println("Loop iteration number " + i);
+			requiredComponent.process();
 		}
 	}
 
