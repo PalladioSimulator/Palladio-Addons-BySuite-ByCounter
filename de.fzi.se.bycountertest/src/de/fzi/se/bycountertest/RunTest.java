@@ -4,11 +4,9 @@
 package de.fzi.se.bycountertest;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.SortedSet;
 
-import org.objectweb.asm.Opcodes;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -18,7 +16,6 @@ import de.uka.ipd.sdq.ByCounter.execution.CountingResult;
 import de.uka.ipd.sdq.ByCounter.execution.CountingResultCollector;
 import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentationParameters;
 import de.uka.ipd.sdq.ByCounter.parsing.LineNumberRange;
-import de.uka.ipd.sdq.ByCounter.test.framework.expectations.Expectation;
 import de.uka.ipd.sdq.ByCounter.utils.MethodDescriptor;
 import de.uka.ipd.sdq.ByCounter.utils.OpcodeToMethodMapper;
 
@@ -245,115 +242,6 @@ public class RunTest {
 			result.logResult(false, true);
 		}
 		assertNotNull("Results must not be null.", results);
-	}
-
-	/**
-	 * Tests if instrumentation of a single line works correctly.
-	 * 
-	 * @deprecated moved to main project's test package
-	 */
-	@Test
-	public void singleLineInstrumentation() {
-		Expectation e = new Expectation();
-		e.add(17, 17).add(Opcodes.ICONST_0, 1)
-					 .add(Opcodes.ISTORE, 1);
-
-		MethodDescriptor descriptor = new MethodDescriptor(TestExecutionOrder.class.getCanonicalName(), SIGNATURE_METHOD);
-		Object target = instrumentAndInstantiate(descriptor, Arrays.asList(e.getRanges()));
-		counter.execute(descriptor, target, new Object[0]);
-		CountingResult[] results = CountingResultCollector.getInstance().retrieveAllCountingResults().toArray(new CountingResult[0]);
-
-		e.compare(results);
-	}
-
-	/**
-	 * Tests if the order of execution during runtime is preserved in the results. This test case is different from
-	 * {@link #preserveExecutionOrderOfMeasurements_21()} in the order of the defined line number ranges.
-	 */
-	@Test
-	public void preserveExecutionOrderOfMeasurements_12() {
-		Expectation e = new Expectation(true);
-		e.add(0).add(Opcodes.ICONST_0, 1) // first two lines
-				.add(Opcodes.IINC, 1)
-				.add(Opcodes.ISTORE, 1);
-		e.add(1).add(Opcodes.ICONST_1, 1) // third line
-				.add(Opcodes.ILOAD, 1)
-				.add(Opcodes.IMUL, 1)
-				.add(Opcodes.ISTORE, 1);
-
-		MethodDescriptor descriptor = new MethodDescriptor(TestExecutionOrder.class.getCanonicalName(), SIGNATURE_METHOD);
-		ArrayList<LineNumberRange> lnrs = new ArrayList<LineNumberRange>();
-		lnrs.add(new LineNumberRange(17, 18)); // first two lines
-		lnrs.add(new LineNumberRange(19, 19)); // third line
-		Object target = instrumentAndInstantiate(descriptor, lnrs);
-		counter.execute(descriptor, target, new Object[0]);
-		CountingResult[] results = CountingResultCollector.getInstance().retrieveAllCountingResults().toArray(new CountingResult[0]);
-
-		e.compare(results);
-	}
-
-	/**
-	 * Tests if the order of execution during runtime is preserved in the results. This test case is different from
-	 * {@link #preserveExecutionOrderOfMeasurements_12()} in the order of the defined line number ranges.
-	 */
-	@Test
-	public void preserveExecutionOrderOfMeasurements_21() {
-		Expectation e = new Expectation(true);
-		e.add(1).add(Opcodes.ICONST_0, 1) // first two lines
-				.add(Opcodes.IINC, 1)
-				.add(Opcodes.ISTORE, 1);
-		e.add(0).add(Opcodes.ICONST_1, 1) // third line
-				.add(Opcodes.ILOAD, 1)
-				.add(Opcodes.IMUL, 1)
-				.add(Opcodes.ISTORE, 1);
-
-		MethodDescriptor descriptor = new MethodDescriptor(TestExecutionOrder.class.getCanonicalName(), SIGNATURE_METHOD);
-		ArrayList<LineNumberRange> lnrs = new ArrayList<LineNumberRange>();
-		lnrs.add(new LineNumberRange(19, 19)); // third line
-		lnrs.add(new LineNumberRange(17, 18)); // first two lines
-		Object target = instrumentAndInstantiate(descriptor, lnrs);
-		counter.execute(descriptor, target, new Object[0]);
-		CountingResult[] results = CountingResultCollector.getInstance().retrieveAllCountingResults().toArray(new CountingResult[0]);
-
-		e.compare(results);
-	}
-
-	@Test
-	public void preserveExecutionOrderOfMeasurements_Loop() {
-		Expectation e = new Expectation();
-		e.add(28, 30).add(Opcodes.GOTO, 1)
-					 .add(Opcodes.ICONST_0, 1)
-					 .add(Opcodes.ICONST_5, 1)
-					 .add(Opcodes.IF_ICMPLT, 1)
-					 .add(Opcodes.ILOAD, 1)
-					 .add(Opcodes.ISTORE, 1);
-		for (int i = 0; i < 5; i++) {
-			e.add(31, 31).add(Opcodes.DUP, 1)
-						 .add(Opcodes.GETSTATIC, 1)
-						 .add(Opcodes.ILOAD, 1)
-						 .add(Opcodes.INVOKESPECIAL, 1)
-						 .add(Opcodes.INVOKEVIRTUAL, 3)
-						 .add(Opcodes.LDC, 1)
-						 .add(Opcodes.NEW, 1)
-						 .add("java.io.PrintStream", "public void println(java.lang.String obj)", 1)
-						 .add("java.lang.StringBuilder", "public StringBuilder(java.lang.String obj)", 1)
-						 .add("java.lang.StringBuilder", "public java.lang.StringBuilder append(int obj)", 1)
-						 .add("java.lang.StringBuilder", "public java.lang.String toString()", 1);
-			e.add(28, 30).add(Opcodes.IINC, 1)
-						 .add(Opcodes.ICONST_5, 1)
-						 .add(Opcodes.IF_ICMPLT, 1)
-						 .add(Opcodes.ILOAD, 1);
-		}
-
-		MethodDescriptor descriptor = new MethodDescriptor(TestLoopExternalActionNoDependency.class.getCanonicalName(), SIGNATURE_METHOD);
-		ArrayList<LineNumberRange> lnrs = new ArrayList<LineNumberRange>();
-		lnrs.add(new LineNumberRange(28, 30)); // loop
-		lnrs.add(new LineNumberRange(31, 31)); // body | external call within loop
-		Object target = instrumentAndInstantiate(descriptor, lnrs);
-		counter.execute(descriptor, target, new Object[0]);
-		CountingResult[] results = CountingResultCollector.getInstance().retrieveAllCountingResults().toArray(new CountingResult[0]);
-
-		e.compare(results);
 	}
 
 	/**

@@ -23,6 +23,7 @@ import de.uka.ipd.sdq.ByCounter.test.framework.expectations.Expectation;
 import de.uka.ipd.sdq.ByCounter.test.helpers.TestSubjectBranch;
 import de.uka.ipd.sdq.ByCounter.test.helpers.TestSubjectExecutionOrder;
 import de.uka.ipd.sdq.ByCounter.test.helpers.TestSubjectLineNumbers;
+import de.uka.ipd.sdq.ByCounter.test.helpers.TestSubjectLoopExternalActionNoDependency;
 import de.uka.ipd.sdq.ByCounter.test.helpers.TestSubjectUncommonFormatting;
 import de.uka.ipd.sdq.ByCounter.test.helpers.Utils;
 import de.uka.ipd.sdq.ByCounter.utils.ASMOpcodesMapper;
@@ -41,7 +42,7 @@ import de.uka.ipd.sdq.ByCounter.utils.MethodDescriptor;
 public class TestLineNumbers {
 
     /** The canonical name of the test subject's class. */
-    private static final String TEST_SUBJECT_CANONICAL = TestSubjectLineNumbers.class.getCanonicalName();
+    private static final String DEFAULT_SUBJECT_CANONICAL = TestSubjectLineNumbers.class.getCanonicalName();
 
     /** Signature of the method that is used to test in testRangeBlocksForeach(). */
     private static final String SIGNATURE_FOREACH = "public int testForeach()";
@@ -108,7 +109,7 @@ public class TestLineNumbers {
 	 * Tests if instrumentation of a single line works correctly.
 	 */
 	@Test
-	public void singleLineInstrumentation() {
+	public void testSingleLineInstrumentation() {
 		// define expectations
 		Expectation e = new Expectation();
 		e.add(15, 15).add(Opcodes.ICONST_0, 1)
@@ -117,6 +118,106 @@ public class TestLineNumbers {
 		String canonicalClassName = TestSubjectExecutionOrder.class.getCanonicalName();
 		String methodSignature = "void process()";
         CountingResult[] results = this.instrumentAndExecute(e.getRanges(), canonicalClassName, methodSignature, new Object[0]);
+        for (CountingResult r : results) {
+        	r.logResult(false, true);
+        }
+        // compare
+        e.compare(results);
+	}
+
+	/**
+	 * Tests if the order of execution during runtime is preserved in the results. This test case is different from
+	 * {@link #preserveExecutionOrderOfMeasurements_21()} in the order of the defined line number ranges.
+	 */
+	@Test
+	public void preserveExecutionOrderOfMeasurements_12() {
+		// define expectations
+		Expectation e = new Expectation(true);
+		e.add(0).add(Opcodes.ICONST_0, 1) // first two lines
+				.add(Opcodes.IINC, 1)
+				.add(Opcodes.ISTORE, 1);
+		e.add(1).add(Opcodes.ICONST_1, 1) // third line
+				.add(Opcodes.ILOAD, 1)
+				.add(Opcodes.IMUL, 1)
+				.add(Opcodes.ISTORE, 1);
+		// define line number ranges
+		LineNumberRange[] lnrs = new LineNumberRange[2];
+		lnrs[0] = new LineNumberRange(15, 16); // first two lines
+		lnrs[1] = new LineNumberRange(17, 17); // third line
+		// run ByCounter
+		String canonicalClassName = TestSubjectExecutionOrder.class.getCanonicalName();
+		String methodSignature = "void process()";
+        CountingResult[] results = this.instrumentAndExecute(lnrs, canonicalClassName, methodSignature, new Object[0]);
+        for (CountingResult r : results) {
+        	r.logResult(false, true);
+        }
+        // compare
+        e.compare(results);
+	}
+
+	/**
+	 * Tests if the order of execution during runtime is preserved in the results. This test case is different from
+	 * {@link #preserveExecutionOrderOfMeasurements_12()} in the order of the defined line number ranges.
+	 */
+	@Test
+	public void preserveExecutionOrderOfMeasurements_21() {
+		Expectation e = new Expectation(true);
+		e.add(1).add(Opcodes.ICONST_0, 1) // first two lines
+				.add(Opcodes.IINC, 1)
+				.add(Opcodes.ISTORE, 1);
+		e.add(0).add(Opcodes.ICONST_1, 1) // third line
+				.add(Opcodes.ILOAD, 1)
+				.add(Opcodes.IMUL, 1)
+				.add(Opcodes.ISTORE, 1);
+		// define line number ranges
+		LineNumberRange[] lnrs = new LineNumberRange[2];
+		lnrs[0] = new LineNumberRange(17, 17); // third line
+		lnrs[1] = new LineNumberRange(15, 16); // first two lines
+		// run ByCounter
+		String canonicalClassName = TestSubjectExecutionOrder.class.getCanonicalName();
+		String methodSignature = "void process()";
+        CountingResult[] results = this.instrumentAndExecute(lnrs, canonicalClassName, methodSignature, new Object[0]);
+        for (CountingResult r : results) {
+        	r.logResult(false, true);
+        }
+        // compare
+        e.compare(results);
+	}
+
+	@Test
+	public void preserveExecutionOrderOfMeasurements_Loop() {
+		Expectation e = new Expectation();
+		e.add(28, 30).add(Opcodes.GOTO, 1)
+					 .add(Opcodes.ICONST_0, 1)
+					 .add(Opcodes.ICONST_5, 1)
+					 .add(Opcodes.IF_ICMPLT, 1)
+					 .add(Opcodes.ILOAD, 1)
+					 .add(Opcodes.ISTORE, 1);
+		for (int i = 0; i < 5; i++) {
+			e.add(31, 31).add(Opcodes.DUP, 1)
+						 .add(Opcodes.GETSTATIC, 1)
+						 .add(Opcodes.ILOAD, 1)
+						 .add(Opcodes.INVOKESPECIAL, 1)
+						 .add(Opcodes.INVOKEVIRTUAL, 3)
+						 .add(Opcodes.LDC, 1)
+						 .add(Opcodes.NEW, 1)
+						 .add("java.io.PrintStream", "public void println(java.lang.String obj)", 1)
+						 .add("java.lang.StringBuilder", "public StringBuilder(java.lang.String obj)", 1)
+						 .add("java.lang.StringBuilder", "public java.lang.StringBuilder append(int obj)", 1)
+						 .add("java.lang.StringBuilder", "public java.lang.String toString()", 1);
+			e.add(28, 30).add(Opcodes.IINC, 1)
+						 .add(Opcodes.ICONST_5, 1)
+						 .add(Opcodes.IF_ICMPLT, 1)
+						 .add(Opcodes.ILOAD, 1);
+		}
+
+		LineNumberRange[] lnrs = new LineNumberRange[2];
+		lnrs[0] = new LineNumberRange(28, 30); // loop
+		lnrs[1] = new LineNumberRange(31, 31); // body | external call within loop
+		
+		String canonicalClassName = TestSubjectLoopExternalActionNoDependency.class.getCanonicalName();
+		String methodSignature = "void process()";
+        CountingResult[] results = this.instrumentAndExecute(lnrs, canonicalClassName, methodSignature, new Object[0]);
         for (CountingResult r : results) {
         	r.logResult(false, true);
         }
@@ -133,7 +234,7 @@ public class TestLineNumbers {
         BytecodeCounter counter = new BytecodeCounter();
         counter.setInstrumentationParams(this.instrumentationParameters);
         counter.getInstrumentationParams().setUseBasicBlocks(false);
-        MethodDescriptor methodNormalise = new MethodDescriptor(TEST_SUBJECT_CANONICAL, SIGNATURE_BASIC_BLOCK);
+        MethodDescriptor methodNormalise = new MethodDescriptor(DEFAULT_SUBJECT_CANONICAL, SIGNATURE_BASIC_BLOCK);
         counter.instrument(methodNormalise);
         Object[] executionParameters = new Object[] { 5 };
         counter.execute(methodNormalise, executionParameters);
@@ -202,7 +303,7 @@ public class TestLineNumbers {
         counter.setInstrumentationParams(this.instrumentationParameters);
         counter.getInstrumentationParams().setUseBasicBlocks(true);
         counter.getInstrumentationParams().setRecordBlockExecutionOrder(false);
-        MethodDescriptor methodRanged = new MethodDescriptor(TEST_SUBJECT_CANONICAL, SIGNATURE_RANGE_BLOCK);
+        MethodDescriptor methodRanged = new MethodDescriptor(DEFAULT_SUBJECT_CANONICAL, SIGNATURE_RANGE_BLOCK);
         methodRanged.setCodeAreasToInstrument(e.getRanges());
         counter.instrument(methodRanged);
         // execute with (10)
@@ -298,7 +399,7 @@ public class TestLineNumbers {
         BytecodeCounter counter = new BytecodeCounter();
         counter.setInstrumentationParams(this.instrumentationParameters);
         counter.getInstrumentationParams().setUseBasicBlocks(true);
-        MethodDescriptor methodForeach = new MethodDescriptor(TEST_SUBJECT_CANONICAL, SIGNATURE_FOREACH);
+        MethodDescriptor methodForeach = new MethodDescriptor(DEFAULT_SUBJECT_CANONICAL, SIGNATURE_FOREACH);
         methodForeach.setCodeAreasToInstrument(e.getRanges());
         counter.instrument(methodForeach);
         // execute
@@ -332,7 +433,7 @@ public class TestLineNumbers {
         e.add(55, 56).add(Opcodes.ALOAD, 1)
                      .add(Opcodes.IINC, 1)
                      .add(Opcodes.INVOKESPECIAL, 1)
-                     .add(TEST_SUBJECT_CANONICAL + ".extCall1()V", 1);
+                     .add(DEFAULT_SUBJECT_CANONICAL + ".extCall1()V", 1);
         e.add(57, 57).add(Opcodes.IINC, 1);
         // run ByCounter
         CountingResult[] results = this.instrumentAndExecute(e.getRanges());
@@ -350,7 +451,7 @@ public class TestLineNumbers {
     @Test
     public void testLabelAndLineNumbers() {
         BytecodeCounter counter = new BytecodeCounter();
-        MethodDescriptor d = new MethodDescriptor(TEST_SUBJECT_CANONICAL, SIGNATURE_LINE_NUMBERS);
+        MethodDescriptor d = new MethodDescriptor(DEFAULT_SUBJECT_CANONICAL, SIGNATURE_LINE_NUMBERS);
         counter.instrument(d);
         counter.execute(d, new Object[0]);
         CountingResultCollector.getInstance().clearResults();
@@ -432,14 +533,38 @@ public class TestLineNumbers {
 		e.compare(results);
 	}
 	
+	/**
+	 * 
+	 * @param codeAreasToInstrument
+	 * @return The result of ByCounter.
+	 */
 	private CountingResult[] instrumentAndExecute(LineNumberRange[] codeAreasToInstrument) {
-		return this.instrumentAndExecute(codeAreasToInstrument, TEST_SUBJECT_CANONICAL, SIGNATURE_METHOD_CALLS);
-	}
-	private CountingResult[] instrumentAndExecute(LineNumberRange[] codeAreasToInstrument, String canonicalClassName, String methodSignature) {
-        // execute with (10)
-		return this.instrumentAndExecute(codeAreasToInstrument, canonicalClassName, methodSignature, new Object[] { 10 });
+		return this.instrumentAndExecute(codeAreasToInstrument, DEFAULT_SUBJECT_CANONICAL, SIGNATURE_METHOD_CALLS);
 	}
 	
+	/**
+	 * Instruments the given method and lets ByCounter evaluate it.
+	 * 
+	 * The method is executed with parameter 10.
+	 * 
+	 * @param codeAreasToInstrument
+	 * @param canonicalClassName
+	 * @param methodSignature
+	 * @return The result of ByCounter.
+	 */
+	private CountingResult[] instrumentAndExecute(LineNumberRange[] codeAreasToInstrument, String canonicalClassName, String methodSignature) {
+        return this.instrumentAndExecute(codeAreasToInstrument, canonicalClassName, methodSignature, new Object[] { 10 });
+	}
+	
+	/**
+	 * Instruments the given method and lets ByCounter evaluate it.
+	 * 
+	 * @param codeAreasToInstrument
+	 * @param canonicalClassName
+	 * @param methodSignature
+	 * @param executionParameters
+	 * @return The result of ByCounter.
+	 */
 	private CountingResult[] instrumentAndExecute(LineNumberRange[] codeAreasToInstrument, String canonicalClassName, String methodSignature, Object[] executionParameters) {
 		// initialize ByCounter
         BytecodeCounter counter = new BytecodeCounter();
