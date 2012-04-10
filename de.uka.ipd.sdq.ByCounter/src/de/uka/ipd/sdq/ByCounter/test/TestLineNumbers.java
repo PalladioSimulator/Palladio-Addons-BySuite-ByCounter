@@ -1,5 +1,8 @@
 package de.uka.ipd.sdq.ByCounter.test;
 
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -24,6 +27,7 @@ import de.uka.ipd.sdq.ByCounter.test.helpers.TestSubjectBranch;
 import de.uka.ipd.sdq.ByCounter.test.helpers.TestSubjectExecutionOrder;
 import de.uka.ipd.sdq.ByCounter.test.helpers.TestSubjectLineNumbers;
 import de.uka.ipd.sdq.ByCounter.test.helpers.Utils;
+import de.uka.ipd.sdq.ByCounter.test.helpers.subjects.LoopExternalActionStackOverflow;
 import de.uka.ipd.sdq.ByCounter.test.helpers.subjects.TestSubjectLoopExternalActionNoDependency;
 import de.uka.ipd.sdq.ByCounter.test.helpers.subjects.TestSubjectUncommonFormatting;
 import de.uka.ipd.sdq.ByCounter.utils.ASMOpcodesMapper;
@@ -123,6 +127,33 @@ public class TestLineNumbers {
         }
         // compare
         e.compare(results);
+	}
+
+	/**
+	 * Test that ByCounter does not fail due to an Invocation Target Exception (Stack Overflow) although the problem is
+	 * not due to the implementation or structure of it. If an interface instead of a direct class is used ByCounter
+	 * should not fail due to an Invocation Target Exception.
+	 */
+	@Test
+	public void callToMethodsViaInterface() {
+		// ensure direct execution works and no exceptions are thrown
+		LoopExternalActionStackOverflow cut = new LoopExternalActionStackOverflow();
+		cut.process();
+		
+		// define line number ranges
+		LineNumberRange[] lnrs = new LineNumberRange[2];
+		lnrs[0] = new LineNumberRange(28, 30); // loop
+		lnrs[1] = new LineNumberRange(31, 31); // external call within loop
+		// run ByCounter
+		String className = LoopExternalActionStackOverflow.class.getCanonicalName();
+		String methodSignature = "void process()";
+		CountingResult[] results = this.instrumentAndExecute(lnrs, className, methodSignature, new Object[0]);
+		for (CountingResult result : results) {
+			result.logResult(false, true);
+		}
+		// compare TODO usage of test framework
+		assertNotNull("Results must not be null.", results);
+		assertTrue("Number of results for LNRs must be bigger than 0.", results.length > 0);
 	}
 
 	/**

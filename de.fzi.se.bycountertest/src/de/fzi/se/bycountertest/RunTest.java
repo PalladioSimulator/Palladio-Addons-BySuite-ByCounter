@@ -5,7 +5,6 @@ package de.fzi.se.bycountertest;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.SortedSet;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -221,30 +220,6 @@ public class RunTest {
 	}
 
 	/**
-	 * Tests if dependencies of a Class Under Test (CUT) can successfully be resolved after instantiation and before
-	 * execution.
-	 */
-	@Test
-	public void dependencyResolutionOfClassUnderTest() {
-		MethodDescriptor descriptor = new MethodDescriptor(TestLoopExternalAction.class.getCanonicalName(), SIGNATURE_METHOD);
-		ArrayList<LineNumberRange> lnrs = new ArrayList<LineNumberRange>();
-		lnrs.add(new LineNumberRange(28, 30)); // loop
-		lnrs.add(new LineNumberRange(31, 31)); // external call within loop
-		Object target = instrumentAndInstantiate(descriptor, lnrs);
-		// resolve dependencies
-		DoNothing doNothing = new DoNothing();
-		((TestLoopExternalAction) target).setRequiredComponent(doNothing);
-		// execute
-		counter.execute(descriptor, target, new Object[0]);
-		// show non-null results
-		SortedSet<CountingResult> results = CountingResultCollector.getInstance().retrieveAllCountingResults();
-		for (CountingResult result : results) {
-			result.logResult(false, true);
-		}
-		assertNotNull("Results must not be null.", results);
-	}
-
-	/**
 	 * Uses ByCounter to instrument and instantiate the class containing the provided method and LNRs.
 	 *
 	 * @param descriptor
@@ -270,35 +245,6 @@ public class RunTest {
 		// instantiate
 		Object target = counter.instantiate(descriptor);
 		return target;
-	}
-
-	/**
-	 * Test that ByCounter does not fail due to an Invocation Target Exception (Stack Overflow) although the problem is
-	 * not due to the implementation or structure of it. If an interface instead of a direct class is used ByCounter
-	 * should not fail due to an Invocation Target Exception.
-	 */
-	@Test
-	public void callToMethodsViaInterface() {
-		// ensure direct execution works and no exceptions are thrown
-		TestLoopExternalActionStackOverflow cut = new TestLoopExternalActionStackOverflow();
-		cut.process();
-		// instrument and execute
-		MethodDescriptor descriptor = new MethodDescriptor(
-				TestLoopExternalActionStackOverflow.class.getCanonicalName(), SIGNATURE_METHOD);
-		ArrayList<LineNumberRange> lnrs = new ArrayList<LineNumberRange>();
-		lnrs.add(new LineNumberRange(28, 30)); // loop
-		lnrs.add(new LineNumberRange(31, 31)); // external call within loop
-		Object target = instrumentAndInstantiate(descriptor, lnrs);
-		// execute
-		counter.execute(descriptor, target, new Object[0]);
-		// show non-null results
-		CountingResult[] results = CountingResultCollector.getInstance().retrieveAllCountingResults().toArray(
-				new CountingResult[0]);
-		assertNotNull("Results must not be null.", results);
-		assertTrue("Number of results for LNRs must be bigger than 0.", results.length > 0);
-		for (CountingResult result : results) {
-			result.logResult(false, true);
-		}
 	}
 
 	/**
