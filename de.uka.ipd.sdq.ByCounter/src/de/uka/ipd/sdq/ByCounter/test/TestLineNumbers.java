@@ -23,13 +23,13 @@ import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentationParameters;
 import de.uka.ipd.sdq.ByCounter.parsing.LineNumberRange;
 import de.uka.ipd.sdq.ByCounter.test.TestASMBytecodes;
 import de.uka.ipd.sdq.ByCounter.test.framework.expectations.Expectation;
-import de.uka.ipd.sdq.ByCounter.test.helpers.TestSubjectBranch;
-import de.uka.ipd.sdq.ByCounter.test.helpers.TestSubjectExecutionOrder;
 import de.uka.ipd.sdq.ByCounter.test.helpers.TestSubjectLineNumbers;
 import de.uka.ipd.sdq.ByCounter.test.helpers.Utils;
 import de.uka.ipd.sdq.ByCounter.test.helpers.subjects.LoopExternalActionStackOverflow;
-import de.uka.ipd.sdq.ByCounter.test.helpers.subjects.TestSubjectLoopExternalActionNoDependency;
-import de.uka.ipd.sdq.ByCounter.test.helpers.subjects.TestSubjectUncommonFormatting;
+import de.uka.ipd.sdq.ByCounter.test.helpers.subjects.LoopExternalActionNoDependency;
+import de.uka.ipd.sdq.ByCounter.test.helpers.subjects.Branch;
+import de.uka.ipd.sdq.ByCounter.test.helpers.subjects.ExecutionOrder;
+import de.uka.ipd.sdq.ByCounter.test.helpers.subjects.UncommonFormatting;
 import de.uka.ipd.sdq.ByCounter.utils.ASMOpcodesMapper;
 import de.uka.ipd.sdq.ByCounter.utils.MethodDescriptor;
 
@@ -119,7 +119,7 @@ public class TestLineNumbers {
 		e.add(15, 15).add(Opcodes.ICONST_0, 1)
 					 .add(Opcodes.ISTORE, 1);
         // run ByCounter
-		String canonicalClassName = TestSubjectExecutionOrder.class.getCanonicalName();
+		String canonicalClassName = ExecutionOrder.class.getCanonicalName();
 		String methodSignature = "void process()";
         CountingResult[] results = this.instrumentAndExecute(e.getRanges(), canonicalClassName, methodSignature, new Object[0]);
         for (CountingResult r : results) {
@@ -176,7 +176,7 @@ public class TestLineNumbers {
 		lnrs[0] = new LineNumberRange(15, 16); // first two lines
 		lnrs[1] = new LineNumberRange(17, 17); // third line
 		// run ByCounter
-		String canonicalClassName = TestSubjectExecutionOrder.class.getCanonicalName();
+		String canonicalClassName = ExecutionOrder.class.getCanonicalName();
 		String methodSignature = "void process()";
         CountingResult[] results = this.instrumentAndExecute(lnrs, canonicalClassName, methodSignature, new Object[0]);
         for (CountingResult r : results) {
@@ -205,7 +205,7 @@ public class TestLineNumbers {
 		lnrs[0] = new LineNumberRange(17, 17); // third line
 		lnrs[1] = new LineNumberRange(15, 16); // first two lines
 		// run ByCounter
-		String canonicalClassName = TestSubjectExecutionOrder.class.getCanonicalName();
+		String canonicalClassName = ExecutionOrder.class.getCanonicalName();
 		String methodSignature = "void process()";
         CountingResult[] results = this.instrumentAndExecute(lnrs, canonicalClassName, methodSignature, new Object[0]);
         for (CountingResult r : results) {
@@ -246,7 +246,7 @@ public class TestLineNumbers {
 		lnrs[0] = new LineNumberRange(28, 30); // loop
 		lnrs[1] = new LineNumberRange(31, 31); // body | external call within loop
 		
-		String canonicalClassName = TestSubjectLoopExternalActionNoDependency.class.getCanonicalName();
+		String canonicalClassName = LoopExternalActionNoDependency.class.getCanonicalName();
 		String methodSignature = "void process()";
         CountingResult[] results = this.instrumentAndExecute(lnrs, canonicalClassName, methodSignature, new Object[0]);
         for (CountingResult r : results) {
@@ -504,7 +504,7 @@ public class TestLineNumbers {
         counter.setInstrumentationParams(this.instrumentationParameters);
         counter.getInstrumentationParams().setUseBasicBlocks(true);
         counter.getInstrumentationParams().setRecordBlockExecutionOrder(true);
-        MethodDescriptor methodRanged = new MethodDescriptor(TestSubjectUncommonFormatting.class.getCanonicalName(), "public void process()");
+        MethodDescriptor methodRanged = new MethodDescriptor(UncommonFormatting.class.getCanonicalName(), "public void process()");
         methodRanged.setCodeAreasToInstrument(e.getRanges());
         counter.instrument(methodRanged);
         // execute with ()
@@ -611,7 +611,7 @@ public class TestLineNumbers {
 	}
 
 	/**
-	 * Runs the method {@link TestSubjectBranch#process(int)} with the given parameter.
+	 * Runs the method {@link Branch#process(int)} with the given parameter.
 	 * 
 	 * @param inputValue
 	 *            Input parameter.
@@ -626,7 +626,7 @@ public class TestLineNumbers {
 		counter.setInstrumentationParams(this.instrumentationParameters);
 		counter.getInstrumentationParams().setInstrumentRecursively(true, 50);
 		counter.getInstrumentationParams().setUseBasicBlocks(true);
-		MethodDescriptor methodRanged = new MethodDescriptor(TestSubjectBranch.class.getCanonicalName(), "public int process(int input)");
+		MethodDescriptor methodRanged = new MethodDescriptor(Branch.class.getCanonicalName(), "public int process(int input)");
 		methodRanged.setCodeAreasToInstrument(lnrs.toArray(new LineNumberRange[0]));
 		counter.instrument(methodRanged);
 		// execute

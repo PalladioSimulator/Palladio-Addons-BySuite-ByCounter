@@ -1,14 +1,14 @@
 /**
  * 
  */
-package de.uka.ipd.sdq.ByCounter.test.helpers;
+package de.uka.ipd.sdq.ByCounter.test.helpers.subjects;
 
 /**
  * Test for branches (return value)
  * 
  * @author groenda
  */
-public class TestSubjectBranch {
+public class Branch {
 	public int process(int input) {
 		if (input > 0 && input < 10) {
 			input++;

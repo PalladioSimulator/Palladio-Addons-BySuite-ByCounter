@@ -1,6 +1,6 @@
 package de.uka.ipd.sdq.ByCounter.test.helpers.subjects;
 
-public class TestSubjectUncommonFormatting {
+public class UncommonFormatting {
 
 	public void process() {
 		for 

@@ -1,7 +1,7 @@
 /**
  * 
  */
-package de.uka.ipd.sdq.ByCounter.test.helpers;
+package de.uka.ipd.sdq.ByCounter.test.helpers.subjects;
 
 /**
  * Implementation used to test the preservation of the execution order in resulting measurements.
@@ -9,7 +9,7 @@ package de.uka.ipd.sdq.ByCounter.test.helpers;
  * @author groenda
  * 
  */
-public class TestSubjectExecutionOrder {
+public class ExecutionOrder {
 
 	public void process() {
 		int i = 0;

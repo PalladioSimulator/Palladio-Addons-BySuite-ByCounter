@@ -8,7 +8,7 @@ package de.uka.ipd.sdq.ByCounter.test.helpers.subjects;
  * 
  * 
  */
-public class TestSubjectLoopExternalActionNoDependency implements ISimple {
+public class LoopExternalActionNoDependency implements ISimple {
 	/**Connected external component.
 	 */
 	//protected ISimple requiredComponent = new DoNothing();
