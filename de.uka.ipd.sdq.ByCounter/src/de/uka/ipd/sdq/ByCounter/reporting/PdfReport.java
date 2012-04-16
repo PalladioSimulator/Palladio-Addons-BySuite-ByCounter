@@ -166,8 +166,7 @@ public class PdfReport implements ICountingResultWriter {
 					doc,
 					new FileOutputStream(fileName));
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
 	}
 
@@ -244,7 +243,7 @@ public class PdfReport implements ICountingResultWriter {
 		try {
 			this.generatePdf(new CountingResult[] {cr}, CountingResultCollector.getInstance().getLastMethodExecutionDetails());
 		} catch (DocumentException e) {
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
 		return -1;
 	}

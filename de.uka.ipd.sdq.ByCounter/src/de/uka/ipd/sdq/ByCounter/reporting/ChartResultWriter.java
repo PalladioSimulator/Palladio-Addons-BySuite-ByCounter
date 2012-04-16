@@ -194,14 +194,14 @@ public class ChartResultWriter implements ICountingResultWriter{
 						chartYsize, 
 						new DefaultFontMapper());
 			} catch (IOException e1) {
-				e1.printStackTrace();
+				throw new RuntimeException(e1);
 			}
 		}
 		if(savePNGchart){
 			try {
 				ChartUtilities.saveChartAsPNG(file, chart, chartXsize, chartYsize);
 			} catch (IOException e) {
-				e.printStackTrace();
+				throw new RuntimeException(e);
 			}
 		}
 		return chart;
@@ -324,7 +324,7 @@ public class ChartResultWriter implements ICountingResultWriter{
 
 			this.log.info("Writing chart to " + outputFile.getAbsolutePath());
 		} catch (IOException e) {
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
 	}
 }

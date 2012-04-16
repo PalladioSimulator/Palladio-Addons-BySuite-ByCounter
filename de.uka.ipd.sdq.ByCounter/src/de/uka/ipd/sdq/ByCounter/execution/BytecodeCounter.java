@@ -704,7 +704,8 @@ public final class BytecodeCounter {
 						BasicBlockSerialisation.serialise(
 								instrumentationState.getRangeBlockSerialisation(), file);
 					}
-				} catch (Exception e) {
+				} catch (IOException e) {
+					log.severe("Failed to serialise basic or rang block definitions. " + e.getMessage());
 					e.printStackTrace();
 				}
 			}
@@ -758,6 +759,7 @@ public final class BytecodeCounter {
 					}
 				}
 			} catch (Exception e) {
+				log.severe("Failed to load basic or range block definitions. " + e.getMessage());
 				e.printStackTrace();
 			}
 		}
@@ -876,38 +878,38 @@ public final class BytecodeCounter {
 	 * @param b Class as byte[] to write.
 	 */
 	private synchronized void writeClassFile(
-			String packageName, 
-			String className, byte[] b) {
+		String packageName, 
+		String className, byte[] b) {
 		FileOutputStream fileOut = null;
-		try {
+		String classPath = packageName.replace('.', File.separatorChar);
+		String path = (
+				this.instrumentationParameters.getWriteClassesToDiskDirectory().getAbsolutePath() 
+				+ File.separatorChar + classPath
+				+ File.separatorChar);
+		File directory = new File (path);
+		// make sure the directories exist
+		if(!directory.exists() && !directory.mkdirs()) {
+			log.severe("Could not create directory for instrumented class files.");
+		} else {
 			try {
-				String classPath = packageName.replace('.', File.separatorChar);
-				String path = (
-						this.instrumentationParameters.getWriteClassesToDiskDirectory().getAbsolutePath() 
-						+ File.separatorChar + classPath
-						+ File.separatorChar);
-				File directory = new File (path);
-				// make sure the directories exist
-				if(!directory.exists() && !directory.mkdirs()) {
-					log.severe("Could not create directory for instrumented class files.");
-				} else {
+				try {
 					File f = new File(directory, className + ".class");
 					fileOut = new FileOutputStream(f);
 //					log.info("Writing "+packageName+"."+className+" to "+fileOut.getFD().toString());//FileDesciptor does not have a usable toString method
 					log.info("Writing "+packageName+"."+className+" to "+f.getAbsolutePath());
 					fileOut.write(b);
+				} catch (FileNotFoundException e) {
+					log.severe("Could not write class file to " + path + "." + e.getMessage());
+					e.printStackTrace();
+				} finally {
+					if(fileOut != null) {
+						fileOut.close();
+					}
 				}
-			} catch (FileNotFoundException e) {
-				// TODO Auto-generated catch block
+			} catch (IOException e) {
+				log.severe("Could not write class file to " + path + "." + e.getMessage());
 				e.printStackTrace();
-			} finally {
-				if(fileOut != null) {
-					fileOut.close();
-				}
 			}
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		}
 	}
 

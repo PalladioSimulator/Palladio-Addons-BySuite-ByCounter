@@ -403,7 +403,8 @@ public final class Instrumenter {
 							}
 						}
 					} catch (ClassNotFoundException e) {
-						e.printStackTrace();
+						log.severe("Could not find class.");
+						throw new RuntimeException(e);
 					}
 					javax.swing.JOptionPane.showMessageDialog(null, message);
 					retValue = false;

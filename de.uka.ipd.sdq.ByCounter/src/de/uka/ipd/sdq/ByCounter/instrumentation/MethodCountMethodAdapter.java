@@ -1294,12 +1294,8 @@ public final class MethodCountMethodAdapter extends MethodAdapter implements Opc
 	 */
 	public void setIsAlreadyInstrumented(boolean isInstrumented, String name, String signature) {
 		if(isInstrumented) {
-			try {
-				this.isAlreadyInstrumented = isInstrumented; //simply means that visitCode won't instrument - does not impact the instrumentation of other method nodes
-				throw new Exception(name + "("+signature+") already instrumented!");
-			} catch(Exception e) {
-				e.printStackTrace();
-			}
+			this.isAlreadyInstrumented = isInstrumented; //simply means that visitCode won't instrument - does not impact the instrumentation of other method nodes
+			throw new AlreadyInstrumentedException(name + "("+signature+") already instrumented!");
 		}
 		
 	}

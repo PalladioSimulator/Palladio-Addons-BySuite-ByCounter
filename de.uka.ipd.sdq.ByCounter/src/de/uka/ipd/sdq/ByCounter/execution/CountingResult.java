@@ -538,11 +538,8 @@ implements Serializable, Cloneable, IFullCountingResult, Comparable<IFullCountin
 		this.characterisations = null; //now, methods modifying characterisations must check for non-nullness //used to be new ArrayList<Object>(0);//this is eating up memory...
 		this.characterisationTitles = null; //now, methods modifying characterisations must check for non-nullness //used to be new ArrayList<String>(0);
 		this.characterisationTypes = null; //now, methods modifying characterisations must check for non-nullness //used to be new ArrayList<Integer>(0);
-//		try {
-//			this.computeTotalOpcodeCounts();
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		}
+
+//		this.computeTotalOpcodeCounts();
 	}
 
 	/** Adds the counts of this {@link CountingResult} instance to
@@ -646,7 +643,7 @@ implements Serializable, Cloneable, IFullCountingResult, Comparable<IFullCountin
 	 * TODO
 	 * @throws Exception
 	 */
-	private synchronized void computeTotalOpcodeCounts() throws Exception {
+	private synchronized void computeTotalOpcodeCounts() {
 		long tentativeNewTotalCountInclInvokes = 0L;
 		long tentativeNewTotalCountExclInvokes = 0L;
 		long prevNewTotalCountInclInvokes = 0L;
@@ -656,7 +653,7 @@ implements Serializable, Cloneable, IFullCountingResult, Comparable<IFullCountin
 				prevNewTotalCountInclInvokes
 				+this.opcodeCounts[i];
 			if(tentativeNewTotalCountInclInvokes<prevNewTotalCountInclInvokes){
-				throw new Exception("Overflow detected while " +
+				throw new RuntimeException("Overflow detected while " +
 						"computing total opcode counts INCL invoke*");
 			}
 			prevNewTotalCountInclInvokes = tentativeNewTotalCountInclInvokes;
@@ -670,7 +667,7 @@ implements Serializable, Cloneable, IFullCountingResult, Comparable<IFullCountin
 					prevNewTotalCountExclInvokes
 					+opcodeCounts[i];
 				if(tentativeNewTotalCountExclInvokes<prevNewTotalCountExclInvokes){
-					throw new Exception("Overflow detected while " +
+					throw new RuntimeException("Overflow detected while " +
 							"computing total opcode counts EXCL invoke*");
 				}
 				prevNewTotalCountExclInvokes = tentativeNewTotalCountExclInvokes;
@@ -899,11 +896,7 @@ implements Serializable, Cloneable, IFullCountingResult, Comparable<IFullCountin
 	 */
 	public synchronized Long getTotalCount(boolean includeInvokeOpcodes) {
 		if(!totalCountsAlreadyComputed){
-			try {
-				this.computeTotalOpcodeCounts();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+			this.computeTotalOpcodeCounts();
 		}
 		if(includeInvokeOpcodes){
 			return totalCountInclInvokes;

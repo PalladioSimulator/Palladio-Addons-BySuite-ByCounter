@@ -33,17 +33,20 @@ public class BlockDefinitionContext {
 	 * instrumentation.
 	 */
 	public void tryToLoadBasicBlockSerialisation() {
-		try {
 			File file = new File(BasicBlockSerialisation.FILE_BASIC_BLOCK_SERIALISATION);
 			if(file.exists()) {
-				this.bbSerialisation = BasicBlockSerialisation.deserialise(file);
-				log.fine("BasicBlockSerialisation: "+this.bbSerialisation.toString());
+				try {
+					this.bbSerialisation = BasicBlockSerialisation.deserialise(file);
+					log.fine("BasicBlockSerialisation: "+this.bbSerialisation.toString());
+				} catch (Exception e) {
+					// n
+					log.severe("Could not load BasicBlockSerialisation "+this.bbSerialisation.toString());
+					log.severe(e.getMessage());
+					e.printStackTrace();
+				}
 			} else {
 				log.fine("No BasicBlockSerialisation loaded.");
 			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
 	}
 	
 	/**

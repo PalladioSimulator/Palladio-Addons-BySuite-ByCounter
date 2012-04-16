@@ -22,6 +22,7 @@ import org.junit.runners.Parameterized.Parameters;
 import de.uka.ipd.sdq.ByCounter.execution.BytecodeCounter;
 import de.uka.ipd.sdq.ByCounter.execution.CountingResult;
 import de.uka.ipd.sdq.ByCounter.execution.CountingResultCollector;
+import de.uka.ipd.sdq.ByCounter.instrumentation.AlreadyInstrumentedException;
 import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentationParameters;
 import de.uka.ipd.sdq.ByCounter.instrumentation.Instrumenter;
 import de.uka.ipd.sdq.ByCounter.test.helpers.ASMBytecodeOccurences;
@@ -370,8 +371,14 @@ public class TestBytecodeCounter {
 		
 		counter.setClassToInstrument(instrumentedBytes);
 	
+		boolean exceptionThrown = false;
+		try {
 		counter.instrument(
 				new MethodDescriptor(((Class<?>) ASMBytecodeOccurences.class).getCanonicalName(), METHOD_SIGNATURE));
+		} catch(AlreadyInstrumentedException e) {
+			exceptionThrown = true;
+		}
+		Assert.assertTrue("Excepted an exeception to be thrown.", exceptionThrown);
 //		
 //		Assert.assertNotNull(resultColl.getAllCountingResults_nonRecursively());
 //		// print the results into the log

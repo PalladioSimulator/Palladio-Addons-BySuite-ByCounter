@@ -148,7 +148,8 @@ public final class CallGraphClassAdapter {
 					     		success = success && parseClass(callGraph, methodCall.owner);
 					        }
 						} catch (ClassNotFoundException e) {
-							e.printStackTrace();
+							log.severe("Could not find definition for called method.");
+							throw new RuntimeException(e);
 						}
 					}
 

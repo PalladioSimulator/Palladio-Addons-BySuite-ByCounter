@@ -125,9 +125,9 @@ public class TestResultObservation {
 			@Override
 			public void update(Observable crc, Object updateData) {
 				System.out.println("Notification received: " + updateData);
-//				if(updateData instanceof CountingResultCollector.ObservedSectionExecutionUpdate) {
-//					CountingResultCollector.getInstance().retrieveAllCountingResults().last().logResult(false, false);
-//				}
+				if(updateData instanceof CountingResultCollector.ObservedSectionExecutionUpdate) {
+					CountingResultCollector.getInstance().retrieveAllCountingResults().last().logResult(false, false);
+				}
 			}
         });
         
@@ -148,6 +148,7 @@ public class TestResultObservation {
         counter.getInstrumentationParams().setUseBasicBlocks(true);
         counter.getInstrumentationParams().setRecordBlockExecutionOrder(true);
         counter.getInstrumentationParams().setProvideOnlineSectionExecutionUpdates(true);
+        counter.getInstrumentationParams().setWriteClassesToDisk(true);
   
         MethodDescriptor methodRanged = new MethodDescriptor(TEST_SUBJECT_CANONICAL, SIGNATURE_METHOD_CALLS);
         methodRanged.setCodeAreasToInstrument(codeAreasToInstrument);

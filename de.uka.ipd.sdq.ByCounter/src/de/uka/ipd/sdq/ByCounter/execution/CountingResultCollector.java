@@ -204,7 +204,7 @@ public final class CountingResultCollector extends Observable {
 	 * @param result The result reported by an instrumented method.
 	 */
 	public synchronized void protocolCount(ProtocolCountStructure result) {
-		if(!(result instanceof ProtocolCountUpdateStructure)) {
+//		if(!(result instanceof ProtocolCountUpdateStructure)) {
 			long reportingStart = System.nanoTime();//TODO make this configurable and clear, move to an interface/class that is accessed
 			boolean handledResult = false;
 			if(this.mode==CountingResultCollectorMode.DiscardAllIncomingCountingResults){
@@ -223,7 +223,7 @@ public final class CountingResultCollector extends Observable {
 					this.strategyDefault.protocolCount(result, reportingStart);
 				}
 			}
-		}
+//		}
 
 		// notify observers
 		this.setChanged();

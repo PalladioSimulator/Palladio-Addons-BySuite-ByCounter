@@ -310,7 +310,7 @@ public class CSVGenericWriterAndAppender {
 			if(fwMaster!=null && writeMasterFile) fwMaster.close();
 			if(fwPiece!=null && writePieceFile) fwPiece.close();
 		} catch (IOException e) {
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
 		return this.timestamp;
 	}
@@ -490,7 +490,7 @@ public class CSVGenericWriterAndAppender {
 			if(fwMaster!=null && writeMasterFile) fwMaster.close();
 			if(fwPiece!=null && writePieceFile) fwPiece.close();
 		} catch (IOException e) {
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
 		return this.timestamp;
 	}

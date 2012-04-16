@@ -146,19 +146,13 @@ public final class MethodInvocationHelper {
 			
 		} catch (IllegalAccessException e) {
 			log.log(Level.SEVERE, "Exception lead to abortion of execution.", e);
-			e.printStackTrace();
-		} catch (IllegalArgumentException e) {
-			log.log(Level.SEVERE, "Exception lead to abortion of execution.", e);
-			e.printStackTrace();
-		} catch (SecurityException e) {
-			log.log(Level.SEVERE, "Exception lead to abortion of execution.", e);
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		} catch (InvocationTargetException e) {
 			log.log(Level.SEVERE, "Exception lead to abortion of execution.", e);
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		} catch (InstantiationException e) {
 			log.log(Level.SEVERE, "Exception lead to abortion of execution.", e);
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
 		return invocationResult;
 	}

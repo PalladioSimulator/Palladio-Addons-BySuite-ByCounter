@@ -50,7 +50,7 @@ public class CountingResultPersistance {
 				return null;
 			}
 		}catch (Exception e) {
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		}finally{
 			if(fis!=null){
 				try{
@@ -189,7 +189,7 @@ public class CountingResultPersistance {
 			ObjectOutputStream oos = new ObjectOutputStream(fos);
 			oos.writeObject(cr);
 		}catch (Exception e) {
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		}finally{
 			if(fos!=null){
 				try{

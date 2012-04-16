@@ -119,9 +119,9 @@ public class ASMOpcodesMapper implements Opcodes {
 					this.log.fine(field.getName()+": "+field.get(this));
 				}
 			} catch (IllegalArgumentException e1) {
-				e1.printStackTrace();
+				throw new RuntimeException(e1);
 			} catch (IllegalAccessException e1) {
-				e1.printStackTrace();
+				throw new RuntimeException(e1);
 			}
 			counter++;
 		}
