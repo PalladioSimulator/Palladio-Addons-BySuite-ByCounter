@@ -85,9 +85,6 @@ public final class CountingResultCollector extends Observable {
 	/** Basic block and range block definitions. */
 	public BlockDefinitionContext blockContext;
 	
-	/** Indexing infrastructure for counting results. */
-	private CountingResultIndexing countingResultIndexing;
-	
 	/**
 	 * Method execution details on how BytecodeCounters execute method was 
 	 * last called.
@@ -115,7 +112,6 @@ public final class CountingResultCollector extends Observable {
 		this.resultWriters = new ArrayList<ICountingResultWriter>();
 		this.blockContext = new BlockDefinitionContext();
 		this.blockContext.tryToLoadBasicBlockSerialisation();
-		this.countingResultIndexing = new CountingResultIndexing();
 		
 		this.collectionStrategies = new LinkedList<AbstractCollectionStrategy>();
 		this.strategyDefault = new CollectionStrategyDefault(this);
@@ -279,12 +275,5 @@ public final class CountingResultCollector extends Observable {
 	 */
 	public MethodExecutionRecord getLastMethodExecutionDetails() {
 		return lastMethodExecutionDetails;
-	}
-
-	/** 
-	 * @return Indexing infrastructure for counting results.
-	 */
-	public CountingResultIndexing getCountingResultIndexing() {
-		return countingResultIndexing;
 	}
 }

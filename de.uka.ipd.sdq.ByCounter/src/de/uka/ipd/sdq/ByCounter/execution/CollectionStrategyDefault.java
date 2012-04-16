@@ -39,6 +39,9 @@ public class CollectionStrategyDefault extends AbstractCollectionStrategy {
 	/** {@link BlockResultCalculation} helper. */
 	private BlockResultCalculation blockCalculation;
 
+	/** Indexing infrastructure for counting results. */
+	private CountingResultIndexing countingResultIndexing;
+	
 	/**
 	 * Construct the strategy object.
 	 * @param parent {@link CountingResultCollector} using this strategy.
@@ -47,6 +50,7 @@ public class CollectionStrategyDefault extends AbstractCollectionStrategy {
 		super(parent);
 		this.countingResults = new TreeSet<CountingResult>();
 		this.blockCalculation = new BlockResultCalculation(parentResultCollector.blockContext);
+		this.countingResultIndexing = new CountingResultIndexing();
 	}
 
 	/** {@inheritDoc} */
@@ -115,6 +119,13 @@ public class CollectionStrategyDefault extends AbstractCollectionStrategy {
 		}
 		return result;
 
+	}
+
+	/** 
+	 * @return Indexing infrastructure for counting results.
+	 */
+	public CountingResultIndexing getCountingResultIndexing() {
+		return countingResultIndexing;
 	}
 
 	/** Add to counting results. */
@@ -239,8 +250,7 @@ public class CollectionStrategyDefault extends AbstractCollectionStrategy {
 				log.warning(nrOfCountingResults+" results in ByCounter");
 			}
 	
-			parentResultCollector.getCountingResultIndexing().add(
-					res, reportingStart);
+			this.countingResultIndexing.add(res, reportingStart);
 		}
 		return true;
 	}
@@ -292,7 +302,7 @@ public class CollectionStrategyDefault extends AbstractCollectionStrategy {
 					// do not return results that have been added up into a previous result already
 					continue;
 				}
-				CountingResult crSum = parentResultCollector.getCountingResultIndexing().retrieveCountingResultByStartTime_evaluateCallingTree(callerStartTime, true);
+				CountingResult crSum = this.countingResultIndexing.retrieveCountingResultByStartTime_evaluateCallingTree(callerStartTime, true);
 				if(parentResultCollector.getLastMethodExecutionDetails().executionSettings.isInternalClass(
 						crSum.getQualifyingMethodName())) {
 					ret.add(crSum);

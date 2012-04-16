@@ -203,12 +203,6 @@ public final class MethodCountMethodAdapter extends MethodAdapter implements Opc
 	private int rangeBlockExecutionOrderArrayListVar;
 
 	/**
-	 * The variable of the integer that is set to the currently active section
-	 * during execution.
-	 */
-	private int currentSectionVar;
-
-	/**
 	 * Intermediate instrumentation state.
 	 */
 	private InstrumentationState instrumentationState;
@@ -387,11 +381,6 @@ public final class MethodCountMethodAdapter extends MethodAdapter implements Opc
 			mv.visitInsn(DUP);
 			mv.visitMethodInsn(INVOKESPECIAL, TYPE_ARRAYLIST, "<init>", "()V");
 			mv.visitVarInsn(ASTORE, rangeBlockExecutionOrderArrayListVar);
-
-			// initialise currentSection with -1
-			this.currentSectionVar = this.lVarManager.getNewIntArrayVar(mv);
-			mv.visitInsn(ICONST_M1);
-			mv.visitVarInsn(ISTORE, this.currentSectionVar);
 		}
 	}
 
@@ -1151,30 +1140,12 @@ public final class MethodCountMethodAdapter extends MethodAdapter implements Opc
 					this.insertAddIntegerToArrayList(
 							this.rangeBlockExecutionOrderArrayListVar, 
 							rngeBlockIndex);
-					this.insertSaveLastSectionIndexAndReport(rngeBlockIndex);
+					if(this.instrumentationParameters.getProvideOnlineSectionExecutionUpdates()) {
+						this.insertResultCollectorUpdateCall();
+					}
 				}
 			}
 		}
-	}
-
-	/**
-	 * Compare the given rngeBlockIndex to the value of currentSection.
-	 * If the integers don't match, report a result and 
-	 * insert instrumentation to save the index of the last visited section.
-	 * @param rngeBlockIndex Last visited section index.
-	 */
-	private void insertSaveLastSectionIndexAndReport(Integer rngeBlockIndex) {
-		Label lblNoReport = new Label();
-		mv.visitVarInsn(ILOAD, this.currentSectionVar);
-		insertIntegerPushInsn(rngeBlockIndex);
-		mv.visitInsn(ISUB);
-		mv.visitJumpInsn(IFEQ, lblNoReport);
-		if(this.instrumentationParameters.getProvideOnlineSectionExecutionUpdates()) {
-			this.insertResultCollectorUpdateCall();
-			insertIntegerPushInsn(rngeBlockIndex);
-			mv.visitVarInsn(ISTORE, this.currentSectionVar);
-		}
-		mv.visitLabel(lblNoReport);
 	}
 
 	@Override

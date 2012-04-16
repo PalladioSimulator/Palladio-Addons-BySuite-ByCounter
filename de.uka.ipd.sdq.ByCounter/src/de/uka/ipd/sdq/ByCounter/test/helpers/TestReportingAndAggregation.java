@@ -5,6 +5,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Logger;
 
+import de.uka.ipd.sdq.ByCounter.execution.CollectionStrategyDefault;
 import de.uka.ipd.sdq.ByCounter.execution.CountingArtefactInformation;
 import de.uka.ipd.sdq.ByCounter.execution.CountingResult;
 import de.uka.ipd.sdq.ByCounter.execution.CountingResultCollector;
@@ -36,24 +37,16 @@ class DummyReportingClass {
 	/**
 	 * TODO
 	 */
-	CountingResultCollector myCollector;
+	CollectionStrategyDefault myCollectionStrategy;
 
 	/** 
      * TODO
      */
     public DummyReportingClass(){
 		this.log = Logger.getLogger(this.getClass().getCanonicalName());
-        this.myCollector = CountingResultCollector.getInstance();
+        this.myCollectionStrategy = new CollectionStrategyDefault(CountingResultCollector.getInstance());
     }
-    
-    /**TODO
-     * @param collector
-     */
-    public DummyReportingClass(CountingResultCollector collector){
-		this();
-        this.myCollector = collector;
-    }
-    
+     
     /**TODO
      * @param prm
      * @return
@@ -75,7 +68,7 @@ class DummyReportingClass {
         result.qualifyingMethodName = "de.uka.ipd.sdq.ByCounter.execution.anotherPseudoInstrumentedMethod";
         result.opcodeCountsInt = opcodeCounts;
         result.methodCallCountsInt = new int[0];
-        this.myCollector.protocolCount(result);
+        this.myCollectionStrategy.protocolCount(result, System.nanoTime());
         this.log.fine("returning: "+ret);
         return ret;
     }
@@ -112,7 +105,7 @@ class DummyReportingClass {
         result.opcodeCountsInt = opcodeCounts;
         result.methodCallCountsInt = methodCallCounts;
         result.calledMethods = calledMethods;
-        this.myCollector.protocolCount(result);
+        this.myCollectionStrategy.protocolCount(result, System.nanoTime());
         this.log.fine("returning: "+ret);
         return ret;
     }
@@ -129,7 +122,7 @@ class DummyReportingClass {
 		
 		Collection<CountingArtefactInformation> artefacts;
 		CountingArtefactInformation countingArtefact; 
-		artefacts = this.myCollector.getCountingResultIndexing().getCountingArtefactsByBeginning().values();
+		artefacts = this.myCollectionStrategy.getCountingResultIndexing().getCountingArtefactsByBeginning().values();
 		for (Iterator<CountingArtefactInformation> iterator = artefacts.iterator(); 
 				iterator.hasNext();
 				) {
@@ -140,7 +133,7 @@ class DummyReportingClass {
 //		this.myCollector.getCountingInformationsByMethodname();
 		Collection<CountingResult> results;
 		IFullCountingResult countingResult; 
-		results = this.myCollector.getCountingResultIndexing().getAllCountingResultsByArtefacts().values();
+		results = this.myCollectionStrategy.getCountingResultIndexing().getAllCountingResultsByArtefacts().values();
 		this.log.fine("listing all available counting results");
 		for (Iterator<CountingResult> iterator = results.iterator(); 
 				iterator.hasNext();
@@ -150,11 +143,11 @@ class DummyReportingClass {
 		}
 		
 
-    	artefactsCaller = this.myCollector.getCountingResultIndexing().getCountingArtefactsByName("de.uka.ipd.sdq.ByCounter.execution.pseudoInstrumentedMethod");
+    	artefactsCaller = this.myCollectionStrategy.getCountingResultIndexing().getCountingArtefactsByName("de.uka.ipd.sdq.ByCounter.execution.pseudoInstrumentedMethod");
 //    	log.fine("Size of caller artefacts list: "+artefactsCaller.size());
 //    	log.fine("First caller artefacts in list: "+artefactsCaller.get(0));
 //
-		artefactsCallee = this.myCollector.getCountingResultIndexing().getCountingArtefactsByName("de.uka.ipd.sdq.ByCounter.execution.anotherPseudoInstrumentedMethod");
+		artefactsCallee = this.myCollectionStrategy.getCountingResultIndexing().getCountingArtefactsByName("de.uka.ipd.sdq.ByCounter.execution.anotherPseudoInstrumentedMethod");
 //    	log.fine("Size of callee artefacts list: "+artefactsCallee.size());
 //    	log.fine("First callee artefacts in list: "+artefactsCallee.get(0));
 //		
@@ -169,7 +162,7 @@ class DummyReportingClass {
 		IFullCountingResult callerCounts_evaluated; 
 		long callerTime = artefactsCaller.get(0).getInvocationReceivedTime();
 //    	log.fine("First caller artefacts time: "+callerTime);
-		callerCounts_evaluated = this.myCollector.getCountingResultIndexing().retrieveCountingResultByStartTime_evaluateCallingTree(callerTime, false);
+		callerCounts_evaluated = this.myCollectionStrategy.getCountingResultIndexing().retrieveCountingResultByStartTime_evaluateCallingTree(callerTime, false);
 		this.log.fine("First caller counting result in list, fully evaluated: "+callerCounts_evaluated);
 	}
 }
