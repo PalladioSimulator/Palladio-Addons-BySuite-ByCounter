@@ -15,6 +15,7 @@ import org.objectweb.asm.Opcodes;
 import de.uka.ipd.sdq.ByCounter.execution.BytecodeCounter;
 import de.uka.ipd.sdq.ByCounter.execution.CountingResult;
 import de.uka.ipd.sdq.ByCounter.execution.CountingResultCollector;
+import de.uka.ipd.sdq.ByCounter.execution.CountingResultSectionExecutionUpdate;
 import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentationParameters;
 import de.uka.ipd.sdq.ByCounter.parsing.LineNumberRange;
 import de.uka.ipd.sdq.ByCounter.test.framework.expectations.Expectation;
@@ -125,7 +126,7 @@ public class TestResultObservation {
 			@Override
 			public void update(Observable crc, Object updateData) {
 				System.out.println("Notification received: " + updateData);
-				if(updateData instanceof CountingResultCollector.ObservedSectionExecutionUpdate) {
+				if(updateData instanceof CountingResultSectionExecutionUpdate) {
 					CountingResultCollector.getInstance().retrieveAllCountingResults().last().logResult(false, false);
 				}
 			}

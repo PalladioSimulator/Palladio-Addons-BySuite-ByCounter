@@ -16,12 +16,12 @@ import de.uka.ipd.sdq.ByCounter.reporting.ICountingResultWriter;
  * <p>
  * This class is observable ({@link #addObserver(java.util.Observer)}) and can 
  * provide online updates on the collection of results. Updates consist of 
- * update objects with types implementing the {@link ObservedEvent} interface.
+ * update objects with types implementing the {@link CountingResultUpdate} interface.
  * The following update 
  * types are currently available:
  * <ul>
- * <li>{@link ObservedSectionExecutionUpdate}</li>
- * <li>{@link ObservedCompleteMethodExecutionUpdate}</li>
+ * <li>{@link CountingResultSectionExecutionUpdate}</li>
+ * <li>{@link CountingResultCompleteMethodExecutionUpdate}</li>
  * </ul>
  * </p>
  * TODO implement an "adaptation-oriented inlining", where after a certain (threshold) number of invocations, a method is inlined (callees independently, too)
@@ -32,39 +32,6 @@ import de.uka.ipd.sdq.ByCounter.reporting.ICountingResultWriter;
  */
 public final class CountingResultCollector extends Observable {
 	
-	/**
-	 * This is the common interface of {@link CountingResultCollector} events 
-	 * that can be observed.
-	 * @author Martin Krogmann
-	 */
-	public interface ObservedEvent {}
-	
-	/**
-	 * This class is used to update observers registered to 
-	 * {@link CountingResultCollector} when a section has been executed.
-	 * @author Martin Krogmann
-	 */
-	public class ObservedSectionExecutionUpdate implements ObservedEvent {
-		public final Integer sectionIndex;
-		public ObservedSectionExecutionUpdate(final Integer sectionIndex) {
-			this.sectionIndex = sectionIndex;
-		}
-		@Override
-		public String toString() {
-			return "ObservedSectionExecutionUpdate[sectionIndex=" + sectionIndex +"]";
-		}
-	}
-	
-	/**
-	 * This class is used to update observers registered to 
-	 * {@link CountingResultCollector} when a complete method has been executed,
-	 * i.e. reached a return statement or a throw statement.
-	 * @author Martin Krogmann
-	 */
-	public class ObservedCompleteMethodExecutionUpdate implements ObservedEvent {
-		
-	}
-
 	/** Default value for {@link #getMode()}. */
 	public static final CountingResultCollectorMode MODE_DEFAULT = CountingResultCollectorMode.UseReportingMethodChoiceByInstrumentedMethods;
 
@@ -235,11 +202,11 @@ public final class CountingResultCollector extends Observable {
 			if(lastUpdatedSection != lastExecutedSection) {
 				lastUpdatedSection = lastExecutedSection;
 				this.notifyObservers(
-					new ObservedSectionExecutionUpdate(lastExecutedSection));
+					new CountingResultSectionExecutionUpdate(lastExecutedSection));
 			}
 		} else {
 			this.notifyObservers(
-					new ObservedCompleteMethodExecutionUpdate());
+					new CountingResultCompleteMethodExecutionUpdate());
 		}
 	}
 	/**

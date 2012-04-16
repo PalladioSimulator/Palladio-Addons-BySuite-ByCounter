@@ -378,7 +378,7 @@ public class TestBytecodeCounter {
 		} catch(AlreadyInstrumentedException e) {
 			exceptionThrown = true;
 		}
-		Assert.assertTrue("Excepted an exeception to be thrown.", exceptionThrown);
+		Assert.assertTrue("Expected an exception to be thrown.", exceptionThrown);
 //		
 //		Assert.assertNotNull(resultColl.getAllCountingResults_nonRecursively());
 //		// print the results into the log
