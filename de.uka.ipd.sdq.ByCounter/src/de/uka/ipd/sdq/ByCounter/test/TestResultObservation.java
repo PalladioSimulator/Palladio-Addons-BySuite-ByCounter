@@ -3,6 +3,7 @@ package de.uka.ipd.sdq.ByCounter.test;
 import java.util.Collection;
 import java.util.Observable;
 import java.util.Observer;
+import java.util.logging.Logger;
 
 import org.junit.After;
 import org.junit.Before;
@@ -15,7 +16,6 @@ import org.objectweb.asm.Opcodes;
 import de.uka.ipd.sdq.ByCounter.execution.BytecodeCounter;
 import de.uka.ipd.sdq.ByCounter.execution.CountingResult;
 import de.uka.ipd.sdq.ByCounter.execution.CountingResultCollector;
-import de.uka.ipd.sdq.ByCounter.execution.CountingResultSectionExecutionUpdate;
 import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentationParameters;
 import de.uka.ipd.sdq.ByCounter.parsing.LineNumberRange;
 import de.uka.ipd.sdq.ByCounter.test.framework.expectations.Expectation;
@@ -46,6 +46,12 @@ public class TestResultObservation {
     private InstrumentationParameters instrumentationParameters;
 
 	private final InstrumentationParameters instrumentationParametersTemplate;
+	
+	/**
+	 * see http://en.wikipedia.org/wiki/Data_log
+	 */
+	private static Logger log = Logger.getLogger(TestResultObservation.class.getCanonicalName());
+
 
     /**
      * Generates the different parameters with which all tests are run. This reuses the parameters
@@ -125,10 +131,7 @@ public class TestResultObservation {
         CountingResultCollector.getInstance().addObserver(new Observer() {
 			@Override
 			public void update(Observable crc, Object updateData) {
-				System.out.println("Notification received: " + updateData);
-				if(updateData instanceof CountingResultSectionExecutionUpdate) {
-					CountingResultCollector.getInstance().retrieveAllCountingResults().last().logResult(false, false);
-				}
+				log.info("Notification received: " + updateData);
 			}
         });
         

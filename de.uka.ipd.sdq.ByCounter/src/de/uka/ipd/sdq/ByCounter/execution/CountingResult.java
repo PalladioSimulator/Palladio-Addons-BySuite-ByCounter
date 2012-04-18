@@ -1454,8 +1454,15 @@ implements Serializable, Cloneable, IFullCountingResult, Comparable<IFullCountin
 		return ret;
 	}
 
-	/** Compares {@link #getMethodInvocationBeginning()}. */
+	/** Compares {@link #getMethodInvocationBeginning()}.
+	 * When {@link #getMethodInvocationBeginning()} is the same, but the objects 
+	 * differ, this object is always smaller than the given object.
+	 * @param o {@link IFullCountingResult} to compare to.*/
 	public int compareTo(IFullCountingResult o) {
-		return new Long(methodInvocationBeginning).compareTo(o.getMethodInvocationBeginning());
+		int compareInvBeginning = new Long(methodInvocationBeginning).compareTo(o.getMethodInvocationBeginning());
+		if(compareInvBeginning == 0 && this.hashCode() != o.hashCode()) {
+			return -1;
+		}
+		return compareInvBeginning;
 	}
 }

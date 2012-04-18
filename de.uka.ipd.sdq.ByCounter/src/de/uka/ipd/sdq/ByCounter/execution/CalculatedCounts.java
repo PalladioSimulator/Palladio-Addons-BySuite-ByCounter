@@ -5,7 +5,13 @@ import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
-
+/**
+ * The numerical results calculated from the reports of executed code that 
+ * was instrumented by ByCounter. These only include counts for opcode 
+ * executions and method calls.
+ * @author Martin Krogmann
+ *
+ */
 public class CalculatedCounts {
 	public void init() {
 		this.opcodeCounts = new long[CountingResult.MAX_OPCODE];

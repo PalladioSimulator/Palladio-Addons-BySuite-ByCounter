@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.SortedSet;
@@ -24,7 +25,7 @@ public class CountingResultIndexing {
 	/**
 	 * retrieve the full counting artefact information by the beginning time
 	 */
-	private HashMap<Long,CountingArtefactInformation> countingInformationsByBeginning; //later, use SortedSet (after defining a comparator...)
+	private HashMap<Long, List<CountingArtefactInformation>> countingInformationsByBeginning; //later, use SortedSet (after defining a comparator...)
 
 	/**
 	 * Retrieve all invocations of a method by its signature
@@ -39,7 +40,7 @@ public class CountingResultIndexing {
 
 	public CountingResultIndexing() {
 		this.log = Logger.getLogger(getClass().getCanonicalName());
-		this.countingInformationsByBeginning = new HashMap<Long, CountingArtefactInformation>();
+		this.countingInformationsByBeginning = new HashMap<Long, List<CountingArtefactInformation>>();
 		this.countingInformationsByMethodname = new HashMap<String, List<CountingArtefactInformation>>();//TODO consider removing this...
 		this.countingResultsByArtefactInformation = new HashMap<CountingArtefactInformation, CountingResult>();
 	}
@@ -69,7 +70,14 @@ public class CountingResultIndexing {
 				null //output parameters
 				);
 
-		this.countingInformationsByBeginning.put(executionStart, artefact);
+		List<CountingArtefactInformation> ciAtExecutionStart = 
+				this.countingInformationsByBeginning.get(executionStart);
+		if(ciAtExecutionStart == null) {
+			ciAtExecutionStart = new LinkedList<CountingArtefactInformation>();
+			this.countingInformationsByBeginning.put(executionStart, ciAtExecutionStart);
+		}
+		ciAtExecutionStart.add(artefact);
+		
 		Set<String> keys = this.countingInformationsByMethodname.keySet();
 		if(keys.contains(qualifyingMethodName)){
 			this.countingInformationsByMethodname.get(qualifyingMethodName).add(artefact);
@@ -98,7 +106,7 @@ public class CountingResultIndexing {
 	 * @return A {@link HashMap}. The long value is the time as
 	 * returned by System.nanoTime().
 	 */
-	public HashMap<Long, CountingArtefactInformation> getCountingArtefactsByBeginning() {
+	public HashMap<Long, List<CountingArtefactInformation>> getCountingArtefactsByBeginning() {
 		log.warning("getCountingArtefactsByBeginning disregards inlined and force-inlined methods, " +
 			"use retrieveAllCountingResults instead");
 		return this.countingInformationsByBeginning;
@@ -135,7 +143,7 @@ public class CountingResultIndexing {
 	 * @param time A time as returned by System.nanoTime().
 	 * @return The specified {@link CountingArtefactInformation}.
 	 */
-	public CountingArtefactInformation getCountingArtefactsByTime(long time){
+	public List<CountingArtefactInformation> getCountingArtefactsByTime(long time){
 		log.warning("getCountingArtefactsByTime disregards inlined and force-inlined methods, " +
 			"use retrieveAllCountingResults instead");
 		return this.countingInformationsByBeginning.get(time);
@@ -148,7 +156,7 @@ public class CountingResultIndexing {
 	 * @param timestamp A time as {@link Timestamp}.
 	 * @return The specified {@link CountingArtefactInformation}.
 	 */
-	public CountingArtefactInformation getCountingArtefactsByTimestamp(Timestamp timestamp){
+	public List<CountingArtefactInformation> getCountingArtefactsByTimestamp(Timestamp timestamp){
 		log.warning("getCountingArtefactsByTimestamp disregards inlined and force-inlined methods, " +
 			"use retrieveAllCountingResults instead");
 		return this.countingInformationsByBeginning.get(timestamp.getTime());
@@ -176,14 +184,17 @@ public class CountingResultIndexing {
 	 * @param time A time as returned by System.nanoTime().
 	 * @return The specified {@link CountingResult}.
 	 */
-	public synchronized CountingResult retrieveCountingResultByMethodStartTime(long time){
-		CountingArtefactInformation cai = this.countingInformationsByBeginning.get(time);
+	public synchronized List<CountingResult> retrieveCountingResultByMethodStartTime(long time){
+		List<CountingArtefactInformation> cai = this.countingInformationsByBeginning.get(time);
 		if(cai==null){
 			this.log.severe("No counting artefact information for starting time "+time);
 			return null;
 		}
-		return this.countingResultsByArtefactInformation.get(cai);
-
+		List<CountingResult> results = new LinkedList<CountingResult>();
+		for(CountingArtefactInformation c : cai) {
+			results.add(this.countingResultsByArtefactInformation.get(c));
+		}
+		return results;
 	}
 
 	/**
@@ -204,14 +215,15 @@ public class CountingResultIndexing {
 			boolean suppressDebugMessages){
 		this.log.info("Evaluating calling tree for method start time "+callerStartTime);
 		CountingResult candidateCountingResult;		// The currently considered counting result
-		CountingArtefactInformation canditateCAI;	// corresponding CAI
 		long candidateStartTime;					// the start time of the considered result
 		long candidateReportingTime;				// the reporting time of the considered result
 
-		long callerReportingTime
-			= this.countingInformationsByBeginning
-				.get(callerStartTime)
-					.getResultsReceivedByCollectorTime();
+		List<CountingArtefactInformation> countingInformationAtCallerStartTime = 
+				this.countingInformationsByBeginning.get(callerStartTime);
+		long callerReportingTime = 0;
+		if(countingInformationAtCallerStartTime != null && !countingInformationAtCallerStartTime.isEmpty()) {
+			callerReportingTime = countingInformationAtCallerStartTime.get(0).getResultsReceivedByCollectorTime();
+		}
 		this.log.fine("Corresponding caller reporting time: "+callerReportingTime);
 
 		Set<Long> allKeys = this.countingInformationsByBeginning.keySet();
@@ -221,7 +233,11 @@ public class CountingResultIndexing {
 		// skip all result of methods executed before callerStartTime
 		Iterator<Long> iter = keysCopy.iterator();
 		candidateStartTime = iter.next();
-		CountingResult totalCountingResult = this.retrieveCountingResultByMethodStartTime(callerStartTime).clone();
+		List<CountingResult> countingResultAtStartTime = this.retrieveCountingResultByMethodStartTime(callerStartTime);
+		CountingResult totalCountingResult = null;
+		if(countingResultAtStartTime != null && !countingResultAtStartTime.isEmpty()) {
+			totalCountingResult = countingResultAtStartTime.get(0).clone();
+		}
 		this.log.fine("Counting result before Type2 addition: "+totalCountingResult);
 
 		while(candidateStartTime<callerStartTime){//ECHT kleiner!
@@ -237,40 +253,41 @@ public class CountingResultIndexing {
 				candidateStartTime = iter.next();
 			}
 			firstIteration = false;
-			canditateCAI = this.countingInformationsByBeginning.get(candidateStartTime);
-			candidateReportingTime = canditateCAI.getResultsReceivedByCollectorTime();
-			if(!suppressDebugMessages) this.log.fine("Considering for addition: "+canditateCAI+"");
-			if(!suppressDebugMessages){
-				this.log.fine("Just for the record: trying to add " +
-					"["+candidateStartTime+","+candidateReportingTime+"] to " +
-					"["+callerStartTime+","+callerReportingTime+"].");
-			}
-			// candidate results were reported before the caller was
-			// assume that the caller has called the candidate and add it
-			if(candidateReportingTime < callerReportingTime) {
+			for(CountingArtefactInformation canditateCAI : this.countingInformationsByBeginning.get(candidateStartTime)) {	// corresponding CAI
+				candidateReportingTime = canditateCAI.getResultsReceivedByCollectorTime();
+				if(!suppressDebugMessages) this.log.fine("Considering for addition: "+canditateCAI+"");
 				if(!suppressDebugMessages){
-					this.log.fine("Adding callee counts of time "+candidateStartTime+
-						" because its start >"+callerStartTime+
-						" and because its reporting time " +
-						"("+canditateCAI.getResultsReceivedByCollectorTime()+")< " +
-						"caller reporting time ("+callerReportingTime+").");
+					this.log.fine("Just for the record: trying to add " +
+						"["+candidateStartTime+","+candidateReportingTime+"] to " +
+						"["+callerStartTime+","+callerReportingTime+"].");
 				}
-				candidateCountingResult = canditateCAI.getCountingResult();
-				if(!suppressDebugMessages) this.log.fine("Added counting result: "+candidateCountingResult);
-				totalCountingResult.add(candidateCountingResult);
-				if(!suppressDebugMessages) this.log.fine("Intermediate total counting result: "+totalCountingResult);
-			} else if(candidateReportingTime > callerReportingTime) {
-				if(!suppressDebugMessages) this.log.fine("Skipping callee counts of time "+candidateStartTime+
-						" because, while its start time >"+callerStartTime+
-						", its reporting time " +
-						"("+canditateCAI.getResultsReceivedByCollectorTime()+")> " +
-						"caller reporting time ("+callerReportingTime+").");
-			} else if(candidateReportingTime == callerReportingTime) {
-				if(candidateStartTime == callerStartTime){
-					if(!suppressDebugMessages) this.log.fine("Potential callee is the caller herself -> skipping");
-				} else{
-					if(!suppressDebugMessages) this.log.fine("A real callee that ends at the same instant " +
-							"that the caller --> SKIPPING");
+				// candidate results were reported before the caller was
+				// assume that the caller has called the candidate and add it
+				if(candidateReportingTime < callerReportingTime) {
+					if(!suppressDebugMessages){
+						this.log.fine("Adding callee counts of time "+candidateStartTime+
+							" because its start >"+callerStartTime+
+							" and because its reporting time " +
+							"("+canditateCAI.getResultsReceivedByCollectorTime()+")< " +
+							"caller reporting time ("+callerReportingTime+").");
+					}
+					candidateCountingResult = canditateCAI.getCountingResult();
+					if(!suppressDebugMessages) this.log.fine("Added counting result: "+candidateCountingResult);
+					totalCountingResult.add(candidateCountingResult);
+					if(!suppressDebugMessages) this.log.fine("Intermediate total counting result: "+totalCountingResult);
+				} else if(candidateReportingTime > callerReportingTime) {
+					if(!suppressDebugMessages) this.log.fine("Skipping callee counts of time "+candidateStartTime+
+							" because, while its start time >"+callerStartTime+
+							", its reporting time " +
+							"("+canditateCAI.getResultsReceivedByCollectorTime()+")> " +
+							"caller reporting time ("+callerReportingTime+").");
+				} else if(candidateReportingTime == callerReportingTime) {
+					if(candidateStartTime == callerStartTime){
+						if(!suppressDebugMessages) this.log.fine("Potential callee is the caller herself -> skipping");
+					} else{
+						if(!suppressDebugMessages) this.log.fine("A real callee that ends at the same instant " +
+								"that the caller --> SKIPPING");
+					}
 				}
 			}
 		} while (candidateStartTime<callerReportingTime && iter.hasNext());

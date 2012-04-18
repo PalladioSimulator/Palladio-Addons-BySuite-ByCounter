@@ -41,6 +41,9 @@ public class CollectionStrategyDefault extends AbstractCollectionStrategy {
 
 	/** Indexing infrastructure for counting results. */
 	private CountingResultIndexing countingResultIndexing;
+
+	/** Indexing infrastructure for section update results. */
+	private CountingResultUpdateIndexing countingResultUpdateIndexing;
 	
 	/**
 	 * Construct the strategy object.
@@ -51,6 +54,7 @@ public class CollectionStrategyDefault extends AbstractCollectionStrategy {
 		this.countingResults = new TreeSet<CountingResult>();
 		this.blockCalculation = new BlockResultCalculation(parentResultCollector.blockContext);
 		this.countingResultIndexing = new CountingResultIndexing();
+		this.countingResultUpdateIndexing = new CountingResultUpdateIndexing();
 	}
 
 	/** {@inheritDoc} */
@@ -58,6 +62,8 @@ public class CollectionStrategyDefault extends AbstractCollectionStrategy {
 	public void clearResults() {
 		this.log.fine("Used to have "+this.countingResults.size()+" results before clearing");
 		this.countingResults.clear();
+		this.countingResultIndexing.clearResults();
+		this.countingResultUpdateIndexing.clearResults();
 	}
 
 	
@@ -139,56 +145,15 @@ public class CollectionStrategyDefault extends AbstractCollectionStrategy {
 				throw new IllegalArgumentException("Reported new array count structures must match in length.");
 			}
 		}
-		
-		SortedMap<String, Long> methodCounts = new TreeMap<String, Long>();
-		int numResults = 1;	// the number of results created from the values
-		
-		CalculatedCounts[] ccounts;
-		if(result.blockCountingMode == BlockCountingMode.BasicBlocks) {
-			if(result.blockExecutionSequence != null) {
-				ccounts = blockCalculation.calculateCountsFromBlockExecutionSequence(
-						result, false);
-				numResults = ccounts.length;
-			} else {
-				ccounts = new CalculatedCounts[] {
-						blockCalculation.calculateCountsFromBBCounts(
-						result.qualifyingMethodName, 
-						result.opcodeCounts,
-						new long[CountingResult.MAX_OPCODE], // opcode counts
-						methodCounts)
-				};
-			}
-		} else if (result.blockCountingMode == BlockCountingMode.RangeBlocks) {//Ranges!
-			if(result.blockExecutionSequence != null) {
-				result.rangeBlockExecutionSequence = removeDuplicateSequencesFromList(result.rangeBlockExecutionSequence);
-				ccounts = blockCalculation.calculateCountsFromBlockExecutionSequence(
-						result, true);
-				numResults = ccounts.length;
-			} else {
-				ccounts = blockCalculation.calculateCountsFromRBCounts(
-						result.qualifyingMethodName, 
-						result.opcodeCounts,
-						new long[CountingResult.MAX_OPCODE], // opcode counts
-						methodCounts);
-				numResults = ccounts.length;
-			}
-		} else {
-			// check proper length
-			if(result.methodCallCounts.length != result.calledMethods.length) {
-				throw new IllegalArgumentException("Reported method call count structures must match in length.");
-			}
-			// create a HashMap for the method signatures and their counts
-			for(int i = 0; i < result.methodCallCounts.length; i++) {
-				methodCounts.put(result.calledMethods[i], result.methodCallCounts[i]);//TODO too much effort...
-			}
-			ccounts = new CalculatedCounts[1];//again, too many conversions...
-			ccounts[0] = new CalculatedCounts();
-			ccounts[0].opcodeCounts = result.opcodeCounts;
-			ccounts[0].methodCounts = methodCounts;
-			// numResults is already set to 1 above
+		// Is this an update?
+		if(!(result instanceof ProtocolCountUpdateStructure)) {
+			// This is not an update so all updates are done.
+			this.countingResultUpdateIndexing.setMethodDone(result.qualifyingMethodName);
 		}
+		
+		CalculatedCounts[] ccounts = calculateResultCounts(result);
 
-		for(int i = 0; i < numResults; i++) {
+		for(int i = 0; i < ccounts.length; i++) {
 			int[] newArrayDim = null;
 			String[] newArrayType = null;
 			if(result.newArrayCounts != null && 
@@ -204,14 +169,6 @@ public class CollectionStrategyDefault extends AbstractCollectionStrategy {
 				newArrayType = r.newArrayType; 
 				newArrayDim = r.newArrayDim;
 			}
-
-			/* executionStart + i is a used to make sure that two results always have a different starting time.
-			 * This is needed for the existing indexing infrastructure only allows one result per time point, yet 
-			 * there are more results in the case of line number ranges that we want to distinguish.
-			 * This workaround assumes that two methods always start > nrOfCountingResults*1ns apart from each other.
-			 * TODO: fix indexing infrastructure instead 
-			 */
-			long uniqueExecutionStart = result.executionStart + i;
 	
 			CountingResult res = new CountingResult(
 					result.requestID,
@@ -229,7 +186,7 @@ public class CollectionStrategyDefault extends AbstractCollectionStrategy {
 				0, //filetype TODO document
 				0L, //input characterisation TODO document
 				0L, //output characterisation TODO document
-				uniqueExecutionStart,
+				result.executionStart,
 				reportingStart,
 				ccounts[i].opcodeCounts, 
 				ccounts[i].methodCounts,
@@ -243,16 +200,76 @@ public class CollectionStrategyDefault extends AbstractCollectionStrategy {
 				// enables the user to find the counts for specific sections.
 				res.setIndexOfRangeBlock(ccounts[i].indexOfRangeBlock);
 			}
-			this.countingResults.add(res);
-			
-			int nrOfCountingResults=this.countingResults.size();
-			if(nrOfCountingResults%10000==0){
-				log.warning(nrOfCountingResults+" results in ByCounter");
+			// When this result is not an update, add it to the permanent results
+			if(!(result instanceof ProtocolCountUpdateStructure)) {
+				this.countingResults.add(res);
+				
+				int nrOfCountingResults=this.countingResults.size();
+				if(nrOfCountingResults%10000==0){
+					log.warning(nrOfCountingResults+" results in ByCounter");
+				}
+		
+				this.countingResultIndexing.add(res, reportingStart);
+			} else {
+				// result is an instance of ProtocolCountUpdateStructure
+				this.countingResultUpdateIndexing.add(res);
 			}
-	
-			this.countingResultIndexing.add(res, reportingStart);
 		}
 		return true;
+	}
+
+	/**
+	 * Based on the kind of information available in the 
+	 * {@link ProtocolCountStructure}, calculate result counts.
+	 * @param result The recorded data.´
+	 * @return The result counts.
+	 * @see CalculatedCounts
+	 */
+	private CalculatedCounts[] calculateResultCounts(
+			ProtocolCountStructure result) {
+		CalculatedCounts[] ccounts;
+		SortedMap<String, Long> methodCounts = new TreeMap<String, Long>();
+		if(result.blockCountingMode == BlockCountingMode.BasicBlocks) {
+			if(result.blockExecutionSequence != null) {
+				ccounts = blockCalculation.calculateCountsFromBlockExecutionSequence(
+						result, false);
+			} else {
+				ccounts = new CalculatedCounts[] {
+						blockCalculation.calculateCountsFromBBCounts(
+						result.qualifyingMethodName, 
+						result.opcodeCounts,
+						new long[CountingResult.MAX_OPCODE], // opcode counts
+						methodCounts)
+				};
+			}
+		} else if (result.blockCountingMode == BlockCountingMode.RangeBlocks) {//Ranges!
+			if(result.blockExecutionSequence != null) {
+				result.rangeBlockExecutionSequence = removeDuplicateSequencesFromList(result.rangeBlockExecutionSequence);
+				ccounts = blockCalculation.calculateCountsFromBlockExecutionSequence(
+						result, true);
+			} else {
+				ccounts = blockCalculation.calculateCountsFromRBCounts(
+						result.qualifyingMethodName, 
+						result.opcodeCounts,
+						new long[CountingResult.MAX_OPCODE], // opcode counts
+						methodCounts);
+			}
+		} else {
+			// check proper length
+			if(result.methodCallCounts.length != result.calledMethods.length) {
+				throw new IllegalArgumentException("Reported method call count structures must match in length.");
+			}
+			// create a HashMap for the method signatures and their counts
+			for(int i = 0; i < result.methodCallCounts.length; i++) {
+				methodCounts.put(result.calledMethods[i], result.methodCallCounts[i]);//TODO too much effort...
+			}
+			ccounts = new CalculatedCounts[1];//again, too many conversions...
+			ccounts[0] = new CalculatedCounts();
+			ccounts[0].opcodeCounts = result.opcodeCounts;
+			ccounts[0].methodCounts = methodCounts;
+			// numResults is already set to 1 above
+		}
+		return ccounts;
 	}
 
 	/**

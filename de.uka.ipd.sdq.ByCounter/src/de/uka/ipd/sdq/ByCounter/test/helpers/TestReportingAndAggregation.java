@@ -120,14 +120,16 @@ class DummyReportingClass {
 		List<CountingArtefactInformation> artefactsCallee;
 		List<CountingArtefactInformation> artefactsCaller;
 		
-		Collection<CountingArtefactInformation> artefacts;
+		Collection<List<CountingArtefactInformation>> artefacts;
 		CountingArtefactInformation countingArtefact; 
 		artefacts = this.myCollectionStrategy.getCountingResultIndexing().getCountingArtefactsByBeginning().values();
-		for (Iterator<CountingArtefactInformation> iterator = artefacts.iterator(); 
-				iterator.hasNext();
-				) {
-			countingArtefact = iterator.next();
-			this.log.fine(countingArtefact.toString());
+		for(List<CountingArtefactInformation> list : artefacts) {
+			for (Iterator<CountingArtefactInformation> iterator = list.iterator(); 
+					iterator.hasNext();
+					) {
+				countingArtefact = iterator.next();
+				this.log.fine(countingArtefact.toString());
+			}
 		}
 		
 //		this.myCollector.getCountingInformationsByMethodname();

@@ -167,50 +167,42 @@ public final class CountingResultCollector extends Observable {
 	 * @param result The result reported by an instrumented method.
 	 */
 	public synchronized void protocolCount(ProtocolCountStructure result) {
-//		if(!(result instanceof ProtocolCountUpdateStructure)) {
-			long reportingStart = System.nanoTime();//TODO make this configurable and clear, move to an interface/class that is accessed
-			boolean handledResult = false;
-			if(this.mode==CountingResultCollectorMode.DiscardAllIncomingCountingResults){
-				log.fine("Discarding counting result of method "+result.qualifyingMethodName+", which started execution " +
-						"at "+result.executionStart);
-				handledResult = true;
-			} else if(this.mode.getForceInliningPossible()){
-				handledResult = this.inliningStrategyForced.protocolCount(result, reportingStart);
+		long reportingStart = System.nanoTime();//TODO make this configurable and clear, move to an interface/class that is accessed
+		boolean handledResult = false;
+		if(this.mode==CountingResultCollectorMode.DiscardAllIncomingCountingResults){
+			log.fine("Discarding counting result of method "+result.qualifyingMethodName+", which started execution " +
+					"at "+result.executionStart);
+			handledResult = true;
+		} else if(this.mode.getForceInliningPossible()){
+			handledResult = this.inliningStrategyForced.protocolCount(result, reportingStart);
+		}
+		
+		if(!handledResult) {
+			// the result was not accepted by a strategy yet
+			if(result.inliningSpecified) {
+				this.inliningStrategyWished.protocolCount(result, reportingStart);
+			} else {
+				this.strategyDefault.protocolCount(result, reportingStart);
 			}
-			
-			if(!handledResult) {
-				// the result was not accepted by a strategy yet
-				if(result.inliningSpecified) {
-					this.inliningStrategyWished.protocolCount(result, reportingStart);
-				} else {
-					this.strategyDefault.protocolCount(result, reportingStart);
-				}
-			}
-//		}
+		}
 
 		// notify observers
 		this.setChanged();
-		if(result instanceof ProtocolCountUpdateStructure) {
-			// A section has been executed.
-			final Integer lastExecutedSection = 
-					result.rangeBlockExecutionSequence.get(
-					result.rangeBlockExecutionSequence.size()-1);
-			if(lastUpdatedSection != lastExecutedSection) {
-				lastUpdatedSection = lastExecutedSection;
-				this.notifyObservers(
-					new CountingResultSectionExecutionUpdate(lastExecutedSection));
+		if(!(result instanceof ProtocolCountUpdateStructure)) {
+			((CollectionStrategyDefault)this.strategyDefault).getCountingResultIndexing().retrieveCountingResultByMethodStartTime(result.executionStart);
+			SortedSet<CountingResult> allResults = this.retrieveAllCountingResults();
+			// filter results to only contain those for the current method.
+			SortedSet<CountingResult> relevantResults = new TreeSet<CountingResult>();
+			for(CountingResult r : allResults) {
+				if(r.getMethodInvocationBeginning() == result.executionStart) {
+					relevantResults.add(r);
+				}
 			}
-		} else {
 			this.notifyObservers(
-					new CountingResultCompleteMethodExecutionUpdate());
+					new CountingResultCompleteMethodExecutionUpdate(relevantResults));
 		}
 	}
-	/**
-	 * For updates on section execution this holds the last executed section 
-	 * number.
-	 */
-	private Integer lastUpdatedSection;
-
+	
 	/**
 	 * Adds an additional result writer used in {@link CountingResult#logResult(boolean, boolean, Level)}.
 	 * @param resultWriter {@link ICountingResultWriter} used when logging result.
@@ -241,6 +233,14 @@ public final class CountingResultCollector extends Observable {
 		return ret;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public synchronized void setChanged() {
+		super.setChanged();
+	}
+
 	/**
 	 * @deprecated because only GUI-used but the GUI is outdated
 	 * @param monitorShouldStop
