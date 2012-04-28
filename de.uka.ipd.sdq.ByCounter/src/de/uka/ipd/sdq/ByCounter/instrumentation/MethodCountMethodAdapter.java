@@ -716,12 +716,10 @@ public final class MethodCountMethodAdapter extends MethodAdapter implements Opc
 			this.mv.visitVarInsn(ALOAD, requestIDLocalVarIndex);
 			// load the own UUID and the caller UUID local variable
 			this.mv.visitVarInsn(ALOAD, ownIDLocalVarIndex);
-//			this.mv.visitInsn(Opcodes.ACONST_NULL);
-//			this.mv.visitInsn(Opcodes.ACONST_NULL);
 			this.mv.visitVarInsn(ALOAD, callerIDLocalVarIndex);
 		} else {
 			this.mv.visitInsn(Opcodes.ACONST_NULL);
-			this.mv.visitInsn(Opcodes.ACONST_NULL);
+			this.mv.visitVarInsn(ALOAD, ownIDLocalVarIndex);
 			this.mv.visitInsn(Opcodes.ACONST_NULL);
 		}
 		
@@ -965,16 +963,12 @@ public final class MethodCountMethodAdapter extends MethodAdapter implements Opc
 		// insert magic string constant, load it and pop it from the stack again
 		mv.visitLdcInsn(INSTRUMENTATION_MARKER);
 		mv.visitInsn(POP);
-
 		
-		if(this.instrumentationParameters.getTraceAndIdentifyRequests()) {
-			this.ownIDLocalVarIndex = lVarManager.getNewVarFor("UUID", mv, Type.getType(UUID.class), 1);
+		this.ownIDLocalVarIndex = lVarManager.getNewVarFor("UUID", mv, Type.getType(UUID.class), 1);
 			
-			// create the own UUID
-			mv.visitMethodInsn(INVOKESTATIC, "java/util/UUID", "randomUUID", "()Ljava/util/UUID;");
-			mv.visitVarInsn(ASTORE, ownIDLocalVarIndex);
-		}		
-
+		// create the own UUID
+		mv.visitMethodInsn(INVOKESTATIC, "java/util/UUID", "randomUUID", "()Ljava/util/UUID;");
+		mv.visitVarInsn(ASTORE, ownIDLocalVarIndex);
 		
 		timeVar = lVarManager.getNewLongVar(mv);
 

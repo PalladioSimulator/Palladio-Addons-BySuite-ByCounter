@@ -1,9 +1,13 @@
 package de.uka.ipd.sdq.ByCounter.test;
 
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.LinkedList;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.logging.Logger;
+
+import junit.framework.Assert;
 
 import org.junit.After;
 import org.junit.Before;
@@ -16,10 +20,13 @@ import org.objectweb.asm.Opcodes;
 import de.uka.ipd.sdq.ByCounter.execution.BytecodeCounter;
 import de.uka.ipd.sdq.ByCounter.execution.CountingResult;
 import de.uka.ipd.sdq.ByCounter.execution.CountingResultCollector;
+import de.uka.ipd.sdq.ByCounter.execution.CountingResultCompleteMethodExecutionUpdate;
+import de.uka.ipd.sdq.ByCounter.execution.CountingResultSectionExecutionUpdate;
 import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentationParameters;
 import de.uka.ipd.sdq.ByCounter.parsing.LineNumberRange;
 import de.uka.ipd.sdq.ByCounter.test.framework.expectations.Expectation;
 import de.uka.ipd.sdq.ByCounter.test.helpers.TestSubjectLineNumbers;
+import de.uka.ipd.sdq.ByCounter.test.helpers.TestSubjectResultObservation;
 import de.uka.ipd.sdq.ByCounter.utils.MethodDescriptor;
 
 /**
@@ -33,14 +40,11 @@ import de.uka.ipd.sdq.ByCounter.utils.MethodDescriptor;
 @RunWith(Parameterized.class)
 public class TestResultObservation {
 
-    /** The canonical name of the test subject's class. */
-    private static final String TEST_SUBJECT_CANONICAL = TestSubjectLineNumbers.class.getCanonicalName();
+	/** Signature of the method that is used to test in {@link #testCallTreeObservation()} */
+    private static final String SIGNATURE_METHOD1 = "public void method1(boolean firstLevel) {";
 
-    /** Signature of the method that is used to test in both testRangeBlock{|Ordered}Counting(). */
-    private static final String SIGNATURE_RANGE_BLOCK = "public void testNestedNormalisedLoopsWithExternalCalls(int i)";
-
-    /** Signature of the method that is used to test in testMethodCallOrderedCounting(). */
-    private static final String SIGNATURE_METHOD_CALLS = SIGNATURE_RANGE_BLOCK;
+	/** Signature of the method that is used to test in {@link #testRangeBlockOrderedCounting()} */
+    private static final String SIGNATURE_METHOD_CALLS = "public void testNestedNormalisedLoopsWithExternalCalls(int i)";
 
     /** These parameters are used by all tests. Revert potential modifications in &#064;After-method. */
     private InstrumentationParameters instrumentationParameters;
@@ -144,17 +148,86 @@ public class TestResultObservation {
         // compare
         e.compare(results);
     }
+    
+    /**
+     * This test instruments and executes a mildy complex call tree to verify 
+     * that the online results are not mixed up.
+     */
+    @Test
+    public void testCallTreeObservation() {
+		// initialize ByCounter
+        BytecodeCounter counter = setupOnlineUpdateByCounter();
+ 
+        MethodDescriptor method1 = new MethodDescriptor(
+        		TestSubjectResultObservation.class.getCanonicalName(), 
+        		SIGNATURE_METHOD1);
+        
+        Expectation eInit= new Expectation(true);
+        eInit.add(29, 29).add(Opcodes.ICONST_2, 1)
+        			  .add(Opcodes.ISTORE, 1);
+        Expectation eInt = new Expectation(true);
+        eInt.add(31, 31).add(Opcodes.IINC, 1);
+        Expectation eDouble = new Expectation(true);
+        eDouble.add(35, 35).add(Opcodes.ILOAD, 1)
+        				   .add(Opcodes.I2D, 1)
+        				   .add(Opcodes.LDC, 1)
+        				   .add(Opcodes.DADD, 1)
+        				   .add(Opcodes.D2I, 1)
+        				   .add(Opcodes.ISTORE, 1);
+        
+        final Expectation[] expectations = new Expectation[] {
+        		eInit,					// method1
+        		eInit, eInt, eDouble, 	// method1->method2->method1 
+        		eDouble 				// method1
+        };
+        
+        // instrument all ranges
+        LinkedList<LineNumberRange> ranges = new LinkedList<LineNumberRange>();
+        ranges.addAll(Arrays.asList(eInit.getRanges()));
+        ranges.addAll(Arrays.asList(eInt.getRanges()));
+        ranges.addAll(Arrays.asList(eDouble.getRanges()));
+        
+        method1.setCodeAreasToInstrument(ranges.toArray(new LineNumberRange[0]));
+        counter.instrument(method1);
+        
+        // setup the observer
+        CountingResultCollector.getInstance().addObserver(new Observer() {
+        	private int observationCounter;
+        	{
+        		observationCounter = 0;
+        	}
+			@Override
+			public void update(Observable crc, Object updateData) {
+				log.info("Notification received: " + updateData);
+				if(updateData instanceof CountingResultSectionExecutionUpdate) {
+					// compare the observation with the expectation
+					CountingResult observation = ((CountingResultSectionExecutionUpdate)updateData).sectionResult;
+					expectations[observationCounter].compare(new CountingResult[] {observation});
+				} else if(updateData instanceof CountingResultCompleteMethodExecutionUpdate) {
+					// skip complete result
+				}else {
+					Assert.fail("Test case is missing the correct updateData type.");
+				}
+			}
+        });
+        
+        
+        // execute with (true)
+        Object[] executionParameters = new Object[] { true };
+        counter.execute(method1, executionParameters);
+        
+        for(CountingResult cr : CountingResultCollector.getInstance().retrieveAllCountingResults()) {
+        	cr.logResult(false, true);
+        }
+    }
 	
 	private CountingResult[] instrumentAndExecute(LineNumberRange[] codeAreasToInstrument) {
 		// initialize ByCounter
-        BytecodeCounter counter = new BytecodeCounter();
-        counter.setInstrumentationParams(this.instrumentationParameters);
-        counter.getInstrumentationParams().setUseBasicBlocks(true);
-        counter.getInstrumentationParams().setRecordBlockExecutionOrder(true);
-        counter.getInstrumentationParams().setProvideOnlineSectionExecutionUpdates(true);
-        counter.getInstrumentationParams().setWriteClassesToDisk(true);
+        BytecodeCounter counter = setupOnlineUpdateByCounter();
   
-        MethodDescriptor methodRanged = new MethodDescriptor(TEST_SUBJECT_CANONICAL, SIGNATURE_METHOD_CALLS);
+        MethodDescriptor methodRanged = new MethodDescriptor(
+        		TestSubjectLineNumbers.class.getCanonicalName(), 
+        		SIGNATURE_METHOD_CALLS);
         methodRanged.setCodeAreasToInstrument(codeAreasToInstrument);
         counter.instrument(methodRanged);
         // execute with (10)
@@ -162,5 +235,19 @@ public class TestResultObservation {
         counter.execute(methodRanged, executionParameters);
 
         return CountingResultCollector.getInstance().retrieveAllCountingResults().toArray(new CountingResult[0]);
+	}
+
+	/**
+	 * @return A {@link BytecodeCounter} instance setup with online section 
+	 * execution updates.
+	 */
+	private BytecodeCounter setupOnlineUpdateByCounter() {
+		BytecodeCounter counter = new BytecodeCounter();
+        counter.setInstrumentationParams(this.instrumentationParameters);
+        counter.getInstrumentationParams().setUseBasicBlocks(true);
+        counter.getInstrumentationParams().setRecordBlockExecutionOrder(true);
+        counter.getInstrumentationParams().setProvideOnlineSectionExecutionUpdates(true);
+        counter.getInstrumentationParams().setTraceAndIdentifyRequests(true);
+		return counter;
 	}
 }

@@ -148,7 +148,7 @@ public class CollectionStrategyDefault extends AbstractCollectionStrategy {
 		// Is this an update?
 		if(!(result instanceof ProtocolCountUpdateStructure)) {
 			// This is not an update so all updates are done.
-			this.countingResultUpdateIndexing.setMethodDone(result.qualifyingMethodName);
+			this.countingResultUpdateIndexing.setMethodDone(result.ownID);
 		}
 		
 		CalculatedCounts[] ccounts = calculateResultCounts(result);
