@@ -28,9 +28,9 @@ import de.uka.ipd.sdq.ByCounter.utils.ASMOpcodesMapper;
 import de.uka.ipd.sdq.ByCounter.utils.MethodDescriptor;
 
 /**
- * A test suite providing testcases for de.uka.ipd.sdq.ByCount all different 
+ * A test suite providing testcases for de.uka.ipd.sdq.ByCount all different
  * bytecodes that ASM can differentiate.
- * 
+ *
  * _Not_ covered by test cases are:
  * A*: ATHROW
  * D*: DUP_*, DUP2*
@@ -51,7 +51,7 @@ import de.uka.ipd.sdq.ByCounter.utils.MethodDescriptor;
 public class TestASMBytecodes {
 	private static Logger log = Logger.getLogger(TestASMBytecodes.class.getCanonicalName());
 	private static CountingResultCollector resultCollector;
-	
+
 	private static String testClassName = ASMBytecodeOccurences.class.getCanonicalName();
 	/**
 	 * Generates the different parameters with which all tests are run.
@@ -64,7 +64,9 @@ public class TestASMBytecodes {
 		InstrumentationParameters p2 = new InstrumentationParameters();
 		InstrumentationParameters p3 = new InstrumentationParameters();
 		InstrumentationParameters p4 = new InstrumentationParameters();
+		p1.setCounterPrecision(InstrumentationCounterPrecision.Integer);
 		p1.setUseHighRegistersForCounting(true);
+		p2.setCounterPrecision(InstrumentationCounterPrecision.Integer);
 		p2.setUseHighRegistersForCounting(false);
 		p3.setCounterPrecision(InstrumentationCounterPrecision.Long);
 		p3.setUseHighRegistersForCounting(true);
@@ -73,12 +75,12 @@ public class TestASMBytecodes {
 
 		return Arrays.asList(new Object[][] { {p1}, {p2}, {p3}, {p4} });
 	}
-	
+
 	@AfterClass
 	public static void runAfterAllTests() {
 		resultCollector = null;
 	}
-	
+
 
 	@BeforeClass
 	public static void runOnceBeforeAllTests() {
@@ -90,9 +92,9 @@ public class TestASMBytecodes {
 
 	private BytecodeCounter counter;
 	private InstrumentationParameters instrumentationParameterTemplate;
-	
+
 	/**
-	 * This constructor is used by the Parametrized runner 
+	 * This constructor is used by the Parametrized runner
 	 * for running tests with different parameters.
 	 * @param params {@link InstrumentationParameters} for the counting setup.
 	 */
@@ -101,7 +103,7 @@ public class TestASMBytecodes {
 		this.counter = new BytecodeCounter();
 		this.instrumentationParameterTemplate = params;
 	}
-	
+
 	@Before
 	public void setupInstrumentationParameters() {
 		this.counter.setInstrumentationParams(this.instrumentationParameterTemplate.clone());
@@ -114,8 +116,8 @@ public class TestASMBytecodes {
 	}
 
 	/**
-	 * Tests for ANEWARRAY, ARRAYLENGTH, MULTINEWARRAY, 
-	 * AA_LOAD, AA_STORE, 
+	 * Tests for ANEWARRAY, ARRAYLENGTH, MULTINEWARRAY,
+	 * AA_LOAD, AA_STORE,
 	 * BALOAD, BASTORE, CALOAD, CASTORE, DALOAD, DASTORE,
 	 * FALOAD, FASTORE, IALOAD, IASTORE, LALOAD, LASTORE.
 	 *
@@ -125,9 +127,9 @@ public class TestASMBytecodes {
 		// make sure array parameters get recorded:
 		boolean oldUseArrayParameterRecording = this.counter.getInstrumentationParams().getUseArrayParameterRecording();
 		this.counter.getInstrumentationParams().setUseArrayParameterRecording(true);
-		CountingResult r = Utils.getCountingResultForTest(this.counter, 
+		CountingResult r = Utils.getCountingResultForTest(this.counter,
 				new MethodDescriptor(testClassName, "public static void arrayInstructions()"));
-		
+
         // define expectations
         Expectation e = new Expectation(false);
         e.add()	// "section"
@@ -135,7 +137,7 @@ public class TestASMBytecodes {
          .add(Opcodes.ANEWARRAY, 1)
          .add(Opcodes.ARRAYLENGTH, 1)
          .add(Opcodes.MULTIANEWARRAY, 1)
-         
+
          .add(Opcodes.AALOAD, 1)
          .add(Opcodes.AASTORE, 2)
          .add(Opcodes.BALOAD, 1)
@@ -152,7 +154,7 @@ public class TestASMBytecodes {
          .add(Opcodes.LASTORE, 2)
          .add(Opcodes.SALOAD, 1)
          .add(Opcodes.SASTORE, 2)
-        
+
         // unrelated opcodes:
          .add("java.lang.Object", "void Object()", 2)
          .add(Opcodes.NEW, 2)
@@ -175,9 +177,9 @@ public class TestASMBytecodes {
          .add(Opcodes.ICONST_2, 12)
          .add(Opcodes.ICONST_1, 11)
          .add(Opcodes.ICONST_0, 15);
-        
+
         e.compare(new CountingResult[] {r});
-		
+
 		Assert.assertNotNull(r.getNewArrayTypes());
 		Assert.assertEquals("java/lang/Object", r.getNewArrayTypes()[0]);
 		Assert.assertEquals(2, r.getNewArrayDim()[1]);
@@ -189,7 +191,7 @@ public class TestASMBytecodes {
 	}
 
 	/**
-	 * Tests different kind of branching instructions 
+	 * Tests different kind of branching instructions
 	 * and comparisons.
 	 * IF*, INSTANCEOF, DCMPG, DCMPL, FCMPG, FCMPL,
 	 * GOTO, JSR, TABLESWITCH.
@@ -197,9 +199,9 @@ public class TestASMBytecodes {
 	 */
 	@Test
 	public void testBranches() {
-		CountingResult r = Utils.getCountingResultForTest(this.counter, 
+		CountingResult r = Utils.getCountingResultForTest(this.counter,
 				new MethodDescriptor(testClassName, "public static int branches()"));
-		
+
         // define expectations
         Expectation e = new Expectation(false);
         e.add()	// "section"
@@ -207,14 +209,14 @@ public class TestASMBytecodes {
          .add(Opcodes.DCMPL, 1)
          .add(Opcodes.FCMPG, 1)
          .add(Opcodes.FCMPL, 1)
-         
+
          .add(Opcodes.GOTO, 1)
-         
+
          .add(Opcodes.TABLESWITCH, 1)
          .add(Opcodes.LOOKUPSWITCH, 1)
          .add(Opcodes.IFGE, 2)
          .add(Opcodes.IFLE, 2)
-                
+
         // unrelated opcodes:
          .add(Opcodes.BIPUSH, 2)
          .add(Opcodes.LDC, 6)
@@ -228,16 +230,16 @@ public class TestASMBytecodes {
          .add(Opcodes.ICONST_1, 2)
          .add(Opcodes.ICONST_0, 1)
          .add(Opcodes.IRETURN, 1);
-        
+
         e.compare(new CountingResult[] {r});
 
 //		Assert.assertEquals(1, getOpcCount(r, DisplayOpcodes.JSR));
 	}
-	
+
 	@Test
 	public void testBranches1() {
 
-		CountingResult r = Utils.getCountingResultForTest(this.counter, 
+		CountingResult r = Utils.getCountingResultForTest(this.counter,
 				new MethodDescriptor(testClassName, "public static void branches1()"));
 
 		// define expectations
@@ -248,21 +250,21 @@ public class TestASMBytecodes {
          .add(Opcodes.IFNULL, 1)
          .add(Opcodes.IFNONNULL, 1)
          .add(Opcodes.INSTANCEOF, 1)
-         
+
          .add(Opcodes.IF_ICMPEQ, 1)
          .add(Opcodes.IF_ICMPNE, 1)
          .add(Opcodes.IF_ICMPGT, 1)
          .add(Opcodes.IF_ICMPLT, 1)
          .add(Opcodes.IF_ICMPGE, 1)
          .add(Opcodes.IF_ICMPLE, 1)
-         
+
          .add(Opcodes.IFEQ, 2)
          .add(Opcodes.IFNE, 1)
          .add(Opcodes.IFLT, 1)
          .add(Opcodes.IFGT, 1)
          .add(Opcodes.IFGE, 1)
          .add(Opcodes.IFLE, 1)
-                
+
         // unrelated opcodes:
          .add(Opcodes.BIPUSH, 5)
          .add(Opcodes.LDC, 6)
@@ -275,7 +277,7 @@ public class TestASMBytecodes {
          .add(Opcodes.ICONST_1, 1)
 //         .add(Opcodes.ICONST_0, 1)
          .add(Opcodes.RETURN, 1);
-        
+
         e.compare(new CountingResult[] {r});
 	}
 
@@ -285,20 +287,20 @@ public class TestASMBytecodes {
 	 */
 	@Test
 	public void testCHECKCAST() {
-		CountingResult r = Utils.getCountingResultForTest(this.counter, 
+		CountingResult r = Utils.getCountingResultForTest(this.counter,
 				new MethodDescriptor(testClassName, "public static java.lang.String checkcast()"));
-		
+
 		// define expectations
         Expectation e = new Expectation(false);
         e.add()	// "section"
          .add(Opcodes.CHECKCAST, 1)
-         
+
         // unrelated opcodes:
          .add(Opcodes.LDC, 1)
          .add(Opcodes.ALOAD, 1)
          .add(Opcodes.ASTORE, 1)
          .add(Opcodes.ARETURN, 1);
-        
+
         e.compare(new CountingResult[] {r});
 	}
 
@@ -314,7 +316,7 @@ public class TestASMBytecodes {
 	 */
 	@Test
 	public void testConstantOpcodes() {
-		CountingResult r = Utils.getCountingResultForTest(this.counter, 
+		CountingResult r = Utils.getCountingResultForTest(this.counter,
 				new MethodDescriptor(testClassName, "public static void constants()"));
 		// define expectations
 
@@ -336,20 +338,20 @@ public class TestASMBytecodes {
         .add(Opcodes.LCONST_0,  1)
         .add(Opcodes.LCONST_1,  1)
         .add(Opcodes.LDC,  1)
-        
-        
+
+
         // unrelated opcodes:
          .add(Opcodes.ISTORE, 7)
          .add(Opcodes.LSTORE, 3)
          .add(Opcodes.FSTORE, 3)
-         .add(Opcodes.DSTORE, 2)         
+         .add(Opcodes.DSTORE, 2)
          .add(Opcodes.ASTORE, 1)
          .add(Opcodes.RETURN, 1);
 
         e.compare(new CountingResult[] {r});
-        
+
 	}
-	
+
 	/**
 	 * Tests D2F, D2I, D2L, F2D, F2I, F2L,
 	 * I2D, I2F, I2B, I2C, I2L, I2S,
@@ -358,7 +360,7 @@ public class TestASMBytecodes {
 	 */
 	@Test
 	public void testConversions() {
-		CountingResult r = Utils.getCountingResultForTest(this.counter, 
+		CountingResult r = Utils.getCountingResultForTest(this.counter,
 				new MethodDescriptor(testClassName, "public static void conversions()"));
 
 
@@ -379,8 +381,8 @@ public class TestASMBytecodes {
         .add(Opcodes.L2D, 1)
         .add(Opcodes.L2F, 1)
         .add(Opcodes.L2I, 1)
-            
-        // unrelated opcodes:   
+
+        // unrelated opcodes:
          .add(Opcodes.LDC, 1)
          .add(Opcodes.ILOAD, 6)
          .add(Opcodes.ISTORE, 6)
@@ -394,22 +396,22 @@ public class TestASMBytecodes {
 
         e.compare(new CountingResult[] {r});
 	}
-	
+
 	/**
 	 * Tests object duplication.
 	 *
 	 */
 	@Test
 	public void testDUP() {
-		CountingResult r = Utils.getCountingResultForTest(this.counter, 
+		CountingResult r = Utils.getCountingResultForTest(this.counter,
 				new MethodDescriptor(testClassName, "public static void dup()"));
 
 
 		Expectation e = new Expectation(false);
         e.add()	// "section"
         .add(Opcodes.DUP, 1)
-            
-        // unrelated opcodes:   
+
+        // unrelated opcodes:
          .add(Opcodes.LDC, 2)
          .add(Opcodes.ALOAD, 1)
          .add(Opcodes.ASTORE, 2)
@@ -425,16 +427,16 @@ public class TestASMBytecodes {
 
         e.compare(new CountingResult[] {r});
 	}
-	
+
 	/**
 	 * Tests method invokations.
 	 * INVOKEINTERFACE, INVOKESPECIAL, INVOKEVIRTUAL, INVOKESTATIC
-	 * 
+	 *
 	 *
 	 */
 	@Test
 	public void testInvokationsAndClasses() {
-		CountingResult r = Utils.getCountingResultForTest(this.counter, 
+		CountingResult r = Utils.getCountingResultForTest(this.counter,
 				new MethodDescriptor(testClassName, "public static void invokationsAndClasses()"));
 
 		Expectation e = new Expectation(false);
@@ -445,8 +447,8 @@ public class TestASMBytecodes {
 	    .add(Opcodes.INVOKEVIRTUAL,  1)
 	    .add(Opcodes.PUTFIELD,  1)
 	    .add(Opcodes.PUTSTATIC,  1)
-            
-        // unrelated opcodes:  
+
+        // unrelated opcodes:
 	     .add(Opcodes.ICONST_2, 1)
 	     .add(Opcodes.BIPUSH, 1)
          .add(Opcodes.LDC, 1)
@@ -464,7 +466,7 @@ public class TestASMBytecodes {
 
         e.compare(new CountingResult[] {r});
 	}
-	
+
 	/**
 	 * Tests for math operations on primitives.
 	 * DADD, DDIV, DMUL, DNEG, DREM, DSUB,
@@ -477,9 +479,9 @@ public class TestASMBytecodes {
 	 */
 	@Test
 	public void testMathOpcodes() {
-		CountingResult r = Utils.getCountingResultForTest(counter, 
+		CountingResult r = Utils.getCountingResultForTest(counter,
 				new MethodDescriptor(testClassName, "public static float math()"));
-		
+
 		Expectation e = new Expectation(false);
         e.add()	// "section"
 		.add(Opcodes.DADD,  1)
@@ -530,23 +532,23 @@ public class TestASMBytecodes {
          .add(Opcodes.LLOAD, 23)
          .add(Opcodes.LSTORE, 14)
          .add(Opcodes.FLOAD, 12)
-         .add(Opcodes.FSTORE, 8)         
+         .add(Opcodes.FSTORE, 8)
          .add(Opcodes.DLOAD, 11)
          .add(Opcodes.DSTORE, 8)
          .add(Opcodes.L2I, 3)
          .add(Opcodes.FRETURN, 1);
 
         e.compare(new CountingResult[] {r});
-        
+
 	}
-	
+
 	/**
 	 * Tests MONITORENTER and MONITOREXIT.
 	 *
 	 */
 	@Test
 	public void testMonitor() {
-		CountingResult r = Utils.getCountingResultForTest(counter, 
+		CountingResult r = Utils.getCountingResultForTest(counter,
 				new MethodDescriptor(testClassName, "public static void monitor()"));
 
 		Expectation e = new Expectation(false);
@@ -567,12 +569,12 @@ public class TestASMBytecodes {
 
         e.compare(new CountingResult[] {r});
 	}
-	
+
 	@Test
 	public void testNew() {
-		CountingResult r = Utils.getCountingResultForTest(counter, 
+		CountingResult r = Utils.getCountingResultForTest(counter,
 				new MethodDescriptor(testClassName, "public static void newObj()"));
-		
+
 		Expectation e = new Expectation(false);
         e.add()	// "section"
     	.add(Opcodes.NEW,  1)
@@ -593,7 +595,7 @@ public class TestASMBytecodes {
 	 */
 	@Test
 	public void testPushPop() {
-		CountingResult r = Utils.getCountingResultForTest(counter, 
+		CountingResult r = Utils.getCountingResultForTest(counter,
 				new MethodDescriptor(testClassName, "public static void pushPop()"));
 		Expectation e = new Expectation(false);
         e.add()	// "section"
@@ -613,20 +615,20 @@ public class TestASMBytecodes {
 
         e.compare(new CountingResult[] {r});
 	}
-	
+
 	/**
 	 * Tests ALOAD, ASTORE, DLOAD, DSTORE, FLOAD, FSTORE,
 	 * LLOAD, LSTORE, ILOAD, ISTORE.
-	 * Not specifically tested are xLOAD_0 to xLOAD_3 since 
+	 * Not specifically tested are xLOAD_0 to xLOAD_3 since
 	 * ASM groups them as xLOAD.
 	 * The same goes for xSTORE_n.
 	 *
 	 */
 	@Test
 	public void testRefLoadStore() {
-		CountingResult r = Utils.getCountingResultForTest(counter, 
+		CountingResult r = Utils.getCountingResultForTest(counter,
 				new MethodDescriptor(testClassName, "public static void refLoadStore()"));
-		
+
 		Expectation e = new Expectation(false);
         e.add()	// "section"
         .add(Opcodes.ALOAD,  1)
@@ -639,7 +641,7 @@ public class TestASMBytecodes {
         .add(Opcodes.LSTORE, 2)
         .add(Opcodes.ILOAD,  1)
         .add(Opcodes.ISTORE, 2)
-            
+
         // unrelated opcodes:
         .add(Opcodes.ICONST_0, 1)
         .add(Opcodes.LCONST_0, 1)
@@ -659,14 +661,14 @@ public class TestASMBytecodes {
 	public void testReturn() {
 		CountingResult r;
 		// RETURN
-		r = Utils.getCountingResultForTest(counter, 
+		r = Utils.getCountingResultForTest(counter,
 				new MethodDescriptor(testClassName, "public static void refLoadStore()"));
 		Assert.assertEquals(1, Utils.getOpcCount(r, ASMOpcodesMapper.RETURN));
 
 		Expectation e = new Expectation(false);
         e.add()	// "section"
         .add(Opcodes.RETURN,  1)
-            
+
         // unrelated opcodes:
         .add(Opcodes.ICONST_0, 1)
         .add(Opcodes.LCONST_0, 1)
@@ -688,43 +690,43 @@ public class TestASMBytecodes {
 		cleanResults();
 
 		// ARETURN
-		r = Utils.getCountingResultForTest(counter, 
+		r = Utils.getCountingResultForTest(counter,
 				new MethodDescriptor(testClassName, "public static java.lang.String checkcast()"));
 		// define expectations
         e = new Expectation(false);
         e.add()	// "section"
          .add(Opcodes.ARETURN, 1)
-         
+
         // unrelated opcodes:
          .add(Opcodes.LDC, 1)
          .add(Opcodes.ALOAD, 1)
          .add(Opcodes.ASTORE, 1)
          .add(Opcodes.CHECKCAST, 1);
-        
+
         e.compare(new CountingResult[] {r});
 		cleanResults();
-		
+
 		// DRETURN
-		r = Utils.getCountingResultForTest(counter, 
+		r = Utils.getCountingResultForTest(counter,
 				new MethodDescriptor(testClassName, "public static double getaDouble()"));
 		// define expectations
         e = new Expectation(false);
         e.add()	// "section"
          .add(Opcodes.DRETURN, 1)
-         
+
         // unrelated opcodes:
          .add(Opcodes.LDC, 1);
         e.compare(new CountingResult[] {r});
 		cleanResults();
-		
+
 		// FRETURN
-		r = Utils.getCountingResultForTest(counter, 
+		r = Utils.getCountingResultForTest(counter,
 				new MethodDescriptor(testClassName, "public static float math()"));
 		// define expectations
         e = new Expectation(false);
         e.add()	// "section"
          .add(Opcodes.FRETURN, 1)
-         
+
         // unrelated opcodes:
         .add(Opcodes.DADD,  1)
         .add(Opcodes.DDIV,  1)
@@ -772,28 +774,28 @@ public class TestASMBytecodes {
 	    .add(Opcodes.LLOAD, 23)
 	    .add(Opcodes.LSTORE, 14)
 	    .add(Opcodes.FLOAD, 12)
-	    .add(Opcodes.FSTORE, 8)         
+	    .add(Opcodes.FSTORE, 8)
 	    .add(Opcodes.DLOAD, 11)
 	    .add(Opcodes.DSTORE, 8)
 	    .add(Opcodes.L2I, 3);
-        
+
         e.compare(new CountingResult[] {r});
 		cleanResults();
 
 		// IRETURN
-		r = Utils.getCountingResultForTest(counter, 
+		r = Utils.getCountingResultForTest(counter,
 				new MethodDescriptor(testClassName, "public static int branches()"));
 		// define expectations
         e = new Expectation(false);
         e.add()	// "section"
          .add(Opcodes.IRETURN, 1)
-         
+
         // unrelated opcodes:
          .add(Opcodes.DCMPG, 1)
          .add(Opcodes.DCMPL, 1)
          .add(Opcodes.FCMPG, 1)
-         .add(Opcodes.FCMPL, 1)         
-         .add(Opcodes.GOTO, 1)         
+         .add(Opcodes.FCMPL, 1)
+         .add(Opcodes.GOTO, 1)
          .add(Opcodes.TABLESWITCH, 1)
          .add(Opcodes.LOOKUPSWITCH, 1)
          .add(Opcodes.IFGE, 2)
@@ -809,7 +811,7 @@ public class TestASMBytecodes {
          .add(Opcodes.ICONST_2, 1)
          .add(Opcodes.ICONST_1, 2)
          .add(Opcodes.ICONST_0, 1);
-        
+
         e.compare(new CountingResult[] {r});
 		cleanResults();
 	}

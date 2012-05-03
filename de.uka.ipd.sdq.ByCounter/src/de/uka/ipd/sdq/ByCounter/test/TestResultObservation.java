@@ -30,9 +30,9 @@ import de.uka.ipd.sdq.ByCounter.test.helpers.TestSubjectResultObservation;
 import de.uka.ipd.sdq.ByCounter.utils.MethodDescriptor;
 
 /**
- * This test suite tests observing of {@link CountingResultCollector} for 
+ * This test suite tests observing of {@link CountingResultCollector} for
  * ByCounter.
- * 
+ *
  * @since 0.1
  * @version 2.0
  * @author Martin Krogmann
@@ -50,7 +50,7 @@ public class TestResultObservation {
     private InstrumentationParameters instrumentationParameters;
 
 	private final InstrumentationParameters instrumentationParametersTemplate;
-	
+
 	/**
 	 * see http://en.wikipedia.org/wiki/Data_log
 	 */
@@ -60,7 +60,7 @@ public class TestResultObservation {
     /**
      * Generates the different parameters with which all tests are run. This reuses the parameters
      * from TestASMBytecodes.parameterSetup().
-     * 
+     *
      * @return The parameter collection for calling the test constructor.
      * @see #TestASMBytecodes.parameterSetup()
      */
@@ -72,7 +72,7 @@ public class TestResultObservation {
     /**
      * This constructor is used by the Parametrized runner for running tests with different
      * parameters.
-     * 
+     *
      * @param params
      *            {@link InstrumentationParameters} template for the counting setup.
      */
@@ -80,7 +80,7 @@ public class TestResultObservation {
         // create a BytecodeCounter
         this.instrumentationParametersTemplate = params;
     }
-    
+
     /**
      * Clones an instance of {@link InstrumentationParameters} from the template.
      */
@@ -90,7 +90,7 @@ public class TestResultObservation {
     }
 
     /**
-     * Cleans up results after every test. 
+     * Cleans up results after every test.
      */
     @After
     public void cleanResults() {
@@ -133,14 +133,13 @@ public class TestResultObservation {
         e.add(54, 54).add(Opcodes.BIPUSH, 1)
                      .add(Opcodes.IF_ICMPLT, 1)
                      .add(Opcodes.ILOAD, 1);
-        
+
         CountingResultCollector.getInstance().addObserver(new Observer() {
-			@Override
 			public void update(Observable crc, Object updateData) {
 				log.info("Notification received: " + updateData);
 			}
         });
-        
+
         // run ByCounter
         CountingResult[] results = this.instrumentAndExecute(e.getRanges());
         for (CountingResult r : results) {
@@ -150,20 +149,20 @@ public class TestResultObservation {
         // compare
         e.compare(results);
     }
-    
+
     /**
-     * This test instruments and executes a mildy complex call tree to verify 
+     * This test instruments and executes a mildly complex call tree to verify
      * that the online results are not mixed up.
      */
     @Test
     public void testCallTreeObservation() {
 		// initialize ByCounter
         BytecodeCounter counter = setupOnlineUpdateByCounter();
- 
+
         MethodDescriptor method1 = new MethodDescriptor(
-        		TestSubjectResultObservation.class.getCanonicalName(), 
+        		TestSubjectResultObservation.class.getCanonicalName(),
         		SIGNATURE_METHOD1);
-        
+
         Expectation eInit= new Expectation(false);	// false because the execution sequence is specified manually down below
         eInit.add(0).add(29, 29).add(Opcodes.ICONST_2, 1)
         			  .add(Opcodes.ISTORE, 1);
@@ -176,29 +175,28 @@ public class TestResultObservation {
         				   .add(Opcodes.DADD, 1)
         				   .add(Opcodes.D2I, 1)
         				   .add(Opcodes.ISTORE, 1);
-        
+
         final Expectation[] expectations = new Expectation[] {
         		eInit,					// method1
-        		eInit, eInt, eDouble, 	// method1->method2->method1 
+        		eInit, eInt, eDouble, 	// method1->method2->method1
         		eDouble 				// method1
         };
-        
+
         // instrument all ranges
         LinkedList<LineNumberRange> ranges = new LinkedList<LineNumberRange>();
         ranges.addAll(Arrays.asList(eInit.getRanges()));
         ranges.addAll(Arrays.asList(eInt.getRanges()));
         ranges.addAll(Arrays.asList(eDouble.getRanges()));
-        
+
         method1.setCodeAreasToInstrument(ranges.toArray(new LineNumberRange[0]));
         counter.instrument(method1);
-        
+
         // setup the observer
         CountingResultCollector.getInstance().addObserver(new Observer() {
         	private int observationCounter;
         	{
         		observationCounter = 0;
         	}
-			@Override
 			public void update(Observable crc, Object updateData) {
 				if(updateData instanceof CountingResultSectionExecutionUpdate) {
 					log.info("Notification received: " + updateData);
@@ -212,23 +210,23 @@ public class TestResultObservation {
 				}
 			}
         });
-        
-        
+
+
         // execute with (true)
         Object[] executionParameters = new Object[] { true };
         counter.execute(method1, executionParameters);
-        
+
         for(CountingResult cr : CountingResultCollector.getInstance().retrieveAllCountingResults()) {
         	cr.logResult(false, true);
         }
     }
-	
+
 	private CountingResult[] instrumentAndExecute(LineNumberRange[] codeAreasToInstrument) {
 		// initialize ByCounter
         BytecodeCounter counter = setupOnlineUpdateByCounter();
-  
+
         MethodDescriptor methodRanged = new MethodDescriptor(
-        		TestSubjectLineNumbers.class.getCanonicalName(), 
+        		TestSubjectLineNumbers.class.getCanonicalName(),
         		SIGNATURE_METHOD_CALLS);
         methodRanged.setCodeAreasToInstrument(codeAreasToInstrument);
         counter.instrument(methodRanged);
@@ -240,7 +238,7 @@ public class TestResultObservation {
 	}
 
 	/**
-	 * @return A {@link BytecodeCounter} instance setup with online section 
+	 * @return A {@link BytecodeCounter} instance setup with online section
 	 * execution updates.
 	 */
 	private BytecodeCounter setupOnlineUpdateByCounter() {

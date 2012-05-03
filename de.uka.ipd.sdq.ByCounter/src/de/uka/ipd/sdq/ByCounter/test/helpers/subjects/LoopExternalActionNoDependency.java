@@ -1,12 +1,12 @@
 /**
- * 
+ *
  */
 package de.uka.ipd.sdq.ByCounter.test.helpers.subjects;
 
 /**Implementation used to test Loops (containing an external action).
  * @author groenda
- * 
- * 
+ *
+ *
  */
 public class LoopExternalActionNoDependency implements ISimple {
 	/**Connected external component.
@@ -22,11 +22,11 @@ public class LoopExternalActionNoDependency implements ISimple {
 
 	/* (non-Javadoc)
 	 * @see de.fzi.se.validation.tests.ISimple#process()
+	 *
 	 */
-	@Override
 	public void process() {
-		for (	int i = 0; 
-				i < 5; 
+		for (	int i = 0;
+				i < 5;
 				i++) {
 			System.out.println("Loop iteration number " + i);
 		}
