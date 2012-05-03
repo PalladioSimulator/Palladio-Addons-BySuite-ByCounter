@@ -11,6 +11,7 @@ import java.util.SortedMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import de.uka.ipd.sdq.ByCounter.instrumentation.BlockCountingMode;
 import de.uka.ipd.sdq.ByCounter.parsing.InstructionBlockDescriptor;
 import de.uka.ipd.sdq.ByCounter.parsing.RangeBlockDescriptor;
 import de.uka.ipd.sdq.ByCounter.parsing.RangeBlockDescriptor.BasicBlockOffset;
@@ -172,12 +173,10 @@ public class BlockResultCalculation {
 	/**
 	 * Uses the results blockExecutionSequence to calculate counting results.
 	 * @param result Result as reported by an instrumented method.
-	 * @param calculateRangeBlocks True: range blocks; False: basic blocks
 	 * @return {@link CalculatedCounts}.
 	 */
 	public CalculatedCounts[] calculateCountsFromBlockExecutionSequence(
-			final ProtocolCountStructure result,
-			final boolean calculateRangeBlocks) {
+			final ProtocolCountStructure result) {
 		
 		this.loadUpdatedBlockDefinitions(result.qualifyingMethodName, true, true);
 		
@@ -185,7 +184,7 @@ public class BlockResultCalculation {
 		// possibly more than one counting result per item in the sequence
 		List<CalculatedCounts> resultCounts = new ArrayList<CalculatedCounts>();
 		
-		if(!calculateRangeBlocks) {
+		if(result.blockCountingMode == BlockCountingMode.BasicBlocks) {
 			// just add the complete basic block
 			for(Integer blockIndex : result.blockExecutionSequence) {
 				CalculatedCounts c = new CalculatedCounts();
@@ -194,7 +193,7 @@ public class BlockResultCalculation {
 				c.addOpcodeCounts(this.currentBasicBlocks[blockIndex].getOpcodeCounts(), 1);
 				resultCounts.add(c);
 			}
-		} else {
+		} else if(result.blockCountingMode == BlockCountingMode.RangeBlocks) {
 			// range blocks
 			Map<Integer, List<RangeBlockDescriptor>> rangeBlocksByBasicBlock = 
 				getRangeBlocksByBasicBlock();

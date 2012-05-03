@@ -1,11 +1,14 @@
 package de.uka.ipd.sdq.ByCounter.execution;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.SortedMap;
 import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
+import java.util.UUID;
 
 import de.uka.ipd.sdq.ByCounter.instrumentation.AdditionalOpcodeInformation;
 import de.uka.ipd.sdq.ByCounter.instrumentation.BlockCountingMode;
@@ -45,6 +48,9 @@ public class CollectionStrategyDefault extends AbstractCollectionStrategy {
 	/** Indexing infrastructure for section update results. */
 	private CountingResultUpdateIndexing countingResultUpdateIndexing;
 	
+	/** For each method: Last length of execution sequence. For updates. */
+	private Map<UUID, Integer> blockExecutionSequenceLengthByMethod;
+	
 	/**
 	 * Construct the strategy object.
 	 * @param parent {@link CountingResultCollector} using this strategy.
@@ -55,6 +61,7 @@ public class CollectionStrategyDefault extends AbstractCollectionStrategy {
 		this.blockCalculation = new BlockResultCalculation(parentResultCollector.blockContext);
 		this.countingResultIndexing = new CountingResultIndexing();
 		this.countingResultUpdateIndexing = new CountingResultUpdateIndexing();
+		this.blockExecutionSequenceLengthByMethod = new HashMap<UUID, Integer>();
 	}
 
 	/** {@inheritDoc} */
@@ -64,6 +71,7 @@ public class CollectionStrategyDefault extends AbstractCollectionStrategy {
 		this.countingResults.clear();
 		this.countingResultIndexing.clearResults();
 		this.countingResultUpdateIndexing.clearResults();
+		this.blockExecutionSequenceLengthByMethod.clear();
 	}
 
 	
@@ -149,6 +157,24 @@ public class CollectionStrategyDefault extends AbstractCollectionStrategy {
 		if(!(result instanceof ProtocolCountUpdateStructure)) {
 			// This is not an update so all updates are done.
 			this.countingResultUpdateIndexing.setMethodDone(result.ownID);
+		} else if(result.blockExecutionSequence != null) {
+			// This is an update. Replace the block execution sequence with 
+			// the part of the sequence that is new since the last update.
+			Integer lastExSeqLength = blockExecutionSequenceLengthByMethod.get(result.ownID);
+			Integer newExSeqLength = result.blockExecutionSequence.size();
+			if(lastExSeqLength != null && lastExSeqLength != newExSeqLength) {
+				ArrayList<Integer> newSequence = new ArrayList<Integer>();
+				for(int i = lastExSeqLength; i < newExSeqLength; i++) {
+					newSequence.add(result.blockExecutionSequence.get(i));
+				}
+				result.blockExecutionSequence = newSequence;
+				// consider only the last entered range block?
+				int rangeBlockIndex = result.rangeBlockExecutionSequence.get(result.rangeBlockExecutionSequence.size()-1);
+				result.rangeBlockExecutionSequence = new ArrayList<Integer>();
+				result.rangeBlockExecutionSequence.add(rangeBlockIndex);
+			}
+			// update length of execution sequence
+			blockExecutionSequenceLengthByMethod.put(result.ownID, newExSeqLength);
 		}
 		
 		CalculatedCounts[] ccounts = calculateResultCounts(result);
@@ -232,7 +258,7 @@ public class CollectionStrategyDefault extends AbstractCollectionStrategy {
 		if(result.blockCountingMode == BlockCountingMode.BasicBlocks) {
 			if(result.blockExecutionSequence != null) {
 				ccounts = blockCalculation.calculateCountsFromBlockExecutionSequence(
-						result, false);
+						result);
 			} else {
 				ccounts = new CalculatedCounts[] {
 						blockCalculation.calculateCountsFromBBCounts(
@@ -246,7 +272,7 @@ public class CollectionStrategyDefault extends AbstractCollectionStrategy {
 			if(result.blockExecutionSequence != null) {
 				result.rangeBlockExecutionSequence = removeDuplicateSequencesFromList(result.rangeBlockExecutionSequence);
 				ccounts = blockCalculation.calculateCountsFromBlockExecutionSequence(
-						result, true);
+						result);
 			} else {
 				ccounts = blockCalculation.calculateCountsFromRBCounts(
 						result.qualifyingMethodName, 

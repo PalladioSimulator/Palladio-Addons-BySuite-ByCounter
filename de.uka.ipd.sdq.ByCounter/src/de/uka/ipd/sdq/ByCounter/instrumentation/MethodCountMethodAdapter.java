@@ -949,8 +949,8 @@ public final class MethodCountMethodAdapter extends MethodAdapter implements Opc
 			// if we use continuous register indices, we need to make the local 
 			// variable counter aware of the request UUID 
 			if(!this.instrumentationParameters.getUseHighRegistersForCounting()) {
-				this.requestIDLocalVarIndex = lVarManager.getNewVarFor("UUID", mv, Type.getType(UUID.class), 1);
-				this.callerIDLocalVarIndex = lVarManager.getNewVarFor("UUID", mv, Type.getType(UUID.class), 1);
+				this.requestIDLocalVarIndex = lVarManager.getNewVarFor("UUID", mv, Type.getType(UUID.class), 2);
+				this.callerIDLocalVarIndex = lVarManager.getNewVarFor("UUID", mv, Type.getType(UUID.class), 2);
 			} else {
 				lVarManager.reserveLocalVar(Type.getType(UUID.class));// requestID
 				lVarManager.reserveLocalVar(Type.getType(UUID.class));// callerID
@@ -964,10 +964,10 @@ public final class MethodCountMethodAdapter extends MethodAdapter implements Opc
 		mv.visitLdcInsn(INSTRUMENTATION_MARKER);
 		mv.visitInsn(POP);
 		
-		this.ownIDLocalVarIndex = lVarManager.getNewVarFor("UUID", mv, Type.getType(UUID.class), 1);
 			
 		// create the own UUID
 		mv.visitMethodInsn(INVOKESTATIC, "java/util/UUID", "randomUUID", "()Ljava/util/UUID;");
+		this.ownIDLocalVarIndex = lVarManager.getNewVarFor("UUID", mv, Type.getType(UUID.class), 2);
 		mv.visitVarInsn(ASTORE, ownIDLocalVarIndex);
 		
 		timeVar = lVarManager.getNewLongVar(mv);
@@ -1125,17 +1125,18 @@ public final class MethodCountMethodAdapter extends MethodAdapter implements Opc
 						this.insertCounterIncrement(blockData.variableIndex);
 					}	
 				}
-			}
-			if(this.useRangeBlocks 
-					&& this.instrumentationParameters.getRecordBlockExecutionOrder()) {
-				Integer rngeBlockIndex = this.instrumentationState.getRangeBlockContainsLabels().get(label);
-				if(rngeBlockIndex != null) {
-					// label is part of a range block
-					this.insertAddIntegerToArrayList(
-							this.rangeBlockExecutionOrderArrayListVar, 
-							rngeBlockIndex);
-					if(this.instrumentationParameters.getProvideOnlineSectionExecutionUpdates()) {
-						this.insertResultCollectorUpdateCall();
+
+				if(this.useRangeBlocks 
+						&& this.instrumentationParameters.getRecordBlockExecutionOrder()) {
+					Integer rngeBlockIndex = this.instrumentationState.getRangeBlockContainsLabels().get(label);
+					if(rngeBlockIndex != null) {
+						// label is part of a range block
+						this.insertAddIntegerToArrayList(
+								this.rangeBlockExecutionOrderArrayListVar, 
+								rngeBlockIndex);
+						if(this.instrumentationParameters.getProvideOnlineSectionExecutionUpdates()) {
+							this.insertResultCollectorUpdateCall();
+						}
 					}
 				}
 			}

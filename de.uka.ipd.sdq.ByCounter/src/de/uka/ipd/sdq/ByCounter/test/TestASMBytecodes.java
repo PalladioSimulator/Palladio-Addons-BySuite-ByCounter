@@ -60,18 +60,18 @@ public class TestASMBytecodes {
 	 */
 	@Parameters
 	public static Collection<?> parameterSetup() {
-//		InstrumentationParameters p1 = new InstrumentationParameters();
+		InstrumentationParameters p1 = new InstrumentationParameters();
 		InstrumentationParameters p2 = new InstrumentationParameters();
-//		InstrumentationParameters p3 = new InstrumentationParameters();
+		InstrumentationParameters p3 = new InstrumentationParameters();
 		InstrumentationParameters p4 = new InstrumentationParameters();
-//		p1.setUseHighRegistersForCounting(true);
+		p1.setUseHighRegistersForCounting(true);
 		p2.setUseHighRegistersForCounting(false);
-//		p3.setCounterPrecision(InstrumentationParameters.COUNTER_PRECISION_LONG);
-//		p3.setUseHighRegistersForCounting(true);
+		p3.setCounterPrecision(InstrumentationCounterPrecision.Long);
+		p3.setUseHighRegistersForCounting(true);
 		p4.setCounterPrecision(InstrumentationCounterPrecision.Long);
 		p4.setUseHighRegistersForCounting(false);
 
-		return Arrays.asList(new Object[][] { {p2}, {p4} });
+		return Arrays.asList(new Object[][] { {p1}, {p2}, {p3}, {p4} });
 	}
 	
 	@AfterClass

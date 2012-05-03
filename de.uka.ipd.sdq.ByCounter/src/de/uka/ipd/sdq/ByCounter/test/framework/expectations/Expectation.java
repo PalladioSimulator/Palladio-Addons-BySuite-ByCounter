@@ -188,7 +188,7 @@ public class Expectation {
 				Assert.assertEquals(message, sectExpt.getSectionNumber(), observation[i].getIndexOfRangeBlock());
 			} else {
 				sectExpt = this.unorderedSections.get(observation[i].getIndexOfRangeBlock());
-				message = sectExpt.toString() + " not expected.";
+				message = /*sectExpt.toString() + */" not expected.";	// FIXME: cannot access sectExpt when null
 				Assert.assertNotNull(message, sectExpt);
 			}
 			sectExpt.compare(measuredOpcodeCounts, measuredMethodCallCounts, i);

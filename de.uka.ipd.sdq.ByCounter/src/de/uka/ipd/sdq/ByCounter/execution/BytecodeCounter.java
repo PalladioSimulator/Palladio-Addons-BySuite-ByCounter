@@ -679,10 +679,14 @@ public final class BytecodeCounter {
 			// if specified in the instrumentation parameters
 			if(this.instrumentationParameters.getWriteClassesToDisk()) {
 				int split = className.lastIndexOf('.');
-				split = split >= 0 ? split : 0;
-				final String packageN = className.substring(0, split);
-				final String simpleClassN = className.substring(split+1);
-				writeClassFile(packageN, simpleClassN, b);
+				if(split < 0) {
+					// no package
+					writeClassFile("", className, b);
+				} else {
+					final String packageN = className.substring(0, split);
+					final String simpleClassN = className.substring(split+1);
+					writeClassFile(packageN, simpleClassN, b);
+				}
 			}
 
 //			TODO fix the error with uninstrumented bytesize (as well as the problem the re-outputting uninstrumented bytes yields a non-executable something, i.e. not a class at all

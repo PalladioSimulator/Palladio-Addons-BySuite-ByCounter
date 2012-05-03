@@ -1173,7 +1173,7 @@ implements Serializable, Cloneable, IFullCountingResult, Comparable<IFullCountin
 		StringBuffer sb = new StringBuffer();
 		sb.append("\n"+
 				  "      "+this.getClass().getSimpleName()+" (hash code: "+this.hashCode()+")\n");
-		sb.append("      > Method name     : "+this.qualifyingMethodName+"\n");
+		sb.append("      > Method name     : "+this.qualifyingMethodName+ " (Invocation UUID: " + this.ownID + ")\n");
 		sb.append("      > Method duration : "+(this.methodReportingTime-this.methodInvocationBeginning)+
 				"(start: "+this.methodInvocationBeginning+", end: "+this.methodReportingTime+" \n");
 		sb.append("      > Opcode counts   : "+Arrays.toString(this.opcodeCounts)+"\n");

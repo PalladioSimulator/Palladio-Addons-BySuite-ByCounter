@@ -96,6 +96,8 @@ public class TestResultObservation {
     public void cleanResults() {
         // clear all collected results
         CountingResultCollector.getInstance().clearResults();
+        // delete all observers
+        CountingResultCollector.getInstance().deleteObservers();
     }
 
     /**
@@ -162,13 +164,13 @@ public class TestResultObservation {
         		TestSubjectResultObservation.class.getCanonicalName(), 
         		SIGNATURE_METHOD1);
         
-        Expectation eInit= new Expectation(true);
-        eInit.add(29, 29).add(Opcodes.ICONST_2, 1)
+        Expectation eInit= new Expectation(false);	// false because the execution sequence is specified manually down below
+        eInit.add(0).add(29, 29).add(Opcodes.ICONST_2, 1)
         			  .add(Opcodes.ISTORE, 1);
-        Expectation eInt = new Expectation(true);
-        eInt.add(31, 31).add(Opcodes.IINC, 1);
-        Expectation eDouble = new Expectation(true);
-        eDouble.add(35, 35).add(Opcodes.ILOAD, 1)
+        Expectation eInt = new Expectation(false);
+        eInt.add(1).add(31, 31).add(Opcodes.IINC, 1);
+        Expectation eDouble = new Expectation(false);
+        eDouble.add(2).add(35, 35).add(Opcodes.ILOAD, 1)
         				   .add(Opcodes.I2D, 1)
         				   .add(Opcodes.LDC, 1)
         				   .add(Opcodes.DADD, 1)
@@ -198,8 +200,8 @@ public class TestResultObservation {
         	}
 			@Override
 			public void update(Observable crc, Object updateData) {
-				log.info("Notification received: " + updateData);
 				if(updateData instanceof CountingResultSectionExecutionUpdate) {
+					log.info("Notification received: " + updateData);
 					// compare the observation with the expectation
 					CountingResult observation = ((CountingResultSectionExecutionUpdate)updateData).sectionResult;
 					expectations[observationCounter].compare(new CountingResult[] {observation});

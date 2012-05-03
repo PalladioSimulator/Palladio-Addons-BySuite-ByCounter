@@ -26,12 +26,16 @@ public class CountingResultUpdateIndexing {
 	 */
 	private Map<UUID, Queue<CountingResult>> sectionUpdatesByMethod;
 	
+	/** The method for which the last update was provided. */
+	private UUID lastUpdatedMethod;
+	
 	/**
 	 * Construct the indexing structure.
 	 */
 	public CountingResultUpdateIndexing() {
 		lastUpdatedSectionIndex = new HashMap<UUID, Integer>();
 		sectionUpdatesByMethod = new HashMap<UUID, Queue<CountingResult>>();
+		lastUpdatedMethod = null;
 	}
 
 
@@ -42,6 +46,12 @@ public class CountingResultUpdateIndexing {
 	 */
 	public void add(CountingResult result) {
 		final UUID methodID = result.getOwnID();
+		if(!methodID.equals(lastUpdatedMethod)) {
+			// we entered a new method
+			// provide an update for the previous method
+			setMethodDone(lastUpdatedMethod);
+		}
+		
 		Queue<CountingResult> resultQueue = sectionUpdatesByMethod.get(methodID);
 		if(resultQueue == null) {
 			// no entry for this method yet
@@ -57,9 +67,10 @@ public class CountingResultUpdateIndexing {
 			// a new section is being executed
 			updateObserversWithSection(resultQueue);
 		}
-
 		resultQueue.add(result);
+
 		// update last section index for the method
+		lastUpdatedMethod = methodID;
 		lastUpdatedSectionIndex.put(methodID, result.getIndexOfRangeBlock());		
 	}
 
@@ -75,8 +86,9 @@ public class CountingResultUpdateIndexing {
 			resultSumForSection.add(r);
 		}
 		CountingResultSectionExecutionUpdate update = 
-				new CountingResultSectionExecutionUpdate(resultQueue.peek().getIndexOfRangeBlock(),
+				new CountingResultSectionExecutionUpdate(resultSumForSection.getIndexOfRangeBlock(),
 															resultSumForSection);
+		resultQueue.clear();
 		CountingResultCollector.getInstance().setChanged();
 		CountingResultCollector.getInstance().notifyObservers(update);
 	}
@@ -87,6 +99,7 @@ public class CountingResultUpdateIndexing {
 	public void clearResults() {
 		this.lastUpdatedSectionIndex.clear();
 		this.sectionUpdatesByMethod.clear();
+		this.lastUpdatedMethod = null;
 	}
 
 	/**
@@ -99,5 +112,6 @@ public class CountingResultUpdateIndexing {
 			return;
 		}
 		updateObserversWithSection(resultQueue);
+		this.sectionUpdatesByMethod.remove(lastUpdatedMethod);
 	}
 }
