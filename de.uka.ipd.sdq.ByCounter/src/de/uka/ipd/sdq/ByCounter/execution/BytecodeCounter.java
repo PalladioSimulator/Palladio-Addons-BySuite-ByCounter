@@ -241,6 +241,11 @@ public final class BytecodeCounter {
 	 */
 	public synchronized InvocationResultData execute(MethodDescriptor methodToExecute, Object target, 
 			RuntimeMethodParameters params) {
+		int expected = MethodDescriptor.getParametersTypesFromDesc(methodToExecute.getDescriptor()).length;
+		int actual = params.getParameters().length;
+		if (expected != actual) {
+			throw new IllegalArgumentException("Wrong number of parameters! expected: " + expected + ", actual: " + actual);
+		}
 		InvocationResultData invocationResult = new InvocationResultData();
 		log.info(">>> Executing method on instrumented class");
 		// call the method
