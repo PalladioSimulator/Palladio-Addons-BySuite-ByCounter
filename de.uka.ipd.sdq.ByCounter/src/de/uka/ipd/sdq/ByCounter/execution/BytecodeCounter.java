@@ -16,12 +16,6 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javassist.ByteArrayClassPath;
-import javassist.CannotCompileException;
-import javassist.ClassPool;
-import javassist.CtClass;
-import javassist.Loader;
-import javassist.NotFoundException;
 import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentationParameters;
 import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentationScopeModeEnum;
 import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentationState;
@@ -86,16 +80,6 @@ public final class BytecodeCounter {
 	private byte[] classBytesToInstrument; 
 	
 	/**
-	 * When a method is instrumented by ByCounter, the class that holds the 
-	 * method is changed. So if the unchanged class has been loaded by a 
-	 * {@link ClassLoader}, we need to make sure that the instrumented version
-	 * of the class is used. 
-	 * This Javassist {@link ClassPool} holds the instrumented classes that 
-	 * are then used instead of their unmodified versions.
-	 */
-	private ClassPool classPool;
-
-	/**
 	 * The name of the class to count, if <code>classAsBytes</code> is false.
 	 * This is null otherwise.
 	 */
@@ -145,16 +129,21 @@ public final class BytecodeCounter {
 	
 
 	private List<MethodDescriptor> successFullyInstrumentedMethods;
+
+	/**
+	 * ClassLoader that handles instrumented classes.
+	 */
+	private InstrumentationClassLoader classLoader;
 	
 	/**
 	 * Setup a new BytecodeCounter.
 	 */
 	public BytecodeCounter() {
-		this.classPool = ClassPool.getDefault();
 		this.instrumentationParameters = new InstrumentationParameters();
 		this.executionSettings = new ExecutionSettings();
 		this.instrumentationState = new InstrumentationState();
 		this.successFullyInstrumentedMethods = new ArrayList<MethodDescriptor>();
+		this.classLoader = new InstrumentationClassLoader(this);
 		setupLogging();
 	}
 	
@@ -698,8 +687,7 @@ public final class BytecodeCounter {
 //			log.fine("\n\t\t("+instrBytesize+" instrumented, " +
 //					""+uninstrBytesize+" uninstrumented)");
  
-			log.fine("Updating class pool");
-			updateClassInClassPool(this.classToInstrument, b);
+			this.classLoader.updateClassInClassPool(this.classToInstrument, b);
 			if(this.instrumentationParameters.getUseBasicBlocks()) {
 				try {
 					File file = new File(BasicBlockSerialisation.FILE_BASIC_BLOCK_SERIALISATION);
@@ -861,26 +849,6 @@ public final class BytecodeCounter {
 	}
 
 	/**
-	 * Updates the class definition for the class given by className
-	 * and bytes by adding it to the Javassist {@link ClassPool}.
-	 * @param className Fully qualified name of the given class.
-	 * @param bytes Byte array representing the class.
-	 */
-	private void updateClassInClassPool(String className, byte[] bytes) {
-		if(className == null || className.length() == 0) {
-			log.severe("Cannot update class pool because the given classname "
-					+ "was null or invalid.");
-			return;
-		} else if(bytes == null) {
-			log.severe("Cannot update class pool as the given byte[] for the class"
-					+ "was null.");
-			return;
-		}
-		// make the class known to the class pool
-		this.classPool.insertClassPath(new ByteArrayClassPath(className, bytes));
-	}
-	
-	/**
 	 * Writes .class file given as byte[].
 	 * @param packageName Package name of the class.
 	 * @param className Simple class name used to determine where to save the class.
@@ -998,27 +966,9 @@ public final class BytecodeCounter {
 	 * @return The {@link Class} of the specified method.
 	 * @throws NotFoundException Thrown if the specified class cannot be found.
 	 * @throws CannotCompileException Thrown if the class cannot be loaded.
+	 * @throws ClassNotFoundException Thrown if the specified class cannot be found.
 	 */
-	private Class<?> getClassUsingLoader(MethodDescriptor m) throws NotFoundException, CannotCompileException {
-		CtClass ctClassToExecute = null;
-		// get the CtClass from the pool
-		ctClassToExecute = this.classPool.get(m.getCanonicalClassName());
-		
-		// use the supplied classloader if necessary (i.e. for eclipse plugin)
-		Loader loader;
-		if(this.getExecutionSettings().getParentClassLoader() == null) {
-			loader = new Loader(this.classPool);
-		} else {
-			loader = new Loader(this.executionSettings.getParentClassLoader(), this.classPool);
-		}
-		// make sure that the CountingResultCollector (important!) and all other 
-		// ByCounter classes do not get reloaded.
-		loader.delegateLoadingOf("de.uka.ipd.sdq.ByCounter.execution.");
-		// use the ClassLoader loader to get the Class<?> object
-		// use a standard protection domain
-		return ctClassToExecute.toClass(
-				loader, 
-				BytecodeCounter.class.getProtectionDomain()
-				);
+	private Class<?> getClassUsingLoader(MethodDescriptor m) throws ClassNotFoundException {
+		return this.classLoader.loadClass(m.getCanonicalClassName());
 	}
 }

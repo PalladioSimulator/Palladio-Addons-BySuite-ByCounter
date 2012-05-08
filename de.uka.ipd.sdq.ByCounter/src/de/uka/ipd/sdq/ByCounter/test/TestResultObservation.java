@@ -9,6 +9,7 @@ import java.util.logging.Logger;
 
 import junit.framework.Assert;
 
+import org.clapper.util.config.SectionExistsException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -25,6 +26,7 @@ import de.uka.ipd.sdq.ByCounter.execution.CountingResultSectionExecutionUpdate;
 import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentationParameters;
 import de.uka.ipd.sdq.ByCounter.parsing.LineNumberRange;
 import de.uka.ipd.sdq.ByCounter.test.framework.expectations.Expectation;
+import de.uka.ipd.sdq.ByCounter.test.framework.expectations.SectionExpectation;
 import de.uka.ipd.sdq.ByCounter.test.helpers.TestSubjectLineNumbers;
 import de.uka.ipd.sdq.ByCounter.test.helpers.TestSubjectResultObservation;
 import de.uka.ipd.sdq.ByCounter.utils.MethodDescriptor;
@@ -163,18 +165,22 @@ public class TestResultObservation {
         		TestSubjectResultObservation.class.getCanonicalName(),
         		SIGNATURE_METHOD1);
 
-        Expectation eInit= new Expectation(false);	// false because the execution sequence is specified manually down below
-        eInit.add(0).add(29, 29).add(Opcodes.ICONST_2, 1)
+        Expectation eInit= new Expectation(true);	// false because the execution sequence is specified manually down below
+        eInit.add(0).add(Opcodes.ICONST_2, 1)
         			  .add(Opcodes.ISTORE, 1);
-        Expectation eInt = new Expectation(false);
-        eInt.add(1).add(31, 31).add(Opcodes.IINC, 1);
-        Expectation eDouble = new Expectation(false);
-        eDouble.add(2).add(35, 35).add(Opcodes.ILOAD, 1)
+        LineNumberRange eInitLnr = new LineNumberRange(29, 29);
+        Expectation eInt = new Expectation(true);
+        eInt.add(1).add(Opcodes.IINC, 1)
+        			.add(Opcodes.GOTO, 1);
+        LineNumberRange eIntLnr = new LineNumberRange(31, 31);
+        Expectation eDouble = new Expectation(true);
+        eDouble.add(2).add(Opcodes.ILOAD, 1)
         				   .add(Opcodes.I2D, 1)
         				   .add(Opcodes.LDC, 1)
         				   .add(Opcodes.DADD, 1)
         				   .add(Opcodes.D2I, 1)
         				   .add(Opcodes.ISTORE, 1);
+        LineNumberRange eDoubleLnr = new LineNumberRange(35, 35);
 
         final Expectation[] expectations = new Expectation[] {
         		eInit,					// method1
@@ -184,9 +190,9 @@ public class TestResultObservation {
 
         // instrument all ranges
         LinkedList<LineNumberRange> ranges = new LinkedList<LineNumberRange>();
-        ranges.addAll(Arrays.asList(eInit.getRanges()));
-        ranges.addAll(Arrays.asList(eInt.getRanges()));
-        ranges.addAll(Arrays.asList(eDouble.getRanges()));
+        ranges.add(eInitLnr);
+        ranges.add(eIntLnr);
+        ranges.add(eDoubleLnr);
 
         method1.setCodeAreasToInstrument(ranges.toArray(new LineNumberRange[0]));
         counter.instrument(method1);
@@ -203,6 +209,7 @@ public class TestResultObservation {
 					// compare the observation with the expectation
 					CountingResult observation = ((CountingResultSectionExecutionUpdate)updateData).sectionResult;
 					expectations[observationCounter].compare(new CountingResult[] {observation});
+					observationCounter++;
 				} else if(updateData instanceof CountingResultCompleteMethodExecutionUpdate) {
 					// skip complete result
 				}else {
@@ -216,8 +223,13 @@ public class TestResultObservation {
         Object[] executionParameters = new Object[] { true };
         counter.execute(method1, executionParameters);
 
+        int i = 0;
         for(CountingResult cr : CountingResultCollector.getInstance().retrieveAllCountingResults()) {
         	cr.logResult(false, true);
+        	System.out.println(cr.getMethodInvocationBeginning());
+        	Expectation ea = expectations[i];
+//        	expectations[i].compare(new CountingResult[] {cr});
+        	i++;
         }
     }
 

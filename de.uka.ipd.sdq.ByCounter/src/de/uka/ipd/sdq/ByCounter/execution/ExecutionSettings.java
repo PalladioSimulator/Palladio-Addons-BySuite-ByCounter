@@ -29,7 +29,7 @@ public class ExecutionSettings implements Cloneable {
 	private static final boolean ADD_UP_RESULTS_RECURSIVELY_DEFAULT = false;
 
 	/** Default value for {@link #getParentClassLoader()}. */
-	public static final ClassLoader PARENT_CLASS_LOADER_DEFAULT = null;
+	public static final InstrumentationClassLoader PARENT_CLASS_LOADER_DEFAULT = null;
 
 	/**
 	 * Classes defined as internal when using recursive result retrieval.
@@ -204,7 +204,7 @@ public class ExecutionSettings implements Cloneable {
 	 * than the SystemClassLoader. For instance Eclipse plugins each have their 
 	 * own ClassLoader which means Class.forName() may not have access to the 
 	 * correct classpath.
-	 * @param parentClassLoader The {@link ClassLoader} that will be used to 
+	 * @param parentClassLoader The {@link InstrumentationClassLoader} that will be used to 
 	 * create instances of the classes to execute.
 	 */
 	public void setParentClassLoader(ClassLoader parentClassLoader) {
@@ -212,7 +212,7 @@ public class ExecutionSettings implements Cloneable {
 	}
 
 	/**
-	 * @return The {@link ClassLoader} set using {@link #setParentClassLoader(ClassLoader)}.
+	 * @return The {@link InstrumentationClassLoader} set using {@link #setParentClassLoader(ClassLoader)}.
 	 */
 	public ClassLoader getParentClassLoader() {
 		return parentClassLoader;
