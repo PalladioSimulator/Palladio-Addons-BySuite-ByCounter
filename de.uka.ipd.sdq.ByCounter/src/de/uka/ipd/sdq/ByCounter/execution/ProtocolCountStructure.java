@@ -237,17 +237,17 @@ public class ProtocolCountStructure {
 	 * *Int fields.
 	 */
 	private void convertIntToLong() {
-		if(opcodeCounts != null) {
+		if(opcodeCountsInt != null) {
 			this.opcodeCounts = convertIntArrayToLongArray(this.opcodeCountsInt);
 			this.opcodeCountsInt = null;
 		}
 		
-		if(methodCallCounts != null) {
+		if(methodCallCountsInt != null) {
 			this.methodCallCounts = convertIntArrayToLongArray(this.methodCallCountsInt);
 			this.methodCallCountsInt = null;
 		}
 		
-		if(newArrayCounts != null) {
+		if(newArrayCountsInt != null) {
 			this.newArrayCounts = convertIntArrayToLongArray(this.newArrayCountsInt);
 			this.newArrayCountsInt = null;
 		}
