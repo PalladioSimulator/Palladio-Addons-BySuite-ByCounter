@@ -323,7 +323,12 @@ public class CollectionStrategyDefault extends AbstractCollectionStrategy {
 	@Override
 	public SortedSet<CountingResult> retrieveAllCountingResults() {
 		SortedSet<CountingResult> ret = new TreeSet<CountingResult>();
-		if(!parentResultCollector.getLastMethodExecutionDetails().executionSettings.getAddUpResultsRecursively()) {
+		MethodExecutionRecord lastMethodExecutionDetails = parentResultCollector.getLastMethodExecutionDetails();
+		if(lastMethodExecutionDetails == null) {
+			log.warning("No method execution details are available. Please make certain that instrumented code has been executed.");
+		}
+		
+		if(lastMethodExecutionDetails != null && !lastMethodExecutionDetails.executionSettings.getAddUpResultsRecursively()) {
 			// no more calculation is necessary; return results
 			Iterator<CountingResult> iter = this.countingResults.iterator();
 			while(iter.hasNext()){
@@ -346,7 +351,8 @@ public class CollectionStrategyDefault extends AbstractCollectionStrategy {
 					continue;
 				}
 				CountingResult crSum = this.countingResultIndexing.retrieveCountingResultByStartTime_evaluateCallingTree(callerStartTime, true);
-				if(parentResultCollector.getLastMethodExecutionDetails().executionSettings.isInternalClass(
+				if(lastMethodExecutionDetails == null
+						|| lastMethodExecutionDetails.executionSettings.isInternalClass(
 						crSum.getQualifyingMethodName())) {
 					ret.add(crSum);
 					prevCallerReportTime = callerReportTime;

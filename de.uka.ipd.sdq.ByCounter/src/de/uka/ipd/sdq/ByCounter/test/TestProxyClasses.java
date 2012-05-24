@@ -23,7 +23,11 @@ import de.uka.ipd.sdq.ByCounter.utils.MethodDescriptor;
 public class TestProxyClasses {
 
 	/**
-	 * This instruments a method and ...
+	 * This instruments a method of a class depending on an external 
+	 * dependency that can change at runtime.
+	 * In a second step, the dependency is wrapped in a proxy class.
+	 * Both cases are checked to work with the class loader used by ByCounter
+	 * and to report correct results.
 	 */
 	@Test
 	public void testProxyClass() {

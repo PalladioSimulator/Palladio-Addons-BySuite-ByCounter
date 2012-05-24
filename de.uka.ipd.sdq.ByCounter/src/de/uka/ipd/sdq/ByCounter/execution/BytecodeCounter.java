@@ -143,7 +143,7 @@ public final class BytecodeCounter {
 		this.executionSettings = new ExecutionSettings();
 		this.instrumentationState = new InstrumentationState();
 		this.successFullyInstrumentedMethods = new ArrayList<MethodDescriptor>();
-		this.classLoader = new InstrumentationClassLoader(this);
+		this.classLoader = new InstrumentationClassLoader(null);
 		setupLogging();
 	}
 	
@@ -463,7 +463,7 @@ public final class BytecodeCounter {
 	private boolean findClassesToInstrument(Set<String> classesToInstrument,
 			Map<String, ClassMethodImplementations> classMethodDefinitions, 
 			MethodDescriptor methodToAnalyse) {
-		FindMethodDefinitionsClassAdapter findMethods = 
+		FindMethodDefinitionsClassAdapter findMethodsCA = 
 			new FindMethodDefinitionsClassAdapter(
 					this.instrumentationParameters.getIgnoredPackagePrefixes());
 		boolean descent;
@@ -475,7 +475,7 @@ public final class BytecodeCounter {
 			ClassMethodImplementations methods = classMethodDefinitions.get(canonicalClassName);
 			if(methods == null) {
 				methods = new ClassMethodImplementations();
-				if(!findMethods.parseClass(methods, canonicalClassName)) {
+				if(!findMethodsCA.parseClass(methods, canonicalClassName)) {
 					return false;
 				}
 				classMethodDefinitions.put(canonicalClassName, methods);
@@ -904,6 +904,10 @@ public final class BytecodeCounter {
 				// load the serialisation
 				CountingResultCollector.getInstance().blockContext.loadRangeBlockSerialisation();
 			}
+		}
+		
+		if(this.executionSettings.getParentClassLoader() != null) {
+			this.classLoader.setParentClassLoader(this.executionSettings.getParentClassLoader());
 		}
 
 		// create a class instance

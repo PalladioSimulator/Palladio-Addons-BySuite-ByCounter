@@ -38,16 +38,19 @@ public class InstrumentationClassLoader extends java.lang.ClassLoader {
 	private ClassPool classPool;
 
 	/**
-	 * {@link BytecodeCounter} that uses this classloader.
+	 * Parent of this classloader to delegate to.
 	 */
-	private BytecodeCounter parentByCounter;
-	
+	private ClassLoader parentClassLoader;
+		
 	/**
 	 * Construct the class loader with a default class pool.
-	 * @param parentBC {@link BytecodeCounter} using this class loader.
+	 * This constructor is defined so the class loader can be used as the 
+	 * system class loader.
+	 * @see ClassLoader#getSystemClassLoader()
+	 * @param parentClassLoader System class loader parent.
 	 */
-	public InstrumentationClassLoader(BytecodeCounter parentBC) {
-		this.parentByCounter = parentBC;
+	public InstrumentationClassLoader(ClassLoader parentClassLoader) {
+		this.parentClassLoader = parentClassLoader;
 		this.classPool = ClassPool.getDefault();
 		log = Logger.getLogger(this.getClass().getCanonicalName());
 	}
@@ -93,7 +96,6 @@ public class InstrumentationClassLoader extends java.lang.ClassLoader {
 		
 		// use the supplied classloader if necessary (i.e. for eclipse plugin)
 		Loader loader;
-		final ClassLoader parentClassLoader = this.parentByCounter.getExecutionSettings().getParentClassLoader();
 		if(parentClassLoader == null) {
 			loader = new Loader(this.classPool);
 		} else {
@@ -141,5 +143,12 @@ public class InstrumentationClassLoader extends java.lang.ClassLoader {
 				}
 			}
 		}
+	}
+	
+	/**
+	 * @param parentClassLoader2 The parent class loader to use.
+	 */
+	public void setParentClassLoader(ClassLoader parentClassLoader2) {
+		this.parentClassLoader = parentClassLoader2;
 	}
 }
