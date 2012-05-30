@@ -165,7 +165,7 @@ public class TestResultObservation {
         		TestSubjectResultObservation.class.getCanonicalName(),
         		SIGNATURE_METHOD1);
 
-        Expectation eInit= new Expectation(true);	// false because the execution sequence is specified manually down below
+        Expectation eInit = new Expectation(true);	// false because the execution sequence is specified manually down below
         eInit.add(0).add(Opcodes.ICONST_2, 1)
         			  .add(Opcodes.ISTORE, 1);
         LineNumberRange eInitLnr = new LineNumberRange(29, 29);
@@ -228,7 +228,7 @@ public class TestResultObservation {
         	cr.logResult(false, true);
         	System.out.println(cr.getMethodInvocationBeginning());
         	Expectation ea = expectations[i];
-//        	expectations[i].compare(new CountingResult[] {cr});
+        	expectations[i].compare(new CountingResult[] {cr});
         	i++;
         }
     }
