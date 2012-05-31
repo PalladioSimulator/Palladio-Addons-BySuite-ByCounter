@@ -320,6 +320,9 @@ public class CollectionStrategyDefault extends AbstractCollectionStrategy {
 		return result;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public SortedSet<CountingResult> retrieveAllCountingResults() {
 		SortedSet<CountingResult> ret = new TreeSet<CountingResult>();

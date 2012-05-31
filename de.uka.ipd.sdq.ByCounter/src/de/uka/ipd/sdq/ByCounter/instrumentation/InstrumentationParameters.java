@@ -33,7 +33,7 @@ public final class InstrumentationParameters implements Cloneable {
 			"java/",
 			"javax/",
 			"sun/",
-			"org/w3c/dom"
+			"org/w3c/dom/"
 		};
 
 	/** Default value for {@link #getCounterPrecision()}:

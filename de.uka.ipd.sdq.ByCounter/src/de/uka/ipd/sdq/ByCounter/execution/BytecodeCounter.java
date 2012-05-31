@@ -56,13 +56,6 @@ public final class BytecodeCounter {
 
 	private static final boolean TRY_TO_FIND_IMPLEMENTATIONS_IN_SUPER = false;
 
-	private static String[] excludedPackagePrefixes = {
-		"java.",
-		"javax.",
-		"sun.",
-		"org.w3c.dom."
-	};
-
 	/**
 	 * A logger instance (java.util Logging)
 	 */
@@ -579,8 +572,8 @@ public final class BytecodeCounter {
 
 			boolean badPackage = false;
 			// check if the method is from a class in an excluded package
-			for(String p : excludedPackagePrefixes) {
-				if(canonicalClassName.startsWith(p)) {
+			for(String p : this.instrumentationParameters.getIgnoredPackagePrefixes()) {
+				if(canonicalClassName.startsWith(p.replace('/', '.'))) {
 					badPackage = true;
 					break;
 				}
