@@ -1,5 +1,11 @@
 package de.uka.ipd.sdq.ByCounter.execution;
 
+import java.io.DataInputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.logging.Logger;
 
 import javassist.ByteArrayClassPath;
@@ -41,6 +47,13 @@ public class InstrumentationClassLoader extends java.lang.ClassLoader {
 	 * Parent of this classloader to delegate to.
 	 */
 	private ClassLoader parentClassLoader;
+
+	/**
+	 * A list of canonical class names for all classes that have been
+	 * updated in the classpool using 
+	 * {@link #updateClassInClassPool(String, byte[])}.
+	 */
+	private List<String> classesInClassPool;
 		
 	/**
 	 * Construct the class loader with a default class pool.
@@ -50,8 +63,10 @@ public class InstrumentationClassLoader extends java.lang.ClassLoader {
 	 * @param parentClassLoader System class loader parent.
 	 */
 	public InstrumentationClassLoader(ClassLoader parentClassLoader) {
+		super(parentClassLoader);
 		this.parentClassLoader = parentClassLoader;
 		this.classPool = ClassPool.getDefault();
+		this.classesInClassPool = new LinkedList<String>();
 		log = Logger.getLogger(this.getClass().getCanonicalName());
 	}
 	
@@ -74,24 +89,26 @@ public class InstrumentationClassLoader extends java.lang.ClassLoader {
 		}
 		// make the class known to the class pool
 		this.classPool.insertClassPath(new ByteArrayClassPath(className, bytes));
+		this.classesInClassPool.add(className);
 	}
 	
 
 	/**
-	 * @param name Canonical class name.
+	 * @param canonicalClassName Canonical class name.
 	 */
-	public Class<?> loadClass(String name) throws ClassNotFoundException {
-		Class<?> pClass = this.getClass().getClassLoader().loadClass(name);
-		if(pClass.isInterface()) {
-			return pClass;
+	public Class<?> loadClass(String canonicalClassName) throws ClassNotFoundException {
+		// check if we have the class in the pool
+		if(!this.classesInClassPool.contains(canonicalClassName)) {
+			// use standard classloader instead
+			return super.loadClass(canonicalClassName);
 		}
 				
 		CtClass ctClassToExecute = null;
 		// get the CtClass from the pool
 		try {
-			ctClassToExecute = this.classPool.get(name);
+			ctClassToExecute = this.classPool.get(canonicalClassName);
 		} catch (NotFoundException e) {
-			throw new ClassNotFoundException("Class pool cannot find the class " + name + ".", e);
+			throw new ClassNotFoundException("Class pool cannot find the class " + canonicalClassName + ".", e);
 		}
 		
 		// use the supplied classloader if necessary (i.e. for eclipse plugin)
@@ -119,11 +136,46 @@ public class InstrumentationClassLoader extends java.lang.ClassLoader {
 		try {
 			return ctClassToExecute.toClass(
 					loader, 
-					BytecodeCounter.class.getProtectionDomain()
+					Class.class.getProtectionDomain()
 					);
 		} catch (CannotCompileException e) {
+			System.out.println("cannotCompile");
 			throw new RuntimeException(e);
 		}
+	}
+	
+	/**
+	 * Tries to load the class from a .class file.
+	 * {@inheritDoc}
+	 */
+	@Override
+	protected Class<?> findClass(String name) throws ClassNotFoundException {
+		String file = name.replace('.', File.separatorChar) + ".class";
+		byte[] b = null;
+		try {
+			b = loadClassData(file);
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+		Class<?> c = defineClass(name, b, 0, b.length);
+		resolveClass(c);
+		return c;
+	}
+	
+	/**
+	 * Uses the system class loader to find the given file data.
+	 * @param file Filename of a .class.
+	 * @return Class file as byte[].
+	 * @throws IOException When accessing the file fails, this is thrown.
+	 */
+	private byte[] loadClassData(String file) throws IOException {
+		InputStream stream = getClass().getClassLoader().getResourceAsStream(file);
+		int size = stream.available();
+		byte buff[] = new byte[size];
+		DataInputStream in = new DataInputStream(stream);
+		in.readFully(buff);
+		in.close();
+		return buff;
 	}
 
 	/**
