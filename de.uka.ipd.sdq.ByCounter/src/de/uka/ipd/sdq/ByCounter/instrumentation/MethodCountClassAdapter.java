@@ -954,13 +954,14 @@ public final class MethodCountClassAdapter extends ClassAdapter {
 			// use the original method header
 			mv = this.cv.visitMethod(access, name, desc, signature, exceptions);
 		}
+		boolean instrumentEverything = 
+				(this.instrumentationParameters.getInstrumentationScopeOverrideClassLevel()
+				== InstrumentationScopeModeEnum.InstrumentEverything);
 		
 		if (mv == null) {
 			throw new RuntimeException(new IllegalStateException(
 					"The method visitor found in the chain was null."));
-		} else	if (
-				(this.instrumentationParameters.getInstrumentationScopeOverrideClassLevel()
-				== InstrumentationScopeModeEnum.InstrumentEverything)
+		} else	if ((instrumentEverything)
 				|| methodIndex >= 0) {
 			if(!isNative) {
 				MethodDescriptor currentMethod;
@@ -1024,14 +1025,14 @@ public final class MethodCountClassAdapter extends ClassAdapter {
 				
 				this.instrumentationState.getSuccessFullyInstrumentedMethods().add(currentMethod);
 				// this method was instrumented successfully //TODO add errors!
-				if(methodIndex >= 0) {
+				if(!instrumentEverything && methodIndex >= 0) {
 					this.methodInstrumentationStatus[methodIndex] = true;
 				}
 			} else {
 				// we have a native method; mark as successfully instrumented
 				// in order to avoid errors in recursive instrumentation where
 				// native methods may be selected
-				if(methodIndex >= 0) {
+				if(!instrumentEverything && methodIndex >= 0) {
 					this.methodInstrumentationStatus[methodIndex] = true;
 				}
 			}
