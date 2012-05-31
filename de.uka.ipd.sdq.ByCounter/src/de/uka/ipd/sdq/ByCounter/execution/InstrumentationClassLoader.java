@@ -98,10 +98,10 @@ public class InstrumentationClassLoader extends java.lang.ClassLoader {
 	 */
 	public Class<?> loadClass(String canonicalClassName) throws ClassNotFoundException {
 		// check if we have the class in the pool
-		if(!this.classesInClassPool.contains(canonicalClassName)) {
-			// use standard classloader instead
-			return super.loadClass(canonicalClassName);
-		}
+//		if(!this.classesInClassPool.contains(canonicalClassName)) {
+//			// use standard classloader instead
+//			return super.loadClass(canonicalClassName);
+//		}
 				
 		CtClass ctClassToExecute = null;
 		// get the CtClass from the pool
