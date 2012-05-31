@@ -116,7 +116,7 @@ public final class InstrumentationParameters implements Cloneable {
 	 * A list of strings that cause a class to be ignored in the parsing 
 	 * when found at the start of a package name.
 	 */
-	protected static String[] ignoredPackagePrefixes = IGNORED_PACKAGES_DEFAULT;
+	protected String[] ignoredPackagePrefixes = IGNORED_PACKAGES_DEFAULT;
 
 	/** Decides on the precision of the variables used for counting. For 
 	 * very high counts integers might not be enough and you want to use 
@@ -667,8 +667,8 @@ public final class InstrumentationParameters implements Cloneable {
 	 * @see #getIgnoredPackagePrefixes()
 	 * @param ignoredPackagePrefixes Prefixes of packages that are ignored.
 	 */
-	public static void setIgnoredPackagePrefixes(String[] ignoredPackagePrefixes) {
-		InstrumentationParameters.ignoredPackagePrefixes = ignoredPackagePrefixes;
+	public void setIgnoredPackagePrefixes(String[] ignoredPackagePrefixes) {
+		this.ignoredPackagePrefixes = ignoredPackagePrefixes;
 	}
 	
 	/**
