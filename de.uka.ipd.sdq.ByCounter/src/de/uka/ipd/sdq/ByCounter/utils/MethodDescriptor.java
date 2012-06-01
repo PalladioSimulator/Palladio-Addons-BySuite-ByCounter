@@ -562,9 +562,9 @@ public final class MethodDescriptor implements Comparable<MethodDescriptor>, Ser
 			for (String s : params) {
 				s = s.trim(); // remove leading and trailing whitespaces
 				tokens = s.split("(\\s)+"); // split at whitespaces
-				if (tokens.length < 1 || tokens.length > 2) {
+				if (tokens.length < 1 || tokens.length > 3) {
 					throw new IllegalArgumentException("Error parsing Java signature \"" + signature + "\": "
-							+ "Parameter definition does not contain 1 or 2 tokens");
+							+ "Parameter definition does not contain 1, 2 or 3 tokens");
 				} else {
 					// if the array braces "[]" are appended to the parameter name,
 					// cut them of and append them to the type string:

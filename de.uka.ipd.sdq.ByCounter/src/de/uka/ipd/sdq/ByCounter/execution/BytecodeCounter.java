@@ -570,15 +570,8 @@ public final class BytecodeCounter {
 					child.getName(), 
 					child.getDesc());
 
-			boolean badPackage = false;
-			// check if the method is from a class in an excluded package
-			for(String p : this.instrumentationParameters.getIgnoredPackagePrefixes()) {
-				if(canonicalClassName.startsWith(p.replace('/', '.'))) {
-					badPackage = true;
-					break;
-				}
-			}
-			if(badPackage || methodIndex >= 0) {
+			if(instrumentationParameters.isClassExcluded(canonicalClassName) 
+					|| methodIndex >= 0) {
 				// do not instrument method; it is in an excluded package
 				// OR method is already in list; skip
 			} else {
@@ -592,8 +585,6 @@ public final class BytecodeCounter {
 			}
 		}
 	}
-	
-	
 
 	/**
 	 * Instrument the specified method with ByCounter instructions for 

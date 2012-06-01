@@ -385,6 +385,10 @@ public final class Instrumenter {
 						while(!methodDeclaringSuperClassFound && !topClassReached ){
 							currentSuperClass = currentSuperClass.getSuperclass();
 							log.info("Currently considered superclass: "+currentSuperClass);
+							if(currentSuperClass.getCanonicalName().equals("java.lang.Object")){
+								topClassReached = true;
+								break;
+							}
 							Method[] declaredMethods = currentSuperClass.getSuperclass().getDeclaredMethods();
 							for(Method declMethod : declaredMethods){
 //								if(declMethod.get)
@@ -397,9 +401,6 @@ public final class Instrumenter {
 								}else{
 									log.info("\n"+md+" \n"+"not a submethod of \n"+superClassMd);
 								}
-							}
-							if(currentSuperClass.getCanonicalName().equals("java.lang.Object")){
-								topClassReached = true;
 							}
 						}
 					} catch (ClassNotFoundException e) {

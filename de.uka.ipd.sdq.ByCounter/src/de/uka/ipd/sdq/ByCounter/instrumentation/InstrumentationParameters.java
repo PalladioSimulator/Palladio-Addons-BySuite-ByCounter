@@ -741,4 +741,19 @@ public final class InstrumentationParameters implements Cloneable {
 		}
 		return false;
 	}
+
+	/**
+	 * @param canonicalClassName Canonical class name.
+	 * @return True, when the given class name is excluded from instrumentation.
+	 * @see InstrumentationParameters#getIgnoredPackagePrefixes()
+	 */
+	public boolean isClassExcluded(String canonicalClassName) {
+		// check if the method is from a class in an excluded package
+		for(String p : getIgnoredPackagePrefixes()) {
+			if(canonicalClassName.startsWith(p.replace('/', '.'))) {
+				return true;
+			}
+		}
+		return false;
+	}
 }

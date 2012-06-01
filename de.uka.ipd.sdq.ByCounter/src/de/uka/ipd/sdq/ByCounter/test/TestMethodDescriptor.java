@@ -44,7 +44,7 @@ public class TestMethodDescriptor {
 
 		// 3
 		d = new MethodDescriptor(CLASS_NAME,
-				"public static java.util.List <Integer> factor(java.util.List<java.util.List<Double>> A,  int pivot[])");
+				"public static java.util.List <Integer> factor(java.util.List<java.util.List<Double>> A,  final int pivot[])");
 		Assert.assertNotNull("Method descriptor was null. This means it could not be parsed correctly", d);
 		Assert.assertEquals("Method descriptor method name is not correct.", "factor", d.getSimpleMethodName());
 		Assert.assertEquals("Method descriptor is not correct.", "(Ljava/util/List;[I)Ljava/util/List;", d
