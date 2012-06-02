@@ -1,6 +1,5 @@
 package de.uka.ipd.sdq.ByCounter.test;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.Observable;
@@ -9,7 +8,6 @@ import java.util.logging.Logger;
 
 import junit.framework.Assert;
 
-import org.clapper.util.config.SectionExistsException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -26,7 +24,6 @@ import de.uka.ipd.sdq.ByCounter.execution.CountingResultSectionExecutionUpdate;
 import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentationParameters;
 import de.uka.ipd.sdq.ByCounter.parsing.LineNumberRange;
 import de.uka.ipd.sdq.ByCounter.test.framework.expectations.Expectation;
-import de.uka.ipd.sdq.ByCounter.test.framework.expectations.SectionExpectation;
 import de.uka.ipd.sdq.ByCounter.test.helpers.TestSubjectLineNumbers;
 import de.uka.ipd.sdq.ByCounter.test.helpers.TestSubjectResultObservation;
 import de.uka.ipd.sdq.ByCounter.utils.MethodDescriptor;
@@ -227,7 +224,7 @@ public class TestResultObservation {
         for(CountingResult cr : CountingResultCollector.getInstance().retrieveAllCountingResults()) {
         	cr.logResult(false, true);
         	System.out.println(cr.getMethodInvocationBeginning());
-        	Expectation ea = expectations[i];
+//        	Expectation ea = expectations[i];
         	expectations[i].compare(new CountingResult[] {cr});
         	i++;
         }
