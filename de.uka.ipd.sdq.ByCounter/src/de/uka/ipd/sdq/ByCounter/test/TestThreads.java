@@ -158,8 +158,6 @@ public class TestThreads {
 		// initialize ByCounter
 		BytecodeCounter counter = this.setupByCounter();
 		counter.getInstrumentationParams().setInstrumentRecursively(true);
-		System.out.println(counter);
-		System.out.println(counter.getInstrumentationParams());
 		counter.instrument(methodRun);
 		
 		Object[] executionParameters = new Object[0];

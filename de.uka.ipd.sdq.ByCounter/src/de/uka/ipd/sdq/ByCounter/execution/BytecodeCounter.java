@@ -10,11 +10,14 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import org.objectweb.asm.ClassReader;
 
 import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentationParameters;
 import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentationScopeModeEnum;
@@ -409,13 +412,22 @@ public final class BytecodeCounter {
 					this.instrumentationParameters.getIgnoredPackagePrefixes());
 			for(String className : classesToInstrument) {
 				this.callGraph = new CallGraph();
+				ClassReader cr;
 				if(this.classAsBytes) {
-					callGraphAdapter.parseClass(callGraph, this.classBytesToInstrument);
+					cr = new ClassReader(this.classBytesToInstrument);
+					callGraphAdapter.parseClass(callGraph, cr);
 				} else {
-					callGraphAdapter.parseClass(callGraph, className);
+					try {
+						cr = new ClassReader(className);
+						success = success && callGraphAdapter.parseClass(callGraph, cr);
+					} catch (IOException e) {
+						log.severe("Could not parse class with name '" + className + "'. Skipping.");
+						success = false;
+					}
 				}
-				this.selectMethodsFromCallGraph();
 			}
+			this.instrumentationState.setMethodsToInstrumentCalculated(
+					this.selectMethodsFromCallGraph());
 			// since we created the call graph, we may now have to instrument
 			// additional classes, so add them to the list here
 			for(MethodDescriptor m : instrumentationState.getMethodsToInstrumentCalculated()) {
@@ -518,21 +530,21 @@ public final class BytecodeCounter {
 	/**
 	 * If instrumentRecursivly is set in the instrumentation parameters,
 	 * we need to instrument methods called from the methods to instrument.
-	 * This method uses the {@link #callGraph} to select these methods. 
+	 * This method uses the {@link #callGraph} to select these methods.
+	 * @return Calculated {@link List} of methods to instrument. 
 	 */
-	private void selectMethodsFromCallGraph() {
+	private List<MethodDescriptor> selectMethodsFromCallGraph() {
 		// copy all methods specified in instrumentation parameters
 		final int size = this.instrumentationParameters.getMethodsToInstrument().size();
+		List<MethodDescriptor> results = new ArrayList<MethodDescriptor>(size);//initial size
 
-		this.instrumentationState.setMethodsToInstrumentCalculated(
-			new ArrayList<MethodDescriptor>(size));//initial size
+		// copy from user selected list
 		for(int i = 0; i < size; i++) {
-			this.instrumentationState.getMethodsToInstrumentCalculated().add(null);
+			results.add(null);
 		}
 		Collections.copy(
-				this.instrumentationState.getMethodsToInstrumentCalculated(),
+				results,
 				this.instrumentationParameters.getMethodsToInstrument());
-		
 		//TODO add duplicate check here (or earlier)
 		// now traverse the callgraph to add the recursive methods
 		for(MethodDescriptor md : this.instrumentationParameters.getMethodsToInstrument()) {
@@ -543,9 +555,10 @@ public final class BytecodeCounter {
 			}
 			// recursively add the methods child methods
 			selectMethodsFromCallGraph_forMethod(
-					this.instrumentationState.getMethodsToInstrumentCalculated(),
+					results,
 					m);
 		}
+		return results;
 	}
 	
 	/**
@@ -554,35 +567,48 @@ public final class BytecodeCounter {
 	 * @param methodsList The list that will be extended by the methods called 
 	 * by method m if they are not already in the list.
 	 * methodsAlreadySelected.
-	 * @param m Method which children are considered for adding.
+	 * @param root Method which children are considered for adding.
 	 */
 	private void selectMethodsFromCallGraph_forMethod(
 			List<MethodDescriptor> methodsList,
-			final CallGraphMethod m) {
-		// look at all methods called by m
-		for(final CallGraphMethod child : m.getChildMethods()) {
-			
-			String canonicalClassName = child.getOwner().replace('/', '.');
-			final int methodIndex = 
-				MethodDescriptor.findMethodInList(
-						methodsList,
-					canonicalClassName,
-					child.getName(), 
-					child.getDesc());
-
-			if(instrumentationParameters.isClassExcluded(canonicalClassName) 
-					|| methodIndex >= 0) {
-				// do not instrument method; it is in an excluded package
-				// OR method is already in list; skip
-			} else {
-				final MethodDescriptor descriptor = 
-					MethodDescriptor._constructMethodDescriptorFromASM(
-							child.getOwner(), child.getName(), child.getDesc());
-				// add the method to the list
-				methodsList.add(descriptor);
-				// now recurse with all childs
-				selectMethodsFromCallGraph_forMethod(methodsList, child);
+			final CallGraphMethod root) {
+		List<CallGraphMethod> newRoots;
+		List<CallGraphMethod> roots = new LinkedList<CallGraphMethod>();
+		roots.add(root);
+		
+		while(!roots.isEmpty()) {
+			newRoots = new LinkedList<CallGraphMethod>();
+			for(CallGraphMethod m : roots) {
+				// look at all methods called by m
+				for(final CallGraphMethod child : m.getChildMethods()) {
+					
+					String canonicalClassName = child.getOwner().replace('/', '.');
+					final int methodIndex = 
+						MethodDescriptor.findMethodInList(
+								methodsList,
+							canonicalClassName,
+							child.getName(), 
+							child.getDesc());
+		
+					if(instrumentationParameters.isClassExcluded(canonicalClassName) 
+							|| methodIndex >= 0) {
+						// do not instrument method; it is in an excluded package
+						// OR method is already in list; skip
+					} else {
+						final MethodDescriptor descriptor = 
+							MethodDescriptor._constructMethodDescriptorFromASM(
+									child.getOwner(), child.getName(), child.getDesc());
+						// add the method to the list
+						methodsList.add(descriptor);
+					}
+					// Now select from all childs.
+					// This is necessary even with if this method was not added, 
+					// because other
+					// methods deeper in the call tree can still be relevant.
+					newRoots.add(child);
+				}
 			}
+			roots = newRoots;
 		}
 	}
 

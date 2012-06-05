@@ -2,6 +2,8 @@ package de.uka.ipd.sdq.ByCounter.parsing;
 
 import java.io.IOException;
 import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.logging.Logger;
 
 import org.objectweb.asm.ClassReader;
@@ -12,7 +14,7 @@ import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 
 /**
- * This class has the method {@link #parseClass(CallGraph, String)} that can be 
+ * This class has the method {@link #parseClass(CallGraph, ClassReader)} that can be 
  * used to create a {@link CallGraph} for a given class.
  * @author Martin Krogmann
  *
@@ -23,43 +25,13 @@ public final class CallGraphClassAdapter {
 	
 	private String[] ignoredPackagePrefixes;
 	
+	/**
+	 * Construct the adapter.
+	 * @param ignoredPackagePrefixes Prefixes of packages/classes that will be 
+	 * ignored.
+	 */
 	public CallGraphClassAdapter(String[] ignoredPackagePrefixes) {
 		this.ignoredPackagePrefixes = ignoredPackagePrefixes;
-	}
-		
-	/**
-	 * @param callGraph This is the {@link CallGraph} that will be extended with the method calls
-	 * found in the class named className.
-	 * @param className The name of the class holding the methods that shall be parsed.
-	 * Needs to be fully qualified as this is used to find the correct class.
-	 * @return True, if the class could be found and parsed successfully.
-	 */
-	public boolean parseClass(CallGraph callGraph, final String className) {
-
-		ClassReader cr = null;
-		try {
-			cr = new ClassReader(className);
-		} catch (IOException e) {
-			log.severe("Could not parse class with name '" + className + "'. Skipping.");
-			return false;
-		}
-
-		return parseClass(callGraph, cr);
-	}
-		
-	/**
-	 * @param callGraph This is the {@link CallGraph} that will be extended with the method calls
-	 * found in the class named className.
-	 * @param classBytes The class holding the methods that shall be parsed.
-	 * Needs to be fully qualified as this is used to find the correct class.
-	 * @return True, if the class could be found and parsed successfully.
-	 */
-	public boolean parseClass(CallGraph callGraph, final byte[] classBytes) {
-
-		ClassReader cr = null;
-		cr = new ClassReader(classBytes);
-
-		return parseClass(callGraph, cr);
 	}
 	
 	/**
@@ -69,42 +41,73 @@ public final class CallGraphClassAdapter {
 	 * Needs to be fully qualified as this is used to find the correct class.
 	 * @return True, if the class could be found and parsed successfully.
 	 */
-	@SuppressWarnings("unchecked")
-	protected boolean parseClass(CallGraph callGraph, ClassReader classReader) {
+	public boolean parseClass(CallGraph callGraph, ClassReader classReader) {
 		if(callGraph == null) {
 			log.severe("CallGraph was null. Aborting parsing.");
 			return false;
 		}
 		
+		List<ClassReader> classesToParse = new LinkedList<ClassReader>();
+		classesToParse.add(classReader);
+
+		boolean success = true;
+		
+		while(!classesToParse.isEmpty()) {
+			List<ClassReader> newClassesToParse = new LinkedList<ClassReader>();
+			for(ClassReader currentCR : classesToParse) {
+				try {
+					newClassesToParse.addAll(parseSingleClass(callGraph, currentCR));
+				} catch (IOException e) {
+					log.severe("Could not parse class with name '" + currentCR.getClassName() + "'. Skipping.");
+				}
+			}
+			// classesToParse is complete; go to newClassesToParse
+			classesToParse = newClassesToParse;
+		}
+		
+		return success;
+	}
+
+	/**
+	 * Parse the class given as a class reader and adds method calls to the 
+	 * call graph.
+	 * @param callGraph Call graph that will be written to.
+	 * @param currentCR ClassReader for a class.
+	 * @return A {@link List} of classes that are used by this class. These
+	 * need to be parsed as well for a complete call graph.
+	 * @throws IOException Thrown when a class cannot be read.
+	 */
+	@SuppressWarnings("unchecked")
+	private List<ClassReader> parseSingleClass(CallGraph callGraph, ClassReader currentCR) throws IOException {
+		List<ClassReader> newClassesToParse = new LinkedList<ClassReader>();
 		// check if the class was already parsed to avoid endless recursion
-		if(callGraph.getParsedClasses().contains(classReader.getClassName())) {
+		if(callGraph.getParsedClasses().contains(currentCR.getClassName())) {
 			log.finer("Class already parsed");
-			return true;
+			return newClassesToParse;
 		}
 		
 		// check if the class is to be ignored
 		for(String prefix : ignoredPackagePrefixes) {
-			if (classReader.getClassName().startsWith(prefix)) {
-				log.finer("Class is in ignored package: " + classReader.getClassName());				
-				return true;
+			if (currentCR.getClassName().startsWith(prefix)) {
+				log.finer("Class is in ignored package: " + currentCR.getClassName());				
+				return newClassesToParse;
 			}
 		}
 		
-		log.info("Parsing class: " + classReader.getClassName());
+		log.info("Parsing class: " + currentCR.getClassName());
 		// We can now parse the class 
-		callGraph.addParsedClass(classReader.getClassName());
+		callGraph.addParsedClass(currentCR.getClassName());
 		
 		// transformation chain:
 		ClassNode cn = new ClassNode();		
-		ClassReader cr = classReader;
+		ClassReader cr = currentCR;
 		
 		cr.accept(cn, 0);
 		
-		boolean success = true;
 		// go through all methods
 		Iterator<MethodNode> it = cn.methods.iterator();
 		while(it.hasNext()) {
-			MethodNode m = (MethodNode)it.next();
+			MethodNode m = it.next();
 			CallGraphMethod m1 = new CallGraphMethod(cr.getClassName(), m.name, m.desc);
 			if(cr.getClassName().startsWith("[")) {
 				continue;
@@ -145,7 +148,7 @@ public final class CallGraphClassAdapter {
 					     		callGraph.addMethodCall(m1, m2);
 					     		
 					     		// now parse the class that contains m2
-					     		success = success && parseClass(callGraph, methodCall.owner);
+					     		newClassesToParse.add(new ClassReader(methodCall.owner));
 					        }
 						} catch (ClassNotFoundException e) {
 							log.severe("Could not find definition for called method.");
@@ -163,11 +166,10 @@ public final class CallGraphClassAdapter {
 					callGraph.addMethodCall(m1, m2);
 					
 					// now parse the class that contains m2
-					success = success && parseClass(callGraph, methodCall.owner);
+					newClassesToParse.add(new ClassReader(methodCall.owner));
 				}
 			}
 		}
-		
-		return success;
+		return newClassesToParse;
 	}
 }
