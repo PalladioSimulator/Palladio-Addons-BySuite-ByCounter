@@ -38,6 +38,19 @@ public class TestThreads {
 
 	private final InstrumentationParameters instrumentationParametersTemplate;
 
+	private static MethodDescriptor methodThreadRun;
+
+	private MethodDescriptor methodRun;
+	
+	{
+		methodThreadRun = new MethodDescriptor(
+				RunnableForThreading.class.getCanonicalName(),
+				"public void run()");
+		methodRun = new MethodDescriptor(
+				ThreadedTestSubject.class.getCanonicalName(),
+				"public void run()");
+	}
+
     /**
      * Generates the different parameters with which all tests are run. This reuses the parameters
      * from TestASMBytecodes.parameterSetup().
@@ -83,7 +96,7 @@ public class TestThreads {
      * Tests the counting of user defined line number ranges while recording the order of execution.
      */
     @Test
-    public void testRangeBlockOrderedCounting() {
+    public void testInstrumentRunnable() {
         // define expectations
         Expectation e = new Expectation(true);
         // the thread is executed four times
@@ -114,9 +127,20 @@ public class TestThreads {
 			        .add("java.util.logging.Logger" , "public void info(java.lang.String s)", 2)
 	                ;
         }
+		// initialize ByCounter
+		BytecodeCounter counter = this.setupByCounter();
+		
+		counter.instrument(methodThreadRun);
+		
+		// execute with ()
+		Object[] executionParameters = new Object[0];
+		counter.execute(methodRun, executionParameters);
+		
+		SortedSet<CountingResult> countingResults = CountingResultCollector.getInstance().retrieveAllCountingResults();
+		removeMethodCallsWithFrequency0(countingResults);
         
-        // run ByCounter
-        CountingResult[] results = this.instrumentAndExecute();
+        // print ByCounter results
+        CountingResult[] results = countingResults.toArray(new CountingResult[0]);
         for (CountingResult r : results) {
         	r.logResult(false, true);
         }
@@ -124,38 +148,52 @@ public class TestThreads {
         // compare
         e.compare(results);
     }
-
-	private CountingResult[] instrumentAndExecute() {
+    
+    /**
+     * Instrument the run method that spawns threads recursively and check 
+     * for results. 
+     */
+    @Test
+    public void testInstrumentRunRecursivly() {
 		// initialize ByCounter
-        BytecodeCounter counter = setupByCounter();
-
-        MethodDescriptor methodThreadRun = new MethodDescriptor(
-        		RunnableForThreading.class.getCanonicalName(),
-        		"public void run()");
-        counter.instrument(methodThreadRun);
-        // execute with ()
-        MethodDescriptor methodRun = new MethodDescriptor(
-        		ThreadedTestSubject.class.getCanonicalName(),
-        		"public void run()");
-        Object[] executionParameters = new Object[0];
-        counter.execute(methodRun, executionParameters);
-
-        SortedSet<CountingResult> countingResults = CountingResultCollector.getInstance().retrieveAllCountingResults();
-        // remove method calls with frequency 0
-        for(CountingResult cr : countingResults) {
-        	List<String> methodsToDiscard = new LinkedList<String>();
-        	for(String m : cr.getMethodCallCounts().keySet()) {
-        		if(cr.getMethodCallCounts().get(m) == 0) {
-        			// mark for removal
-        			methodsToDiscard.add(m);
-        		}
-        	}
-        	// remove
-        	for(String m : methodsToDiscard) {
-    			cr.getMethodCallCounts().remove(m);
-        	}
+		BytecodeCounter counter = this.setupByCounter();
+		counter.getInstrumentationParams().setInstrumentRecursively(true);
+		System.out.println(counter);
+		System.out.println(counter.getInstrumentationParams());
+		counter.instrument(methodRun);
+		
+		Object[] executionParameters = new Object[0];
+		counter.execute(methodRun, executionParameters);
+		
+		SortedSet<CountingResult> countingResults = CountingResultCollector.getInstance().retrieveAllCountingResults();
+		removeMethodCallsWithFrequency0(countingResults);
+        
+        // print ByCounter results
+        CountingResult[] results = countingResults.toArray(new CountingResult[0]);
+        for (CountingResult r : results) {
+        	r.logResult(false, true);
         }
-		return countingResults.toArray(new CountingResult[0]);
+        CountingResultCollector.getInstance().clearResults();
+    }
+
+    /**
+     * Remove method calls with frequency 0.
+     * @param countingResults Counting results to change.
+     */
+	private static void removeMethodCallsWithFrequency0(SortedSet<CountingResult> countingResults) {
+		for(CountingResult cr : countingResults) {
+			List<String> methodsToDiscard = new LinkedList<String>();
+			for(String m : cr.getMethodCallCounts().keySet()) {
+				if(cr.getMethodCallCounts().get(m) == 0) {
+					// mark for removal
+					methodsToDiscard.add(m);
+				}
+			}
+			// remove
+			for(String m : methodsToDiscard) {
+				cr.getMethodCallCounts().remove(m);
+			}
+		}
 	}
 
 	/**

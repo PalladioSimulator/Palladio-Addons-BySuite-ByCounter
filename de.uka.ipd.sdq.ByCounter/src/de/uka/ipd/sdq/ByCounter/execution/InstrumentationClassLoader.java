@@ -65,7 +65,8 @@ public class InstrumentationClassLoader extends java.lang.ClassLoader {
 	public InstrumentationClassLoader(ClassLoader parentClassLoader) {
 		super(parentClassLoader);
 		this.parentClassLoader = parentClassLoader;
-		this.classPool = ClassPool.getDefault();
+		this.classPool = new ClassPool();
+		this.classPool.appendSystemPath();
 		this.classesInClassPool = new LinkedList<String>();
 		log = Logger.getLogger(this.getClass().getCanonicalName());
 	}
