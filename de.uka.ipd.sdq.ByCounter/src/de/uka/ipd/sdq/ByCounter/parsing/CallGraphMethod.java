@@ -89,7 +89,7 @@ public final class CallGraphMethod {
 	 * Constructs a <code>String</code> with all attributes
 	 * in name = value format.
 	 *
-	 * @return a <code>String</code> representation 
+	 * @return A <code>String</code> representation 
 	 * of this object.
 	 */
 	public String toString()
@@ -98,11 +98,38 @@ public final class CallGraphMethod {
 	    
 	    String retValue = "";
 	    
+	    // dont  use the full string representation of childs; too much recursion
+	    StringBuilder childs = new StringBuilder("[");
+	    for(CallGraphMethod m : this.childMethods) {
+	    	childs.append(m.toStringNoChilds() + ",");
+	    }
+	    childs.append("]");
+	    
 	    retValue = "CallGraphMethod ( "
 	        + "owner = " + this.owner + TAB
 	        + "name = " + this.name + TAB
 	        + "desc = " + this.desc + TAB
-	        + "childMethods = " + this.childMethods + TAB
+	        + "childMethods = " + childs + TAB
+	        + " )";
+	
+	    return retValue;
+	}
+	
+	/**
+	 * Similar to {@link #toString()}, but not displaying childs (only their 
+	 * number is returned).
+	 * @return A {@link String} representation of this.
+	 */
+	public String toStringNoChilds() {
+	    final String TAB = "    ";
+	    
+	    String retValue = "";
+	    
+	    retValue = "CallGraphMethod ( "
+	        + "owner = " + this.owner + TAB
+	        + "name = " + this.name + TAB
+	        + "desc = " + this.desc + TAB
+	        + this.childMethods.size() + " childMethods" + TAB
 	        + " )";
 	
 	    return retValue;

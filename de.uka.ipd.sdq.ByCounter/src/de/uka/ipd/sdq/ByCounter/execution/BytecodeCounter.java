@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -410,8 +410,8 @@ public final class BytecodeCounter {
 			// iterate through all selected classes
 			CallGraphClassAdapter callGraphAdapter = new CallGraphClassAdapter(
 					this.instrumentationParameters.getIgnoredPackagePrefixes());
+			this.callGraph = new CallGraph();
 			for(String className : classesToInstrument) {
-				this.callGraph = new CallGraph();
 				ClassReader cr;
 				if(this.classAsBytes) {
 					cr = new ClassReader(this.classBytesToInstrument);
@@ -535,16 +535,11 @@ public final class BytecodeCounter {
 	 */
 	private List<MethodDescriptor> selectMethodsFromCallGraph() {
 		// copy all methods specified in instrumentation parameters
-		final int size = this.instrumentationParameters.getMethodsToInstrument().size();
-		List<MethodDescriptor> results = new ArrayList<MethodDescriptor>(size);//initial size
+		Collection<MethodDescriptor> results = 
+				new LinkedList<MethodDescriptor>(
+						this.instrumentationParameters.getMethodsToInstrument());//initial copy
 
-		// copy from user selected list
-		for(int i = 0; i < size; i++) {
-			results.add(null);
-		}
-		Collections.copy(
-				results,
-				this.instrumentationParameters.getMethodsToInstrument());
+		log.info("Selecting methods from the call graph.");
 		//TODO add duplicate check here (or earlier)
 		// now traverse the callgraph to add the recursive methods
 		for(MethodDescriptor md : this.instrumentationParameters.getMethodsToInstrument()) {
@@ -558,29 +553,35 @@ public final class BytecodeCounter {
 					results,
 					m);
 		}
-		return results;
+		return new LinkedList<MethodDescriptor>(results);
 	}
 	
 	/**
 	 * @see {@link #selectMethodsFromCallGraph()}
-	 * Used to traverse the callgraph.
+	 * Used to traverse the call graph.
 	 * @param methodsList The list that will be extended by the methods called 
 	 * by method m if they are not already in the list.
 	 * methodsAlreadySelected.
 	 * @param root Method which children are considered for adding.
 	 */
 	private void selectMethodsFromCallGraph_forMethod(
-			List<MethodDescriptor> methodsList,
+			final Collection<MethodDescriptor> methodsList,
 			final CallGraphMethod root) {
-		List<CallGraphMethod> newRoots;
-		List<CallGraphMethod> roots = new LinkedList<CallGraphMethod>();
+		
+		Collection<CallGraphMethod> roots = new LinkedList<CallGraphMethod>();
 		roots.add(root);
+		HashSet<String> methodsDone = new HashSet<String>();
 		
 		while(!roots.isEmpty()) {
-			newRoots = new LinkedList<CallGraphMethod>();
-			for(CallGraphMethod m : roots) {
+			Collection<CallGraphMethod> newRoots = new LinkedList<CallGraphMethod>();
+			for(final CallGraphMethod m : roots) {
 				// look at all methods called by m
 				for(final CallGraphMethod child : m.getChildMethods()) {
+					String id = child.getOwner()+child.getName()+child.getDesc();
+					if(methodsDone.contains(id)) {
+						continue;
+					}
+					log.info("considering " + child);
 					
 					String canonicalClassName = child.getOwner().replace('/', '.');
 					final int methodIndex = 
@@ -606,6 +607,7 @@ public final class BytecodeCounter {
 					// because other
 					// methods deeper in the call tree can still be relevant.
 					newRoots.add(child);
+					methodsDone.add(id);
 				}
 			}
 			roots = newRoots;

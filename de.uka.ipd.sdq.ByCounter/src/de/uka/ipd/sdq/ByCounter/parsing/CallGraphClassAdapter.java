@@ -1,9 +1,17 @@
 package de.uka.ipd.sdq.ByCounter.parsing;
 
 import java.io.IOException;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.logging.Logger;
 
 import org.objectweb.asm.ClassReader;
@@ -41,26 +49,48 @@ public final class CallGraphClassAdapter {
 	 * Needs to be fully qualified as this is used to find the correct class.
 	 * @return True, if the class could be found and parsed successfully.
 	 */
-	public boolean parseClass(CallGraph callGraph, ClassReader classReader) {
+	public boolean parseClass(final CallGraph callGraph, ClassReader classReader) {
 		if(callGraph == null) {
 			log.severe("CallGraph was null. Aborting parsing.");
 			return false;
 		}
 		
-		List<ClassReader> classesToParse = new LinkedList<ClassReader>();
+		Collection<ClassReader> classesToParse = new LinkedList<ClassReader>();
 		classesToParse.add(classReader);
 
 		boolean success = true;
+
+		ExecutorService exec = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
 		
 		while(!classesToParse.isEmpty()) {
-			List<ClassReader> newClassesToParse = new LinkedList<ClassReader>();
-			for(ClassReader currentCR : classesToParse) {
-				try {
-					newClassesToParse.addAll(parseSingleClass(callGraph, currentCR));
-				} catch (IOException e) {
-					log.severe("Could not parse class with name '" + currentCR.getClassName() + "'. Skipping.");
-				}
+			final BlockingQueue<ClassReader> newClassesToParse = new LinkedBlockingQueue<ClassReader>();
+			Collection<Callable<List<ClassReader>>> tasks = new LinkedList<Callable<List<ClassReader>>>();
+			for(final ClassReader currentCR : classesToParse) {
+				tasks.add(new Callable<List<ClassReader>>() {
+					@Override
+					public List<ClassReader> call() throws Exception {
+						try {
+							return parseSingleClass(callGraph, currentCR);
+						} catch (IOException e) {
+							log.severe("Could not parse class with name '" + currentCR.getClassName() + "'. Skipping.");
+						}
+						return null;
+					}
+				});
 			}
+			try {
+				List<Future<List<ClassReader>>> answers = exec.invokeAll(tasks);
+				for(Future<List<ClassReader>> a : answers) {
+					newClassesToParse.addAll(a.get());
+				}
+			} catch (InterruptedException e) {
+				log.severe("Class parsing did not execute properly.");
+				throw new RuntimeException(e);
+			} catch (ExecutionException e) {
+				log.severe("Class parsing did not execute properly.");
+				throw new RuntimeException(e);
+			}
+			
 			// classesToParse is complete; go to newClassesToParse
 			classesToParse = newClassesToParse;
 		}
@@ -78,7 +108,7 @@ public final class CallGraphClassAdapter {
 	 * @throws IOException Thrown when a class cannot be read.
 	 */
 	@SuppressWarnings("unchecked")
-	private List<ClassReader> parseSingleClass(CallGraph callGraph, ClassReader currentCR) throws IOException {
+	private List<ClassReader> parseSingleClass(final CallGraph callGraph, ClassReader currentCR) throws IOException {
 		List<ClassReader> newClassesToParse = new LinkedList<ClassReader>();
 		// check if the class was already parsed to avoid endless recursion
 		if(callGraph.getParsedClasses().contains(currentCR.getClassName())) {

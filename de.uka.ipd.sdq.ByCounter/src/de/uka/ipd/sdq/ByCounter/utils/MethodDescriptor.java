@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
 import java.util.Stack;
 import java.util.UUID;
 import java.util.logging.Logger;
@@ -139,7 +139,7 @@ public final class MethodDescriptor implements Comparable<MethodDescriptor>, Ser
 	 * @return The index of the method if it matches a method description in the {@link InstrumentationParameters}. When
 	 *         no matching method is found, -1 is returned.
 	 */
-	public static int findMethodInList(final List<MethodDescriptor> listToSearch, final String canonicalClassName,
+	public static int findMethodInList(final Collection<MethodDescriptor> listToSearch, final String canonicalClassName,
 			final String name, final String desc) {
 		if (listToSearch == null) {
 			return -1;
@@ -151,12 +151,14 @@ public final class MethodDescriptor implements Comparable<MethodDescriptor>, Ser
 		} else {
 			mName = name;
 		}
-		for (int i = 0; i < listToSearch.size(); i++) {
-			if (listToSearch.get(i).getCanonicalClassName().equals(canonicalClassName)
-					&& listToSearch.get(i).getSimpleMethodName().equals(mName)
-					&& listToSearch.get(i).getDescriptor().equals(desc)) {
+		int i = 0;
+		for (MethodDescriptor md : listToSearch) {
+			if (md.getCanonicalClassName().equals(canonicalClassName)
+					&& md.getSimpleMethodName().equals(mName)
+					&& md.getDescriptor().equals(desc)) {
 				return i;
 			}
+			i++;
 		}
 
 		return -1;

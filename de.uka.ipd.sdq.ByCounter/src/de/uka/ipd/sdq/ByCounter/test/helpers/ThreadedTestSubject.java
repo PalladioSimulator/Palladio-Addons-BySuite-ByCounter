@@ -14,7 +14,7 @@ public class ThreadedTestSubject {
 		public static void main(String[] args) {
 		ThreadedTestSubject tts = new ThreadedTestSubject();
 		try {
-			tts.run();
+			tts.runThreads();
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
@@ -25,7 +25,7 @@ public class ThreadedTestSubject {
 	 * them to finish.
 	 * @throws InterruptedException Thrown if a spawned thread is interrupted.
 	 */
-	public void run() throws InterruptedException {
+	public void runThreads() throws InterruptedException {
 		log.info("Run started.");
 		Thread[] threads = new Thread[] {
 				new Thread(new RunnableForThreading(), "t1"),

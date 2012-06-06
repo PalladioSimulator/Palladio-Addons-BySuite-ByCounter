@@ -2,6 +2,7 @@ package de.uka.ipd.sdq.ByCounter.parsing;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Set;
 
 import de.uka.ipd.sdq.ByCounter.utils.MethodDescriptor;
 
@@ -21,7 +22,7 @@ public final class CallGraph {
 	/**
 	 * A set of all classes that have been considered in the call graph.
 	 */
-	private HashSet<String> parsedClasses;
+	private Set<String> parsedClasses;
 	
 	
 	/**
@@ -74,7 +75,7 @@ public final class CallGraph {
 	 * @return The set of all classes that have been considered in the call graph.
 	 * @see #addParsedClass(String)
 	 */
-	public HashSet<String> getParsedClasses() {
+	public Set<String> getParsedClasses() {
 		return parsedClasses;
 	}
 	

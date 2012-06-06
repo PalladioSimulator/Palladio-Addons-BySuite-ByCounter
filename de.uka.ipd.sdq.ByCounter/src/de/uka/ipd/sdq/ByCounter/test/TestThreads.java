@@ -48,7 +48,7 @@ public class TestThreads {
 				"public void run()");
 		methodRun = new MethodDescriptor(
 				ThreadedTestSubject.class.getCanonicalName(),
-				"public void run()");
+				"public void runThreads()");
 	}
 
     /**
