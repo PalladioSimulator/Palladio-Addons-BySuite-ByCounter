@@ -581,7 +581,6 @@ public final class BytecodeCounter {
 					if(methodsDone.contains(id)) {
 						continue;
 					}
-					log.info("considering " + child);
 					
 					String canonicalClassName = child.getOwner().replace('/', '.');
 					final int methodIndex = 
