@@ -220,6 +220,7 @@ public class CollectionStrategyDefault extends AbstractCollectionStrategy {
 				newArrayDim,
 				newArrayType
 				);
+			res.setThreadId(Thread.currentThread().getId());
 			if(result.blockCountingMode == BlockCountingMode.RangeBlocks) {
 				// set the index of the range block, i.e. the number of the section as
 				// defined by the user in the instrumentation settings. This 

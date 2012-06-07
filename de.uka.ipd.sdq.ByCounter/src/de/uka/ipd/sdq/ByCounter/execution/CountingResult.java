@@ -470,6 +470,12 @@ implements Serializable, Cloneable, IFullCountingResult, Comparable<IFullCountin
 	 */
 	private int indexOfRangeBlock;
 
+	/** 
+	 * Id of the thread from which the result was reported.
+	 * @see Thread#getId()
+	 */
+	private long threadId;
+
 	/** This constructor passes the arguments to the corresponding fields;
 	 * the five fields that do not appear (this.characterisations,
 	 * this.characterisationTitles, this.characterisationTypes and
@@ -517,6 +523,7 @@ implements Serializable, Cloneable, IFullCountingResult, Comparable<IFullCountin
 		this.setOwnID(ownID);
 		this.setCallerID(callerID);
 		this.setID(ID);
+		this.setThreadId(-1);
 		
 		this.arrayCreationCounts = arrayCreationCounts;
 		this.arrayCreationDimensions = arrayCreationDimensions;
@@ -636,6 +643,7 @@ implements Serializable, Cloneable, IFullCountingResult, Comparable<IFullCountin
 				copyOfArrayCreationDimensions,
 				copyOfArrayCreationTypeInfo
 				);
+		copy.setThreadId(this.threadId);
 		return copy;
 	}
 
@@ -891,6 +899,14 @@ implements Serializable, Cloneable, IFullCountingResult, Comparable<IFullCountin
 		return requestID;
 	}
 
+	/**
+	 * @return Id of the thread from which the result was reported.
+	 * @see Thread#getId()
+	 */
+	public long getThreadId() {
+		return threadId;
+	}
+
 	/** (non-Javadoc)
 	 * @see de.uka.ipd.sdq.ByCounter.execution.IFullCountingResult#getTotalCount(boolean)
 	 */
@@ -1076,6 +1092,14 @@ implements Serializable, Cloneable, IFullCountingResult, Comparable<IFullCountin
 	 */
 	public void setRequestID(UUID requestID) {
 		this.requestID = requestID;
+	}
+
+	/**
+	 * @param threadId Id of the thread from which the result was reported.
+	 * @see Thread#getId()
+	 */
+	public void setThreadId(long threadId) {
+		this.threadId = threadId;
 	}
 
 	public void setTotalCountExclInvokes(Long totalCountExclInvokes) {
@@ -1282,6 +1306,8 @@ implements Serializable, Cloneable, IFullCountingResult, Comparable<IFullCountin
 		sb.append(getOwnID());
 		sb.append(", callerID: ");
 		sb.append(getCallerID());
+		sb.append(", threadId: ");
+		sb.append(getThreadId());
 		sb.append(NEWLINE);
 		if (getIndexOfRangeBlock() == -1) {
 			sb.append("The whole method was measured (cr.getIndexOfRangeBlock() == -1 in CountingResultCollector.logResult)");
