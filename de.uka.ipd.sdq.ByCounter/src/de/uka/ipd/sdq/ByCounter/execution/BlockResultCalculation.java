@@ -178,7 +178,9 @@ public class BlockResultCalculation {
 	public CalculatedCounts[] calculateCountsFromBlockExecutionSequence(
 			final ProtocolCountStructure result) {
 		
-		this.loadUpdatedBlockDefinitions(result.qualifyingMethodName, true, true);
+		this.loadUpdatedBlockDefinitions(result.qualifyingMethodName, 
+				true, 
+				result.blockCountingMode == BlockCountingMode.RangeBlocks);
 		
 
 		// possibly more than one counting result per item in the sequence

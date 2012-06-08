@@ -184,19 +184,20 @@ public final class CallGraphClassAdapter {
 							log.severe("Could not find definition for called method.");
 							throw new RuntimeException(e);
 						}
+					} else { // not invoked by interface
+
+						// Add an edge from the node representing this method to the the node
+						// for methodCall
+						CallGraphMethod m2 = 
+							new CallGraphMethod(methodCall.owner, methodCall.name, methodCall.desc);
+	
+						// this method (m1) can call the method m2 since a MethodInsnNode for m2 was found
+						// add the call to the graph
+						callGraph.addMethodCall(m1, m2);
+						
+						// now parse the class that contains m2
+						newClassesToParse.add(new ClassReader(methodCall.owner));
 					}
-
-					// Add an edge from the node representing this method to the the node
-					// for methodCall
-					CallGraphMethod m2 = 
-						new CallGraphMethod(methodCall.owner, methodCall.name, methodCall.desc);
-
-					// this method (m1) can call the method m2 since a MethodInsnNode for m2 was found
-					// add the call to the graph
-					callGraph.addMethodCall(m1, m2);
-					
-					// now parse the class that contains m2
-					newClassesToParse.add(new ClassReader(methodCall.owner));
 				}
 			}
 		}

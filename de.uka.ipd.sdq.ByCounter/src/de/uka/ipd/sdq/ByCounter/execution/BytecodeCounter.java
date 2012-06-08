@@ -713,7 +713,7 @@ public final class BytecodeCounter {
 								instrumentationState.getRangeBlockSerialisation(), file);
 					}
 				} catch (IOException e) {
-					log.severe("Failed to serialise basic or rang block definitions. " + e.getMessage());
+					log.severe("Failed to serialise basic or range block definitions. " + e.getMessage());
 					e.printStackTrace();
 				}
 			}

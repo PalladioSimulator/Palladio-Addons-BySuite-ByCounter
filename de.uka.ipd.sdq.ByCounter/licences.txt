@@ -8,7 +8,7 @@ itext 2.1.7    | MPL and LGPL	  |			| http://www.lowagie.com/iText/download.html
 junit	       | Apache License	  |			| http://commons.apache.org/jelly/libs/junit/license.html
 commons math   | Apache License   |			| http://commons.apache.org/math/
 JCommons       | GPL + LGPL       |			| http://jcommons.sourceforge.net/download.html
-ocutil         | BSD              |         | http://software.clapper.org/javautil/
+javautil       | BSD              |         | http://software.clapper.org/javautil/
 
 Lizenztext muss jeweils mitverteilt werden.
 
