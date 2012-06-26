@@ -89,7 +89,7 @@ public class CollectionStrategyForceInlining extends AbstractCollectionStrategy 
 		this.thresholdTotalMaximum = DEFAULT_TOTAL_THRESHOLD;
 		this.totalOfUninlinedMethodsDespiteForcedInlining = 0;//even augment
 		this.uncalculatedBBCounts_Index = new HashMap<String, Integer>();
-		this.blockCalculation = new BlockResultCalculation(parentResultCollector.blockContext);
+		this.blockCalculation = new BlockResultCalculation(parentResultCollector.instrumentationContext);
 	}
 	
 	/* (non-Javadoc)

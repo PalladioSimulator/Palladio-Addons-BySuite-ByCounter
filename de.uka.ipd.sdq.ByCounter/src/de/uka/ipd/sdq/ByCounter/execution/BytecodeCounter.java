@@ -19,6 +19,7 @@ import java.util.logging.Logger;
 
 import org.objectweb.asm.ClassReader;
 
+import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentationContext;
 import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentationParameters;
 import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentationScopeModeEnum;
 import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentationState;
@@ -699,23 +700,22 @@ public final class BytecodeCounter {
 //					""+uninstrBytesize+" uninstrumented)");
  
 			this.classLoader.updateClassInClassPool(this.classToInstrument, b);
+			
+			// write context
+			InstrumentationContext iContext = new InstrumentationContext();
 			if(this.instrumentationParameters.getUseBasicBlocks()) {
-				try {
-					File file = new File(BasicBlockSerialisation.FILE_BASIC_BLOCK_SERIALISATION);
-					log.info("Writing basic block definition to " + file.getAbsolutePath());
-					BasicBlockSerialisation.serialise(
-							instrumentationState.getBasicBlockSerialisation(), file);
-					
-					if(this.instrumentationParameters.hasMethodsWithCodeAreas()) {
-						file = new File(BasicBlockSerialisation.FILE_RANGE_BLOCK_SERIALISATION);
-						log.info("Writing range block definition to " + file.getAbsolutePath());
-						BasicBlockSerialisation.serialise(
-								instrumentationState.getRangeBlockSerialisation(), file);
-					}
-				} catch (IOException e) {
-					log.severe("Failed to serialise basic or range block definitions. " + e.getMessage());
-					e.printStackTrace();
+				iContext.setBasicBlocks(instrumentationState.getBasicBlockSerialisation());			
+				if(this.instrumentationParameters.hasMethodsWithCodeAreas()) {
+					iContext.setRangeBlocks(instrumentationState.getRangeBlockSerialisation());
 				}
+			}
+			try {		
+				File file = new File(InstrumentationContext.FILE_SERIALISATION_DEFAULT_NAME);
+				log.info("Writing ByCounter instrumentation context to " + file.getAbsolutePath());
+				InstrumentationContext.serialise(iContext, file);
+			} catch (IOException e) {
+				log.severe("Failed to serialise basic or range block definitions. " + e.getMessage());
+				e.printStackTrace();
 			}
 		} catch (ClassNotFoundException e3) {
 			log.severe("Could not find the specified class");
@@ -741,36 +741,49 @@ public final class BytecodeCounter {
 			}
 		}
 
-
+		// Load the instrumentation context that was saved before.
+		InstrumentationContext iContext = null;
 		if(this.instrumentationParameters.getUseBasicBlocks()) {
-			// print all basic block
-			File file = new File(BasicBlockSerialisation.FILE_BASIC_BLOCK_SERIALISATION);
-			BasicBlockSerialisation loaded;
+			File file = new File(InstrumentationContext.FILE_SERIALISATION_DEFAULT_NAME);
 			try {
-				loaded = BasicBlockSerialisation.deserialise(file);
-				HashMap<String, InstructionBlockDescriptor[]> basicBlocksByMethod = loaded.getBasicBlocksByMethod();
-				log.info("Basic blocks:");
-				for(String method : basicBlocksByMethod.keySet()) {
-					log.info(method);
-					for(InstructionBlockDescriptor d : basicBlocksByMethod.get(method))
-					log.info(d.toString());
-				}
-				if(this.instrumentationParameters.hasMethodsWithCodeAreas()) {
-					file = new File(BasicBlockSerialisation.FILE_RANGE_BLOCK_SERIALISATION);
-					loaded = BasicBlockSerialisation.deserialise(file);
-					HashMap<String, InstructionBlockDescriptor[]> rangeBlocksByMethod = loaded.getBasicBlocksByMethod();
-					log.info("Range blocks:");
-					for(String method : rangeBlocksByMethod.keySet()) {
+				iContext = InstrumentationContext.deserialise(file);
+
+				// print all basic blocks
+				BasicBlockSerialisation loaded;
+				loaded = iContext.getBasicBlocks();
+				if(loaded != null) {
+					HashMap<String, InstructionBlockDescriptor[]> basicBlocksByMethod = loaded.getBasicBlocksByMethod();
+					log.info("Basic blocks:");
+					for(String method : basicBlocksByMethod.keySet()) {
 						log.info(method);
-						for(InstructionBlockDescriptor d : rangeBlocksByMethod.get(method))
+						for(InstructionBlockDescriptor d : basicBlocksByMethod.get(method))
 						log.info(d.toString());
 					}
+					// print all range blocks
+					if(this.instrumentationParameters.hasMethodsWithCodeAreas()) {
+						loaded = iContext.getRangeBlocks();
+						if(loaded != null) {
+							HashMap<String, InstructionBlockDescriptor[]> rangeBlocksByMethod = loaded.getBasicBlocksByMethod();
+							log.info("Range blocks:");
+							for(String method : rangeBlocksByMethod.keySet()) {
+								log.info(method);
+								for(InstructionBlockDescriptor d : rangeBlocksByMethod.get(method))
+								log.info(d.toString());
+							}
+						} else {
+							log.info("No range blocks.");
+						}
+					}
+				} else {
+					log.info("No basic blocks.");
 				}
+				
 			} catch (Exception e) {
-				log.severe("Failed to load basic or range block definitions. " + e.getMessage());
+				log.severe("Failed to instrumentation context. " + e.getMessage());
 				e.printStackTrace();
 			}
 		}
+		
 		log.info(msg.toString());
 //		log.fine("fine");
 //		log.finer("finer");
@@ -907,15 +920,8 @@ public final class BytecodeCounter {
 	 */
 	public Object instantiate(MethodDescriptor methodToExecute) {
 		log.fine("Instantiating class for method " + methodToExecute);
-		// load the basic block serialisation in the result collector
-		if(this.instrumentationParameters.getUseBasicBlocks()) {
-			CountingResultCollector.getInstance().blockContext.tryToLoadBasicBlockSerialisation();
-			// check if there was a method with code areas
-			if(this.instrumentationParameters.hasMethodsWithCodeAreas()) {
-				// load the serialisation
-				CountingResultCollector.getInstance().blockContext.loadRangeBlockSerialisation();
-			}
-		}
+		// load the context, basic/range block serialisations in the result collector
+		CountingResultCollector.getInstance().instrumentationContext = InstrumentationContext.loadFromDefaultPath();
 		
 		if(this.executionSettings.getParentClassLoader() != null) {
 			this.classLoader.setParentClassLoader(this.executionSettings.getParentClassLoader());

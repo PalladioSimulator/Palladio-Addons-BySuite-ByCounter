@@ -58,7 +58,7 @@ public class CollectionStrategyDefault extends AbstractCollectionStrategy {
 	public CollectionStrategyDefault(CountingResultCollector parent) {
 		super(parent);
 		this.countingResults = new TreeSet<CountingResult>();
-		this.blockCalculation = new BlockResultCalculation(parentResultCollector.blockContext);
+		this.blockCalculation = new BlockResultCalculation(parentResultCollector.instrumentationContext);
 		this.countingResultIndexing = new CountingResultIndexing();
 		this.countingResultUpdateIndexing = new CountingResultUpdateIndexing();
 		this.blockExecutionSequenceLengthByMethod = new HashMap<UUID, Integer>();

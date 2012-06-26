@@ -9,6 +9,7 @@ import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentationContext;
 import de.uka.ipd.sdq.ByCounter.reporting.ICountingResultWriter;
 
 /**
@@ -82,8 +83,8 @@ public final class CountingResultCollector extends Observable {
 	 */
 	private List<ICountingResultWriter> resultWriters;
 
-	/** Basic block and range block definitions. */
-	public BlockDefinitionContext blockContext;
+	/** Instrumentation context with basic block and range block definitions. */
+	public InstrumentationContext instrumentationContext;
 	
 	/**
 	 * Method execution details on how BytecodeCounters execute method was 
@@ -110,8 +111,8 @@ public final class CountingResultCollector extends Observable {
 		this.log = Logger.getLogger(this.getClass().getCanonicalName());
 		this.mode = MODE_DEFAULT;
 		this.resultWriters = new ArrayList<ICountingResultWriter>();
-		this.blockContext = new BlockDefinitionContext();
-		this.blockContext.tryToLoadBasicBlockSerialisation();
+		this.instrumentationContext = null;
+		this.instrumentationContext = InstrumentationContext.loadFromDefaultPath();
 		
 		this.collectionStrategies = new LinkedList<AbstractCollectionStrategy>();
 		this.strategyDefault = new CollectionStrategyDefault(this);

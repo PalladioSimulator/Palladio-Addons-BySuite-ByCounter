@@ -12,6 +12,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import de.uka.ipd.sdq.ByCounter.instrumentation.BlockCountingMode;
+import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentationContext;
 import de.uka.ipd.sdq.ByCounter.parsing.InstructionBlockDescriptor;
 import de.uka.ipd.sdq.ByCounter.parsing.RangeBlockDescriptor;
 import de.uka.ipd.sdq.ByCounter.parsing.RangeBlockDescriptor.BasicBlockOffset;
@@ -30,8 +31,8 @@ public class BlockResultCalculation {
 	 */
 	private Logger log;
 
-	/** Basic block and range block definitions. */
-	private BlockDefinitionContext blockContext;	
+	/** Instrumentation context containing basic block and range block definitions. */
+	private InstrumentationContext instrumentationContext;	
 	/** The basic blocks defined for the current method */
 	private InstructionBlockDescriptor[] currentBasicBlocks;
 	/** The range blocks defined for the current method */
@@ -39,10 +40,12 @@ public class BlockResultCalculation {
 	
 	/**
 	 * New {@link BlockResultCalculation} context.
+	 * @param instrumentationContext {@link InstrumentationContext} that lead 
+	 * to the production of the results.
 	 */
-	public BlockResultCalculation(BlockDefinitionContext blockContext) {
+	public BlockResultCalculation(InstrumentationContext instrumentationContext) {
 		this.log = Logger.getLogger(this.getClass().getCanonicalName());
-		this.blockContext = blockContext;
+		this.instrumentationContext = instrumentationContext;
 	}
 	
 	/**
@@ -141,7 +144,7 @@ public class BlockResultCalculation {
 	}
 
 	/**
-	 * Load the block definitions from the {@link #blockContext}
+	 * Load the block definitions from the {@link #instrumentationContext}
 	 * to set 
 	 * {@link #currentBasicBlocks} and {@link #currentRangeBlocks}.
 	 * @param qualifyingMethodName Current method.
@@ -152,17 +155,16 @@ public class BlockResultCalculation {
 			final String qualifyingMethodName,
 			final boolean loadBasicBlocks, 
 			final boolean loadRangeBlocks) {
+		instrumentationContext = InstrumentationContext.loadFromDefaultPath();
 		if(loadBasicBlocks) {
-			blockContext.updateBasicBlocks();
-			currentBasicBlocks = blockContext.bbSerialisation.getBasicBlocksByMethod().get(qualifyingMethodName);
+			currentBasicBlocks = instrumentationContext.getBasicBlocks().getBasicBlocksByMethod().get(qualifyingMethodName);
 			if(currentBasicBlocks == null) {
 				throw new IllegalStateException("Could not find the basic block definition for the method '" 
 						+ qualifyingMethodName + "'");
 			}
 		}
 		if(loadRangeBlocks) {
-			blockContext.updateRangeBlocks();
-			currentRangeBlocks = blockContext.rbSerialisation.getBasicBlocksByMethod().get(qualifyingMethodName);
+			currentRangeBlocks = instrumentationContext.getRangeBlocks().getBasicBlocksByMethod().get(qualifyingMethodName);
 			if(currentBasicBlocks == null) {
 				throw new IllegalStateException("Could not find the range block definition for the method '" 
 						+ qualifyingMethodName + "'");
