@@ -34,7 +34,7 @@ import de.uka.ipd.sdq.ByCounter.utils.MethodDescriptor;
  * @version 1.2
  */
 @RunWith(Parameterized.class)
-public class TestResultWriters {
+public class TestResultWriters extends AbstractByCounterTest {
 
 	private static Logger log = Logger.getLogger(TestResultWriters.class.toString());
 
@@ -53,53 +53,15 @@ public class TestResultWriters {
 	private static final String testMethod2 = "public boolean parameterTest(int i, float f, java.lang.String s)";
 
 	/**
-	 * Generates the different parameters with which all tests are run.
-	 * This reuses the parameters from TestASMBytecodes.parameterSetup().
-	 * @return The parameter collection for calling the test constructor.
-	 * @see #TestASMBytecodes.parameterSetup()
-	 */
-	@Parameters
-	public static Collection<?> parameterSetup() {
-		return TestASMBytecodes.parameterSetup();
-	}
-
-	/**
-	 * {@link InstrumentationParameters} used in the tests.
-	 */
-	private InstrumentationParameters instrumentationParameters;
-
-	/**
-	 * {@link InstrumentationParameters} are cloned from this template.
-	 */
-	private final InstrumentationParameters instrumentationParametersTemplate;
-
-	/**
 	 * This constructor is used by the Parametrized runner
 	 * for running tests with different parameters.
 	 * @param params {@link InstrumentationParameters} for the counting setup.
 	 */
 	public TestResultWriters(InstrumentationParameters params) {
 		// save the template
-		this.instrumentationParametersTemplate = params;
+		super(params);
 	}
 	
-	/**
-	 * Clone the {@link InstrumentationParameters} for each test.
-	 */
-	@Before
-	public void setupInstrumentationParameters() {
-		this.instrumentationParameters = this.instrumentationParametersTemplate.clone();
-	}
-
-	/**
-	 * Clear the results of the {@link CountingResultCollector}.
-	 */
-	@After
-	public void cleanResults() {
-		// clear all collected results
-		CountingResultCollector.getInstance().clearResults();
-	}
-
 	/**
 	 * Test the usage of the {@link ChartResultWriter}.
 	 */
@@ -108,9 +70,8 @@ public class TestResultWriters {
 
 
 		// create a BytecodeCounter
-		BytecodeCounter counter = new BytecodeCounter();
+		BytecodeCounter counter = setupByCounter();
 		Assert.assertNotNull(counter);
-		counter.setInstrumentationParams(this.instrumentationParameters);
 
 		CountingResultCollector resultColl = CountingResultCollector.getInstance();
 		ChartResultWriter resultWriter =
@@ -159,9 +120,8 @@ public class TestResultWriters {
 		}
 
 		// create a BytecodeCounter
-		BytecodeCounter counter = new BytecodeCounter();
+		BytecodeCounter counter = setupByCounter();
 		Assert.assertNotNull(counter);
-		counter.setInstrumentationParams(this.instrumentationParameters);
 
 		String resultFileNameSpecifier = "";
 
@@ -236,9 +196,8 @@ public class TestResultWriters {
 		}
 
 		// create a BytecodeCounter
-		BytecodeCounter counter = new BytecodeCounter();
+		BytecodeCounter counter = setupByCounter();
 		Assert.assertNotNull(counter);
-		counter.setInstrumentationParams(this.instrumentationParameters);
 
 		String resultFileNameSpecifier = "";
 
@@ -298,9 +257,8 @@ public class TestResultWriters {
 	@Test
 	public void testDirectResultWriting() {
 		// create a BytecodeCounter
-		BytecodeCounter counter = new BytecodeCounter();
+		BytecodeCounter counter = setupByCounter();
 		Assert.assertNotNull(counter);
-		counter.setInstrumentationParams(this.instrumentationParameters);
 
 		// disable usage of result collector
 		Assert.assertNotNull(counter.getInstrumentationParams());
@@ -355,9 +313,8 @@ public class TestResultWriters {
 
 
 		// create a BytecodeCounter
-		BytecodeCounter counter = new BytecodeCounter();
+		BytecodeCounter counter = setupByCounter();
 		Assert.assertNotNull(counter);
-		counter.setInstrumentationParams(this.instrumentationParameters);
 
 		CountingResultCollector resultColl = CountingResultCollector.getInstance();
 		PdfReport pdfReport = new PdfReport();

@@ -1,25 +1,17 @@
 package de.uka.ipd.sdq.ByCounter.test;
 
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.logging.Logger;
 
 import junit.framework.Assert;
 
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
 import org.objectweb.asm.Opcodes;
 
 import de.uka.ipd.sdq.ByCounter.execution.BytecodeCounter;
 import de.uka.ipd.sdq.ByCounter.execution.CountingResult;
-import de.uka.ipd.sdq.ByCounter.execution.CountingResultCollector;
-import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentationCounterPrecision;
 import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentationParameters;
 import de.uka.ipd.sdq.ByCounter.test.framework.expectations.Expectation;
 import de.uka.ipd.sdq.ByCounter.test.helpers.ASMBytecodeOccurences;
@@ -48,50 +40,18 @@ import de.uka.ipd.sdq.ByCounter.utils.MethodDescriptor;
  * @version 1.2
  */
 @RunWith(Parameterized.class)
-public class TestASMBytecodes {
+public class TestASMBytecodes extends AbstractByCounterTest {
 	private static Logger log = Logger.getLogger(TestASMBytecodes.class.getCanonicalName());
-	private static CountingResultCollector resultCollector;
 
 	private static String testClassName = ASMBytecodeOccurences.class.getCanonicalName();
-	/**
-	 * Generates the different parameters with which all tests are run.
-	 * This is also used by other unit tests in the suite.
-	 * @return The parameter collection for calling the test constructor.
-	 */
-	@Parameters
-	public static Collection<?> parameterSetup() {
-		InstrumentationParameters p1 = new InstrumentationParameters();
-		InstrumentationParameters p2 = new InstrumentationParameters();
-		InstrumentationParameters p3 = new InstrumentationParameters();
-		InstrumentationParameters p4 = new InstrumentationParameters();
-		p1.setCounterPrecision(InstrumentationCounterPrecision.Integer);
-		p1.setUseHighRegistersForCounting(true);
-		p2.setCounterPrecision(InstrumentationCounterPrecision.Integer);
-		p2.setUseHighRegistersForCounting(false);
-		p3.setCounterPrecision(InstrumentationCounterPrecision.Long);
-		p3.setUseHighRegistersForCounting(true);
-		p4.setCounterPrecision(InstrumentationCounterPrecision.Long);
-		p4.setUseHighRegistersForCounting(false);
-
-		return Arrays.asList(new Object[][] { {p1}, {p2}, {p3}, {p4} });
-	}
-
-	@AfterClass
-	public static void runAfterAllTests() {
-		resultCollector = null;
-	}
-
 
 	@BeforeClass
 	public static void runOnceBeforeAllTests() {
 		log.info("Running unittests.");
-		// early CountingResultCollector construction; initialize the singleton
-		resultCollector = CountingResultCollector.getInstance();
 	}
 
 
 	private BytecodeCounter counter;
-	private InstrumentationParameters instrumentationParameterTemplate;
 
 	/**
 	 * This constructor is used by the Parametrized runner
@@ -99,20 +59,9 @@ public class TestASMBytecodes {
 	 * @param params {@link InstrumentationParameters} for the counting setup.
 	 */
 	public TestASMBytecodes(InstrumentationParameters params) {
+		super(params);
 		// create a BytecodeCounter
 		this.counter = new BytecodeCounter();
-		this.instrumentationParameterTemplate = params;
-	}
-
-	@Before
-	public void setupInstrumentationParameters() {
-		this.counter.setInstrumentationParams(this.instrumentationParameterTemplate.clone());
-	}
-
-	@After
-	public void cleanResults() {
-		// clear all collected results
-		resultCollector.clearResults();
 	}
 
 	/**

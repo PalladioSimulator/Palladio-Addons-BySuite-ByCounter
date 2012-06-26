@@ -4,16 +4,12 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
-import java.util.Collection;
 
 import junit.framework.Assert;
 
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
 import org.objectweb.asm.Opcodes;
 
 import de.uka.ipd.sdq.ByCounter.execution.BytecodeCounter;
@@ -21,14 +17,13 @@ import de.uka.ipd.sdq.ByCounter.execution.CountingResult;
 import de.uka.ipd.sdq.ByCounter.execution.CountingResultCollector;
 import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentationParameters;
 import de.uka.ipd.sdq.ByCounter.parsing.LineNumberRange;
-import de.uka.ipd.sdq.ByCounter.test.TestASMBytecodes;
 import de.uka.ipd.sdq.ByCounter.test.framework.expectations.Expectation;
 import de.uka.ipd.sdq.ByCounter.test.helpers.TestSubjectLineNumbers;
 import de.uka.ipd.sdq.ByCounter.test.helpers.Utils;
-import de.uka.ipd.sdq.ByCounter.test.helpers.subjects.LoopExternalActionStackOverflow;
-import de.uka.ipd.sdq.ByCounter.test.helpers.subjects.LoopExternalActionNoDependency;
 import de.uka.ipd.sdq.ByCounter.test.helpers.subjects.Branch;
 import de.uka.ipd.sdq.ByCounter.test.helpers.subjects.ExecutionOrder;
+import de.uka.ipd.sdq.ByCounter.test.helpers.subjects.LoopExternalActionNoDependency;
+import de.uka.ipd.sdq.ByCounter.test.helpers.subjects.LoopExternalActionStackOverflow;
 import de.uka.ipd.sdq.ByCounter.test.helpers.subjects.UncommonFormatting;
 import de.uka.ipd.sdq.ByCounter.utils.ASMOpcodesMapper;
 import de.uka.ipd.sdq.ByCounter.utils.MethodDescriptor;
@@ -43,7 +38,7 @@ import de.uka.ipd.sdq.ByCounter.utils.MethodDescriptor;
  * @author Florian Schreier
  */
 @RunWith(Parameterized.class)
-public class TestLineNumbers {
+public class TestLineNumbers extends AbstractByCounterTest {
 
     /** The canonical name of the test subject's class. */
     private static final String DEFAULT_SUBJECT_CANONICAL = TestSubjectLineNumbers.class.getCanonicalName();
@@ -63,23 +58,6 @@ public class TestLineNumbers {
     /** Signature of the method that is used to test in testLabelAndLineNumbers(). */
     private static final String SIGNATURE_LINE_NUMBERS = "public void testLabelAndLineNumbers()";
 
-    /** These parameters are used by all tests. Revert potential modifications in &#064;After-method. */
-    private InstrumentationParameters instrumentationParameters;
-
-	private final InstrumentationParameters instrumentationParametersTemplate;
-
-    /**
-     * Generates the different parameters with which all tests are run. This reuses the parameters
-     * from TestASMBytecodes.parameterSetup().
-     * 
-     * @return The parameter collection for calling the test constructor.
-     * @see #TestASMBytecodes.parameterSetup()
-     */
-    @Parameters
-    public static Collection<?> parameterSetup() {
-        return TestASMBytecodes.parameterSetup();
-    }
-
     /**
      * This constructor is used by the Parametrized runner for running tests with different
      * parameters.
@@ -88,27 +66,9 @@ public class TestLineNumbers {
      *            {@link InstrumentationParameters} template for the counting setup.
      */
     public TestLineNumbers(final InstrumentationParameters params) {
-        // create a BytecodeCounter
-        this.instrumentationParametersTemplate = params;
+        super(params);
     }
     
-    /**
-     * Clones an instance of {@link InstrumentationParameters} from the template.
-     */
-    @Before
-    public void setupInstrumentationParameters() {
-    	this.instrumentationParameters = this.instrumentationParametersTemplate.clone();
-    }
-
-    /**
-     * Cleans up results after every test. 
-     */
-    @After
-    public void cleanResults() {
-        // clear all collected results
-        CountingResultCollector.getInstance().clearResults();
-    }
-
 	/**
 	 * Tests if instrumentation of a single line works correctly.
 	 */

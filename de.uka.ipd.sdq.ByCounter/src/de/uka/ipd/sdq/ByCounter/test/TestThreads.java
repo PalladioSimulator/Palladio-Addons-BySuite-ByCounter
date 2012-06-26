@@ -1,16 +1,12 @@
 package de.uka.ipd.sdq.ByCounter.test;
 
-import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.SortedSet;
 
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
 import org.objectweb.asm.Opcodes;
 
 import de.uka.ipd.sdq.ByCounter.execution.BytecodeCounter;
@@ -23,7 +19,7 @@ import de.uka.ipd.sdq.ByCounter.test.helpers.ThreadedTestSubject;
 import de.uka.ipd.sdq.ByCounter.utils.MethodDescriptor;
 
 /**
- * This test suite tests ByCounter when instrumenting multithreaded 
+ * This test suite tests ByCounter when instrumenting multi-threaded 
  * applications.
  *
  * @since 0.1
@@ -31,13 +27,7 @@ import de.uka.ipd.sdq.ByCounter.utils.MethodDescriptor;
  * @author Martin Krogmann
  */
 @RunWith(Parameterized.class)
-public class TestThreads {
-
-    /** These parameters are used by all tests. Revert potential modifications in &#064;After-method. */
-    private InstrumentationParameters instrumentationParameters;
-
-	private final InstrumentationParameters instrumentationParametersTemplate;
-
+public class TestThreads extends AbstractByCounterTest {
 	private static MethodDescriptor methodThreadRun;
 
 	private MethodDescriptor methodRun;
@@ -52,18 +42,6 @@ public class TestThreads {
 	}
 
     /**
-     * Generates the different parameters with which all tests are run. This reuses the parameters
-     * from TestASMBytecodes.parameterSetup().
-     *
-     * @return The parameter collection for calling the test constructor.
-     * @see #TestASMBytecodes.parameterSetup()
-     */
-    @Parameters
-    public static Collection<?> parameterSetup() {
-        return TestASMBytecodes.parameterSetup();
-    }
-
-    /**
      * This constructor is used by the {@link Parameterized} runner for running tests with different
      * parameters.
      *
@@ -71,25 +49,7 @@ public class TestThreads {
      *            {@link InstrumentationParameters} template for the counting setup.
      */
     public TestThreads(final InstrumentationParameters params) {
-        // create a BytecodeCounter
-        this.instrumentationParametersTemplate = params;
-    }
-
-    /**
-     * Clones an instance of {@link InstrumentationParameters} from the template.
-     */
-    @Before
-    public void setupInstrumentationParameters() {
-    	this.instrumentationParameters = this.instrumentationParametersTemplate.clone();
-    }
-
-    /**
-     * Cleans up results after every test.
-     */
-    @After
-    public void cleanResults() {
-        // clear all collected results
-        CountingResultCollector.getInstance().clearResults();
+        super(params);
     }
 
     /**
@@ -156,7 +116,7 @@ public class TestThreads {
     @Test
     public void testInstrumentRunRecursivly() {
 		// initialize ByCounter
-		BytecodeCounter counter = this.setupByCounter();
+		BytecodeCounter counter = setupByCounter();
 		counter.getInstrumentationParams().setInstrumentRecursively(true);
 		counter.instrument(methodRun);
 		
@@ -192,15 +152,5 @@ public class TestThreads {
 				cr.getMethodCallCounts().remove(m);
 			}
 		}
-	}
-
-	/**
-	 * @return A {@link BytecodeCounter} instance with parameters selected 
-	 * by the test runner.
-	 */
-	private BytecodeCounter setupByCounter() {
-		BytecodeCounter counter = new BytecodeCounter();
-        counter.setInstrumentationParams(this.instrumentationParameters);
-		return counter;
 	}
 }

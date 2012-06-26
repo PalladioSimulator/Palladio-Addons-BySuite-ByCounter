@@ -6,18 +6,14 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.SortedSet;
 import java.util.logging.Logger;
 
 import junit.framework.Assert;
 
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
 
 import de.uka.ipd.sdq.ByCounter.execution.BytecodeCounter;
 import de.uka.ipd.sdq.ByCounter.execution.CountingResult;
@@ -39,7 +35,7 @@ import de.uka.ipd.sdq.ByCounter.utils.MethodDescriptor;
  * @version 1.2
  */
 @RunWith(Parameterized.class)
-public class TestBytecodeCounter {
+public class TestBytecodeCounter extends AbstractByCounterTest {
 	
 	private static final String CLASS_DIR = "bin" + File.separatorChar + 
 						File.separatorChar + "de" + 
@@ -68,54 +64,12 @@ public class TestBytecodeCounter {
 	private static String testClassMethodCallTest = "public void methodCallTest()";
 	
 	/**
-	 * Generates the different parameters with which all tests are run.
-	 * This reuses the parameters from TestASMBytecodes.parameterSetup().
-	 * @return The parameter collection for calling the test constructor.
-	 * @see #TestASMBytecodes.parameterSetup()
-	 */
-	@SuppressWarnings("unchecked")
-	@Parameters
-	public static Collection parameterSetup() {
-		return TestASMBytecodes.parameterSetup();
-	}
-	
-	/**
-	 * An instance of {@link InstrumentationParameters} based on 
-	 * {@link #instrumentationParametersTemplate} used in the tests.  
-	 * Individual tests may override some parameters.
-	 */
-	private InstrumentationParameters instrumentationParameters;
-
-	/**
-	 * The {@link InstrumentationParameters} template used for all the tests.
-	 */
-	private InstrumentationParameters instrumentationParametersTemplate;
-
-	/**
 	 * This constructor is used by the Parametrized runner 
 	 * for running tests with different parameters.
 	 * @param params {@link InstrumentationParameters} template for the counting setup.
 	 */
 	public TestBytecodeCounter(InstrumentationParameters params) {
-		this.instrumentationParametersTemplate = params;
-	}
-	
-	/**
-	 * Clone an instance of {@link InstrumentationParameters}.
-	 */
-	@Before
-	public void setupInstrumentationParameters() {
-		// create a fresh instance of InstrumentationParameters
-		this.instrumentationParameters = this.instrumentationParametersTemplate.clone();
-	}
-	
-	/**
-	 * Clear results in the {@link CountingResultCollector}. 
-	 */
-	@After
-	public void cleanResults() {
-		// clear all collected results
-		CountingResultCollector.getInstance().clearResults();
+		super(params);
 	}
 	
 	/**

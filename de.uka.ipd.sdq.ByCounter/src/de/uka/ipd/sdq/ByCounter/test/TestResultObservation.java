@@ -1,6 +1,5 @@
 package de.uka.ipd.sdq.ByCounter.test;
 
-import java.util.Collection;
 import java.util.LinkedList;
 import java.util.Observable;
 import java.util.Observer;
@@ -9,11 +8,9 @@ import java.util.logging.Logger;
 import junit.framework.Assert;
 
 import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
 import org.objectweb.asm.Opcodes;
 
 import de.uka.ipd.sdq.ByCounter.execution.BytecodeCounter;
@@ -37,7 +34,7 @@ import de.uka.ipd.sdq.ByCounter.utils.MethodDescriptor;
  * @author Martin Krogmann
  */
 @RunWith(Parameterized.class)
-public class TestResultObservation {
+public class TestResultObservation extends AbstractByCounterTest {
 
 	/** Signature of the method that is used to test in {@link #testCallTreeObservation()} */
     private static final String SIGNATURE_METHOD1 = "public void method1(boolean firstLevel) {";
@@ -45,28 +42,10 @@ public class TestResultObservation {
 	/** Signature of the method that is used to test in {@link #testRangeBlockOrderedCounting()} */
     private static final String SIGNATURE_METHOD_CALLS = "public void testNestedNormalisedLoopsWithExternalCalls(int i)";
 
-    /** These parameters are used by all tests. Revert potential modifications in &#064;After-method. */
-    private InstrumentationParameters instrumentationParameters;
-
-	private final InstrumentationParameters instrumentationParametersTemplate;
-
 	/**
 	 * see http://en.wikipedia.org/wiki/Data_log
 	 */
 	private static Logger log = Logger.getLogger(TestResultObservation.class.getCanonicalName());
-
-
-    /**
-     * Generates the different parameters with which all tests are run. This reuses the parameters
-     * from TestASMBytecodes.parameterSetup().
-     *
-     * @return The parameter collection for calling the test constructor.
-     * @see #TestASMBytecodes.parameterSetup()
-     */
-    @Parameters
-    public static Collection<?> parameterSetup() {
-        return TestASMBytecodes.parameterSetup();
-    }
 
     /**
      * This constructor is used by the Parametrized runner for running tests with different
@@ -76,25 +55,17 @@ public class TestResultObservation {
      *            {@link InstrumentationParameters} template for the counting setup.
      */
     public TestResultObservation(final InstrumentationParameters params) {
-        // create a BytecodeCounter
-        this.instrumentationParametersTemplate = params;
-    }
-
-    /**
-     * Clones an instance of {@link InstrumentationParameters} from the template.
-     */
-    @Before
-    public void setupInstrumentationParameters() {
-    	this.instrumentationParameters = this.instrumentationParametersTemplate.clone();
+        super(params);
     }
 
     /**
      * Cleans up results after every test.
      */
     @After
+    @Override
     public void cleanResults() {
         // clear all collected results
-        CountingResultCollector.getInstance().clearResults();
+        super.cleanResults();
         // delete all observers
         CountingResultCollector.getInstance().deleteObservers();
     }
@@ -251,8 +222,7 @@ public class TestResultObservation {
 	 * execution updates.
 	 */
 	private BytecodeCounter setupOnlineUpdateByCounter() {
-		BytecodeCounter counter = new BytecodeCounter();
-        counter.setInstrumentationParams(this.instrumentationParameters);
+		BytecodeCounter counter = this.setupByCounter();
         counter.getInstrumentationParams().setUseBasicBlocks(true);
         counter.getInstrumentationParams().setRecordBlockExecutionOrder(true);
         counter.getInstrumentationParams().setProvideOnlineSectionExecutionUpdates(true);
