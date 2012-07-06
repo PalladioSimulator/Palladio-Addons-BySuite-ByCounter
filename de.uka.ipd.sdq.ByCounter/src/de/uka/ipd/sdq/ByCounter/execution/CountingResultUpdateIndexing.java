@@ -80,7 +80,7 @@ public class CountingResultUpdateIndexing {
 	 * The results for the section are removed by this method.
 	 * @param resultQueue Result queue with the partial results for the section.
 	 */
-	private void updateObserversWithSection(Queue<CountingResult> resultQueue) {
+	private static void updateObserversWithSection(Queue<CountingResult> resultQueue) {
 		CountingResult resultSumForSection = resultQueue.remove();
 		for(CountingResult r : resultQueue) {
 			resultSumForSection.add(r);

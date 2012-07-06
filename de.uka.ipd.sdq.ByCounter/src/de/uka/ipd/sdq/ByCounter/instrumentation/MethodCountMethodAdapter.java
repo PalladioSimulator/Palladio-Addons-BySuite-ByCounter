@@ -55,7 +55,7 @@ import de.uka.ipd.sdq.ByCounter.utils.MethodDescriptor;
  * @since 0.1
  * @version 1.2
  */
-public final class MethodCountMethodAdapter extends MethodAdapter implements Opcodes {	// evil implements instead of static import
+public final class MethodCountMethodAdapter extends MethodAdapter {	// evil implements instead of static import
 	
 	/**
 	 * Statistical counter.
@@ -188,6 +188,11 @@ public final class MethodCountMethodAdapter extends MethodAdapter implements Opc
 	 * When true, this specific method uses range blocks.
 	 */
 	private boolean useRangeBlocks;
+	
+	/**
+	 * When true, this specific method starts or ends a region.
+	 */
+	private boolean useRegions;
 
 	/**
 	 * The variable of the {@link ArrayList} created in 
@@ -206,6 +211,7 @@ public final class MethodCountMethodAdapter extends MethodAdapter implements Opc
 	 * Intermediate instrumentation state.
 	 */
 	private InstrumentationState instrumentationState;
+
 	
 	/**
 	 * Creates the method adapter.
@@ -244,6 +250,7 @@ public final class MethodCountMethodAdapter extends MethodAdapter implements Opc
 		this.lVarManager = new LocalVariableManager(instrumentationParameters.getUseHighRegistersForCounting());
 		this.useBlockCounters = false;
 		this.useRangeBlocks = false;
+		this.useRegions = false;
 	}
 	
 	/**
@@ -367,20 +374,20 @@ public final class MethodCountMethodAdapter extends MethodAdapter implements Opc
 		this.blockExecutionOrderArrayListVar = this.lVarManager.getNewVarFor(
 				"ArrayList", mv, Type.getType(java.util.ArrayList.class), 1);
 
-		String TYPE_ARRAYLIST = "java/util/ArrayList";
-		mv.visitTypeInsn(NEW, TYPE_ARRAYLIST);
-		mv.visitInsn(DUP);
-		mv.visitMethodInsn(INVOKESPECIAL, TYPE_ARRAYLIST, "<init>", "()V");
-		mv.visitVarInsn(ASTORE, blockExecutionOrderArrayListVar);
+		final String TYPE_ARRAYLIST = "java/util/ArrayList";
+		mv.visitTypeInsn(Opcodes.NEW, TYPE_ARRAYLIST);
+		mv.visitInsn(Opcodes.DUP);
+		mv.visitMethodInsn(Opcodes.INVOKESPECIAL, TYPE_ARRAYLIST, "<init>", "()V");
+		mv.visitVarInsn(Opcodes.ASTORE, blockExecutionOrderArrayListVar);
 		
 		if(this.useRangeBlocks) {
 			this.rangeBlockExecutionOrderArrayListVar = this.lVarManager.getNewVarFor(
 					"ArrayList", mv, Type.getType(java.util.ArrayList.class), 1);
 
-			mv.visitTypeInsn(NEW, TYPE_ARRAYLIST);
-			mv.visitInsn(DUP);
-			mv.visitMethodInsn(INVOKESPECIAL, TYPE_ARRAYLIST, "<init>", "()V");
-			mv.visitVarInsn(ASTORE, rangeBlockExecutionOrderArrayListVar);
+			mv.visitTypeInsn(Opcodes.NEW, TYPE_ARRAYLIST);
+			mv.visitInsn(Opcodes.DUP);
+			mv.visitMethodInsn(Opcodes.INVOKESPECIAL, TYPE_ARRAYLIST, "<init>", "()V");
+			mv.visitVarInsn(Opcodes.ASTORE, rangeBlockExecutionOrderArrayListVar);
 		}
 	}
 
@@ -389,7 +396,7 @@ public final class MethodCountMethodAdapter extends MethodAdapter implements Opc
 	 * If block execution order recording is enabled, the execution order 
 	 * array list is initialised instead.
 	 */
-	private void initialiseInstructionCounters() {
+	protected void initialiseInstructionCounters() {
 		if(this.arrayCountersInitialised || this.methodCountersInitialised){
 			throw new RuntimeException(new IllegalStateException(
 					"initialiseInstructionCounts must be called before " +
@@ -444,15 +451,18 @@ public final class MethodCountMethodAdapter extends MethodAdapter implements Opc
 	/**
 	 * Insert code that calls the {@link ArrayList#add(Object)} method on the 
 	 * specified array list to add the given integer as a constant.
+	 * @param mv {@link MethodVisitor}
 	 * @param arrayListVar Variable index of the {@link ArrayList}.
 	 * @param integer {@link Integer} value to add to the array list.
 	 */
-	private void insertAddIntegerToArrayList(int arrayListVar, Integer integer) {
-		mv.visitVarInsn(ALOAD, arrayListVar);
+	protected static void insertAddIntegerToArrayList(
+			final MethodVisitor mv,
+			final int arrayListVar, final Integer integer) {
+		mv.visitVarInsn(Opcodes.ALOAD, arrayListVar);
 		mv.visitLdcInsn(integer);
-		mv.visitMethodInsn(INVOKESTATIC, "java/lang/Integer", "valueOf", "(I)Ljava/lang/Integer;");
-		mv.visitMethodInsn(INVOKEVIRTUAL, "java/util/ArrayList", "add", "(Ljava/lang/Object;)Z");
-		mv.visitInsn(POP); // pop the return value of add
+		mv.visitMethodInsn(Opcodes.INVOKESTATIC, "java/lang/Integer", "valueOf", "(I)Ljava/lang/Integer;");
+		mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "java/util/ArrayList", "add", "(Ljava/lang/Object;)Z");
+		mv.visitInsn(Opcodes.POP); // pop the return value of add
 	}
 
 	/**
@@ -465,7 +475,7 @@ public final class MethodCountMethodAdapter extends MethodAdapter implements Opc
 			int[] indicesOfArrayCounters) {
 		int index;	// the index to return
 		int numElements = indicesOfArrayCounters.length;
-		insertIntegerPushInsn(numElements); //load array size - has NOTHING to do with the counter type		
+		insertIntegerPushInsn(mv, numElements); //load array size - has NOTHING to do with the counter type		
 
 		// choose the instructions by precision:
 		if(this.instrumentationParameters.getCounterPrecision() == InstrumentationCounterPrecision.Long) {
@@ -476,7 +486,7 @@ public final class MethodCountMethodAdapter extends MethodAdapter implements Opc
 			for(int i = 0; i < numElements; i++) {
 				// store the value in the array
 				this.mv.visitVarInsn(Opcodes.ALOAD, index);
-				insertIntegerPushInsn(i); //load index - NOT the counter value...
+				insertIntegerPushInsn(mv, i); //load index - NOT the counter value...
 				this.mv.visitVarInsn(Opcodes.LLOAD, indicesOfArrayCounters[i]);	// load counter value from local variable
 				this.mv.visitInsn(Opcodes.LASTORE);
 			}
@@ -488,7 +498,7 @@ public final class MethodCountMethodAdapter extends MethodAdapter implements Opc
 			for(int i = 0; i < numElements; i++) {
 				// store the value in the array
 				mv.visitVarInsn(Opcodes.ALOAD, index);
-				insertIntegerPushInsn(i); //load index - NOT the counter value...
+				insertIntegerPushInsn(mv, i); //load index - NOT the counter value...
 				mv.visitVarInsn(Opcodes.ILOAD, indicesOfArrayCounters[i]);	// load counter value from local variable
 				mv.visitInsn(Opcodes.IASTORE);
 			}
@@ -502,9 +512,9 @@ public final class MethodCountMethodAdapter extends MethodAdapter implements Opc
 	 * @param integerList The integer contents.
 	 * @return The variable index for the new int array.
 	 */
-	private int insertAndFillIntArray(int[] integerList) {
+	protected int insertAndFillIntArray(int[] integerList) {
 		int numElements = integerList.length;
-		insertIntegerPushInsn(numElements);
+		insertIntegerPushInsn(mv, numElements);
 		mv.visitIntInsn(Opcodes.NEWARRAY, Opcodes.T_INT);
 		
 		int index = this.lVarManager.getNewIntArrayVar(mv);
@@ -513,7 +523,7 @@ public final class MethodCountMethodAdapter extends MethodAdapter implements Opc
 		for(int i = 0; i < numElements; i++) {
 			// store the value in the array
 			mv.visitVarInsn(Opcodes.ALOAD, index);
-			insertIntegerPushInsn(i);
+			insertIntegerPushInsn(mv, i);
 			mv.visitLdcInsn(integerList[i]);
 			mv.visitInsn(Opcodes.IASTORE);
 		}
@@ -526,9 +536,10 @@ public final class MethodCountMethodAdapter extends MethodAdapter implements Opc
 	 * @param list The strings to store in the array.
 	 * @return The variable index for the new string array.
 	 */
-	private int insertAndFillNewStringArray(List<String> list) {
+	protected int insertAndFillNewStringArray(
+			final List<String> list) {
 		int numElements = list.size();
-		insertIntegerPushInsn(numElements);
+		insertIntegerPushInsn(mv, numElements);
 		mv.visitTypeInsn(Opcodes.ANEWARRAY, "java/lang/String");
 		
 		int index = this.lVarManager.getNewStringArrayVar(mv);
@@ -537,7 +548,7 @@ public final class MethodCountMethodAdapter extends MethodAdapter implements Opc
 		for(int i = 0; i < numElements; i++) {
 			// store the string in the array
 			mv.visitVarInsn(Opcodes.ALOAD, index);
-			insertIntegerPushInsn(i);
+			insertIntegerPushInsn(mv, i);
 			mv.visitLdcInsn(list.get(i));
 			mv.visitInsn(Opcodes.AASTORE);
 		}
@@ -549,13 +560,13 @@ public final class MethodCountMethodAdapter extends MethodAdapter implements Opc
 	 * Chooses IINC or LADD depending on counter precision.
 	 * @param index The index of the counter to increment.
 	 */
-	private void insertCounterIncrement(int index) {
+	protected void insertCounterIncrement(int index) {
 		// choose the counter incrementation instructions by precision:
 		if(this.instrumentationParameters.getCounterPrecision() == InstrumentationCounterPrecision.Long) {
 			this.mv.visitVarInsn(Opcodes.LLOAD, index);
-			this.mv.visitInsn(LCONST_1);
-			this.mv.visitInsn(LADD);
-			this.mv.visitVarInsn(LSTORE, index);
+			this.mv.visitInsn(Opcodes.LCONST_1);
+			this.mv.visitInsn(Opcodes.LADD);
+			this.mv.visitVarInsn(Opcodes.LSTORE, index);
 		}else{
 			this.mv.visitIincInsn(index, 1);	// increment the register
 		}
@@ -566,9 +577,11 @@ public final class MethodCountMethodAdapter extends MethodAdapter implements Opc
 	/**
 	 * Insert a call such as BIPUSH or SIPUSH. The latter is used if 
 	 * the given integer is too big to fit into a byte.
+	 * @param mv {@link MethodVisitor}
 	 * @param i Integer to push
 	 */
-	private void insertIntegerPushInsn(int i) {
+	protected static void insertIntegerPushInsn(final MethodVisitor mv, 
+			final int i) {
 		if(i <= Byte.MAX_VALUE) {
 			mv.visitIntInsn(Opcodes.BIPUSH, i);
 		} else {
@@ -580,7 +593,7 @@ public final class MethodCountMethodAdapter extends MethodAdapter implements Opc
 	 * Calls the result collector after the method has been completed.
 	 * @see #insertResultCollectorCall(String)
 	 */
-	private void insertResultCollectorCompleteCall() {
+	protected void insertResultCollectorCompleteCall() {
 		this.insertResultCollectorCall(ProtocolCountStructure.class.getCanonicalName().replace('.', '/'));
 	}
 	
@@ -588,7 +601,7 @@ public final class MethodCountMethodAdapter extends MethodAdapter implements Opc
 	 * Calls the result collector after a part of the method has been completed.
 	 * @see #insertResultCollectorCall(String)
 	 */
-	private void insertResultCollectorUpdateCall() {
+	protected void insertResultCollectorUpdateCall() {
 		this.insertResultCollectorCall(ProtocolCountUpdateStructure.class.getCanonicalName().replace('.', '/'));
 	}
 
@@ -597,7 +610,7 @@ public final class MethodCountMethodAdapter extends MethodAdapter implements Opc
 	 * @param protocolCountStructClassName Canonical class name of the result structure.
 	 */
 	@SuppressWarnings("boxing")
-	private void insertResultCollectorCall(final String protocolCountStructClassName) {
+	protected void insertResultCollectorCall(final String protocolCountStructClassName) {
 //		boolean skip = true;
 //		if(skip) {
 //			return;
@@ -632,18 +645,16 @@ public final class MethodCountMethodAdapter extends MethodAdapter implements Opc
 		}
 		
 
-		String qualifyingMethodNameAndDesc = 
+		final String qualifyingMethodNameAndDesc = 
 			this.qualifyingMethodName + this.parameterDesc;
 		log.fine("Inserting a call to protocol* method, " +
 				"being in the following state: "+
 				"qualifyingMethodName: "+qualifyingMethodNameAndDesc+", "+
 				"instrumentationParameters: "+this.instrumentationParameters+", ");
-		boolean inlineImmediately = false;
+		final boolean inlineImmediately = this.methodDescriptor.isInlineImmediately();;
 		boolean isInvariant = false;
-		UUID uuid = null;
-		inlineImmediately = this.methodDescriptor.isInlineImmediately();
 		isInvariant = this.methodDescriptor.isInvariant();
-		uuid = this.methodDescriptor.getContext();
+		final UUID uuid = this.methodDescriptor.getContext();
 		log.fine("Found that the currently inserted " +
 						"protocol* method " +
 						"should be inlined: "+inlineImmediately+
@@ -651,15 +662,17 @@ public final class MethodCountMethodAdapter extends MethodAdapter implements Opc
 						" and is invariant: "+isInvariant);
 		log.fine("UUID passing not implemented yet");
 		log.fine("isInvariant ignored by instrumentation now...");
-		String protocolCountSignature = CountingResultCollector.SIGNATURE_protocolCount;
-		String protocolStructConstructorSignature = null;
-		String protocolCountMethodName = "protocolCount";
-		String directWritingToLogSignature = MethodCountClassAdapter.DIRECT_LOG_WRITE_SIGNATURE;
+		final String protocolCountSignature = CountingResultCollector.SIGNATURE_protocolCount;
+		final String protocolStructConstructorSignature;
+		final String protocolCountMethodName = "protocolCount";
+		final String directWritingToLogSignature = MethodCountClassAdapter.DIRECT_LOG_WRITE_SIGNATURE;
 		// Choose the proper protocolCountMethod depending on the precision
 		if(this.instrumentationParameters.getCounterPrecision() == InstrumentationCounterPrecision.Integer) {
 			protocolStructConstructorSignature = ProtocolCountStructure.SIGNATURE_CONSTRUCTOR_INT;
 		} else if(this.instrumentationParameters.getCounterPrecision() == InstrumentationCounterPrecision.Long) {
 			protocolStructConstructorSignature = ProtocolCountStructure.SIGNATURE_CONSTRUCTOR_LONG;
+		} else {
+			throw new IllegalStateException("This cannot happen because the ProtocolCountStructure enum has only 2 values.");
 		}
 		
 		if(instrumentationParameters.getUseResultCollector()){
@@ -713,13 +726,13 @@ public final class MethodCountMethodAdapter extends MethodAdapter implements Opc
 		if(this.instrumentationParameters.getTraceAndIdentifyRequests() 
 				&& !this.methodDescriptor.isConstructor()) {
 			// load the request UUID local variable
-			this.mv.visitVarInsn(ALOAD, requestIDLocalVarIndex);
+			this.mv.visitVarInsn(Opcodes.ALOAD, requestIDLocalVarIndex);
 			// load the own UUID and the caller UUID local variable
-			this.mv.visitVarInsn(ALOAD, ownIDLocalVarIndex);
-			this.mv.visitVarInsn(ALOAD, callerIDLocalVarIndex);
+			this.mv.visitVarInsn(Opcodes.ALOAD, ownIDLocalVarIndex);
+			this.mv.visitVarInsn(Opcodes.ALOAD, callerIDLocalVarIndex);
 		} else {
 			this.mv.visitInsn(Opcodes.ACONST_NULL);
-			this.mv.visitVarInsn(ALOAD, ownIDLocalVarIndex);
+			this.mv.visitVarInsn(Opcodes.ALOAD, ownIDLocalVarIndex);
 			this.mv.visitInsn(Opcodes.ACONST_NULL);
 		}
 		
@@ -733,6 +746,8 @@ public final class MethodCountMethodAdapter extends MethodAdapter implements Opc
 		if(useBlockCounters) {
 			if(useRangeBlocks) {
 				this.mv.visitIntInsn(Opcodes.BIPUSH, BlockCountingMode.RangeBlocks.ordinal());
+			} else if(useRegions) {
+				this.mv.visitIntInsn(Opcodes.BIPUSH, BlockCountingMode.LabelBlocks.ordinal());
 			} else {
 				this.mv.visitIntInsn(Opcodes.BIPUSH, BlockCountingMode.BasicBlocks.ordinal());
 			}
@@ -746,15 +761,15 @@ public final class MethodCountMethodAdapter extends MethodAdapter implements Opc
 		if(this.useBlockCounters && this.instrumentationParameters.getRecordBlockExecutionOrder()) {
 			// set value of order arraylist
 			mv.visitInsn(Opcodes.DUP);
-			mv.visitVarInsn(ALOAD, this.blockExecutionOrderArrayListVar);
-			mv.visitFieldInsn(PUTFIELD, protocolCountStructClassName, 
+			mv.visitVarInsn(Opcodes.ALOAD, this.blockExecutionOrderArrayListVar);
+			mv.visitFieldInsn(Opcodes.PUTFIELD, protocolCountStructClassName, 
 					"blockExecutionSequence", "Ljava/util/ArrayList;");
 			
 			if(this.useRangeBlocks) {
 				// set value of range order arraylist
 				mv.visitInsn(Opcodes.DUP);
-				mv.visitVarInsn(ALOAD, this.rangeBlockExecutionOrderArrayListVar);
-				mv.visitFieldInsn(PUTFIELD, protocolCountStructClassName, 
+				mv.visitVarInsn(Opcodes.ALOAD, this.rangeBlockExecutionOrderArrayListVar);
+				mv.visitFieldInsn(Opcodes.PUTFIELD, protocolCountStructClassName, 
 						"rangeBlockExecutionSequence", "Ljava/util/ArrayList;");
 			}
 		}
@@ -785,7 +800,7 @@ public final class MethodCountMethodAdapter extends MethodAdapter implements Opc
 		}
 	}
 
-	private int insertResultCollectorCall_createMethodCountsArrays() {
+	protected int insertResultCollectorCall_createMethodCountsArrays() {
 		// set up an index array for the method counters
 		int[] indicesOfMethodCounters = new int[this.methodCounters.size()];
 		for(int i = 0; i < indicesOfMethodCounters.length; i++) {
@@ -803,21 +818,21 @@ public final class MethodCountMethodAdapter extends MethodAdapter implements Opc
 		return methodListVar;
 	}
 
-	private int insertResultCollectorCall_createOpcodeCountsArray() {
+	protected int insertResultCollectorCall_createOpcodeCountsArray() {
 		// store the opcode counts
-		int opcodeListVar = insertAndFillCounterArrayFromRegisters(this.instructionCounters);
+		final int opcodeListVar = insertAndFillCounterArrayFromRegisters(this.instructionCounters);
 		return opcodeListVar;
 	}
 
-	private int insertResultCollectorCall_createBasicBlockCountsArray() {
+	protected int insertResultCollectorCall_createBasicBlockCountsArray() {
 		// set up an index array that holds the variable indices for the basic block counters
-		int[] indicesOfBasicBlockCounters = new int[this.basicBlockCounters.size()];
-		Label[] basicBlockLabels = this.instrumentationState.getBasicBlockLabels();
+		final int[] indicesOfBasicBlockCounters = new int[this.basicBlockCounters.size()];
+		final Label[] basicBlockLabels = this.instrumentationState.getBasicBlockLabels();
 		for(int i = 0; i < basicBlockLabels.length; i++) {
 			indicesOfBasicBlockCounters[i] = this.basicBlockCounters.get(basicBlockLabels[i]).variableIndex;
 		}
 		// store the basic block counts
-		int basicBlockListVar = insertAndFillCounterArrayFromRegisters(indicesOfBasicBlockCounters);
+		final int basicBlockListVar = insertAndFillCounterArrayFromRegisters(indicesOfBasicBlockCounters);
 		this.log.fine("variable "+basicBlockListVar+" holds array of longs that hold "+
 				indicesOfBasicBlockCounters.length+" opcode counts ");
 		return basicBlockListVar;
@@ -829,7 +844,7 @@ public final class MethodCountMethodAdapter extends MethodAdapter implements Opc
 	 * @param opcode Opcode to analyze.
 	 * @return True if opcode is a returnstatement/throwstatement, false otherwise.
 	 */
-	private boolean isReturnStatement(int opcode) {
+	protected static boolean isReturnStatement(final int opcode) {
 		switch(opcode) {
 			case Opcodes.ARETURN:
 			case Opcodes.DRETURN:
@@ -918,17 +933,21 @@ public final class MethodCountMethodAdapter extends MethodAdapter implements Opc
 				== InstrumentationScopeModeEnum.InstrumentNothing) {
 			return;
 		}
-		
+
+		if(this.instrumentationParameters.hasInstrumentationRegionForMethod(methodDescriptor)) {
+			this.useRegions = true;
+		}
 		// at this point, setBasicBlockLabels has been called, if it is called
 		// therefore we know whether or not to use blocks
-		Label[] basicBlockLabels = this.instrumentationState.getBasicBlockLabels();
+		Label[] basicBlockLabels = this.instrumentationState.getBasicBlockLabels(); // this can also be label blocks (i.e. for regions)
 		if(basicBlockLabels == null || basicBlockLabels.length == 0) {
 			// only use blocks if according labels have been specified
 			this.useBlockCounters = false;
 		} else if(this.instrumentationParameters.getUseBasicBlocks()) {
 			this.useBlockCounters = true;
 			if(this.methodDescriptor.getCodeAreasToInstrument() != null
-					&& this.methodDescriptor.getCodeAreasToInstrument().length != 0) {
+					&& this.methodDescriptor.getCodeAreasToInstrument().length != 0
+					) {
 				this.useRangeBlocks = true;
 			}
 			if(this.instrumentationParameters.getUseArrayParameterRecording()) {
@@ -962,13 +981,13 @@ public final class MethodCountMethodAdapter extends MethodAdapter implements Opc
 		
 		// insert magic string constant, load it and pop it from the stack again
 		mv.visitLdcInsn(INSTRUMENTATION_MARKER);
-		mv.visitInsn(POP);
+		mv.visitInsn(Opcodes.POP);
 		
 			
 		// create the own UUID
-		mv.visitMethodInsn(INVOKESTATIC, "java/util/UUID", "randomUUID", "()Ljava/util/UUID;");
+		mv.visitMethodInsn(Opcodes.INVOKESTATIC, "java/util/UUID", "randomUUID", "()Ljava/util/UUID;");
 		this.ownIDLocalVarIndex = lVarManager.getNewVarFor("UUID", mv, Type.getType(UUID.class), 2);
-		mv.visitVarInsn(ASTORE, ownIDLocalVarIndex);
+		mv.visitVarInsn(Opcodes.ASTORE, ownIDLocalVarIndex);
 		
 		timeVar = lVarManager.getNewLongVar(mv);
 
@@ -1114,12 +1133,17 @@ public final class MethodCountMethodAdapter extends MethodAdapter implements Opc
 		if(this.instrumentationParameters.getInstrumentationScopeOverrideMethodLevel() 
 				!= InstrumentationScopeModeEnum.InstrumentNothing) {
 			if(this.useBlockCounters) {
+				boolean callUpdate = false;
 				BlockCounterData blockData = this.basicBlockCounters.get(label);
 				if(blockData != null) {
 					if(this.instrumentationParameters.getRecordBlockExecutionOrder()) {
-						this.insertAddIntegerToArrayList(
+						insertAddIntegerToArrayList(mv,
 								this.blockExecutionOrderArrayListVar, 
 								new Integer(blockData.blockIndex));
+						if(this.useRegions) {
+							// provide region updates
+							callUpdate = true;
+						}
 					} else {
 						// a new basic block or range block starts
 						this.insertCounterIncrement(blockData.variableIndex);
@@ -1131,13 +1155,17 @@ public final class MethodCountMethodAdapter extends MethodAdapter implements Opc
 					Integer rngeBlockIndex = this.instrumentationState.getRangeBlockContainsLabels().get(label);
 					if(rngeBlockIndex != null) {
 						// label is part of a range block
-						this.insertAddIntegerToArrayList(
+						insertAddIntegerToArrayList(mv,
 								this.rangeBlockExecutionOrderArrayListVar, 
 								rngeBlockIndex);
 						if(this.instrumentationParameters.getProvideOnlineSectionExecutionUpdates()) {
 							this.insertResultCollectorUpdateCall();
+							callUpdate = false; // update already done
 						}
 					}
+				}
+				if(callUpdate) {
+					this.insertResultCollectorUpdateCall();
 				}
 			}
 		}
@@ -1147,7 +1175,7 @@ public final class MethodCountMethodAdapter extends MethodAdapter implements Opc
 	public void visitLdcInsn(Object constant) {
 		if(this.instrumentationParameters.getInstrumentationScopeOverrideMethodLevel() 
 				!= InstrumentationScopeModeEnum.InstrumentNothing) {
-			countOpcode(LDC);
+			countOpcode(Opcodes.LDC);
 		}
 		mv.visitLdcInsn(constant);
 	}
@@ -1156,7 +1184,7 @@ public final class MethodCountMethodAdapter extends MethodAdapter implements Opc
 	public void visitLookupSwitchInsn(Label dflt, int[] keys, Label[] labels) {
 		if(this.instrumentationParameters.getInstrumentationScopeOverrideMethodLevel() 
 				!= InstrumentationScopeModeEnum.InstrumentNothing) {
-			countOpcode(LOOKUPSWITCH);
+			countOpcode(Opcodes.LOOKUPSWITCH);
 		}
 		mv.visitLookupSwitchInsn(dflt, keys, labels);
 	}
@@ -1188,8 +1216,8 @@ public final class MethodCountMethodAdapter extends MethodAdapter implements Opc
 			if(methodIndex >= 0) {
 				// the method call is a call to an instrumented method
 				// load the request UUID local variable
-				mv.visitVarInsn(ALOAD, requestIDLocalVarIndex);
-				mv.visitVarInsn(ALOAD, ownIDLocalVarIndex);
+				mv.visitVarInsn(Opcodes.ALOAD, requestIDLocalVarIndex);
+				mv.visitVarInsn(Opcodes.ALOAD, ownIDLocalVarIndex);
 //				this.mv.visitInsn(Opcodes.ACONST_NULL);
 				// call the new version of the method
 				mv.visitMethodInsn(opcode, owner, 
@@ -1221,7 +1249,7 @@ public final class MethodCountMethodAdapter extends MethodAdapter implements Opc
 	public void visitTableSwitchInsn(int min, int max, Label dflt, Label[] labels) {
 		if(this.instrumentationParameters.getInstrumentationScopeOverrideMethodLevel() 
 				!= InstrumentationScopeModeEnum.InstrumentNothing) {
-			countOpcode(TABLESWITCH);
+			countOpcode(Opcodes.TABLESWITCH);
 		}
 		mv.visitTableSwitchInsn(min, max, dflt, labels);
 	}

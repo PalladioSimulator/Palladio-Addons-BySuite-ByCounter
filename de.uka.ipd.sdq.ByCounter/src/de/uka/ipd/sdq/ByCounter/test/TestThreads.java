@@ -30,7 +30,7 @@ import de.uka.ipd.sdq.ByCounter.utils.MethodDescriptor;
 public class TestThreads extends AbstractByCounterTest {
 	private static MethodDescriptor methodThreadRun;
 
-	private MethodDescriptor methodRun;
+	private static MethodDescriptor methodRun;
 	
 	{
 		methodThreadRun = new MethodDescriptor(

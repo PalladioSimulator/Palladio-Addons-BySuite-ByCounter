@@ -19,7 +19,12 @@ public enum BlockCountingMode {
 	/**
 	 * Instructions are grouped into line number ranges.
 	 */
-	RangeBlocks;
+	RangeBlocks,
+	/**
+	 * Instructions are grouped as label blocks, i.e. for each label there 
+	 * is an instruction block.
+	 */
+	LabelBlocks;
 	
 	/**
 	 * Statically set version of {@link #values()}

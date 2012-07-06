@@ -783,24 +783,14 @@ public final class MethodDescriptor implements Comparable<MethodDescriptor>, Ser
 	}
 
 	/**
-	 * Gets the qualifying method name of the described method (yet without the descriptors, i.e. without the
-	 * input/output parameters).
-	 * 
-	 * @return The method name.
-	 */
-	public String getQualifyingMethodName() {
-		return this.getCanonicalClassName() + "." + this.simpleMethodName;
-	}
-
-	/**
-	 * Gets the qualifying method signature of the described method. This consists of the qualifying method name (
-	 * {@link #getQualifyingMethodName()}) and the descriptor ({@link #getDescriptor()}; i.e. with the types of
+	 * Gets the qualifying method signature of the described method. This consists of the qualifying method name 
+	 *  and the descriptor ({@link #getDescriptor()}; i.e. with the types of
 	 * input/output parameters).
 	 * 
 	 * @return The method signature.
 	 */
-	public String getQualifyingMethodSignature() {
-		return this.getQualifyingMethodName() + this.descriptor;
+	public String getQualifyingMethodName() {
+		return this.getCanonicalClassName() + "." + this.simpleMethodName + this.descriptor;
 	}
 
 	/**

@@ -125,8 +125,7 @@ public class CollectionStrategyForceInlining extends AbstractCollectionStrategy 
 
 	@Override
 	public synchronized boolean protocolCount (
-			ProtocolCountStructure result, 
-			long reportingStart) {
+			ProtocolCountStructure result) {
 		//TODO ignores newArray* as well as *IDs
 		
 		boolean forceInlining = parentResultCollector.getMode().getForceInliningAlways();
@@ -156,19 +155,18 @@ public class CollectionStrategyForceInlining extends AbstractCollectionStrategy 
 		}
 		
 		if(forceInlining) {
-			forceInline(reportingStart, result, false);
+			forceInline(result, false);
 			return true;
 		} else {
 			this.totalOfUninlinedMethodsDespiteForcedInlining++;
 			return false;
 		}
 	}
-	
+
 	/**
 	 * TODO for forced inlining, efficiency can be significantly increased by counting only those methods which have not been instrumented. This has to be a modification of the instrumenting mechanism...
 	 */
 	private synchronized void forceInline(
-			long reportingTime, 
 			ProtocolCountStructure result,
 			boolean countReportsPerSignature) {
 		

@@ -89,6 +89,8 @@ public class ProtocolCountStructure {
 	 * The index is the same as for newArrayCounts and newArrayTypeOrDim.
 	 */
 	public String[] newArrayDescr;
+	/** The time at which this result arrives in the result collector. */
+	public long reportingStart;
 	/**
 	 * This is a unique identifier that allows to group
 	 * CountingResults that result from a common request.
@@ -128,6 +130,7 @@ public class ProtocolCountStructure {
 		this.newArrayCounts = null;
 		this.newArrayTypeOrDim = null;
 		this.newArrayDescr = null;
+		this.reportingStart = 0L;
 		this.requestID = null;
 		this.ownID = null;
 		this.callerID = null;

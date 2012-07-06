@@ -68,7 +68,8 @@ class DummyReportingClass {
         result.qualifyingMethodName = "de.uka.ipd.sdq.ByCounter.execution.anotherPseudoInstrumentedMethod";
         result.opcodeCountsInt = opcodeCounts;
         result.methodCallCountsInt = new int[0];
-        this.myCollectionStrategy.protocolCount(result, System.nanoTime());
+        result.reportingStart = System.nanoTime();
+        this.myCollectionStrategy.protocolCount(result);
         this.log.fine("returning: "+ret);
         return ret;
     }
@@ -105,7 +106,8 @@ class DummyReportingClass {
         result.opcodeCountsInt = opcodeCounts;
         result.methodCallCountsInt = methodCallCounts;
         result.calledMethods = calledMethods;
-        this.myCollectionStrategy.protocolCount(result, System.nanoTime());
+        result.reportingStart = System.nanoTime();
+        this.myCollectionStrategy.protocolCount(result);
         this.log.fine("returning: "+ret);
         return ret;
     }

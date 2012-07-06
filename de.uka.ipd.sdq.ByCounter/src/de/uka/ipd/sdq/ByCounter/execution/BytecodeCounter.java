@@ -19,18 +19,19 @@ import java.util.logging.Logger;
 
 import org.objectweb.asm.ClassReader;
 
+import de.uka.ipd.sdq.ByCounter.instrumentation.BlockCountingMode;
 import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentationContext;
 import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentationParameters;
+import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentationRegion;
 import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentationScopeModeEnum;
 import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentationState;
 import de.uka.ipd.sdq.ByCounter.instrumentation.Instrumenter;
-import de.uka.ipd.sdq.ByCounter.parsing.BasicBlockSerialisation;
+import de.uka.ipd.sdq.ByCounter.parsing.InstructionBlockSerialisation;
 import de.uka.ipd.sdq.ByCounter.parsing.CallGraph;
 import de.uka.ipd.sdq.ByCounter.parsing.CallGraphClassAdapter;
 import de.uka.ipd.sdq.ByCounter.parsing.CallGraphMethod;
 import de.uka.ipd.sdq.ByCounter.parsing.ClassMethodImplementations;
 import de.uka.ipd.sdq.ByCounter.parsing.FindMethodDefinitionsClassAdapter;
-import de.uka.ipd.sdq.ByCounter.parsing.InstructionBlockDescriptor;
 import de.uka.ipd.sdq.ByCounter.utils.InvocationResultData;
 import de.uka.ipd.sdq.ByCounter.utils.MethodDescriptor;
 
@@ -438,6 +439,19 @@ public final class BytecodeCounter {
 		} else {
 			this.instrumentationState.setMethodsToInstrumentCalculated(this.instrumentationParameters.getMethodsToInstrument());
 		}
+		// select methods if instrumentation regions have been specified
+		{
+			List<MethodDescriptor> mtiCalc = instrumentationState.getMethodsToInstrumentCalculated();
+			for(InstrumentationRegion ir: this.instrumentationParameters.getInstrumentationRegions()) {
+				if(!mtiCalc.contains(ir.getStartMethod())) {
+					mtiCalc.add(ir.getStartMethod());
+				}
+				if(!mtiCalc.contains(ir.getStopMethod())) {
+					mtiCalc.add(ir.getStopMethod());
+				}
+			}
+		}
+		
 		log.info("Instrumenting following methods: " + instrumentationState.getMethodsToInstrumentCalculated());
 		
     	this.successFullyInstrumentedMethods = new ArrayList<MethodDescriptor>();
@@ -702,17 +716,10 @@ public final class BytecodeCounter {
 			this.classLoader.updateClassInClassPool(this.classToInstrument, b);
 			
 			// write context
-			InstrumentationContext iContext = new InstrumentationContext();
-			if(this.instrumentationParameters.getUseBasicBlocks()) {
-				iContext.setBasicBlocks(instrumentationState.getBasicBlockSerialisation());			
-				if(this.instrumentationParameters.hasMethodsWithCodeAreas()) {
-					iContext.setRangeBlocks(instrumentationState.getRangeBlockSerialisation());
-				}
-			}
 			try {		
 				File file = new File(InstrumentationContext.FILE_SERIALISATION_DEFAULT_NAME);
 				log.info("Writing ByCounter instrumentation context to " + file.getAbsolutePath());
-				InstrumentationContext.serialise(iContext, file);
+				InstrumentationContext.serialise(this.instrumentationState.getInstrumentationContext(), file);
 			} catch (IOException e) {
 				log.severe("Failed to serialise basic or range block definitions. " + e.getMessage());
 				e.printStackTrace();
@@ -743,33 +750,31 @@ public final class BytecodeCounter {
 
 		// Load the instrumentation context that was saved before.
 		InstrumentationContext iContext = null;
-		if(this.instrumentationParameters.getUseBasicBlocks()) {
-			File file = new File(InstrumentationContext.FILE_SERIALISATION_DEFAULT_NAME);
-			try {
-				iContext = InstrumentationContext.deserialise(file);
+		File file = new File(InstrumentationContext.FILE_SERIALISATION_DEFAULT_NAME);
+		try {
+			iContext = InstrumentationContext.deserialise(file);
 
-				// print all basic blocks
-				BasicBlockSerialisation loaded;
+			// print all basic blocks
+			InstructionBlockSerialisation loaded;
+
+			if(this.instrumentationState.getInstrumentationContext().getBlockCountingMode() == BlockCountingMode.LabelBlocks) {
+				loaded = iContext.getLabelBlocks();
+				if(loaded != null) {
+					log.info("Label blocks:");
+					loaded.printInstructionBlocks(log);
+				}
+			} else if(this.instrumentationParameters.getUseBasicBlocks()) {
 				loaded = iContext.getBasicBlocks();
 				if(loaded != null) {
-					HashMap<String, InstructionBlockDescriptor[]> basicBlocksByMethod = loaded.getBasicBlocksByMethod();
 					log.info("Basic blocks:");
-					for(String method : basicBlocksByMethod.keySet()) {
-						log.info(method);
-						for(InstructionBlockDescriptor d : basicBlocksByMethod.get(method))
-						log.info(d.toString());
-					}
+					loaded.printInstructionBlocks(log);
 					// print all range blocks
-					if(this.instrumentationParameters.hasMethodsWithCodeAreas()) {
+					if(this.instrumentationParameters.hasMethodsWithCodeAreas()
+							|| !this.instrumentationParameters.getInstrumentationRegions().isEmpty()) {
 						loaded = iContext.getRangeBlocks();
 						if(loaded != null) {
-							HashMap<String, InstructionBlockDescriptor[]> rangeBlocksByMethod = loaded.getBasicBlocksByMethod();
 							log.info("Range blocks:");
-							for(String method : rangeBlocksByMethod.keySet()) {
-								log.info(method);
-								for(InstructionBlockDescriptor d : rangeBlocksByMethod.get(method))
-								log.info(d.toString());
-							}
+							loaded.printInstructionBlocks(log);
 						} else {
 							log.info("No range blocks.");
 						}
@@ -777,11 +782,12 @@ public final class BytecodeCounter {
 				} else {
 					log.info("No basic blocks.");
 				}
-				
-			} catch (Exception e) {
-				log.severe("Failed to instrumentation context. " + e.getMessage());
-				e.printStackTrace();
 			}
+			
+		} catch (Exception e) {
+			String emsg = "Failed to load instrumentation context. ";
+			log.severe(emsg + e.getMessage());
+			throw new RuntimeException(emsg, e);
 		}
 		
 		log.info(msg.toString());

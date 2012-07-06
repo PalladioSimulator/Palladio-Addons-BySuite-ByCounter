@@ -1,6 +1,7 @@
 package de.uka.ipd.sdq.ByCounter.instrumentation;
 
 import java.io.File;
+import java.util.LinkedList;
 import java.util.List;
 
 import de.uka.ipd.sdq.ByCounter.execution.CountingResultCollector;
@@ -112,6 +113,9 @@ public final class InstrumentationParameters implements Cloneable {
 		RESULT_LOG_DEFAULT_DIRECTORY + 
 		File.separatorChar;
 
+	/** Default value of {@link #getInstrumentationRegions()}.*/
+	private static final List<InstrumentationRegion> INSTRUMENTATION_REGIONS_DEFAULT = new LinkedList<InstrumentationRegion>();
+
 	/**
 	 * A list of strings that cause a class to be ignored in the parsing 
 	 * when found at the start of a package name.
@@ -210,6 +214,11 @@ public final class InstrumentationParameters implements Cloneable {
 	 * Overrides the instrumentation behavior in a method.
 	 */
 	private InstrumentationScopeModeEnum instrumentationScopeOverrideMethodLevel;
+	
+	/**
+	 * {@link InstrumentationRegion}s to instrument.
+	 */
+	private List<InstrumentationRegion> instrumentationRegions;
 
 	/**
 	 * This is intended only for construction in multiple steps.
@@ -281,6 +290,7 @@ public final class InstrumentationParameters implements Cloneable {
 		this.instrumentRecursively = INSTRUMENT_RECURSIVELY_DEFAULT;
 		this.instrumentRecursivelyMaxDepth = INSTRUMENT_RECURSIVELY_MAX_DEPTH_DEFAULT;
 		this.provideOnlineSectionExecutionUpdates = PROVIDE_ONLINE_SECTION_EXECUTION_UPDATES_DEFAULT;
+		this.instrumentationRegions = INSTRUMENTATION_REGIONS_DEFAULT;
 	}
 	
 	/* (non-Javadoc)
@@ -297,14 +307,14 @@ public final class InstrumentationParameters implements Cloneable {
 			return null;
 		}
 		
-		// shallow copy all fields
+		// copy all fields
 		copy.counterPrecision = this.counterPrecision;
 		copy.countStatically = this.countStatically;
 		copy.instrumentationScopeOverrideClassLevel = this.instrumentationScopeOverrideClassLevel;
 		copy.instrumentationScopeOverrideMethodLevel = this.instrumentationScopeOverrideMethodLevel;
 		copy.instrumentRecursively = this.instrumentRecursively;
 		copy.instrumentRecursivelyMaxDepth = this.instrumentRecursivelyMaxDepth;
-		copy.methodsToInstrument = this.methodsToInstrument;
+		copy.methodsToInstrument = this.methodsToInstrument == null ? null : new LinkedList<MethodDescriptor>(this.methodsToInstrument);
 		copy.provideOnlineSectionExecutionUpdates = this.provideOnlineSectionExecutionUpdates;
 		copy.rangeBlocks = this.rangeBlocks;
 		copy.recordBlockExecutionOrder = this.recordBlockExecutionOrder;
@@ -317,6 +327,7 @@ public final class InstrumentationParameters implements Cloneable {
 		copy.useResultLogWriter = this.useResultLogWriter;
 		copy.writeClassesToDisk = this.writeClassesToDisk;
 		copy.writeClassesToDiskDirectory = this.writeClassesToDiskDirectory;
+		copy.instrumentationRegions = this.instrumentationRegions == null ? null : new LinkedList<InstrumentationRegion>(this.instrumentationRegions);
 		
 		return copy;
 	}
@@ -329,6 +340,13 @@ public final class InstrumentationParameters implements Cloneable {
 	@SuppressWarnings("dep-ann")
 	public boolean getCountStatically() {
 		return this.countStatically;
+	}
+	
+	/**
+	 * @return {@link InstrumentationRegion}s to instrument.
+	 */
+	public List<InstrumentationRegion> getInstrumentationRegions() {
+		return this.instrumentationRegions;
 	}
 	
 	/**
@@ -497,6 +515,7 @@ public final class InstrumentationParameters implements Cloneable {
 		b.append("instrumentRecursively:              " + this.instrumentRecursively + ", \n");
 		b.append("instrumentRecursivelyMaxDepth:      " + this.instrumentRecursivelyMaxDepth + ", \n");
 		b.append("methodsToInstrument:                " + this.methodsToInstrument + ", \n");
+		b.append("instrumentationRegions:             " + this.instrumentationRegions + ", \n");
 		b.append("rangeBlocks:                        " + this.rangeBlocks + ", \n");
 		b.append("recordBlockExecutionOrder:          " + this.recordBlockExecutionOrder + ", \n");
 		b.append("resultLogFileName:                  " + this.resultLogFileName + ", \n");
@@ -633,6 +652,14 @@ public final class InstrumentationParameters implements Cloneable {
 	public void setCounterPrecision(InstrumentationCounterPrecision counterPrecision) {
 		this.counterPrecision = counterPrecision;
 	}
+	
+	/**
+	 * @param instrumentationRegions {@link InstrumentationRegion}s to instrument.
+	 */
+	public void setInstrumentationRegions(
+			List<InstrumentationRegion> instrumentationRegions) {
+		this.instrumentationRegions = instrumentationRegions;
+	}
 
 	/**
 	 * When set, instruments methods called from the {@link #setMethodsToInstrument(List)} that 
@@ -722,6 +749,37 @@ public final class InstrumentationParameters implements Cloneable {
 			throw new IllegalArgumentException("Cannot provide online section execution updates with recordBlockExecutionOrder set to false.");
 		}
 		this.provideOnlineSectionExecutionUpdates = provideOnlineSectionExecutionUpdates;
+	}
+	
+	/**
+	 * @see #getInstrumentationRegions()
+	 * @param md A method that will be searched for {@link InstrumentationRegion}s.
+	 * @return True if an {@link InstrumentationRegion} exists that either has 
+	 * a start or a stop for the given method.
+	 */
+	public boolean hasInstrumentationRegionForMethod(MethodDescriptor md) {
+		for(InstrumentationRegion r : this.instrumentationRegions) {
+			if(r.getStartMethod().equals(md) || r.getStopMethod().equals(md)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * @see #getInstrumentationRegions()
+	 * @param md A method that will be searched for {@link InstrumentationRegion}s 
+	 * that end here.
+	 * @return True if an {@link InstrumentationRegion} exists that has 
+	 * stop for the given method.
+	 */
+	public boolean hasInstrumentationRegionEndForMethod(MethodDescriptor md) {
+		for(InstrumentationRegion r : this.instrumentationRegions) {
+			if(r.getStopMethod().equals(md)) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	/**

@@ -4,13 +4,12 @@
 package de.uka.ipd.sdq.ByCounter.instrumentation;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.objectweb.asm.Label;
 
-import de.uka.ipd.sdq.ByCounter.parsing.BasicBlockSerialisation;
-import de.uka.ipd.sdq.ByCounter.parsing.LineNumberRange;
 import de.uka.ipd.sdq.ByCounter.utils.MethodDescriptor;
 
 /**
@@ -19,20 +18,15 @@ import de.uka.ipd.sdq.ByCounter.utils.MethodDescriptor;
  * This class holds various intermediate results of instrumentation stages and 
  * can be passed from one stage to the next. Every field of this class is 
  * computed by ByCounter, i.e. not user specified.
- * 
- * <li>{@link #getBasicBlockSerialisation()} only applies if {@link InstrumentationParameters#getUseBasicBlocks()} == true</li>
- * <li>{@link #getRangeBlockSerialisation()} only applies if {@link InstrumentationParameters#getUseBasicBlocks()} == true and {@link MethodDescriptor#setCodeAreasToInstrument(LineNumberRange[])} has been called with non-empty line number ranges ({@link InstrumentationParameters#hasMethodsWithCodeAreas()} == true)</li>
  */
 public class InstrumentationState {
 
+	
 	/**
-	 * Basic block definitions.
+	 * Context information that is important even after instrumentation.
 	 */
-	private BasicBlockSerialisation basicBlockSerialisation;
-	/**
-	 * Range block definitions.
-	 */
-	private BasicBlockSerialisation rangeBlockSerialisation;
+	private InstrumentationContext instrumentationContext;
+	
 	/**
 	 * This list also contains methods selected for recursive instrumentation.
 	 * @see {@link #methodsToInstrument}, {@link #instrumentRecursively}
@@ -59,29 +53,20 @@ public class InstrumentationState {
 	 * Initialises all fields.
 	 */
 	public InstrumentationState() {
-		this.basicBlockSerialisation = new BasicBlockSerialisation();
-		this.rangeBlockSerialisation = new BasicBlockSerialisation();
+		this.instrumentationContext = new InstrumentationContext();
     	this.setSuccessFullyInstrumentedMethods(new ArrayList<MethodDescriptor>());
+    	this.rangeBlockContainsLabels = new HashMap<Label, Integer>();
+    	this.basicBlockLabels = new Label[0];
 	}
 
 	/**
 	 * This is used in the instrumentation process to save basic block 
-	 * definitions.
-	 * @return the basicBlockSerialisation
+	 * definitions etc.
+	 * @return the {@link InstrumentationContext}
 	 */
-	public BasicBlockSerialisation getBasicBlockSerialisation() {
-		return basicBlockSerialisation;
+	public InstrumentationContext getInstrumentationContext() {
+		return this.instrumentationContext;
 	}
-	
-	/**
-	 * This is used in the instrumentation process to save range block 
-	 * definitions.
-	 * @return the rangeBlockSerialisation
-	 */
-	public BasicBlockSerialisation getRangeBlockSerialisation() {
-		return rangeBlockSerialisation;
-	}
-
 	/**
 	 * @param methodsToInstrumentCalculated the methodsToInstrumentCalculated to set
 	 */

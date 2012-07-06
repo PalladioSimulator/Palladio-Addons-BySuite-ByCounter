@@ -112,7 +112,6 @@ public final class CountingResultCollector extends Observable {
 		this.mode = MODE_DEFAULT;
 		this.resultWriters = new ArrayList<ICountingResultWriter>();
 		this.instrumentationContext = null;
-		this.instrumentationContext = InstrumentationContext.loadFromDefaultPath();
 		
 		this.collectionStrategies = new LinkedList<AbstractCollectionStrategy>();
 		this.strategyDefault = new CollectionStrategyDefault(this);
@@ -127,7 +126,7 @@ public final class CountingResultCollector extends Observable {
 	 * Clear all results in the internal list.
 	 */
 	public synchronized void clearResults() {
-		for(AbstractCollectionStrategy s : this.collectionStrategies) {
+		for(ICollectionStrategy s : this.collectionStrategies) {
 			s.clearResults();
 		}
 	}
@@ -161,46 +160,52 @@ public final class CountingResultCollector extends Observable {
 	public void monitorShouldStop() {
 		this.setMonitorShouldStop(true);
 	}
-
+	
 	/**
 	 * An instrumented class calls this method to report the instruction and method call counts.
 	 * TODO: how far is "synchronized" problematic in multi-threading?
 	 * @param result The result reported by an instrumented method.
 	 */
 	public synchronized void protocolCount(ProtocolCountStructure result) {
-		long reportingStart = System.nanoTime();//TODO make this configurable and clear, move to an interface/class that is accessed
+		result.reportingStart = System.nanoTime();//TODO make this configurable and clear, move to an interface/class that is accessed
 		boolean handledResult = false;
 		if(this.mode==CountingResultCollectorMode.DiscardAllIncomingCountingResults){
 			log.fine("Discarding counting result of method "+result.qualifyingMethodName+", which started execution " +
 					"at "+result.executionStart);
 			handledResult = true;
 		} else if(this.mode.getForceInliningPossible()){
-			handledResult = this.inliningStrategyForced.protocolCount(result, reportingStart);
+			handledResult = this.inliningStrategyForced.protocolCount(result);
 		}
 		
 		if(!handledResult) {
 			// the result was not accepted by a strategy yet
 			if(result.inliningSpecified) {
-				this.inliningStrategyWished.protocolCount(result, reportingStart);
+				handledResult = this.inliningStrategyWished.protocolCount(result);
 			} else {
-				this.strategyDefault.protocolCount(result, reportingStart);
+				handledResult = this.strategyDefault.protocolCount(result);
 			}
 		}
 
-		// notify observers
-		this.setChanged();
-		if(!(result instanceof ProtocolCountUpdateStructure)) {
-			((CollectionStrategyDefault)this.strategyDefault).getCountingResultIndexing().retrieveCountingResultByMethodStartTime(result.executionStart);
-			SortedSet<CountingResult> allResults = this.retrieveAllCountingResults();
-			// filter results to only contain those for the current method.
-			SortedSet<CountingResult> relevantResults = new TreeSet<CountingResult>();
-			for(CountingResult r : allResults) {
-				if(r.getMethodInvocationBeginning() == result.executionStart) {
-					relevantResults.add(r);
+		if(!handledResult) {
+			// Result was not added by any of the strategies. This most often means
+			// that it is not needed (for instance out of region).
+			log.info("Protocolled count at " + result.executionStart + " not added.");
+		} else {
+			// notify observers
+			this.setChanged();
+			if(!(result instanceof ProtocolCountUpdateStructure)) {
+				((CollectionStrategyDefault)this.strategyDefault).getCountingResultIndexing().retrieveCountingResultByMethodStartTime(result.executionStart);
+				SortedSet<CountingResult> allResults = this.retrieveAllCountingResults();
+				// filter results to only contain those for the current method.
+				SortedSet<CountingResult> relevantResults = new TreeSet<CountingResult>();
+				for(CountingResult r : allResults) {
+					if(r.getMethodInvocationBeginning() == result.executionStart) {
+						relevantResults.add(r);
+					}
 				}
+				this.notifyObservers(
+						new CountingResultCompleteMethodExecutionUpdate(relevantResults));
 			}
-			this.notifyObservers(
-					new CountingResultCompleteMethodExecutionUpdate(relevantResults));
 		}
 	}
 	
@@ -226,7 +231,7 @@ public final class CountingResultCollector extends Observable {
 		SortedSet<CountingResult> ret = new TreeSet<CountingResult>();
 
 		// add the results of all strategies
-		for(AbstractCollectionStrategy s : this.collectionStrategies) {
+		for(ICollectionStrategy s : this.collectionStrategies) {
 			SortedSet<CountingResult> results = s.retrieveAllCountingResults();
 			ret.addAll(results);
 		}

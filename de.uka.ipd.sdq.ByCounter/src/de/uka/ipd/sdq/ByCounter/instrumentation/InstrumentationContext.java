@@ -8,9 +8,11 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
 
 import de.uka.ipd.sdq.ByCounter.execution.BytecodeCounter;
-import de.uka.ipd.sdq.ByCounter.parsing.BasicBlockSerialisation;
+import de.uka.ipd.sdq.ByCounter.parsing.InstructionBlockSerialisation;
 
 /**
  * This class serialises all information produced by {@link BytecodeCounter} 
@@ -27,6 +29,9 @@ public class InstrumentationContext implements Serializable {
 	 */
 	public static final String FILE_SERIALISATION_DEFAULT_NAME ="instrumentation_context.bcic";
 
+	/** Default value of {@link #getBlockCountingMode()}. */
+	private static final BlockCountingMode BLOCK_COUNTING_MODE_DEFAULT = BlockCountingMode.BasicBlocks;
+	
 	/**
 	 * Version of the serialisation.
 	 */
@@ -40,20 +45,38 @@ public class InstrumentationContext implements Serializable {
 	/**
 	 * Basic block definitions.
 	 */
-	private BasicBlockSerialisation basicBlocks;
+	private InstructionBlockSerialisation basicBlocks;
+	
+	/**
+	 * Label block definitions.
+	 */
+	private InstructionBlockSerialisation labelBlocks;
 
 	/**
 	 * Range block definitions.
 	 */
-	private BasicBlockSerialisation rangeBlocks;
+	private InstructionBlockSerialisation rangeBlocks;
+	
+	/**
+	 * Instrumentation region definitions.
+	 */
+	private Set<InstrumentationRegion> instrumentationRegions;
+	
+	/**
+	 * The mode of counting when using block based counting.
+	 */
+	private BlockCountingMode blockCountingMode;
 	
 	/**
 	 * Construct the instrumentation context.
 	 */
 	public InstrumentationContext() {
 		this.version = serialVersionUID;
-		this.basicBlocks = null;
-		this.rangeBlocks = null;
+		this.basicBlocks = new InstructionBlockSerialisation();
+		this.rangeBlocks = new InstructionBlockSerialisation();
+		this.labelBlocks = new InstructionBlockSerialisation();
+		this.instrumentationRegions = new HashSet<InstrumentationRegion>();
+		this.blockCountingMode = BLOCK_COUNTING_MODE_DEFAULT;
 	}
 	
 	private static void checkVersion(final long version) {
@@ -113,31 +136,31 @@ public class InstrumentationContext implements Serializable {
 	}
 
 	/**
-	 * @param basicBlockSerialisation Basic block definitions.
-	 */
-	public void setBasicBlocks(BasicBlockSerialisation basicBlockSerialisation) {
-		this.basicBlocks = basicBlockSerialisation;
-	}
-
-	/**
-	 * @param rangeBlockSerialisation Range block definitions.
-	 */
-	public void setRangeBlocks(BasicBlockSerialisation rangeBlockSerialisation) {
-		this.rangeBlocks = rangeBlockSerialisation;
-	}
-	
-	/**
 	 * @return Basic block definitions when set. Null otherwise.
 	 */
-	public BasicBlockSerialisation getBasicBlocks() {
+	public InstructionBlockSerialisation getBasicBlocks() {
 		return this.basicBlocks;
 	}
 	
 	/**
 	 * @return Range block definitions when set. Null otherwise.
 	 */
-	public BasicBlockSerialisation getRangeBlocks() {
+	public InstructionBlockSerialisation getRangeBlocks() {
 		return this.rangeBlocks;
+	}
+
+	/**
+	 * @return Label block definitions when set. Null otherwise.
+	 */
+	public InstructionBlockSerialisation getLabelBlocks() {
+		return this.labelBlocks;
+	}
+	
+	/**
+	 * @return Instrumentation region definitions.
+	 */
+	public Set<InstrumentationRegion> getInstrumentationRegions() {
+		return this.instrumentationRegions;
 	}
 	
 	/**
@@ -145,7 +168,7 @@ public class InstrumentationContext implements Serializable {
 	 */
 	public boolean isBasicBlocksLoaded() {
 		if(this.basicBlocks == null
-				|| this.basicBlocks.getBasicBlocksByMethod().isEmpty()) {
+				|| this.basicBlocks.getInstructionBlocksByMethod().isEmpty()) {
 			return false;
 		}
 		return true;
@@ -156,7 +179,18 @@ public class InstrumentationContext implements Serializable {
 	 */
 	public boolean isRangeBlocksLoaded() {
 		if(this.rangeBlocks == null
-				|| this.rangeBlocks.getBasicBlocksByMethod().isEmpty()) {
+				|| this.rangeBlocks.getInstructionBlocksByMethod().isEmpty()) {
+			return false;
+		}
+		return true;
+	}
+	
+	/**
+	 * @return True unless labelBlocks is null or empty.
+	 */
+	public boolean isLabelBlocksLoaded() {
+		if(this.labelBlocks == null
+				|| this.labelBlocks.getInstructionBlocksByMethod().isEmpty()) {
 			return false;
 		}
 		return true;
@@ -173,5 +207,19 @@ public class InstrumentationContext implements Serializable {
 		} catch (Exception e) {
 			throw new RuntimeException("Could not load instrumentation context from '" + iContextFile + "'.", e);
 		}
+	}
+
+	/**
+	 * @return The mode of counting when using block based counting.
+	 */
+	public BlockCountingMode getBlockCountingMode() {
+		return this.blockCountingMode;
+	}
+	
+	/**
+	 * @param blockCountingMode The mode of counting when using block based counting.
+	 */
+	public void setBlockCountingMode(BlockCountingMode blockCountingMode) {
+		this.blockCountingMode = blockCountingMode;
 	}
 }

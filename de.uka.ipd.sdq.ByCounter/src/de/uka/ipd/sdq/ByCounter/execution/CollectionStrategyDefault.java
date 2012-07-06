@@ -12,6 +12,7 @@ import java.util.UUID;
 
 import de.uka.ipd.sdq.ByCounter.instrumentation.AdditionalOpcodeInformation;
 import de.uka.ipd.sdq.ByCounter.instrumentation.BlockCountingMode;
+import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentationRegion;
 
 /**
  * This class is used in {@link CountingResultCollector} in 
@@ -47,9 +48,22 @@ public class CollectionStrategyDefault extends AbstractCollectionStrategy {
 
 	/** Indexing infrastructure for section update results. */
 	private CountingResultUpdateIndexing countingResultUpdateIndexing;
+
+	/** Indexing infrastructure for counting regions. */
+	private CountingResultRegionIndexing countingResultRegionIndexing;
 	
 	/** For each method: Last length of execution sequence. For updates. */
 	private Map<UUID, Integer> blockExecutionSequenceLengthByMethod;
+
+	/** Region that is currently counted. Is null when no region is 
+	 * active. */
+	private InstrumentationRegion currentRegion;
+
+	/**
+	 * When the instrumentation region ends, the last block needs 
+	 * to be added still.
+	 */
+	private InstrumentationRegion regionEnd;
 	
 	/**
 	 * Construct the strategy object.
@@ -61,7 +75,10 @@ public class CollectionStrategyDefault extends AbstractCollectionStrategy {
 		this.blockCalculation = new BlockResultCalculation(parentResultCollector.instrumentationContext);
 		this.countingResultIndexing = new CountingResultIndexing();
 		this.countingResultUpdateIndexing = new CountingResultUpdateIndexing();
+		this.countingResultRegionIndexing = new CountingResultRegionIndexing();
 		this.blockExecutionSequenceLengthByMethod = new HashMap<UUID, Integer>();
+		this.currentRegion = null;
+		this.regionEnd = null;
 	}
 
 	/** {@inheritDoc} */
@@ -71,6 +88,7 @@ public class CollectionStrategyDefault extends AbstractCollectionStrategy {
 		this.countingResults.clear();
 		this.countingResultIndexing.clearResults();
 		this.countingResultUpdateIndexing.clearResults();
+		this.countingResultRegionIndexing.clearResults();
 		this.blockExecutionSequenceLengthByMethod.clear();
 	}
 
@@ -144,8 +162,7 @@ public class CollectionStrategyDefault extends AbstractCollectionStrategy {
 
 	/** Add to counting results. */
 	@Override
-	public boolean protocolCount(ProtocolCountStructure result,
-			long reportingStart) {
+	public boolean protocolCount(ProtocolCountStructure result) {
 		if(result.newArrayCounts != null) {
 			// assert equal length of newarray inputs
 			if(result.newArrayCounts.length != result.newArrayDescr.length
@@ -168,10 +185,12 @@ public class CollectionStrategyDefault extends AbstractCollectionStrategy {
 					newSequence.add(result.blockExecutionSequence.get(i));
 				}
 				result.blockExecutionSequence = newSequence;
-				// consider only the last entered range block?
-				int rangeBlockIndex = result.rangeBlockExecutionSequence.get(result.rangeBlockExecutionSequence.size()-1);
-				result.rangeBlockExecutionSequence = new ArrayList<Integer>();
-				result.rangeBlockExecutionSequence.add(rangeBlockIndex);
+				if(result.blockCountingMode == BlockCountingMode.RangeBlocks) {
+					// consider only the last entered range block?
+					int rangeBlockIndex = result.rangeBlockExecutionSequence.get(result.rangeBlockExecutionSequence.size()-1);
+					result.rangeBlockExecutionSequence = new ArrayList<Integer>();
+					result.rangeBlockExecutionSequence.add(rangeBlockIndex);
+				}
 			}
 			// update length of execution sequence
 			blockExecutionSequenceLengthByMethod.put(result.ownID, newExSeqLength);
@@ -213,7 +232,7 @@ public class CollectionStrategyDefault extends AbstractCollectionStrategy {
 				0L, //input characterisation TODO document
 				0L, //output characterisation TODO document
 				result.executionStart,
-				reportingStart,
+				result.reportingStart,
 				ccounts[i].opcodeCounts, 
 				ccounts[i].methodCounts,
 				result.newArrayCounts,
@@ -225,21 +244,64 @@ public class CollectionStrategyDefault extends AbstractCollectionStrategy {
 				// set the index of the range block, i.e. the number of the section as
 				// defined by the user in the instrumentation settings. This 
 				// enables the user to find the counts for specific sections.
-				res.setIndexOfRangeBlock(ccounts[i].indexOfRangeBlock);
+				final int indexOfRangeBlock = ccounts[i].indexOfRangeBlock;
+				res.setIndexOfRangeBlock(indexOfRangeBlock);
+			} else if(result.blockCountingMode == BlockCountingMode.LabelBlocks) {
+				final int labelBlockIndex = result.blockExecutionSequence.get(result.blockExecutionSequence.size()-1);
+				for(InstrumentationRegion ir : parentResultCollector.instrumentationContext.getInstrumentationRegions()) {
+					if(ir != null) {
+						if(ir.getStartLabelIds().contains(labelBlockIndex)
+								&& result.qualifyingMethodName.equals(ir.getStartMethod().getQualifyingMethodName())) {
+							// region started
+							this.currentRegion = ir;
+							log.info("Region started: " + ir);
+						} else if(ir.getStopLabelIds().contains(labelBlockIndex)
+								&& result.qualifyingMethodName.equals(ir.getStopMethod().getQualifyingMethodName())) {
+							// region ended
+							this.regionEnd = this.currentRegion;
+							this.currentRegion = null;
+							log.info("Region ended: " + regionEnd);
+						}
+					}
+				}
 			}
+			
 			// When this result is not an update, add it to the permanent results
 			if(!(result instanceof ProtocolCountUpdateStructure)) {
-				this.countingResults.add(res);
-				
-				int nrOfCountingResults=this.countingResults.size();
-				if(nrOfCountingResults%10000==0){
-					log.warning(nrOfCountingResults+" results in ByCounter");
+				if(result.blockCountingMode != BlockCountingMode.LabelBlocks) {
+					this.countingResults.add(res);
+					
+					int nrOfCountingResults=this.countingResults.size();
+					if(nrOfCountingResults%10000==0){
+						log.warning(nrOfCountingResults+" results in ByCounter");
+					}
+			
+					this.countingResultIndexing.add(res, result.reportingStart);
+				} else {
+					return false;
 				}
-		
-				this.countingResultIndexing.add(res, reportingStart);
 			} else {
 				// result is an instance of ProtocolCountUpdateStructure
-				this.countingResultUpdateIndexing.add(res);
+
+				if(parentResultCollector.instrumentationContext.getBlockCountingMode() == BlockCountingMode.LabelBlocks) {
+					// add up for the counting region if necessary
+					if(this.currentRegion != null) {
+						this.countingResultRegionIndexing.add(res, currentRegion);
+					} else if(this.regionEnd != null) {
+						this.countingResultRegionIndexing.add(res, this.regionEnd);
+						this.regionEnd = null;
+					}
+					// make sure observers are updated
+
+					final Integer labelIndex = result.blockExecutionSequence.get(result.blockExecutionSequence.size()-1);
+					CountingResultSectionExecutionUpdate update = 
+							new CountingResultSectionExecutionUpdate(labelIndex,
+																		res);
+					CountingResultCollector.getInstance().setChanged();
+					CountingResultCollector.getInstance().notifyObservers(update);
+				} else {
+					this.countingResultUpdateIndexing.add(res);
+				}
 			}
 		}
 		return true;
@@ -268,6 +330,13 @@ public class CollectionStrategyDefault extends AbstractCollectionStrategy {
 						new long[CountingResult.MAX_OPCODE], // opcode counts
 						methodCounts)
 				};
+			}
+		} else if (result.blockCountingMode == BlockCountingMode.LabelBlocks) {//Label blocks!
+			if(result.blockExecutionSequence != null) {
+				ccounts = blockCalculation.calculateCountsFromBlockExecutionSequence(
+						result);
+			} else {
+				throw new RuntimeException("Label blocks currently only support calculation from block execution sequences.");
 			}
 		} else if (result.blockCountingMode == BlockCountingMode.RangeBlocks) {//Ranges!
 			if(result.blockExecutionSequence != null) {
@@ -363,6 +432,7 @@ public class CollectionStrategyDefault extends AbstractCollectionStrategy {
 				}
 			}
 		}
+		ret.addAll(this.countingResultRegionIndexing.retrieveAllCountingResults());
 		return ret;
 	}
 

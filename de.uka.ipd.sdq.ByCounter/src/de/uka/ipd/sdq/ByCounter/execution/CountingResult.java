@@ -1086,6 +1086,13 @@ implements Serializable, Cloneable, IFullCountingResult, Comparable<IFullCountin
 	public void setOwnID(UUID ownID) {
 		this.ownID = ownID;
 	}
+	
+	/**
+	 * @param qualifyingMethodName {@link de.uka.ipd.sdq.ByCounter.execution.IFullCountingResult#getQualifyingMethodName()}
+	 */
+	public void setQualifyingMethodName(String qualifyingMethodName) {
+		this.qualifyingMethodName = qualifyingMethodName;
+	}
 
 	/**
 	 * @param requestID the requestID to set

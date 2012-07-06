@@ -37,6 +37,8 @@ public class BlockResultCalculation {
 	private InstructionBlockDescriptor[] currentBasicBlocks;
 	/** The range blocks defined for the current method */
 	private InstructionBlockDescriptor[] currentRangeBlocks;
+	/** The label blocks defined for the current method */
+	private InstructionBlockDescriptor[] currentLabelBlocks;
 	
 	/**
 	 * New {@link BlockResultCalculation} context.
@@ -46,6 +48,9 @@ public class BlockResultCalculation {
 	public BlockResultCalculation(InstrumentationContext instrumentationContext) {
 		this.log = Logger.getLogger(this.getClass().getCanonicalName());
 		this.instrumentationContext = instrumentationContext;
+		this.currentBasicBlocks = null;
+		this.currentLabelBlocks = null;
+		this.currentRangeBlocks = null;
 	}
 	
 	/**
@@ -73,7 +78,7 @@ public class BlockResultCalculation {
 			log.fine("opcodeCounts for calculateCountsFromBBCounts: "+Arrays.toString(basicBlockExecutionCounts));
 		}
 		
-		this.loadUpdatedBlockDefinitions(qualifyingMethodName, true, false);
+		this.loadUpdatedBlockDefinitions(qualifyingMethodName, true, false, false);
 
 		CalculatedCounts counts = null;
 		counts = new CalculatedCounts();
@@ -129,7 +134,7 @@ public class BlockResultCalculation {
 			log.fine("opcodeCounts for calculateCountsFromRBCounts: "+Arrays.toString(basicBlockExecutionCounts));
 		}
 
-		this.loadUpdatedBlockDefinitions(qualifyingMethodName, true, true);
+		this.loadUpdatedBlockDefinitions(qualifyingMethodName, true, true, false);
 				
 		ArrayList<CalculatedCounts> resultList = new ArrayList<CalculatedCounts>();
 		for(InstructionBlockDescriptor currentRB  : this.currentRangeBlocks) {
@@ -150,22 +155,31 @@ public class BlockResultCalculation {
 	 * @param qualifyingMethodName Current method.
 	 * @param loadBasicBlocks False skips basic blocks.
 	 * @param loadRangeBlocks False skips range blocks.
+	 * @param loadRangeBlocks False skips label blocks.
 	 */
 	private void loadUpdatedBlockDefinitions(
 			final String qualifyingMethodName,
 			final boolean loadBasicBlocks, 
-			final boolean loadRangeBlocks) {
+			final boolean loadRangeBlocks,
+			final boolean loadLabelBlocks) {
 		instrumentationContext = InstrumentationContext.loadFromDefaultPath();
 		if(loadBasicBlocks) {
-			currentBasicBlocks = instrumentationContext.getBasicBlocks().getBasicBlocksByMethod().get(qualifyingMethodName);
+			currentBasicBlocks = instrumentationContext.getBasicBlocks().getInstructionBlocksByMethod().get(qualifyingMethodName);
 			if(currentBasicBlocks == null) {
 				throw new IllegalStateException("Could not find the basic block definition for the method '" 
 						+ qualifyingMethodName + "'");
 			}
 		}
 		if(loadRangeBlocks) {
-			currentRangeBlocks = instrumentationContext.getRangeBlocks().getBasicBlocksByMethod().get(qualifyingMethodName);
-			if(currentBasicBlocks == null) {
+			currentRangeBlocks = instrumentationContext.getRangeBlocks().getInstructionBlocksByMethod().get(qualifyingMethodName);
+			if(currentRangeBlocks == null) {
+				throw new IllegalStateException("Could not find the range block definition for the method '" 
+						+ qualifyingMethodName + "'");
+			}
+		}
+		if(loadLabelBlocks) {
+			currentLabelBlocks = instrumentationContext.getLabelBlocks().getInstructionBlocksByMethod().get(qualifyingMethodName);
+			if(currentLabelBlocks == null) {
 				throw new IllegalStateException("Could not find the range block definition for the method '" 
 						+ qualifyingMethodName + "'");
 			}
@@ -181,8 +195,9 @@ public class BlockResultCalculation {
 			final ProtocolCountStructure result) {
 		
 		this.loadUpdatedBlockDefinitions(result.qualifyingMethodName, 
-				true, 
-				result.blockCountingMode == BlockCountingMode.RangeBlocks);
+				result.blockCountingMode != BlockCountingMode.LabelBlocks, 
+				result.blockCountingMode == BlockCountingMode.RangeBlocks,
+				result.blockCountingMode == BlockCountingMode.LabelBlocks);
 		
 
 		// possibly more than one counting result per item in the sequence
@@ -197,9 +212,19 @@ public class BlockResultCalculation {
 				c.addOpcodeCounts(this.currentBasicBlocks[blockIndex].getOpcodeCounts(), 1);
 				resultCounts.add(c);
 			}
+		} else if(result.blockCountingMode == BlockCountingMode.LabelBlocks) {
+			// label blocks
+			// just add the complete label block
+			for(Integer blockIndex : result.blockExecutionSequence) {
+				CalculatedCounts c = new CalculatedCounts();
+				c.init();
+				c.addMethodCallCounts(this.currentLabelBlocks[blockIndex].getMethodCallCounts(), 1);
+				c.addOpcodeCounts(this.currentLabelBlocks[blockIndex].getOpcodeCounts(), 1);
+				resultCounts.add(c);
+			}
 		} else if(result.blockCountingMode == BlockCountingMode.RangeBlocks) {
 			// range blocks
-			Map<Integer, List<RangeBlockDescriptor>> rangeBlocksByBasicBlock = 
+			final Map<Integer, List<RangeBlockDescriptor>> rangeBlocksByBasicBlock = 
 				getRangeBlocksByBasicBlock();
 			
 			// A list of active range blocks, i.e. blocks where the currently 
@@ -228,7 +253,7 @@ public class BlockResultCalculation {
 					}
 				}
 				
-				// actually remove the rbs
+				// actually remove the range blocks from the list
 				currentRBECs.removeAll(toRemoveFromCurrentRBs);
 				
 				// 2. Find range blocks that become active
@@ -240,7 +265,7 @@ public class BlockResultCalculation {
 				
 				// find inactive range blocks that contain the new basic block
 				for(RangeBlockDescriptor rbd : rangeBlocksContainingBBblockIndex) {
-					if(!findRangeBlockDescriptor(currentRBECs, rbd)) {
+					if(!findRangeBlockDescriptorInList(currentRBECs, rbd)) {
 						// a new range block started
 						RangeBlocksBBExecutionCounts newRB = new RangeBlocksBBExecutionCounts();
 						newRB.rbd = rbd;
@@ -277,6 +302,8 @@ public class BlockResultCalculation {
 	private List<CalculatedCounts> sortResultsByRangeExecutionOrder(
 			ArrayList<CalculatedCounts> resultCounts,
 			ArrayList<Integer> rangeBlockExecutionSequence) {
+		// For region updates, there is no 1:1 mapping from results to entries 
+		// in the rangeBlockExecution sequence. Therefore use stable sorting.
 		if(resultCounts.size() < rangeBlockExecutionSequence.size()) {
 			throw new IllegalStateException("Not enough range block result results.");
 		}
@@ -310,7 +337,7 @@ public class BlockResultCalculation {
 	 * @param rbd {@link RangeBlockDescriptor} to find.
 	 * @return True when found, false otherwise.
 	 */
-	private boolean findRangeBlockDescriptor(
+	private boolean findRangeBlockDescriptorInList(
 			List<RangeBlocksBBExecutionCounts> currentRBECs,
 			RangeBlockDescriptor rbd) {
 		for(RangeBlocksBBExecutionCounts rbec : currentRBECs) {

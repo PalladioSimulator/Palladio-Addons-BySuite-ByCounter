@@ -21,8 +21,10 @@ import org.objectweb.asm.tree.TryCatchBlockNode;
 import org.objectweb.asm.tree.TypeInsnNode;
 
 import de.uka.ipd.sdq.ByCounter.instrumentation.AdditionalOpcodeInformation;
+import de.uka.ipd.sdq.ByCounter.instrumentation.BlockCountingMode;
 import de.uka.ipd.sdq.ByCounter.instrumentation.IInstructionAnalyser;
 import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentationParameters;
+import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentationRegion;
 import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentationState;
 import de.uka.ipd.sdq.ByCounter.instrumentation.MethodCountMethodAdapter;
 import de.uka.ipd.sdq.ByCounter.utils.MethodDescriptor;
@@ -55,9 +57,16 @@ public final class MethodPreInstrumentationParser extends MethodAdapter {
 	
 	private RangeBlockAnalyser rangeBlockAnalyser;
 	
+	private RegionAnalyser regionAnalyser;
+	
+	private LineNumberAnalyser lineNumberAnalyser;
+	
 	private List<IInstructionAnalyser> instructionAnalysers;
 
 	private boolean hasRangeBlocks;
+	
+	/** True when label blocks are used as opposed to range/basic blocks. */
+	private boolean useLabelBlocks;
 
 	/** Intermediate results of the instrumentation. */
 	private InstrumentationState instrumentationState;
@@ -88,24 +97,42 @@ public final class MethodPreInstrumentationParser extends MethodAdapter {
 		this.methodCountMethodAdapter = methodCountMethodAdapter;
 		this.instrumentationParameters = parameters;
 		this.instrumentationState = state;
-		this.hasRangeBlocks = method.getCodeAreasToInstrument() != null
-						&& method.getCodeAreasToInstrument().length != 0;
+		this.hasRangeBlocks = (method.getCodeAreasToInstrument() != null
+						&& method.getCodeAreasToInstrument().length != 0);
+		
+		this.useLabelBlocks = instrumentationParameters.hasInstrumentationRegionForMethod(method);
 		
 		this.instructionAnalysers = new ArrayList<IInstructionAnalyser>();
+		this.lineNumberAnalyser = new LineNumberAnalyser(method);
+		this.instructionAnalysers.add(lineNumberAnalyser);
 		if(this.instrumentationParameters.getUseBasicBlocks()) {
 //			MethodNode methodNode = (MethodNode)this.mv;
 			log.info("Analysing method for basic blocks.");
 			this.basicBlockAnalyser = new BasicBlockAnalyser(
-					MethodDescriptor._constructMethodDescriptorFromASM(owner, name, desc).getCanonicalMethodName(),
+					method.getCanonicalMethodName(),
 					this.instrumentationState);
 			this.instructionAnalysers.add(basicBlockAnalyser);
 			// are code areas specified for the method?
+			List<InstrumentationRegion> regions = this.instrumentationParameters.getInstrumentationRegions();
+			this.instrumentationState.getInstrumentationContext().setBlockCountingMode(BlockCountingMode.BasicBlocks);
 			if(hasRangeBlocks) {
 				log.info("Analysing method for range blocks.");
 				this.rangeBlockAnalyser = new RangeBlockAnalyser(
 						method, 
-						this.instrumentationState);
+						this.instrumentationState,
+						this.lineNumberAnalyser);
 				this.instructionAnalysers.add(rangeBlockAnalyser);
+				this.instrumentationState.getInstrumentationContext().setBlockCountingMode(BlockCountingMode.RangeBlocks);
+			}
+			if(useLabelBlocks) {
+				log.info("Analysing method for label blocks.");
+				this.regionAnalyser = new RegionAnalyser(
+						this.instrumentationState,
+						method, 
+						regions,
+						this.lineNumberAnalyser);
+				this.instructionAnalysers.add(regionAnalyser);
+				this.instrumentationState.getInstrumentationContext().setBlockCountingMode(BlockCountingMode.LabelBlocks);
 			}
 		}
 	}

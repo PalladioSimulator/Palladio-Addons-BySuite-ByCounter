@@ -69,10 +69,9 @@ public class CollectionStrategyWishedInlining extends
 	/**
 	 * Add to wished inlining result.
 	 * @param result The result to add.
-	 * @param reportingStart This is ignored for this strategy.
 	 */
 	@Override
-	public boolean protocolCount(ProtocolCountStructure result, long reportingStart) {
+	public boolean protocolCount(ProtocolCountStructure result) {
 		long[] opcodes = this.inlined_countingResult.getOpcodeCounts();
 		Long currOpcodeCount;
 		//can this be done without copying to save time in GC as well as memory?
