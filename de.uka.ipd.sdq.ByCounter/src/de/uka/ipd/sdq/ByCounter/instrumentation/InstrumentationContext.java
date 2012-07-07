@@ -8,10 +8,13 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import de.uka.ipd.sdq.ByCounter.execution.BytecodeCounter;
+import de.uka.ipd.sdq.ByCounter.execution.CountingMode;
 import de.uka.ipd.sdq.ByCounter.parsing.InstructionBlockSerialisation;
 
 /**
@@ -29,9 +32,6 @@ public class InstrumentationContext implements Serializable {
 	 */
 	public static final String FILE_SERIALISATION_DEFAULT_NAME ="instrumentation_context.bcic";
 
-	/** Default value of {@link #getBlockCountingMode()}. */
-	private static final BlockCountingMode BLOCK_COUNTING_MODE_DEFAULT = BlockCountingMode.BasicBlocks;
-	
 	/**
 	 * Version of the serialisation.
 	 */
@@ -63,9 +63,14 @@ public class InstrumentationContext implements Serializable {
 	private Set<InstrumentationRegion> instrumentationRegions;
 	
 	/**
-	 * The mode of counting when using block based counting.
+	 * The mode of counting when using block based counting by method.
 	 */
-	private BlockCountingMode blockCountingMode;
+	private Map<String, BlockCountingMode> blockCountingMode;
+	
+	/**
+	 * Global {@link CountingMode}
+	 */
+	private CountingMode countingMode;
 	
 	/**
 	 * Construct the instrumentation context.
@@ -76,7 +81,8 @@ public class InstrumentationContext implements Serializable {
 		this.rangeBlocks = new InstructionBlockSerialisation();
 		this.labelBlocks = new InstructionBlockSerialisation();
 		this.instrumentationRegions = new HashSet<InstrumentationRegion>();
-		this.blockCountingMode = BLOCK_COUNTING_MODE_DEFAULT;
+		this.blockCountingMode = new HashMap<String, BlockCountingMode>();
+		this.countingMode = CountingMode.Default;
 	}
 	
 	private static void checkVersion(final long version) {
@@ -210,16 +216,31 @@ public class InstrumentationContext implements Serializable {
 	}
 
 	/**
-	 * @return The mode of counting when using block based counting.
+	 * @return The mode of counting when using block based counting by method.
 	 */
-	public BlockCountingMode getBlockCountingMode() {
+	public Map<String, BlockCountingMode> getBlockCountingMode() {
 		return this.blockCountingMode;
 	}
 	
 	/**
-	 * @param blockCountingMode The mode of counting when using block based counting.
+	 * @param method Canonical method name.
+	 * @param blockCountingMode The mode of counting when using block based counting by method.
 	 */
-	public void setBlockCountingMode(BlockCountingMode blockCountingMode) {
-		this.blockCountingMode = blockCountingMode;
+	public void setBlockCountingMode(final String method, BlockCountingMode blockCountingMode) {
+		this.blockCountingMode.put(method, blockCountingMode);
+	}
+	
+	/**
+	 * @param countingMode Global {@link CountingMode}.
+	 */
+	public void setCountingMode(CountingMode countingMode) {
+		this.countingMode = countingMode;
+	}
+	
+	/**
+	 * @return Global {@link CountingMode}.
+	 */
+	public CountingMode getCountingMode() {
+		return this.countingMode;
 	}
 }

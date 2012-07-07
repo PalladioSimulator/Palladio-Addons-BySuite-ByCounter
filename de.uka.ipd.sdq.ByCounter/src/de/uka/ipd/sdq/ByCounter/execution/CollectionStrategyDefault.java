@@ -265,28 +265,34 @@ public class CollectionStrategyDefault extends AbstractCollectionStrategy {
 					}
 				}
 			}
-			
+
 			// When this result is not an update, add it to the permanent results
 			if(!(result instanceof ProtocolCountUpdateStructure)) {
 				if(result.blockCountingMode != BlockCountingMode.LabelBlocks) {
-					this.countingResults.add(res);
-					
-					int nrOfCountingResults=this.countingResults.size();
-					if(nrOfCountingResults%10000==0){
-						log.warning(nrOfCountingResults+" results in ByCounter");
+					if(this.parentResultCollector.instrumentationContext.getCountingMode() == CountingMode.Regions) {
+						if(this.currentRegion != null) {
+							this.countingResultRegionIndexing.add(res, this.currentRegion);
+						}
+					} else {
+						this.countingResults.add(res);
+						
+						int nrOfCountingResults=this.countingResults.size();
+						if(nrOfCountingResults%10000==0){
+							log.warning(nrOfCountingResults+" results in ByCounter");
+						}
+				
+						this.countingResultIndexing.add(res, result.reportingStart);
 					}
-			
-					this.countingResultIndexing.add(res, result.reportingStart);
 				} else {
 					return false;
 				}
 			} else {
 				// result is an instance of ProtocolCountUpdateStructure
 
-				if(parentResultCollector.instrumentationContext.getBlockCountingMode() == BlockCountingMode.LabelBlocks) {
+				if(this.parentResultCollector.instrumentationContext.getCountingMode() == CountingMode.Regions) {
 					// add up for the counting region if necessary
 					if(this.currentRegion != null) {
-						this.countingResultRegionIndexing.add(res, currentRegion);
+						this.countingResultRegionIndexing.add(res, this.currentRegion);
 					} else if(this.regionEnd != null) {
 						this.countingResultRegionIndexing.add(res, this.regionEnd);
 						this.regionEnd = null;

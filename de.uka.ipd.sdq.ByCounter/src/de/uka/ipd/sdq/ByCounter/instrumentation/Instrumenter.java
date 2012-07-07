@@ -12,6 +12,7 @@ import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.util.CheckClassAdapter;
 import org.objectweb.asm.util.TraceClassVisitor;
 
+import de.uka.ipd.sdq.ByCounter.execution.CountingMode;
 import de.uka.ipd.sdq.ByCounter.utils.MethodDescriptor;
 import de.uka.ipd.sdq.ByCounter.utils.PathMapper;
 
@@ -412,6 +413,11 @@ public final class Instrumenter {
 				}else{
 					String message = "SUCCESS with instrumenting \n"+
 					this.instrumentationState.getMethodsToInstrumentCalculated().get(i).toString_Linebreaks();
+					if(this.instrumentationParameters.getInstrumentationRegions().isEmpty()) {
+						this.instrumentationState.getInstrumentationContext().setCountingMode(CountingMode.Default);
+					} else {
+						this.instrumentationState.getInstrumentationContext().setCountingMode(CountingMode.Regions);
+					}
 					this.log.info(message);
 	//				String s = javax.swing.JOptionPane.showInputDialog("OK: "+message);
 				}

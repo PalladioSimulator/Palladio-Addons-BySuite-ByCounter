@@ -114,7 +114,7 @@ public final class MethodPreInstrumentationParser extends MethodAdapter {
 			this.instructionAnalysers.add(basicBlockAnalyser);
 			// are code areas specified for the method?
 			List<InstrumentationRegion> regions = this.instrumentationParameters.getInstrumentationRegions();
-			this.instrumentationState.getInstrumentationContext().setBlockCountingMode(BlockCountingMode.BasicBlocks);
+			this.instrumentationState.getInstrumentationContext().setBlockCountingMode(method.getCanonicalMethodName(), BlockCountingMode.BasicBlocks);
 			if(hasRangeBlocks) {
 				log.info("Analysing method for range blocks.");
 				this.rangeBlockAnalyser = new RangeBlockAnalyser(
@@ -122,7 +122,7 @@ public final class MethodPreInstrumentationParser extends MethodAdapter {
 						this.instrumentationState,
 						this.lineNumberAnalyser);
 				this.instructionAnalysers.add(rangeBlockAnalyser);
-				this.instrumentationState.getInstrumentationContext().setBlockCountingMode(BlockCountingMode.RangeBlocks);
+				this.instrumentationState.getInstrumentationContext().setBlockCountingMode(method.getCanonicalMethodName(), BlockCountingMode.RangeBlocks);
 			}
 			if(useLabelBlocks) {
 				log.info("Analysing method for label blocks.");
@@ -132,7 +132,7 @@ public final class MethodPreInstrumentationParser extends MethodAdapter {
 						regions,
 						this.lineNumberAnalyser);
 				this.instructionAnalysers.add(regionAnalyser);
-				this.instrumentationState.getInstrumentationContext().setBlockCountingMode(BlockCountingMode.LabelBlocks);
+				this.instrumentationState.getInstrumentationContext().setBlockCountingMode(method.getCanonicalMethodName(), BlockCountingMode.LabelBlocks);
 			}
 		}
 	}

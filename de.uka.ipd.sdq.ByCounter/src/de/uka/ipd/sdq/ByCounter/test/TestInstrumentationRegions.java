@@ -66,18 +66,20 @@ public class TestInstrumentationRegions extends AbstractByCounterTest {
 		BytecodeCounter counter = this.setupByCounter();
 		counter.getInstrumentationParams().setInstrumentRecursively(true);
 		
-//		CountingResultCollector.getInstance().addObserver(new Observer() {
-//
-//			@Override
-//			public void update(Observable crc, Object update) {
-//				CountingResultSectionExecutionUpdate u = (CountingResultSectionExecutionUpdate) update;
-//				if(u.sectionResult.getOpcodeCount(Opcodes.ICONST_0) != 0) {
-//					System.out.println(u.sectionResult.getOpcodeCount(Opcodes.ICONST_0) + "*ICONST_0");
-//				}
-//				System.out.println(update);
-//			}
-//			
-//		});
+		CountingResultCollector.getInstance().addObserver(new java.util.Observer() {
+
+			@Override
+			public void update(java.util.Observable crc, Object update) {
+				if(update instanceof de.uka.ipd.sdq.ByCounter.execution.CountingResultSectionExecutionUpdate) {
+					de.uka.ipd.sdq.ByCounter.execution.CountingResultSectionExecutionUpdate u = (de.uka.ipd.sdq.ByCounter.execution.CountingResultSectionExecutionUpdate) update;
+					if(u.sectionResult.getOpcodeCount(Opcodes.ICONST_0) != 0) {
+						System.out.println(u.sectionResult.getOpcodeCount(Opcodes.ICONST_0) + "*ICONST_0");
+					}
+				}
+				System.out.println(update);
+			}
+			
+		});
 		
 		InstrumentationRegion r1 = new InstrumentationRegion(
 				methodStart, 112, 
@@ -85,21 +87,30 @@ public class TestInstrumentationRegions extends AbstractByCounterTest {
 		counter.getInstrumentationParams().getInstrumentationRegions().add(r1);
 
 		// expectations is the sum of the opcodes in the different methods.
+		// TODO: document where values come from
 		Expectation expectation = new Expectation();
-		expectation.add().add(Opcodes.ALOAD, 2)
-						 .add(Opcodes.ICONST_1, 1)
-						 .add(Opcodes.FCONST_2, 1)
-						 .add(Opcodes.LDC, 1)
-						 .add(Opcodes.IFEQ, 1)
-						 .add(Opcodes.ICONST_2, 1)
-						 .add(Opcodes.ISTORE, 3)
-						 .add(Opcodes.ICONST_0, 2)
-						 .add(Opcodes.POP, 1)
-						 .add(Opcodes.INVOKEVIRTUAL, 2)
+		expectation.add().add(Opcodes.ALOAD, 2)		// methodCallTest():1x
+						 .add(Opcodes.ICONST_1, 1+1)// methodCallTest():1x, parameterTest(..):1x
+						 .add(Opcodes.FCONST_2, 1)	// methodCallTest():1x
+						 .add(Opcodes.LDC, 1)		// methodCallTest():1x
+						 .add(Opcodes.IFEQ, 1)		// methodCallTest():1x
+						 .add(Opcodes.ICONST_2, 1)	// methodCallTest():1x
+						 .add(Opcodes.ISTORE, 1+2+5)// methodCallTest():1x, loopTest():2x, parameterTest(..):5x
+						 .add(Opcodes.ICONST_0, 2)	// loopTest():2x
+						 .add(Opcodes.POP, 1)		// TODO: this is after invoke virtual: don't count?
+						 .add(Opcodes.INVOKEVIRTUAL, 2) // methodCallTest():2x
+						 .add(Opcodes.BIPUSH, 6)	// parameterTest(..):6x
+						 .add(Opcodes.FLOAD, 1)		// parameterTest(..):1x
+						 .add(Opcodes.ILOAD, 1)		// parameterTest(..):1x
+						 .add(Opcodes.IADD, 1)		// parameterTest(..):1x
+						 .add(Opcodes.I2F, 1)		// parameterTest(..):1x
+						 .add(Opcodes.FMUL, 1)		// parameterTest(..):1x
+						 .add(Opcodes.FSTORE, 1)	// parameterTest(..):1x
+						 .add(Opcodes.IRETURN, 1)	// parameterTest(..):1x
 						 .add(mdParameterTest.getCanonicalMethodName(), 1)
 						 .add(methodStop.getCanonicalMethodName(), 1);
 		
-		counter.instrument(methodStop);
+		counter.instrument(methodStart);
 		
 		Object[] executionParameters = new Object[0];
 		counter.execute(methodStart, executionParameters);
@@ -108,9 +119,9 @@ public class TestInstrumentationRegions extends AbstractByCounterTest {
         
         // print ByCounter results
         CountingResult[] results = countingResults.toArray(new CountingResult[0]);
-//        for (CountingResult r : results) {
-//        	r.logResult(false, true);
-//        }
+        for (CountingResult r : results) {
+        	r.logResult(false, true);
+        }
         expectation.compare(results);
         CountingResultCollector.getInstance().clearResults();
     }

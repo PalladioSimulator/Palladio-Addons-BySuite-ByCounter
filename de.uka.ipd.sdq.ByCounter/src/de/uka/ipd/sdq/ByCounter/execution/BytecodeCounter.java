@@ -19,7 +19,6 @@ import java.util.logging.Logger;
 
 import org.objectweb.asm.ClassReader;
 
-import de.uka.ipd.sdq.ByCounter.instrumentation.BlockCountingMode;
 import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentationContext;
 import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentationParameters;
 import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentationRegion;
@@ -757,13 +756,13 @@ public final class BytecodeCounter {
 			// print all basic blocks
 			InstructionBlockSerialisation loaded;
 
-			if(this.instrumentationState.getInstrumentationContext().getBlockCountingMode() == BlockCountingMode.LabelBlocks) {
-				loaded = iContext.getLabelBlocks();
-				if(loaded != null) {
-					log.info("Label blocks:");
-					loaded.printInstructionBlocks(log);
-				}
-			} else if(this.instrumentationParameters.getUseBasicBlocks()) {
+			
+			loaded = iContext.getLabelBlocks();
+			if(loaded != null) {
+				log.info("Label blocks:");
+				loaded.printInstructionBlocks(log);
+			}
+			if(this.instrumentationParameters.getUseBasicBlocks()) {
 				loaded = iContext.getBasicBlocks();
 				if(loaded != null) {
 					log.info("Basic blocks:");

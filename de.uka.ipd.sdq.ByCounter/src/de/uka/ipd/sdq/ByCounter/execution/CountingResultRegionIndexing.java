@@ -59,7 +59,7 @@ public class CountingResultRegionIndexing implements ICollectionStrategy {
 			while(iter.hasNext()) {
 				irResult.add(iter.next());
 			}
-			irResult.setQualifyingMethodName(ir.toString());
+//			irResult.setQualifyingMethodName(ir.toString());
 			addedResults.add(irResult);
 		}
 		return addedResults;
