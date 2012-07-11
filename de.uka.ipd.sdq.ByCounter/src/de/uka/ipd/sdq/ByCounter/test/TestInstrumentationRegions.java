@@ -4,6 +4,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.SortedSet;
 
+import junit.framework.Assert;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -90,7 +92,6 @@ public class TestInstrumentationRegions extends AbstractByCounterTest {
 		counter.getInstrumentationParams().getInstrumentationRegions().add(r1);
 
 		// expectations is the sum of the opcodes in the different methods.
-		// TODO: document where values come from
 		Expectation expectation = new Expectation();
 		expectation.add().add(Opcodes.ALOAD, 2)		// methodCallTest():1x
 						 .add(Opcodes.ICONST_1, 1+1)// methodCallTest():1x, parameterTest(..):1x
@@ -159,6 +160,56 @@ public class TestInstrumentationRegions extends AbstractByCounterTest {
         // compare
         e.compare(results);
 	}
+	
+
+	/**
+	 * Tests feeding ByCounter with incompatible instrumentation parameters.
+	 * Also tells ByCounter to instrument a single line in a method.
+	 */
+	@Test
+	public void testBadInstrumentationParameters() {
+		// define expectations
+		Expectation e = new Expectation();
+		e.add().add(Opcodes.ICONST_0, 1)
+			   .add(Opcodes.ISTORE, 1);
+        // run ByCounter
+		String canonicalClassName = ExecutionOrder.class.getCanonicalName();
+		String methodSignature = "void process()";
+        MethodDescriptor methodRanged = new MethodDescriptor(canonicalClassName, methodSignature);
+		InstrumentationRegion region = new InstrumentationRegion(methodRanged, 15, methodRanged, 15);
+
+		// initialise
+        BytecodeCounter counter = setupByCounter();
+        // set up illegal parameters
+        
+        // try no basic blocks
+        counter.getInstrumentationParams().setUseBasicBlocks(false);
+        List<InstrumentationRegion> instrumentationRegions = new LinkedList<InstrumentationRegion>();
+        instrumentationRegions.add(region);
+		counter.getInstrumentationParams().setInstrumentationRegions(instrumentationRegions);
+		// try to instrument
+		boolean exceptionThrown = false;
+		try {
+			counter.instrument(methodRanged);
+		} catch(IllegalArgumentException iae) {
+			exceptionThrown = true;
+		}
+		Assert.assertTrue(exceptionThrown);
+		counter.getInstrumentationParams().setUseBasicBlocks(true);
+        
+		// try no online updates
+		counter.getInstrumentationParams().setProvideOnlineSectionExecutionUpdates(false);
+		exceptionThrown = false;
+		try {
+			counter.instrument(methodRanged);
+		} catch(IllegalArgumentException iae) {
+			exceptionThrown = true;
+		}
+		Assert.assertTrue(exceptionThrown);
+		counter.getInstrumentationParams().setProvideOnlineSectionExecutionUpdates(true);
+        
+	}
+	
 	
     
     @Override

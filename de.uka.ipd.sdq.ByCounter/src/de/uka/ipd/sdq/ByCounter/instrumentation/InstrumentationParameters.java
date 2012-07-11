@@ -19,6 +19,7 @@ import de.uka.ipd.sdq.ByCounter.utils.MethodDescriptor;
  * <li>{@link #setWriteClassesToDiskDirectory(File)} only applies if {@link #getWriteClassesToDisk()} == true</li>
  * <li>{@link #setRecordBlockExecutionOrder(boolean)} only applies if either range blocks or basic blocks are used, i.e. if {@link #getUseBasicBlocks()} == true</li>
  * <li>{@link #setUseArrayParameterRecording(boolean)} is currently only supported when not using basic/range blocks.</li>
+ * <li>Instrumentation regions ({@link #getInstrumentationRegions()}) only work with {@link #getUseBasicBlocks()} == true and {@link #getProvideOnlineSectionExecutionUpdates()} == true</li>
  * </ul>
  * </p>
  * 
@@ -813,5 +814,33 @@ public final class InstrumentationParameters implements Cloneable {
 			}
 		}
 		return false;
+	}
+
+	/**
+	 * Check the different parameters for consistency.
+	 * @throws IllegalArgumentException if two or more parameters are 
+	 * conflicting.
+	 */
+	public void verify() throws IllegalArgumentException {
+		if(this.instrumentationRegions != null
+				&& !this.instrumentationRegions.isEmpty()) {
+			// dealing with instrumentation regions
+			if(this.useBasicBlocks == false) {
+				throw new IllegalArgumentException("useBasicBlocks must be true when specifying instrumentation regions.");
+			}
+			if(this.provideOnlineSectionExecutionUpdates == false) {
+				throw new IllegalArgumentException("provideOnlineSectionExecutionUpdates must be true when specifying instrumentation regions.");
+			}
+		}
+		if(this.provideOnlineSectionExecutionUpdates) {
+			if(!this.useBasicBlocks) {
+				throw new IllegalArgumentException("Online section execution updates are only supported with useBasicBlocks=true.");
+			}
+		}
+		if(this.useArrayParameterRecording) {
+			if(this.useBasicBlocks) {
+				throw new IllegalArgumentException("Array parameter recording is only supported with useBasicBlocks=false.");
+			}
+		}
 	}
 }

@@ -313,6 +313,9 @@ public final class Instrumenter {
 			(this.instrumentationParameters.getInstrumentationScopeOverrideClassLevel() 
 			== InstrumentationScopeModeEnum.InstrumentEverything);
 		
+		// check the parameter setup
+		this.instrumentationParameters.verify();
+		
 		MethodCountClassAdapter mcca = ((MethodCountClassAdapter) this.classAdapter); 
 		
 		// no methods instrumented yet; set that status
