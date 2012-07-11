@@ -992,7 +992,6 @@ public final class MethodCountClassAdapter extends ClassAdapter {
 						instrumentationState,
 						currentMethod);
 				mv = this.methodCountMethodAdapter;
-//				mv = new LabelAndLineNumberMethodAdapter(mv);
 				
 				// call the methodStart hooks
 				for(ICharacterisationHook hooks : characterisationHooks) {

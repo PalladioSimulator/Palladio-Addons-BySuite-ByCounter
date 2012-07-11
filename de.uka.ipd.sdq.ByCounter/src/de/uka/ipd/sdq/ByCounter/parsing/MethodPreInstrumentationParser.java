@@ -62,11 +62,13 @@ public final class MethodPreInstrumentationParser extends MethodAdapter {
 	private LineNumberAnalyser lineNumberAnalyser;
 	
 	private List<IInstructionAnalyser> instructionAnalysers;
+	
+	private LabelAfterInvokeAnalyser labelAfterInvokeAnalyser;
 
 	private boolean hasRangeBlocks;
 	
 	/** True when label blocks are used as opposed to range/basic blocks. */
-	private boolean useLabelBlocks;
+	private boolean useRegions;
 
 	/** Intermediate results of the instrumentation. */
 	private InstrumentationState instrumentationState;
@@ -100,7 +102,7 @@ public final class MethodPreInstrumentationParser extends MethodAdapter {
 		this.hasRangeBlocks = (method.getCodeAreasToInstrument() != null
 						&& method.getCodeAreasToInstrument().length != 0);
 		
-		this.useLabelBlocks = instrumentationParameters.hasInstrumentationRegionForMethod(method);
+		this.useRegions = instrumentationParameters.hasInstrumentationRegionForMethod(method);
 		
 		this.instructionAnalysers = new ArrayList<IInstructionAnalyser>();
 		this.lineNumberAnalyser = new LineNumberAnalyser(method);
@@ -112,8 +114,6 @@ public final class MethodPreInstrumentationParser extends MethodAdapter {
 					method.getCanonicalMethodName(),
 					this.instrumentationState);
 			this.instructionAnalysers.add(basicBlockAnalyser);
-			// are code areas specified for the method?
-			List<InstrumentationRegion> regions = this.instrumentationParameters.getInstrumentationRegions();
 			this.instrumentationState.getInstrumentationContext().setBlockCountingMode(method.getCanonicalMethodName(), BlockCountingMode.BasicBlocks);
 			if(hasRangeBlocks) {
 				log.info("Analysing method for range blocks.");
@@ -124,8 +124,11 @@ public final class MethodPreInstrumentationParser extends MethodAdapter {
 				this.instructionAnalysers.add(rangeBlockAnalyser);
 				this.instrumentationState.getInstrumentationContext().setBlockCountingMode(method.getCanonicalMethodName(), BlockCountingMode.RangeBlocks);
 			}
-			if(useLabelBlocks) {
+			// are code areas specified for the method?
+			List<InstrumentationRegion> regions = this.instrumentationParameters.getInstrumentationRegions();
+			if(useRegions) {
 				log.info("Analysing method for label blocks.");
+				this.labelAfterInvokeAnalyser = new LabelAfterInvokeAnalyser();
 				this.regionAnalyser = new RegionAnalyser(
 						this.instrumentationState,
 						method, 
@@ -161,6 +164,10 @@ public final class MethodPreInstrumentationParser extends MethodAdapter {
 		// Use a MethodNode to analyse all instructions in the method
 		MethodNode mn = (MethodNode) this.mv;
 
+		if(this.useRegions) {			
+			this.labelAfterInvokeAnalyser.postAnalysisEvent(mn.instructions);
+		}
+		
 		{			
 			Iterator<AbstractInsnNode> iterator = mn.instructions.iterator();
 			while(iterator.hasNext()) {

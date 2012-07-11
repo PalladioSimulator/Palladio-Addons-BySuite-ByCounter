@@ -97,7 +97,6 @@ public class TestInstrumentationRegions extends AbstractByCounterTest {
 						 .add(Opcodes.ICONST_2, 1)	// methodCallTest():1x
 						 .add(Opcodes.ISTORE, 1+2+5)// methodCallTest():1x, loopTest():2x, parameterTest(..):5x
 						 .add(Opcodes.ICONST_0, 2)	// loopTest():2x
-						 .add(Opcodes.POP, 1)		// TODO: this is after invoke virtual: don't count?
 						 .add(Opcodes.INVOKEVIRTUAL, 2) // methodCallTest():2x
 						 .add(Opcodes.BIPUSH, 6)	// parameterTest(..):6x
 						 .add(Opcodes.FLOAD, 1)		// parameterTest(..):1x

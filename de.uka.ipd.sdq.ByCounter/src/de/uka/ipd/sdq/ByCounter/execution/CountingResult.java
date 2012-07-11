@@ -390,7 +390,7 @@ implements Serializable, Cloneable, IFullCountingResult, Comparable<IFullCountin
 
 	/**
 	 * The timestamp which marks the beginning of execution (i.e. run)
-	 * of the method for which this CountingResult holds bytecode counts
+	 * of the method for which this CountingResult holds bytecode counts.
 	 */
 	private long methodInvocationBeginning;
 
@@ -402,14 +402,14 @@ implements Serializable, Cloneable, IFullCountingResult, Comparable<IFullCountin
 	private long methodReportingTime;
 
 	/**
-	 * This Map contains the counts of elementary bytecode instructions
-	 * TODO this is highly inefficient (even for sparse arrays!) due to boxing and unboxing --> go back to arrays!
+	 * This array contains the counts of elementary bytecode instructions.
+	 * The array index equals the opcode of the instruction.
 	 */
 	private long[] opcodeCounts;
 	
 	/**
 	 * For example, for SPECjvm2008.Compress, this is the size of the
-	 * buffer which holds the compressed data of the input file
+	 * buffer which holds the compressed data of the input file.
 	 */
 	private long outputCharacterisation=0;
 
