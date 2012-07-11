@@ -255,7 +255,9 @@ public class CollectionStrategyDefault extends AbstractCollectionStrategy {
 							// region started
 							this.currentRegion = ir;
 							log.info("Region started: " + ir);
-						} else if(ir.getStopLabelIds().contains(labelBlockIndex)
+						}
+						// this is not the else case if the region is a single line
+						if(ir.getStopLabelIds().contains(labelBlockIndex)
 								&& result.qualifyingMethodName.equals(ir.getStopMethod().getQualifyingMethodName())) {
 							// region ended
 							this.regionEnd = this.currentRegion;

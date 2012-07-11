@@ -1,5 +1,7 @@
 package de.uka.ipd.sdq.ByCounter.test;
 
+import java.util.LinkedList;
+import java.util.List;
 import java.util.SortedSet;
 
 import org.junit.Test;
@@ -14,6 +16,7 @@ import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentationParameters;
 import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentationRegion;
 import de.uka.ipd.sdq.ByCounter.test.framework.expectations.Expectation;
 import de.uka.ipd.sdq.ByCounter.test.helpers.TestSubject;
+import de.uka.ipd.sdq.ByCounter.test.helpers.subjects.ExecutionOrder;
 import de.uka.ipd.sdq.ByCounter.utils.MethodDescriptor;
 
 /**
@@ -124,6 +127,39 @@ public class TestInstrumentationRegions extends AbstractByCounterTest {
         expectation.compare(results);
         CountingResultCollector.getInstance().clearResults();
     }
+    
+
+	/**
+	 * Tests if instrumentation of a single line works correctly.
+	 */
+	@Test
+	public void testSingleLineInstrumentation() {
+		// define expectations
+		Expectation e = new Expectation();
+		e.add().add(Opcodes.ICONST_0, 1)
+			   .add(Opcodes.ISTORE, 1);
+        // run ByCounter
+		String canonicalClassName = ExecutionOrder.class.getCanonicalName();
+		String methodSignature = "void process()";
+        MethodDescriptor methodRanged = new MethodDescriptor(canonicalClassName, methodSignature);
+		InstrumentationRegion region = new InstrumentationRegion(methodRanged, 15, methodRanged, 15);
+
+		// initialise
+        BytecodeCounter counter = setupByCounter();
+        List<InstrumentationRegion> instrumentationRegions = new LinkedList<InstrumentationRegion>();
+        instrumentationRegions.add(region);
+		counter.getInstrumentationParams().setInstrumentationRegions(instrumentationRegions);
+        counter.instrument(methodRanged);
+        counter.execute(methodRanged, new Object[0]);
+
+        CountingResult[] results = CountingResultCollector.getInstance().retrieveAllCountingResults().toArray(new CountingResult[0]);
+        for (CountingResult r : results) {
+        	r.logResult(false, true);
+        }
+        // compare
+        e.compare(results);
+	}
+	
     
     @Override
     protected BytecodeCounter setupByCounter() {
