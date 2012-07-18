@@ -7,10 +7,10 @@ import java.util.logging.Logger;
 
 import de.uka.ipd.sdq.ByCounter.execution.CollectionStrategyDefault;
 import de.uka.ipd.sdq.ByCounter.execution.CountingArtefactInformation;
-import de.uka.ipd.sdq.ByCounter.execution.CountingResult;
 import de.uka.ipd.sdq.ByCounter.execution.CountingResultCollector;
 import de.uka.ipd.sdq.ByCounter.execution.IFullCountingResult;
 import de.uka.ipd.sdq.ByCounter.execution.ProtocolCountStructure;
+import de.uka.ipd.sdq.ByCounter.results.CountingResult;
 
 /**
  * This class is not meant for standard ByCounter instrumentation - 

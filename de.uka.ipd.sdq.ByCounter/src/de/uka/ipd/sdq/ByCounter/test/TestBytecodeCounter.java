@@ -16,11 +16,11 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
 import de.uka.ipd.sdq.ByCounter.execution.BytecodeCounter;
-import de.uka.ipd.sdq.ByCounter.execution.CountingResult;
 import de.uka.ipd.sdq.ByCounter.execution.CountingResultCollector;
 import de.uka.ipd.sdq.ByCounter.instrumentation.AlreadyInstrumentedException;
 import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentationParameters;
 import de.uka.ipd.sdq.ByCounter.instrumentation.Instrumenter;
+import de.uka.ipd.sdq.ByCounter.results.CountingResult;
 import de.uka.ipd.sdq.ByCounter.test.helpers.ASMBytecodeOccurences;
 import de.uka.ipd.sdq.ByCounter.test.helpers.TestSubject;
 import de.uka.ipd.sdq.ByCounter.test.helpers.TestSubjectInterfaceMethods;
@@ -123,10 +123,9 @@ public class TestBytecodeCounter extends AbstractByCounterTest {
 		Assert.assertNotNull(resultColl);
 		
 		// create a BytecodeCounter
-		BytecodeCounter counter = new BytecodeCounter();
+		BytecodeCounter counter = setupByCounter();
 		Assert.assertNotNull(counter);
 		counter.setClassToInstrument(bytes);
-		counter.setInstrumentationParams(this.instrumentationParameters);
 		
 		// do the de.uka.ipd.sdq.ByCount
 		// let the counter do its work on a method
@@ -137,7 +136,7 @@ public class TestBytecodeCounter extends AbstractByCounterTest {
 		
 		Assert.assertNotNull(resultColl.retrieveAllCountingResults());
 		// print the results into the log
-		for(CountingResult r : resultColl.retrieveAllCountingResults()) {
+		for(CountingResult r : resultColl.retrieveAllCountingResults().getCountingResults()) {
 			Assert.assertNotSame(r.getOpcodeCounts().length, 0);
 			r.logResult(false, true);
 		}
@@ -154,8 +153,7 @@ public class TestBytecodeCounter extends AbstractByCounterTest {
 	 */
 	@Test
 	public void testCallingTreeResults() {
-		BytecodeCounter counter = new BytecodeCounter();
-		counter.setInstrumentationParams(this.instrumentationParameters);
+		BytecodeCounter counter = setupByCounter();
 		// instrument the methodCallTest
 		// flat results
 		MethodDescriptor methodDescriptorMCT = 
@@ -179,7 +177,7 @@ public class TestBytecodeCounter extends AbstractByCounterTest {
 		counter.execute(methodDescriptorMCT, new Object[0]);
 
 		CountingResult[] countingResults = 
-			CountingResultCollector.getInstance().retrieveAllCountingResults().toArray(new CountingResult[0]);
+			CountingResultCollector.getInstance().retrieveAllCountingResults().getCountingResults().toArray(new CountingResult[0]);
 		Assert.assertTrue("Could not get any counting results.", countingResults.length > 0);
 		CountingResult r1 = countingResults[countingResults.length-1];	// last is methodCallTest
 		r1.logResult(false, true);
@@ -188,7 +186,7 @@ public class TestBytecodeCounter extends AbstractByCounterTest {
 		counter.getExecutionSettings().setAddUpResultsRecursively(true);
 		counter.execute(methodDescriptorMCT, new Object[0]);
 		
-		countingResults = CountingResultCollector.getInstance().retrieveAllCountingResults().toArray(new CountingResult[0]);
+		countingResults = CountingResultCollector.getInstance().retrieveAllCountingResults().getCountingResults().toArray(new CountingResult[0]);
 		CountingResult r2 = countingResults[countingResults.length-1];
 		r2.logResult(false, true);
 	}
@@ -199,9 +197,8 @@ public class TestBytecodeCounter extends AbstractByCounterTest {
 	@Test
 	public void testDirectResultWriting() {
 		// create a BytecodeCounter
-		BytecodeCounter counter = new BytecodeCounter();
+		BytecodeCounter counter = setupByCounter();
 		Assert.assertNotNull(counter);
-		counter.setInstrumentationParams(this.instrumentationParameters);
 		
 		// disable usage of result collector
 		Assert.assertNotNull(counter.getInstrumentationParams());
@@ -238,7 +235,7 @@ public class TestBytecodeCounter extends AbstractByCounterTest {
 	@Test
 	public void testGenerateCallTree() {
 		//1. Set up a BytecodeCounter instance to use ByCounter, using a parameterless constructor. 
-		BytecodeCounter counter = new BytecodeCounter();
+		BytecodeCounter counter = setupByCounter();
 
 		//2. Specify the method to be instrumented (several methods are supported as well)
 		MethodDescriptor myMethod = new MethodDescriptor(
@@ -253,7 +250,7 @@ public class TestBytecodeCounter extends AbstractByCounterTest {
 		counter.getExecutionSettings().setAddUpResultsRecursively(true);
 		counter.execute(myMethod, new Object[0]);
 
-		SortedSet<CountingResult> countingResults = CountingResultCollector.getInstance().retrieveAllCountingResults();
+		SortedSet<CountingResult> countingResults = CountingResultCollector.getInstance().retrieveAllCountingResults().getCountingResults();
 		Assert.assertNotNull(countingResults);
 		Assert.assertTrue(countingResults.size() == 1);
 		for(CountingResult newResult : countingResults) {
@@ -267,7 +264,7 @@ public class TestBytecodeCounter extends AbstractByCounterTest {
 	@Test
 	public void testInstrumentAll() {
 		//1. Set up a BytecodeCounter instance to use ByCounter, using a parameterless constructor. 
-		BytecodeCounter counter = new BytecodeCounter();
+		BytecodeCounter counter = setupByCounter();
 		
 		//2. now tell ByCounter to instrument all methods
 		counter.instrumentAllInClass(TestSubject.class.getCanonicalName(), new String[0], true);
@@ -276,10 +273,10 @@ public class TestBytecodeCounter extends AbstractByCounterTest {
 		MethodDescriptor myMethod = new MethodDescriptor(
 				testClass.getCanonicalName(),
 				testClassMethodCallTest);
-		counter.getExecutionSettings().setAddUpResultsRecursively(true);
+		counter.getExecutionSettings().setAddUpResultsRecursively(false);
 		counter.execute(myMethod, new Object[0]);
 
-		SortedSet<CountingResult> countingResults = CountingResultCollector.getInstance().retrieveAllCountingResults();
+		SortedSet<CountingResult> countingResults = CountingResultCollector.getInstance().retrieveAllCountingResults().getCountingResults();
 		Assert.assertNotNull(countingResults);
 		Assert.assertTrue(countingResults.size() > 1);
 		for(CountingResult newResult: countingResults) {
@@ -405,7 +402,7 @@ public class TestBytecodeCounter extends AbstractByCounterTest {
 		counter.getExecutionSettings().setAddUpResultsRecursively(true);
 		counter.execute(myMethod, new Object[0]);
 
-		SortedSet<CountingResult> allCountingResultsRecursively = CountingResultCollector.getInstance().retrieveAllCountingResults();
+		SortedSet<CountingResult> allCountingResultsRecursively = CountingResultCollector.getInstance().retrieveAllCountingResults().getCountingResults();
 		Assert.assertNotNull(allCountingResultsRecursively);
 		allCountingResultsRecursively.first().logResult(false, false);
 		Assert.assertTrue("One counting result is expected.", allCountingResultsRecursively.size() == 1);
@@ -437,7 +434,7 @@ public class TestBytecodeCounter extends AbstractByCounterTest {
 		counter.getExecutionSettings().setAddUpResultsRecursively(true);
 		counter.execute(myMethod, new Object[]{new String[0]});
 
-		SortedSet<CountingResult> allCountingResultsRecursively = CountingResultCollector.getInstance().retrieveAllCountingResults();
+		SortedSet<CountingResult> allCountingResultsRecursively = CountingResultCollector.getInstance().retrieveAllCountingResults().getCountingResults();
 		Assert.assertNotNull(allCountingResultsRecursively);
 		for(CountingResult newResult: allCountingResultsRecursively) {
 			newResult.logResult(false, true);

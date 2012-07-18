@@ -7,7 +7,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.logging.Logger;
 
-import de.uka.ipd.sdq.ByCounter.execution.CountingResult;
+import de.uka.ipd.sdq.ByCounter.execution.CountingResultBase;
 
 public class CountingResultPersistance {
 	
@@ -18,9 +18,9 @@ public class CountingResultPersistance {
 	
 	private static Logger log = Logger.getLogger(CountingResultPersistance.class.getCanonicalName());
 	
-	public static CountingResult deserialiseCountingResult(
+	public static CountingResultBase deserialiseCountingResult(
 			String path){
-		CountingResult ret = null;
+		CountingResultBase ret = null;
 		if(path==null){
 			log.severe("Null path passed - skipping seralization");
 			return null;
@@ -43,8 +43,8 @@ public class CountingResultPersistance {
 			fis = new FileInputStream(file);
 			ObjectInputStream ois = new ObjectInputStream(fis);
 			Object readObj = ois.readObject();
-			if(readObj instanceof CountingResult){
-				ret = (CountingResult) readObj;
+			if(readObj instanceof CountingResultBase){
+				ret = (CountingResultBase) readObj;
 			}else{
 				log.severe("Read serialized object, but it is not a CountingResult ...");
 				return null;
@@ -70,7 +70,7 @@ public class CountingResultPersistance {
 	 * @return Canonical path where the serialised result is written.
 	 */
 	public static String serialiseCountingResult(
-			CountingResult cr) {
+			CountingResultBase cr) {
 		return serialiseCountingResult(
 				cr, 
 				DEFAULT_RESULTS_DIRECTORY,
@@ -92,7 +92,7 @@ public class CountingResultPersistance {
 	 * @return Canonical path where the serialised result is written.
 	 */
 	public static String serialiseCountingResult(
-			CountingResult cr, 
+			CountingResultBase cr, 
 			String nameCore, 
 			Long timestamp) {
 		return serialiseCountingResult(
@@ -109,7 +109,7 @@ public class CountingResultPersistance {
 	}
 
 	public static String serialiseCountingResult(
-					CountingResult cr, 
+					CountingResultBase cr, 
 					String directory,
 					String nameCore,
 					String suffix, 

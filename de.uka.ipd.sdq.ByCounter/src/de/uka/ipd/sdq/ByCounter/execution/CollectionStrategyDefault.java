@@ -3,6 +3,8 @@ package de.uka.ipd.sdq.ByCounter.execution;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
 import java.util.SortedSet;
@@ -13,6 +15,10 @@ import java.util.UUID;
 import de.uka.ipd.sdq.ByCounter.instrumentation.AdditionalOpcodeInformation;
 import de.uka.ipd.sdq.ByCounter.instrumentation.BlockCountingMode;
 import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentationRegion;
+import de.uka.ipd.sdq.ByCounter.parsing.LineNumberRange;
+import de.uka.ipd.sdq.ByCounter.results.CountingResult;
+import de.uka.ipd.sdq.ByCounter.results.RequestResult;
+import de.uka.ipd.sdq.ByCounter.results.ResultCollection;
 
 /**
  * This class is used in {@link CountingResultCollector} in 
@@ -215,30 +221,19 @@ public class CollectionStrategyDefault extends AbstractCollectionStrategy {
 				newArrayDim = r.newArrayDim;
 			}
 	
-			CountingResult res = new CountingResult(
-					result.requestID,
-					result.ownID,
-					result.callerID,
-					/*executionStart,
-					qualifyingMethodName,
-					filteredCounts,
-					methodCounts,
-					newArrayCounts,
-					newArrayDim,
-					newArrayType*/
-					result.qualifyingMethodName, //TODO fix it --> Martin; vgl. javadocs zu CountingResult
-					result.qualifyingMethodName,
-				0, //filetype TODO document
-				0L, //input characterisation TODO document
-				0L, //output characterisation TODO document
-				result.executionStart,
-				result.reportingStart,
-				ccounts[i].opcodeCounts, 
-				ccounts[i].methodCounts,
-				result.newArrayCounts,
-				newArrayDim,
-				newArrayType
-				);
+			CountingResult res = new CountingResult();
+			res.setRequestID(result.requestID);
+			res.setOwnID(result.ownID);
+			res.setCallerID(result.callerID);
+			res.setID(result.qualifyingMethodName); //TODO fix it --> Martin; vgl. javadocs zu CountingResult
+			res.setQualifyingMethodName(result.qualifyingMethodName);
+			res.setMethodInvocationBeginning(result.executionStart);
+			res.setMethodReportingTime(result.reportingStart);
+			res.setOpcodeCounts(ccounts[i].opcodeCounts);
+			res.overwriteMethodCallCounts(ccounts[i].methodCounts);
+			res.setArrayCreationCounts(result.newArrayCounts);
+			res.setArrayCreationDimensions(newArrayDim);
+			res.setArrayCreationTypeInfo(newArrayType);
 			res.setThreadId(Thread.currentThread().getId());
 			if(result.blockCountingMode == BlockCountingMode.RangeBlocks) {
 				// set the index of the range block, i.e. the number of the section as
@@ -246,6 +241,11 @@ public class CollectionStrategyDefault extends AbstractCollectionStrategy {
 				// enables the user to find the counts for specific sections.
 				final int indexOfRangeBlock = ccounts[i].indexOfRangeBlock;
 				res.setIndexOfRangeBlock(indexOfRangeBlock);
+				
+				LineNumberRange observedRange = 
+						this.parentResultCollector.instrumentationContext.getRangesByMethod().get(
+								result.qualifyingMethodName)[indexOfRangeBlock];
+				res.setObservedElement(observedRange);
 			} else if(result.blockCountingMode == BlockCountingMode.LabelBlocks) {
 				final int labelBlockIndex = result.blockExecutionSequence.get(result.blockExecutionSequence.size()-1);
 				for(InstrumentationRegion ir : parentResultCollector.instrumentationContext.getInstrumentationRegions()) {
@@ -335,7 +335,7 @@ public class CollectionStrategyDefault extends AbstractCollectionStrategy {
 						blockCalculation.calculateCountsFromBBCounts(
 						result.qualifyingMethodName, 
 						result.opcodeCounts,
-						new long[CountingResult.MAX_OPCODE], // opcode counts
+						new long[CountingResultBase.MAX_OPCODE], // opcode counts
 						methodCounts)
 				};
 			}
@@ -355,7 +355,7 @@ public class CollectionStrategyDefault extends AbstractCollectionStrategy {
 				ccounts = blockCalculation.calculateCountsFromRBCounts(
 						result.qualifyingMethodName, 
 						result.opcodeCounts,
-						new long[CountingResult.MAX_OPCODE], // opcode counts
+						new long[CountingResultBase.MAX_OPCODE], // opcode counts
 						methodCounts);
 			}
 		} else {
@@ -402,8 +402,8 @@ public class CollectionStrategyDefault extends AbstractCollectionStrategy {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public SortedSet<CountingResult> retrieveAllCountingResults() {
-		SortedSet<CountingResult> ret = new TreeSet<CountingResult>();
+	public ResultCollection retrieveAllCountingResults() {
+		ResultCollection ret = new ResultCollection();
 		MethodExecutionRecord lastMethodExecutionDetails = parentResultCollector.getLastMethodExecutionDetails();
 		if(lastMethodExecutionDetails == null) {
 			log.warning("No method execution details are available. Please make certain that instrumented code has been executed.");
@@ -413,17 +413,14 @@ public class CollectionStrategyDefault extends AbstractCollectionStrategy {
 			// no more calculation is necessary; return results
 			Iterator<CountingResult> iter = this.countingResults.iterator();
 			while(iter.hasNext()){
-				ret.add(iter.next());
+				ret.getCountingResults().add(iter.next());
 			}
 		} else {
 			// calculate the sums for all results
 			long callerStartTime;
 			long callerReportTime;
 			long prevCallerReportTime = Long.MIN_VALUE;
-			for(CountingResult cr : this.countingResults) {
-				cr.logResult(false, true);
-			}
-			for(CountingResult cr : this.countingResults) {
+			for(CountingResultBase cr : this.countingResults) {
 				// countingResults are ordered by callerStartTime!
 				callerStartTime = cr.getMethodInvocationBeginning();
 				callerReportTime = cr.getMethodReportingTime();
@@ -435,12 +432,45 @@ public class CollectionStrategyDefault extends AbstractCollectionStrategy {
 				if(lastMethodExecutionDetails == null
 						|| lastMethodExecutionDetails.executionSettings.isInternalClass(
 						crSum.getQualifyingMethodName())) {
-					ret.add(crSum);
+					ret.getCountingResults().add(crSum);
 					prevCallerReportTime = callerReportTime;
 				}
 			}
 		}
-		ret.addAll(this.countingResultRegionIndexing.retrieveAllCountingResults());
+		ret.getCountingResults().addAll(this.countingResultRegionIndexing.retrieveAllCountingResults().getCountingResults());
+		ret = findRequestResults(ret);
+		return ret;
+	}
+
+	/**
+	 * @param ret {@link ResultCollection} with entries in 
+	 * {@link ResultCollection#getCountingResults()}.
+	 * @return {@link ResultCollection} where Results have been converted to
+	 * {@link RequestResult}s.
+	 */
+	protected ResultCollection findRequestResults(ResultCollection ret) {
+		Map<UUID, RequestResult> requestMap = new HashMap<UUID, RequestResult>();
+		List<CountingResult> deleteFromCountingResults  = new LinkedList<CountingResult>();
+		for(CountingResult r : ret.getCountingResults()) {
+			final UUID requestID = r.getRequestID();
+			if(requestID != null) {
+				RequestResult requestResult = requestMap.get(requestID);
+				if(requestResult == null) {
+					// add a new RequestResult
+					requestResult = new RequestResult();
+					requestResult.setRequestId(requestID);
+					requestMap.put(requestID, requestResult);
+				}
+				// add the result to the RequestResult
+				requestResult.getCountingResults().add(r);
+				deleteFromCountingResults.add(r);
+			}
+		}
+		// add entries in the map to request results
+		ret.getRequestResults().addAll(requestMap.values());
+		// remove the results that were moved.
+		ret.getCountingResults().removeAll(deleteFromCountingResults);
+		
 		return ret;
 	}
 

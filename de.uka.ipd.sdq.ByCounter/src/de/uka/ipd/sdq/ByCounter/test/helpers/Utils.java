@@ -7,9 +7,9 @@ import java.util.SortedSet;
 
 import junit.framework.Assert;
 import de.uka.ipd.sdq.ByCounter.execution.BytecodeCounter;
-import de.uka.ipd.sdq.ByCounter.execution.CountingResult;
 import de.uka.ipd.sdq.ByCounter.execution.CountingResultCollector;
 import de.uka.ipd.sdq.ByCounter.execution.IFullCountingResult;
+import de.uka.ipd.sdq.ByCounter.results.CountingResult;
 import de.uka.ipd.sdq.ByCounter.utils.MethodDescriptor;
 
 /**
@@ -26,7 +26,7 @@ public class Utils {
 	 * that there is only one and then returns that. 
 	 */
 	public static CountingResult getAssertedResult() {
-		SortedSet<CountingResult> r = CountingResultCollector.getInstance().retrieveAllCountingResults();
+		SortedSet<CountingResult> r = CountingResultCollector.getInstance().retrieveAllCountingResults().getCountingResults();
 //		Assert.assertEquals(1, r.length);
 		return r.first();
 	}

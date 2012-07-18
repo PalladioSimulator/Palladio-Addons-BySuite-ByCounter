@@ -1,5 +1,6 @@
 package de.uka.ipd.sdq.ByCounter.execution;
 
+
 /**
  * This class is used to update observers registered to 
  * {@link CountingResultCollector} when a section has been executed.
@@ -14,7 +15,7 @@ public class CountingResultSectionExecutionUpdate implements CountingResultUpdat
 	/**
 	 * Counting result for the updated section.
 	 */
-	public final CountingResult sectionResult;
+	public final CountingResultBase sectionResult;
 	
 	/**
 	 * Construct the update object.
@@ -22,7 +23,7 @@ public class CountingResultSectionExecutionUpdate implements CountingResultUpdat
 	 * @param sectionResult {@link #sectionResult}
 	 */
 	public CountingResultSectionExecutionUpdate(final Integer sectionIndex,
-			final CountingResult sectionResult) {
+			final CountingResultBase sectionResult) {
 		this.sectionIndex = sectionIndex;
 		this.sectionResult = sectionResult;
 	}

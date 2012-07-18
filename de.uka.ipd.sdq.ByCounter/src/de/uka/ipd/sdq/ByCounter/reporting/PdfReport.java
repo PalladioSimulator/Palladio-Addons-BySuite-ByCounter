@@ -28,7 +28,7 @@ import com.lowagie.text.Section;
 import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfWriter;
 
-import de.uka.ipd.sdq.ByCounter.execution.CountingResult;
+import de.uka.ipd.sdq.ByCounter.execution.CountingResultBase;
 import de.uka.ipd.sdq.ByCounter.execution.CountingResultCollector;
 import de.uka.ipd.sdq.ByCounter.execution.MethodExecutionRecord;
 import de.uka.ipd.sdq.ByCounter.utils.FullOpcodeMapper;
@@ -61,7 +61,7 @@ public class PdfReport implements ICountingResultWriter {
 		this.log = Logger.getLogger(PdfReport.class.getCanonicalName());
 	}
 
-	public void generatePdf(CountingResult[] cResults, MethodExecutionRecord methodExecution) throws DocumentException {
+	public void generatePdf(CountingResultBase[] cResults, MethodExecutionRecord methodExecution) throws DocumentException {
 		Document doc = new Document(PageSize.A4, MARGIN, MARGIN, MARGIN, MARGIN);
 
 
@@ -91,7 +91,7 @@ public class PdfReport implements ICountingResultWriter {
 		// Results
 		Chapter chResults = new Chapter(
 				new Paragraph("Results", FONT_CHAPTER), chapterCounter++);
-		for(CountingResult r : cResults) {
+		for(CountingResultBase r : cResults) {
 			Section s = chResults.addSection(
 					new Paragraph(r.getQualifyingMethodName(), FONT_HEADER_METHOD));
 			s.add(new Paragraph("Opcode execution counts"));
@@ -200,7 +200,7 @@ public class PdfReport implements ICountingResultWriter {
 
 		int numberOfOpcodesWithNonzeroFrequencies=0;
 		long totalCountOfAllOpcodes = 0;
-		for(int i = 0; i < CountingResult.MAX_OPCODE; i++) {
+		for(int i = 0; i < CountingResultBase.MAX_OPCODE; i++) {
 			String currentOpcodeString = FullOpcodeMapper.getMnemonicOfOpcode(i);
 			long currentOpcodeCount 	= opcodeCounts[i];
 			if(currentOpcodeCount!=0 || configuration.printZeros){
@@ -221,7 +221,7 @@ public class PdfReport implements ICountingResultWriter {
 
 
 	/**
-	 * @param methodCallCounts As in {@link CountingResult}.
+	 * @param methodCallCounts As in {@link CountingResultBase}.
 	 * @return A table listing the count of method calls.
 	 * @throws DocumentException
 	 */
@@ -238,10 +238,10 @@ public class PdfReport implements ICountingResultWriter {
 		return table;
 	}
 
-	public long writeResultToFile(CountingResult cr, boolean usePrevTimestamp,
+	public long writeResultToFile(CountingResultBase cr, boolean usePrevTimestamp,
 			long prevTimestampToUse) {
 		try {
-			this.generatePdf(new CountingResult[] {cr}, CountingResultCollector.getInstance().getLastMethodExecutionDetails());
+			this.generatePdf(new CountingResultBase[] {cr}, CountingResultCollector.getInstance().getLastMethodExecutionDetails());
 		} catch (DocumentException e) {
 			throw new RuntimeException(e);
 		}

@@ -12,10 +12,10 @@ import org.junit.runners.Parameterized;
 import org.objectweb.asm.Opcodes;
 
 import de.uka.ipd.sdq.ByCounter.execution.BytecodeCounter;
-import de.uka.ipd.sdq.ByCounter.execution.CountingResult;
 import de.uka.ipd.sdq.ByCounter.execution.CountingResultCollector;
 import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentationParameters;
 import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentationRegion;
+import de.uka.ipd.sdq.ByCounter.results.CountingResult;
 import de.uka.ipd.sdq.ByCounter.test.framework.expectations.Expectation;
 import de.uka.ipd.sdq.ByCounter.test.helpers.TestSubject;
 import de.uka.ipd.sdq.ByCounter.test.helpers.subjects.ExecutionOrder;
@@ -118,10 +118,10 @@ public class TestInstrumentationRegions extends AbstractByCounterTest {
 		Object[] executionParameters = new Object[0];
 		counter.execute(methodStart, executionParameters);
 		
-		SortedSet<CountingResult> countingResults = CountingResultCollector.getInstance().retrieveAllCountingResults();
+		SortedSet<CountingResult> countingResults = CountingResultCollector.getInstance().retrieveAllCountingResults().getCountingResults();
         
         // print ByCounter results
-        CountingResult[] results = countingResults.toArray(new CountingResult[0]);
+		CountingResult[] results = countingResults.toArray(new CountingResult[0]);
         for (CountingResult r : results) {
         	r.logResult(false, true);
         }
@@ -153,7 +153,7 @@ public class TestInstrumentationRegions extends AbstractByCounterTest {
         counter.instrument(methodRanged);
         counter.execute(methodRanged, new Object[0]);
 
-        CountingResult[] results = CountingResultCollector.getInstance().retrieveAllCountingResults().toArray(new CountingResult[0]);
+        CountingResult[] results = CountingResultCollector.getInstance().retrieveAllCountingResults().getCountingResults().toArray(new CountingResult[0]);
         for (CountingResult r : results) {
         	r.logResult(false, true);
         }

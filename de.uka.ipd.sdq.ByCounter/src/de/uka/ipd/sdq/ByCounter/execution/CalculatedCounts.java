@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
+
 /**
  * The numerical results calculated from the reports of executed code that 
  * was instrumented by ByCounter. These only include counts for opcode 
@@ -14,7 +15,7 @@ import java.util.TreeMap;
  */
 public class CalculatedCounts {
 	public void init() {
-		this.opcodeCounts = new long[CountingResult.MAX_OPCODE];
+		this.opcodeCounts = new long[CountingResultBase.MAX_OPCODE];
 		methodCounts = new TreeMap<String, Long>();
 		indexOfRangeBlock = -1;
 	}

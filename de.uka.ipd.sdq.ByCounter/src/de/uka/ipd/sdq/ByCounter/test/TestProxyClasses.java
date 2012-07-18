@@ -7,8 +7,8 @@ import org.junit.Test;
 import org.objectweb.asm.Opcodes;
 
 import de.uka.ipd.sdq.ByCounter.execution.BytecodeCounter;
-import de.uka.ipd.sdq.ByCounter.execution.CountingResult;
 import de.uka.ipd.sdq.ByCounter.execution.CountingResultCollector;
+import de.uka.ipd.sdq.ByCounter.results.CountingResult;
 import de.uka.ipd.sdq.ByCounter.test.framework.expectations.Expectation;
 import de.uka.ipd.sdq.ByCounter.test.helpers.ProxyDependency;
 import de.uka.ipd.sdq.ByCounter.test.helpers.ProxyDependencyImpl;
@@ -69,7 +69,7 @@ public class TestProxyClasses {
 
 		// check the result
 		CountingResultCollector countingResultCollector = CountingResultCollector.getInstance();
-		CountingResult[] observation = countingResultCollector.retrieveAllCountingResults().toArray(new CountingResult[0]);
+		CountingResult[] observation = countingResultCollector.retrieveAllCountingResults().getCountingResults().toArray(new CountingResult[0]);
 		expectation.compare(observation);
 		countingResultCollector.clearResults();
 
@@ -82,7 +82,7 @@ public class TestProxyClasses {
 		proxy.calculate();
 		
 		// check the result
-		observation = countingResultCollector.retrieveAllCountingResults().toArray(new CountingResult[0]);
+		observation = countingResultCollector.retrieveAllCountingResults().getCountingResults().toArray(new CountingResult[0]);
 		expectation.compare(observation);
 		countingResultCollector.clearResults();
 	}

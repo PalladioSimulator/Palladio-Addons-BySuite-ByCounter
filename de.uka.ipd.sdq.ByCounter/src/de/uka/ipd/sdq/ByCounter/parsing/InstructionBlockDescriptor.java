@@ -9,7 +9,7 @@ import org.objectweb.asm.tree.FrameNode;
 import org.objectweb.asm.tree.LineNumberNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 
-import de.uka.ipd.sdq.ByCounter.execution.CountingResult;
+import de.uka.ipd.sdq.ByCounter.execution.CountingResultBase;
 import de.uka.ipd.sdq.ByCounter.utils.FullOpcodeMapper;
 import de.uka.ipd.sdq.ByCounter.utils.MethodDescriptor;
 
@@ -30,7 +30,7 @@ public class InstructionBlockDescriptor implements Serializable {
 	private Map<String, Integer> methodCallCounts;
 	
 	public InstructionBlockDescriptor() {
-		opcodeCounts = new int[CountingResult.MAX_OPCODE];
+		opcodeCounts = new int[CountingResultBase.MAX_OPCODE];
 		methodCallCounts = new HashMap<String, Integer>();
 	}
 	

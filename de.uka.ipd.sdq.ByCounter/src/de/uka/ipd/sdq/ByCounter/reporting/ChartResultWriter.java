@@ -30,7 +30,7 @@ import com.lowagie.text.pdf.PdfContentByte;
 import com.lowagie.text.pdf.PdfTemplate;
 import com.lowagie.text.pdf.PdfWriter;
 
-import de.uka.ipd.sdq.ByCounter.execution.CountingResult;
+import de.uka.ipd.sdq.ByCounter.execution.CountingResultBase;
 import de.uka.ipd.sdq.ByCounter.utils.IByCounterConstants;
 
 /**
@@ -237,9 +237,9 @@ public class ChartResultWriter implements ICountingResultWriter{
 	}
 
 	/** (non-Javadoc)
-	 * @see ICountingResultWriter#writeResultToFile(de.uka.ipd.sdq.ByCounter.execution.CountingResult, boolean, long)
+	 * @see ICountingResultWriter#writeResultToFile(de.uka.ipd.sdq.ByCounter.execution.CountingResultBase, boolean, long)
 	 */
-	public long writeResultToFile(CountingResult cr,
+	public long writeResultToFile(CountingResultBase cr,
 			boolean usePrevTimestamp,
 			long prevTimestampToUse) {
 

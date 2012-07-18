@@ -14,12 +14,13 @@ import org.junit.runners.Parameterized;
 import org.objectweb.asm.Opcodes;
 
 import de.uka.ipd.sdq.ByCounter.execution.BytecodeCounter;
-import de.uka.ipd.sdq.ByCounter.execution.CountingResult;
+import de.uka.ipd.sdq.ByCounter.execution.CountingResultBase;
 import de.uka.ipd.sdq.ByCounter.execution.CountingResultCollector;
 import de.uka.ipd.sdq.ByCounter.execution.CountingResultCompleteMethodExecutionUpdate;
 import de.uka.ipd.sdq.ByCounter.execution.CountingResultSectionExecutionUpdate;
 import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentationParameters;
 import de.uka.ipd.sdq.ByCounter.parsing.LineNumberRange;
+import de.uka.ipd.sdq.ByCounter.results.CountingResult;
 import de.uka.ipd.sdq.ByCounter.test.framework.expectations.Expectation;
 import de.uka.ipd.sdq.ByCounter.test.helpers.TestSubjectLineNumbers;
 import de.uka.ipd.sdq.ByCounter.test.helpers.TestSubjectResultObservation;
@@ -175,8 +176,8 @@ public class TestResultObservation extends AbstractByCounterTest {
 				if(updateData instanceof CountingResultSectionExecutionUpdate) {
 					log.info("Notification received: " + updateData);
 					// compare the observation with the expectation
-					CountingResult observation = ((CountingResultSectionExecutionUpdate)updateData).sectionResult;
-					expectations[observationCounter].compare(new CountingResult[] {observation});
+					CountingResultBase observation = ((CountingResultSectionExecutionUpdate)updateData).sectionResult;
+					expectations[observationCounter].compare(new CountingResultBase[] {observation});
 					observationCounter++;
 				} else if(updateData instanceof CountingResultCompleteMethodExecutionUpdate) {
 					// skip complete result
@@ -192,7 +193,7 @@ public class TestResultObservation extends AbstractByCounterTest {
         counter.execute(method1, executionParameters);
 
         int i = 0;
-        for(CountingResult cr : CountingResultCollector.getInstance().retrieveAllCountingResults()) {
+        for(CountingResult cr : CountingResultCollector.getInstance().retrieveAllCountingResults().getCountingResults()) {
         	cr.logResult(false, true);
         	System.out.println(cr.getMethodInvocationBeginning());
 //        	Expectation ea = expectations[i];
@@ -214,7 +215,7 @@ public class TestResultObservation extends AbstractByCounterTest {
         Object[] executionParameters = new Object[] { 10 };
         counter.execute(methodRanged, executionParameters);
 
-        return CountingResultCollector.getInstance().retrieveAllCountingResults().toArray(new CountingResult[0]);
+        return CountingResultCollector.getInstance().retrieveAllCountingResults().getCountingResults().toArray(new CountingResult[0]);
 	}
 
 	/**

@@ -1,10 +1,12 @@
 package de.uka.ipd.sdq.ByCounter.execution;
 
 import java.util.SortedMap;
-import java.util.SortedSet;
 import java.util.TreeMap;
-import java.util.TreeSet;
 import java.util.UUID;
+
+import de.uka.ipd.sdq.ByCounter.results.CountingResult;
+import de.uka.ipd.sdq.ByCounter.results.ResultCollection;
+
 
 /**
  * This class can be used in addition to {@link CountingResultCollector} in 
@@ -39,23 +41,19 @@ public class CollectionStrategyWishedInlining extends
 	
 	public CollectionStrategyWishedInlining(CountingResultCollector parent) {
 		super(parent);
-		this.inlined_countingResult = new CountingResult(
-				UUID.randomUUID(),//TODO use constants for this!
-				UUID.randomUUID(),
-				UUID.randomUUID(),
-				"inlined",
-				"______inlined______",
-				0, //filetype
-				0L, //input characterisation
-				0L, //output characterisation
-				0L, //invocation beginning
-				0L, //reporting time
-				new long[CountingResult.MAX_OPCODE],
-				new TreeMap<String,Long>(),
-				new long[]{},
-				new int[]{},
-				new String[]{}
-				);
+		this.inlined_countingResult = new CountingResult();
+		this.inlined_countingResult.setRequestID(UUID.randomUUID());
+		this.inlined_countingResult.setOwnID(UUID.randomUUID());
+		this.inlined_countingResult.setCallerID(UUID.randomUUID());
+		this.inlined_countingResult.setID("inlined");
+		this.inlined_countingResult.setQualifyingMethodName("______inlined______");
+		this.inlined_countingResult.setMethodInvocationBeginning(System.nanoTime/*currentTimeMillis*/());
+		this.inlined_countingResult.setMethodReportingTime(0L); //reporting time TODO use a Date-like class for this...
+		this.inlined_countingResult.setOpcodeCounts(new long[CountingResultBase.MAX_OPCODE]);//opcode counts
+		this.inlined_countingResult.overwriteMethodCallCounts(new TreeMap<String, Long>());
+		this.inlined_countingResult.setArrayCreationCounts(new long[]{});
+		this.inlined_countingResult.setArrayCreationDimensions(new int[]{});
+		this.inlined_countingResult.setArrayCreationTypeInfo(new String[]{});
 		this.inlined_methodsMap = new TreeMap<String, Integer>();
 	}
 	
@@ -110,10 +108,10 @@ public class CollectionStrategyWishedInlining extends
 	}
 
 	@Override
-	public SortedSet<CountingResult> retrieveAllCountingResults() {
-		SortedSet<CountingResult> result = new TreeSet<CountingResult>();
+	public ResultCollection retrieveAllCountingResults() {
+		ResultCollection result = new ResultCollection();
 		if(this.hasInliningResult) {
-			result.add(this.inlined_countingResult);
+			result.getCountingResults().add(this.inlined_countingResult);
 		}
 		return result;
 	}

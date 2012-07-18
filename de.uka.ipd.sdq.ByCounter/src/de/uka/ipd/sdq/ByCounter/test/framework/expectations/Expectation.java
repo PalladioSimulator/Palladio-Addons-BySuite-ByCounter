@@ -9,7 +9,7 @@ import java.util.TreeMap;
 
 import org.junit.Assert;
 
-import de.uka.ipd.sdq.ByCounter.execution.CountingResult;
+import de.uka.ipd.sdq.ByCounter.execution.CountingResultBase;
 import de.uka.ipd.sdq.ByCounter.parsing.LineNumberRange;
 
 /**
@@ -171,7 +171,7 @@ public class Expectation {
 	 * @param observation
 	 *          ByCounter's output.
 	 */
-	public void compare(final CountingResult[] observation) {
+	public void compare(final CountingResultBase[] observation) {
 		if (observation == null) {
 			throw new IllegalArgumentException("observation must not be null");
 		}

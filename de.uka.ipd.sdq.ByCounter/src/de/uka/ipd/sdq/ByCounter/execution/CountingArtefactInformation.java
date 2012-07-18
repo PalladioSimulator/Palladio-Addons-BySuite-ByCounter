@@ -2,6 +2,9 @@ package de.uka.ipd.sdq.ByCounter.execution;
 
 import java.util.List;
 
+import de.uka.ipd.sdq.ByCounter.results.CountingResult;
+
+
 /**
  * A small class to describe results of a counting step.
  * 

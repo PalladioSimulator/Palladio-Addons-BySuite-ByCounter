@@ -13,10 +13,10 @@ import org.junit.runners.Parameterized;
 import org.objectweb.asm.Opcodes;
 
 import de.uka.ipd.sdq.ByCounter.execution.BytecodeCounter;
-import de.uka.ipd.sdq.ByCounter.execution.CountingResult;
 import de.uka.ipd.sdq.ByCounter.execution.CountingResultCollector;
 import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentationParameters;
 import de.uka.ipd.sdq.ByCounter.parsing.LineNumberRange;
+import de.uka.ipd.sdq.ByCounter.results.CountingResult;
 import de.uka.ipd.sdq.ByCounter.test.framework.expectations.Expectation;
 import de.uka.ipd.sdq.ByCounter.test.helpers.TestSubjectLineNumbers;
 import de.uka.ipd.sdq.ByCounter.test.helpers.Utils;
@@ -138,7 +138,7 @@ public class TestLineNumbers extends AbstractByCounterTest {
 		// run ByCounter
 		String canonicalClassName = ExecutionOrder.class.getCanonicalName();
 		String methodSignature = "void process()";
-        CountingResult[] results = this.instrumentAndExecute(lnrs, canonicalClassName, methodSignature, new Object[0]);
+		CountingResult[] results = this.instrumentAndExecute(lnrs, canonicalClassName, methodSignature, new Object[0]);
         for (CountingResult r : results) {
         	r.logResult(false, true);
         }
@@ -167,7 +167,7 @@ public class TestLineNumbers extends AbstractByCounterTest {
 		// run ByCounter
 		String canonicalClassName = ExecutionOrder.class.getCanonicalName();
 		String methodSignature = "void process()";
-        CountingResult[] results = this.instrumentAndExecute(lnrs, canonicalClassName, methodSignature, new Object[0]);
+		CountingResult[] results = this.instrumentAndExecute(lnrs, canonicalClassName, methodSignature, new Object[0]);
         for (CountingResult r : results) {
         	r.logResult(false, true);
         }
@@ -208,7 +208,7 @@ public class TestLineNumbers extends AbstractByCounterTest {
 		
 		String canonicalClassName = LoopExternalActionNoDependency.class.getCanonicalName();
 		String methodSignature = "void process()";
-        CountingResult[] results = this.instrumentAndExecute(lnrs, canonicalClassName, methodSignature, new Object[0]);
+		CountingResult[] results = this.instrumentAndExecute(lnrs, canonicalClassName, methodSignature, new Object[0]);
         for (CountingResult r : results) {
         	r.logResult(false, true);
         }
@@ -301,7 +301,7 @@ public class TestLineNumbers extends AbstractByCounterTest {
         Object[] executionParameters = new Object[] { 10 };
         counter.execute(methodRanged, executionParameters);
 
-        CountingResult[] results = CountingResultCollector.getInstance().retrieveAllCountingResults().toArray(new CountingResult[0]);
+        CountingResult[] results = CountingResultCollector.getInstance().retrieveAllCountingResults().getCountingResults().toArray(new CountingResult[0]);
         Assert.assertTrue("No or not enough results counted", results.length > 1);
         for (CountingResult r : results) {
         	r.logResult(false, true);
@@ -397,7 +397,7 @@ public class TestLineNumbers extends AbstractByCounterTest {
         Object[] executionParameters = new Object[] {};
         counter.execute(methodForeach, executionParameters);
 
-        CountingResult[] results = CountingResultCollector.getInstance().retrieveAllCountingResults().toArray(new CountingResult[0]);
+        CountingResult[] results = CountingResultCollector.getInstance().retrieveAllCountingResults().getCountingResults().toArray(new CountingResult[0]);
         Assert.assertTrue("No or too many results counted", results.length == 1);
         for (CountingResult r : results) {
         	r.logResult(false, true);
@@ -471,7 +471,7 @@ public class TestLineNumbers extends AbstractByCounterTest {
         Object[] executionParameters = new Object[] {  };
         counter.execute(methodRanged, executionParameters);
 
-        CountingResult[] results = CountingResultCollector.getInstance().retrieveAllCountingResults().toArray(new CountingResult[0]);
+        CountingResult[] results = CountingResultCollector.getInstance().retrieveAllCountingResults().getCountingResults().toArray(new CountingResult[0]);
         Assert.assertTrue("No or not enough results counted", results.length > 1);
         for (CountingResult r : results) {
         	r.logResult(false, true);
@@ -567,7 +567,7 @@ public class TestLineNumbers extends AbstractByCounterTest {
         counter.instrument(methodRanged);
         counter.execute(methodRanged, executionParameters);
 
-        return CountingResultCollector.getInstance().retrieveAllCountingResults().toArray(new CountingResult[0]);
+        return CountingResultCollector.getInstance().retrieveAllCountingResults().getCountingResults().toArray(new CountingResult[0]);
 	}
 
 	/**
@@ -594,7 +594,7 @@ public class TestLineNumbers extends AbstractByCounterTest {
 		executionParameters[0] = new Integer(inputValue);
 		counter.execute(methodRanged, executionParameters);
 
-		return CountingResultCollector.getInstance().retrieveAllCountingResults().toArray(new CountingResult[0]);
+		return CountingResultCollector.getInstance().retrieveAllCountingResults().getCountingResults().toArray(new CountingResult[0]);
 	}
 
 }

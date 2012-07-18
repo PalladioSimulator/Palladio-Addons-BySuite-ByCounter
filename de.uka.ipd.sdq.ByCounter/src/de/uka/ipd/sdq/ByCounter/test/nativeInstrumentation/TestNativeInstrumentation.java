@@ -12,10 +12,11 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
 import de.uka.ipd.sdq.ByCounter.execution.BytecodeCounter;
-import de.uka.ipd.sdq.ByCounter.execution.CountingResult;
+import de.uka.ipd.sdq.ByCounter.execution.CountingResultBase;
 import de.uka.ipd.sdq.ByCounter.execution.CountingResultCollector;
 import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentationCounterPrecision;
 import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentationParameters;
+import de.uka.ipd.sdq.ByCounter.results.CountingResult;
 import de.uka.ipd.sdq.ByCounter.test.TestASMBytecodes;
 import de.uka.ipd.sdq.ByCounter.utils.MethodDescriptor;
 
@@ -118,10 +119,10 @@ public class TestNativeInstrumentation {
 				Math.round((double) counting/1000000)+"ms aka \t"+
 				Math.round((double) counting/1000000000)+"s)");
 		if(EXECUTE) {
-			SortedSet<CountingResult> finalResults = this.resultColl.retrieveAllCountingResults();
+			SortedSet<CountingResult> finalResults = this.resultColl.retrieveAllCountingResults().getCountingResults();
 			Assert.assertNotSame("Number of results must be != 0.", 0, finalResults.size());
 			log.info(finalResults.size()+" counting results found, logging them: ");
-			for(CountingResult r : finalResults) {
+			for(CountingResultBase r : finalResults) {
 				r.logResult(true, true); //from Martin
 			}
 			// clear all collected results

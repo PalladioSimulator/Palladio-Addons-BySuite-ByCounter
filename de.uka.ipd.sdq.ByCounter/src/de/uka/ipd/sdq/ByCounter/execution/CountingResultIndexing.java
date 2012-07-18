@@ -12,8 +12,11 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.logging.Logger;
 
+import de.uka.ipd.sdq.ByCounter.results.CountingResult;
+
+
 /**
- * Indexing infrastructure for {@link CountingResult}s.
+ * Indexing infrastructure for {@link CountingResultBase}s.
  * @author Martin Krogmann
  * @author Michael Kuperberg
  *
@@ -90,7 +93,7 @@ public class CountingResultIndexing {
 	}
 
 	/**
-	 * Gets the mapping of {@link CountingArtefactInformation} to {@link CountingResult}s.
+	 * Gets the mapping of {@link CountingArtefactInformation} to {@link CountingResultBase}s.
 	 * @return The mapping as {@link HashMap}.
 	 */
 	public HashMap<CountingArtefactInformation, CountingResult> getAllCountingResultsByArtefacts() {
@@ -168,9 +171,9 @@ public class CountingResultIndexing {
 	 * Timestamp should be unique.
 	 * TODO does not consider forced inlining?
 	 * @param timestamp A time as {@link Timestamp}.
-	 * @return The specified {@link CountingResult}.
+	 * @return The specified {@link CountingResultBase}.
 	 */
-	public CountingResult getCountingResultByMethodStartTimestamp(Timestamp timestamp){
+	public CountingResultBase getCountingResultByMethodStartTimestamp(Timestamp timestamp){
 		log.warning("getCountingResultByMethodStartTimestamp disregards inlined and force-inlined methods, " +
 			"use retrieveAllCountingResults instead");
 		return this.countingResultsByArtefactInformation.get(this.countingInformationsByBeginning.get(timestamp.getTime()));
@@ -198,7 +201,7 @@ public class CountingResultIndexing {
 	}
 
 	/**
-	 * Gets a {@link CountingResult} that is the accumulation of all reported 
+	 * Gets a {@link CountingResultBase} that is the accumulation of all reported 
 	 * results of the calling tree specified by the callerStartTime. A method
 	 * that reported a result at callerStartTime is the root node of the calling 
 	 * tree. All methods invoked from that method, and also reported results, 
@@ -208,7 +211,7 @@ public class CountingResultIndexing {
 	 * that is the root node of the calling tree.
 	 * @param suppressDebugMessages Debug messages require additional 
 	 * computations. When true, these calculations will be stopped.
-	 * @return The calculated {@link CountingResult}.
+	 * @return The calculated {@link CountingResultBase}.
 	 */
 	public synchronized CountingResult retrieveCountingResultByStartTime_evaluateCallingTree(
 			long callerStartTime,
@@ -234,9 +237,9 @@ public class CountingResultIndexing {
 		Iterator<Long> iter = keysCopy.iterator();
 		candidateStartTime = iter.next();
 		List<CountingResult> countingResultAtStartTime = this.retrieveCountingResultByMethodStartTime(callerStartTime);
-		CountingResult totalCountingResult = null;
+		CountingResult totalCountingResult = new CountingResult();
 		if(countingResultAtStartTime != null && !countingResultAtStartTime.isEmpty()) {
-			totalCountingResult = countingResultAtStartTime.get(0).clone();
+			totalCountingResult = (CountingResult) countingResultAtStartTime.get(0).clone();
 		}
 		this.log.fine("Counting result before Type2 addition: "+totalCountingResult);
 
@@ -302,17 +305,17 @@ public class CountingResultIndexing {
 	}
 	
 	/**
-	 * Gets the {@link CountingResult}s that exist for the given method name.
+	 * Gets the {@link CountingResultBase}s that exist for the given method name.
 	 * @param name The name of a method measured by ByCounter.
-	 * @return A {@link Set} of {@link CountingResult}s for the given name.
+	 * @return A {@link Set} of {@link CountingResultBase}s for the given name.
 	 */
-	public synchronized SortedSet<CountingResult> retrieveCountingResultsByMethodName(String name){
+	public synchronized SortedSet<CountingResultBase> retrieveCountingResultsByMethodName(String name){
 		log.warning("retrieveCountingResultsByMethodName disregards inlined and force-inlined methods, " +
 			"use retrieveAllCountingResults instead");
-		SortedSet<CountingResult> counts = new TreeSet<CountingResult>();
+		SortedSet<CountingResultBase> counts = new TreeSet<CountingResultBase>();
 		Iterator<CountingArtefactInformation> iter = this.countingInformationsByMethodname.get(name).iterator();
 		CountingArtefactInformation cai = null;
-		CountingResult cr = null;
+		CountingResultBase cr = null;
 		for(;iter.hasNext();){
 			cai = iter.next();
 			cr = this.countingResultsByArtefactInformation.get(cai);

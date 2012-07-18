@@ -4,13 +4,12 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Observable;
-import java.util.SortedSet;
-import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentationContext;
 import de.uka.ipd.sdq.ByCounter.reporting.ICountingResultWriter;
+import de.uka.ipd.sdq.ByCounter.results.ResultCollection;
 
 /**
  * Class used to collect statistics about an instrumented method.
@@ -76,7 +75,7 @@ public final class CountingResultCollector extends Observable {
 	private boolean monitorShouldStop;
 
 	/**
-	 * When a {@link CountingResult} is logged, all known writers will be
+	 * When a {@link CountingResultBase} is logged, all known writers will be
 	 * asked to log (write) it as well. This mechanism is introduced to
 	 * decouple {@link CountingResultCollector} from specific mechanisms and
 	 * frameworks, such as CSV writing, JFreeChart creation etc.
@@ -195,12 +194,12 @@ public final class CountingResultCollector extends Observable {
 			this.setChanged();
 			if(!(result instanceof ProtocolCountUpdateStructure)) {
 				((CollectionStrategyDefault)this.strategyDefault).getCountingResultIndexing().retrieveCountingResultByMethodStartTime(result.executionStart);
-				SortedSet<CountingResult> allResults = this.retrieveAllCountingResults();
+				ResultCollection allResults = this.retrieveAllCountingResults();
 				// filter results to only contain those for the current method.
-				SortedSet<CountingResult> relevantResults = new TreeSet<CountingResult>();
-				for(CountingResult r : allResults) {
+				ResultCollection relevantResults = new ResultCollection();
+				for(de.uka.ipd.sdq.ByCounter.results.CountingResult r : allResults.getCountingResults()) {
 					if(r.getMethodInvocationBeginning() == result.executionStart) {
-						relevantResults.add(r);
+						relevantResults.getCountingResults().add(r);
 					}
 				}
 				this.notifyObservers(
@@ -210,7 +209,7 @@ public final class CountingResultCollector extends Observable {
 	}
 	
 	/**
-	 * Adds an additional result writer used in {@link CountingResult#logResult(boolean, boolean, Level)}.
+	 * Adds an additional result writer used in {@link CountingResultBase#logResult(boolean, boolean, Level)}.
 	 * @param resultWriter {@link ICountingResultWriter} used when logging result.
 	 */
 	public synchronized void registerWriter(ICountingResultWriter resultWriter){
@@ -219,21 +218,40 @@ public final class CountingResultCollector extends Observable {
 		}
 		this.resultWriters.add(resultWriter);
 	}
-
+	
+//	/**
+//	 * Get all results the {@link CountingResultCollector} holds.
+//	 * This does not clear the {@link CountingResultCollector} list.
+//	 * You have to explicitly
+//	 * call <code>clearResults()</code> if that is your intention.
+//	 * @return A <code>Result</code> list.
+//	 */
+//	public synchronized SortedSet<CountingResult> retrieveAllCountingResults() {
+//		SortedSet<CountingResult> ret = new TreeSet<CountingResult>();
+//
+//		// add the results of all strategies
+//		for(ICollectionStrategy s : this.collectionStrategies) {
+//			SortedSet<CountingResult> results = s.retrieveAllCountingResults();
+//			ret.addAll(results);
+//		}
+//
+//		return ret;
+//	}
+	
 	/**
 	 * Get all results the {@link CountingResultCollector} holds.
 	 * This does not clear the {@link CountingResultCollector} list.
 	 * You have to explicitly
 	 * call <code>clearResults()</code> if that is your intention.
-	 * @return A <code>Result</code> list.
+	 * @return A {@link ResultCollection}.
 	 */
-	public synchronized SortedSet<CountingResult> retrieveAllCountingResults() {
-		SortedSet<CountingResult> ret = new TreeSet<CountingResult>();
+	public synchronized ResultCollection retrieveAllCountingResults() {
+		ResultCollection ret = new ResultCollection();
 
 		// add the results of all strategies
 		for(ICollectionStrategy s : this.collectionStrategies) {
-			SortedSet<CountingResult> results = s.retrieveAllCountingResults();
-			ret.addAll(results);
+			ResultCollection results = s.retrieveAllCountingResults();
+			ret.add(results);
 		}
 
 		return ret;

@@ -1,6 +1,7 @@
 package de.uka.ipd.sdq.ByCounter.execution;
 
-import java.util.SortedSet;
+import de.uka.ipd.sdq.ByCounter.results.ResultCollection;
+
 
 /**
  * This class is used to update observers registered to 
@@ -12,13 +13,13 @@ public class CountingResultCompleteMethodExecutionUpdate implements CountingResu
 	/**
 	 * All results of the completely executed method.
 	 */
-	public SortedSet<CountingResult> methodResults;
+	public ResultCollection methodResults;
 
 	/**
 	 * Construct the update.
 	 * @param methodResults All results of the completely executed method.
 	 */
-	public CountingResultCompleteMethodExecutionUpdate(SortedSet<CountingResult> methodResults) {
+	public CountingResultCompleteMethodExecutionUpdate(ResultCollection methodResults) {
 		this.methodResults = methodResults;
 	}
 

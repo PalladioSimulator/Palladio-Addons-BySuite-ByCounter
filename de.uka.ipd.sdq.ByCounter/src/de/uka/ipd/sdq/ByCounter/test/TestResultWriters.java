@@ -3,26 +3,22 @@ package de.uka.ipd.sdq.ByCounter.test;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
-import java.util.Collection;
 import java.util.SortedSet;
 import java.util.logging.Logger;
 
 import junit.framework.Assert;
 
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
 
 import de.uka.ipd.sdq.ByCounter.execution.BytecodeCounter;
-import de.uka.ipd.sdq.ByCounter.execution.CountingResult;
 import de.uka.ipd.sdq.ByCounter.execution.CountingResultCollector;
 import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentationParameters;
 import de.uka.ipd.sdq.ByCounter.reporting.ChartResultWriter;
 import de.uka.ipd.sdq.ByCounter.reporting.CountingResultCSVWriter;
 import de.uka.ipd.sdq.ByCounter.reporting.PdfReport;
+import de.uka.ipd.sdq.ByCounter.results.CountingResult;
 import de.uka.ipd.sdq.ByCounter.test.helpers.TestSubject;
 import de.uka.ipd.sdq.ByCounter.utils.MethodDescriptor;
 
@@ -88,7 +84,7 @@ public class TestResultWriters extends AbstractByCounterTest {
 
 
 
-		SortedSet<CountingResult> finalResults = resultColl.retrieveAllCountingResults();
+		SortedSet<CountingResult> finalResults = resultColl.retrieveAllCountingResults().getCountingResults();
 		Assert.assertEquals(1, finalResults.size());
 		log.info(finalResults.size()+" counting results found, logging them: ");
 		for(CountingResult r : finalResults) {
@@ -152,7 +148,7 @@ public class TestResultWriters extends AbstractByCounterTest {
 
 
 
-		SortedSet<CountingResult> finalResults = resultColl.retrieveAllCountingResults();
+		SortedSet<CountingResult> finalResults = resultColl.retrieveAllCountingResults().getCountingResults();
 		Assert.assertEquals(1, finalResults.size());
 		log.info(finalResults.size()+" counting results found, logging them: ");
 		for(CountingResult r : finalResults) {
@@ -228,7 +224,7 @@ public class TestResultWriters extends AbstractByCounterTest {
 
 
 
-		SortedSet<CountingResult> finalResults = resultColl.retrieveAllCountingResults();
+		SortedSet<CountingResult> finalResults = resultColl.retrieveAllCountingResults().getCountingResults();
 		Assert.assertEquals(1, finalResults.size());
 		log.info(finalResults.size()+" counting results found, logging them: ");
 		for(CountingResult r : finalResults) {
@@ -329,7 +325,7 @@ public class TestResultWriters extends AbstractByCounterTest {
 
 
 
-		SortedSet<CountingResult> finalResults = resultColl.retrieveAllCountingResults();
+		SortedSet<CountingResult> finalResults = resultColl.retrieveAllCountingResults().getCountingResults();
 		Assert.assertEquals(1, finalResults.size());
 		log.info(finalResults.size()+" counting results found, logging them: ");
 		for(CountingResult r : finalResults) {

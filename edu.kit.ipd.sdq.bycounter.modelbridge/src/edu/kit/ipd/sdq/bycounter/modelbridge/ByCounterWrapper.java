@@ -22,11 +22,12 @@ import de.fzi.gast.types.GASTClass;
 import de.fzi.gast.types.GASTType;
 import de.fzi.gast.variables.FormalParameter;
 import de.uka.ipd.sdq.ByCounter.execution.BytecodeCounter;
-import de.uka.ipd.sdq.ByCounter.execution.CountingResult;
+import de.uka.ipd.sdq.ByCounter.execution.CountingResultBase;
 import de.uka.ipd.sdq.ByCounter.execution.CountingResultCollector;
 import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentationCounterPrecision;
 import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentationParameters;
 import de.uka.ipd.sdq.ByCounter.parsing.LineNumberRange;
+import de.uka.ipd.sdq.ByCounter.results.CountingResult;
 import de.uka.ipd.sdq.ByCounter.utils.ASMOpcodesMapper;
 import de.uka.ipd.sdq.ByCounter.utils.JavaType;
 import de.uka.ipd.sdq.ByCounter.utils.JavaTypeEnum;
@@ -262,7 +263,7 @@ public class ByCounterWrapper {
 		run.setEnvironmentCharacterisation(environmentDesc);
 		
 		SortedSet<CountingResult> results;
-		results = CountingResultCollector.getInstance().retrieveAllCountingResults();
+		results = CountingResultCollector.getInstance().retrieveAllCountingResults().getCountingResults();
 		
 		Request req = outputFactory.createRequest();
 		run.getRequests().add(req);
@@ -278,7 +279,7 @@ public class ByCounterWrapper {
 			MethodDescriptor md = iter.next();
 			fqMethodNameToLineNumberRanges.put(md.getCanonicalMethodName(), md.getCodeAreasToInstrument());
 		}
-		for(CountingResult result : results) {
+		for(CountingResultBase result : results) {
 			ObservedEntityExecution oee = convertCountingResultToOEE(
 					fqMethodNameToLineNumberRanges, result);
 			if (oee != null) {
@@ -295,12 +296,12 @@ public class ByCounterWrapper {
 		return run;
 	}
 
-	/**Converts a {@link CountingResult} into an {@link ObservedEntityExecution} including Java VM calls and method invocations. 
+	/**Converts a {@link CountingResultBase} into an {@link ObservedEntityExecution} including Java VM calls and method invocations. 
 	 * @param lineNumberRangesByMethodName A map to get LineNumerRange arrays for a given method
-	 * @return A {@link ObservedEntityExecution} instance with all the informations of the provided {@link CountingResult} instance. <code>null</code> if the result could not be matched. 
+	 * @return A {@link ObservedEntityExecution} instance with all the informations of the provided {@link CountingResultBase} instance. <code>null</code> if the result could not be matched. 
 	 */
 	private ObservedEntityExecution convertCountingResultToOEE(Map<String, LineNumberRange[]> lineNumberRangesByMethodName,
-			CountingResult result) {
+			CountingResultBase result) {
 		ObservedEntityExecution oee = outputFactory.createObservedEntityExecution();
 		// find the EntityToInstrument to which the result belongs
 		EntityToInstrument instrumentedEntity;
@@ -513,12 +514,12 @@ public class ByCounterWrapper {
 
 	/**Gets the {@link LineNumberRange} for given results.
 	 * @param lineNumberRangesByMethodName A map to get LineNumerRange arrays for a given method
-	 * @param result A {@link CountingResult} for a line number range
+	 * @param result A {@link CountingResultBase} for a line number range
 	 * @return The line number range to which the CountingResult belongs
 	 */
 	private static LineNumberRange getLineNumberRange(
 			final Map<String, LineNumberRange[]> lineNumberRangesByMethodName, 
-			final CountingResult result) {
+			final CountingResultBase result) {
 		int index = result.getIndexOfRangeBlock();
 		LineNumberRange[] ranges = 
 			lineNumberRangesByMethodName.get(result.getQualifyingMethodName());

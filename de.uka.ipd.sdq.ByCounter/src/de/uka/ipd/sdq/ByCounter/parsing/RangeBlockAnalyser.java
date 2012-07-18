@@ -263,6 +263,9 @@ public final class RangeBlockAnalyser extends LabelBlockAnalyser {
 		instrumentationState.getInstrumentationContext().getRangeBlocks().addInstructionBlocksForMethod(
 				methodDescriptorString, 
 				rangeBlocks);
+		instrumentationState.getInstrumentationContext().getRangesByMethod().put(
+				methodDescriptorString, 
+				this.ranges.toArray(new LineNumberRange[this.ranges.size()]));
 		
 		this.instrumentationState.setRangeBlockContainsLabels(this.rangeBlockContainsLabels);
 	}

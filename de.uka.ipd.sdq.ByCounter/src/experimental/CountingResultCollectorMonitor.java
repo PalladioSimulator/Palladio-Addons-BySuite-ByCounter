@@ -567,7 +567,7 @@ class ByCountsModel extends AbstractTableModel {
 		} else if (col == 1) {
 			return opcodesString[row];
 		} else if (col == 2) {
-			return crc.retrieveAllCountingResults().first().getOpcodeCount(
+			return crc.retrieveAllCountingResults().getCountingResults().first().getOpcodeCount(
 					opcodesInt[row]);
 		} else {
 			System.err.println("Wrong column index!");
@@ -626,7 +626,7 @@ public class CountingResultCollectorMonitor implements Runnable {
 				e.printStackTrace();
 			}
 			System.err.println("InlinedCountingResult: "+System.currentTimeMillis() + ": "
-					+ crc.retrieveAllCountingResults().first());
+					+ crc.retrieveAllCountingResults().getCountingResults().first());
 		}
 
 	}

@@ -16,6 +16,7 @@ import java.util.Set;
 import de.uka.ipd.sdq.ByCounter.execution.BytecodeCounter;
 import de.uka.ipd.sdq.ByCounter.execution.CountingMode;
 import de.uka.ipd.sdq.ByCounter.parsing.InstructionBlockSerialisation;
+import de.uka.ipd.sdq.ByCounter.parsing.LineNumberRange;
 
 /**
  * This class serialises all information produced by {@link BytecodeCounter} 
@@ -58,6 +59,11 @@ public class InstrumentationContext implements Serializable {
 	private InstructionBlockSerialisation rangeBlocks;
 	
 	/**
+	 * {@link LineNumberRange}s defined for each method.
+	 */
+	private Map<String, LineNumberRange[]> rangesByMethod;
+	
+	/**
 	 * Instrumentation region definitions.
 	 */
 	private Set<InstrumentationRegion> instrumentationRegions;
@@ -83,6 +89,7 @@ public class InstrumentationContext implements Serializable {
 		this.instrumentationRegions = new HashSet<InstrumentationRegion>();
 		this.blockCountingMode = new HashMap<String, BlockCountingMode>();
 		this.countingMode = CountingMode.Default;
+		this.rangesByMethod = new HashMap<String, LineNumberRange[]>();
 	}
 	
 	private static void checkVersion(final long version) {
@@ -242,5 +249,9 @@ public class InstrumentationContext implements Serializable {
 	 */
 	public CountingMode getCountingMode() {
 		return this.countingMode;
+	}
+
+	public Map<String, LineNumberRange[]> getRangesByMethod() {
+		return this.rangesByMethod;
 	}
 }

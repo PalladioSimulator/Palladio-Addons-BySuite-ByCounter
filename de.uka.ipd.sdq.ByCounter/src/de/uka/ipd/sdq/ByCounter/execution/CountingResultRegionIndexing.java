@@ -6,10 +6,10 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.SortedSet;
-import java.util.TreeSet;
 
 import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentationRegion;
+import de.uka.ipd.sdq.ByCounter.results.CountingResult;
+import de.uka.ipd.sdq.ByCounter.results.ResultCollection;
 
 /**
  * Indexing for counting regions.
@@ -17,7 +17,7 @@ import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentationRegion;
  */
 public class CountingResultRegionIndexing implements ICollectionStrategy {
 	
-	Map<InstrumentationRegion,List<CountingResult>> results;
+	Map<InstrumentationRegion, List<CountingResult>> results;
 	
 	public CountingResultRegionIndexing() {
 		this.results = new HashMap<InstrumentationRegion, List<CountingResult>>();
@@ -48,21 +48,21 @@ public class CountingResultRegionIndexing implements ICollectionStrategy {
 	}
 
 	@Override
-	public final SortedSet<CountingResult> retrieveAllCountingResults() {
-		SortedSet<CountingResult> addedResults = new TreeSet<CountingResult>();
+	public final ResultCollection retrieveAllCountingResults() {
+		ResultCollection res = new ResultCollection();
 		// for each region
-		for(Entry<InstrumentationRegion,List<CountingResult>> e : this.results.entrySet()) {
+		for(Entry<InstrumentationRegion, List<CountingResult>> e : this.results.entrySet()) {
 			// add up the counting results
 			InstrumentationRegion ir = e.getKey();
 			Iterator<CountingResult> iter = e.getValue().iterator();
-			CountingResult irResult = iter.next().clone();
+			CountingResult irResult = (CountingResult) iter.next().clone();
 			while(iter.hasNext()) {
 				irResult.add(iter.next());
 			}
-//			irResult.setQualifyingMethodName(ir.toString());
-			addedResults.add(irResult);
+			irResult.setObservedElement(ir);
+			res.getCountingResults().add(irResult);
 		}
-		return addedResults;
+		return res;
 	}
 
 }

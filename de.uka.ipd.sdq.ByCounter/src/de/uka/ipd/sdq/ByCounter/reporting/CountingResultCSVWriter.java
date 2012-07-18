@@ -12,7 +12,8 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.logging.Logger;
 
-import de.uka.ipd.sdq.ByCounter.execution.CountingResult;
+import de.uka.ipd.sdq.ByCounter.execution.CountingResultBase;
+import de.uka.ipd.sdq.ByCounter.results.CountingResult;
 import de.uka.ipd.sdq.ByCounter.utils.ASMOpcodesMapper;
 
 /**
@@ -30,7 +31,7 @@ public class CountingResultCSVWriter implements ICountingResultWriter {
 
 	/**
 	 * Constructs an instance of {@link CountingResult} as written by 
-	 * {@link #writeResultToFile(CountingResult, boolean, long)}.
+	 * {@link #writeResultToFile(CountingResultBase, boolean, long)}.
 	 * @param csvFile The {@link File} that points to the csv file.
 	 * @return An instance of {@link CountingResult} or null if an error 
 	 * occurred.
@@ -107,24 +108,11 @@ public class CountingResultCSVWriter implements ICountingResultWriter {
 		
 		
 		
-		CountingResult r = new CountingResult(
-				null, //requestID
-				null, //ownID
-				null, //callerID
-				"TODOID", 
-				"TODOQUALIFYINGMETHODNAME",
-
-				0, //TODO document
-				0L, //TODO document
-				0L, //TODO document
-				executionStart, 
-				reportingStart, 
-				filteredCounts,
-				methodCounts,
-				null,
-				null,
-				null
-				);
+		CountingResult r = new CountingResult();
+		r.setMethodInvocationBeginning(executionStart);
+		r.setMethodReportingTime(reportingStart);
+		r.setOpcodeCounts(filteredCounts);
+		r.overwriteMethodCallCounts(methodCounts);
 		
 		return r;
 	}
@@ -218,7 +206,7 @@ public class CountingResultCSVWriter implements ICountingResultWriter {
 	 * @see de.uka.ipd.sdq.ByCounter.utils.IResultWriter#writeResult(de.uka.ipd.sdq.ByCounter.execution.CountingResult, boolean, long)
 	 */
 	public long writeResultToFile(
-			CountingResult cr,
+			CountingResultBase cr,
 			boolean usePrevTimestamp,
 			long prevTimestampToUse
 	) {

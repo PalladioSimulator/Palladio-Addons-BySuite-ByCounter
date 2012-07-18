@@ -12,9 +12,9 @@ import org.junit.Test;
 import org.objectweb.asm.Opcodes;
 
 import de.uka.ipd.sdq.ByCounter.execution.BytecodeCounter;
-import de.uka.ipd.sdq.ByCounter.execution.CountingResult;
 import de.uka.ipd.sdq.ByCounter.execution.CountingResultCollector;
 import de.uka.ipd.sdq.ByCounter.execution.ExecutionSettings;
+import de.uka.ipd.sdq.ByCounter.results.CountingResult;
 import de.uka.ipd.sdq.ByCounter.test.framework.expectations.Expectation;
 import de.uka.ipd.sdq.ByCounter.test.helpers.ClassZ;
 import de.uka.ipd.sdq.ByCounter.test.helpers.InterfaceX;
@@ -131,10 +131,10 @@ public class TestInternalClassDefinition {
 		counter.getExecutionSettings().setInternalClassesDefinition(internalClassesDefinition);
 		
 		// retrieve results
-		CountingResult[] results = CountingResultCollector.getInstance().retrieveAllCountingResults().toArray(new CountingResult[0]);
+		CountingResult[] results = CountingResultCollector.getInstance().retrieveAllCountingResults().getCountingResults().toArray(new CountingResult[0]);
 		e.compare(results);
 		// try retrieving results again and make sure they still match
-		results = CountingResultCollector.getInstance().retrieveAllCountingResults().toArray(new CountingResult[0]);
+		results = CountingResultCollector.getInstance().retrieveAllCountingResults().getCountingResults().toArray(new CountingResult[0]);
 		e.compare(results);
 
 		Assert.assertNotNull(results);

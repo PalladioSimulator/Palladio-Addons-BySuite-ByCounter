@@ -5,9 +5,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import de.uka.ipd.sdq.ByCounter.execution.BytecodeCounter;
-import de.uka.ipd.sdq.ByCounter.execution.CountingResult;
+import de.uka.ipd.sdq.ByCounter.execution.CountingResultBase;
 import de.uka.ipd.sdq.ByCounter.execution.CountingResultCollector;
 import de.uka.ipd.sdq.ByCounter.parsing.LineNumberRange;
+import de.uka.ipd.sdq.ByCounter.results.CountingResult;
 import de.uka.ipd.sdq.ByCounter.utils.MethodDescriptor;
 
 /**Runs ByCounter on the Fibonacci algorithm and stores the counting results.
@@ -44,9 +45,9 @@ public class RunExample {
 
 		// Output
 		SortedSet<CountingResult> results =
-			CountingResultCollector.getInstance().retrieveAllCountingResults();
+			CountingResultCollector.getInstance().retrieveAllCountingResults().getCountingResults();
 		// output the results to the console/log
-		for(CountingResult r : results) {
+		for(CountingResultBase r : results) {
 			r.logResult(false, true);
 		}
 
@@ -77,9 +78,9 @@ public class RunExample {
 
 		// Output
 		SortedSet<CountingResult> results =
-			CountingResultCollector.getInstance().retrieveAllCountingResults();
+				CountingResultCollector.getInstance().retrieveAllCountingResults().getCountingResults();
 		// output the results to the console/log
-		for(CountingResult r : results) {
+		for(CountingResultBase r : results) {
 			r.logResult(false, true);
 		}
 
@@ -113,9 +114,9 @@ public class RunExample {
 
 		// Output
 		SortedSet<CountingResult> results =
-			CountingResultCollector.getInstance().retrieveAllCountingResults();
+				CountingResultCollector.getInstance().retrieveAllCountingResults().getCountingResults();
 		// output the results to the console/log
-		for(CountingResult r : results) {
+		for(CountingResultBase r : results) {
 			r.logResult(false, true);
 		}
 

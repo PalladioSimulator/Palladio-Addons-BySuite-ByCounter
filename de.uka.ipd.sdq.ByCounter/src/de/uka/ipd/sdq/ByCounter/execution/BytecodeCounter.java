@@ -940,6 +940,12 @@ public final class BytecodeCounter {
 			Class<?> classToExecute = getClassUsingLoader(methodToExecute);
 			
 			if(!methodToExecute.getMethodIsStatic()) {
+
+				// supply CountingResultCollector with details on how execute was called (for reporting purposes)
+				MethodExecutionRecord lastMethodExecutionDetails = new MethodExecutionRecord();
+				lastMethodExecutionDetails.executionSettings = this.executionSettings.clone();
+				CountingResultCollector.getInstance().setLastMethodExecutionDetails(lastMethodExecutionDetails);
+				
 				if(methodToExecute.isConstructor()) {
 					// look for constructors for the class
 					for(MethodDescriptor constD : this.constructionDescriptors) {

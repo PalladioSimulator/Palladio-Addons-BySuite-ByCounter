@@ -3,6 +3,7 @@ package de.uka.ipd.sdq.ByCounter.execution;
 import java.util.ArrayList;
 
 
+
 /**
  * Recorded information about array creations; counts, dimension and types.
  * All three arrays need to keep their indices in sync.
@@ -11,24 +12,24 @@ import java.util.ArrayList;
  */
 public class ArrayParameters {
 	/**
-	 * @see CountingResult#getNewArrayCounts()
+	 * @see CountingResultBase#getNewArrayCounts()
 	 */
-	long[] newArrayCounts;
+	public long[] newArrayCounts;
 	/**
-	 * @see CountingResult#getNewArrayDim()
+	 * @see CountingResultBase#getNewArrayDim()
 	 */
-	int[] newArrayDim;
+	public int[] newArrayDim;
 	/**
-	 * @see CountingResult#getNewArrayTypes()
+	 * @see CountingResultBase#getNewArrayTypes()
 	 */
-	String[] newArrayTypes;
+	public String[] newArrayTypes;
 
 	/**
-	 * Copies array specific parameters from the {@link CountingResult}
-	 * @param cr {@link CountingResult} to copy from.
+	 * Copies array specific parameters from the {@link CountingResultBase}
+	 * @param cr {@link CountingResultBase} to copy from.
 	 * @return A filled instance of {@link ArrayParameters}.
 	 */
-	public static ArrayParameters copyFromCountingResult(CountingResult cr) {
+	public static ArrayParameters copyFromCountingResult(CountingResultBase cr) {
 		if(cr == null) {
 			throw new RuntimeException("Cannot copy ArrayParameters from CountingResult that is null.");
 		}

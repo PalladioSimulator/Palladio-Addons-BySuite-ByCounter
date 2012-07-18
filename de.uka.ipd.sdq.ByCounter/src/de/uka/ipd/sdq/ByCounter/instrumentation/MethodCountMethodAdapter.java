@@ -16,7 +16,7 @@ import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
 import org.objectweb.asm.commons.LocalVariablesSorter;
 
-import de.uka.ipd.sdq.ByCounter.execution.CountingResult;
+import de.uka.ipd.sdq.ByCounter.execution.CountingResultBase;
 import de.uka.ipd.sdq.ByCounter.execution.CountingResultCollector;
 import de.uka.ipd.sdq.ByCounter.execution.ProtocolCountStructure;
 import de.uka.ipd.sdq.ByCounter.execution.ProtocolCountUpdateStructure;
@@ -78,7 +78,7 @@ public final class MethodCountMethodAdapter extends MethodAdapter {	// evil impl
 	private static final String CountingResultCollectorCanonicalNameDescriptor = 
 		CountingResultCollector.class.getCanonicalName().replace('.', '/');
 
-	private static final int MAX_OPCODE = CountingResult.MAX_OPCODE;
+	private static final int MAX_OPCODE = CountingResultBase.MAX_OPCODE;
 
 	/**
 	 * all invoked methods and array information

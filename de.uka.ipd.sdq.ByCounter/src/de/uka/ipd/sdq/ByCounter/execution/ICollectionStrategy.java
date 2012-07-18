@@ -1,6 +1,6 @@
 package de.uka.ipd.sdq.ByCounter.execution;
 
-import java.util.SortedSet;
+import de.uka.ipd.sdq.ByCounter.results.ResultCollection;
 
 /**
  * Interface used by {@link CountingResultCollector} to control different 
@@ -19,10 +19,10 @@ public interface ICollectionStrategy {
 	public abstract boolean protocolCount(ProtocolCountStructure result);
 
 	/**
-	 * @return The {@link CountingResult}s produced from the handling and 
+	 * @return The {@link CountingResultBase}s produced from the handling and 
 	 * accepting of 
 	 * results by this strategy.  
 	 */
-	public abstract SortedSet<CountingResult> retrieveAllCountingResults();
+	public abstract ResultCollection retrieveAllCountingResults();
 
 }

@@ -4,8 +4,9 @@ import java.io.File;
 import java.util.SortedSet;
 
 import de.uka.ipd.sdq.ByCounter.execution.BytecodeCounter;
-import de.uka.ipd.sdq.ByCounter.execution.CountingResult;
+import de.uka.ipd.sdq.ByCounter.execution.CountingResultBase;
 import de.uka.ipd.sdq.ByCounter.execution.CountingResultCollector;
+import de.uka.ipd.sdq.ByCounter.results.CountingResult;
 import de.uka.ipd.sdq.ByCounter.utils.MethodDescriptor;
 
 /**
@@ -78,10 +79,10 @@ public class ByCounterExample {
 		//other instrumented methods, the CountingResults of the callees are 
 		//not inlined into those of callers
 		SortedSet<CountingResult> results = 
-			CountingResultCollector.getInstance().retrieveAllCountingResults();
+			CountingResultCollector.getInstance().retrieveAllCountingResults().getCountingResults();
 		
 		//7. output the results to the console/log
-		for(CountingResult r : results) {
+		for(CountingResultBase r : results) {
 			r.logResult(false, true);
 		}
 		

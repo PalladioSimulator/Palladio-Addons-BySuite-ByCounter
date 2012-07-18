@@ -13,10 +13,10 @@ import java.util.logging.Logger;
 import org.junit.Test;
 
 import de.uka.ipd.sdq.ByCounter.execution.BytecodeCounter;
-import de.uka.ipd.sdq.ByCounter.execution.CountingResult;
 import de.uka.ipd.sdq.ByCounter.execution.CountingResultCollector;
 import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentationParameters;
 import de.uka.ipd.sdq.ByCounter.parsing.LineNumberRange;
+import de.uka.ipd.sdq.ByCounter.results.CountingResult;
 import de.uka.ipd.sdq.ByCounter.test.helpers.ClassLoadTime2;
 import de.uka.ipd.sdq.ByCounter.test.helpers.subjects.DoNothing;
 import de.uka.ipd.sdq.ByCounter.test.helpers.subjects.LoopExternalAction;
@@ -98,7 +98,7 @@ public class TestClassLoader {
 		// execute
 		counter.execute(descriptor, target, new Object[0]);
 		// show non-null results
-		SortedSet<CountingResult> results = CountingResultCollector.getInstance().retrieveAllCountingResults();
+		SortedSet<CountingResult> results = CountingResultCollector.getInstance().retrieveAllCountingResults().getCountingResults();
 		for (CountingResult result : results) {
 			result.logResult(false, true);
 		}

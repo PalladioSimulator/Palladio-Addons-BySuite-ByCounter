@@ -29,7 +29,7 @@ import de.uka.ipd.sdq.ByCounter.utils.IAllJavaOpcodes;
  * @since 0.1
  * @version 1.2
  */
-public final class CountingResult
+public class CountingResultBase
 implements Serializable, Cloneable, IFullCountingResult, Comparable<IFullCountingResult>{
 
 	/**
@@ -48,20 +48,20 @@ implements Serializable, Cloneable, IFullCountingResult, Comparable<IFullCountin
 	/**
 	 * see http://en.wikipedia.org/wiki/Data_log
 	 */
-	private static Logger log = Logger.getLogger(CountingResult.class.getCanonicalName());
+	private static Logger log = Logger.getLogger(CountingResultBase.class.getCanonicalName());
 
 
 	/**
 	 * The returned CountingResult is completely different from the summands
 	 * w.r.t. the method name, etc. Hence, it is not initialised and only
-	 * holds the sum of the two added {@link CountingResult}s.
+	 * holds the sum of the two added {@link CountingResultBase}s.
 	 * Calling this method is quite expensive.
 	 * @param left the first summand
 	 * @param right the second summand
-	 * @return an instance of {@link CountingResult} where only counts are initialised
+	 * @return an instance of {@link CountingResultBase} where only counts are initialised
 	 */
 	@SuppressWarnings("dep-ann")
-	public synchronized static CountingResult add(CountingResult left, CountingResult right){
+	public synchronized static CountingResultBase add(CountingResultBase left, CountingResultBase right){
 		long[] resultOpcodeCounts = new long[MAX_OPCODE];
 		SortedMap<String,Long>  resultMethodCallCounts = new TreeMap<String, Long>();
 
@@ -74,16 +74,13 @@ implements Serializable, Cloneable, IFullCountingResult, Comparable<IFullCountin
 		ArrayParameters rightAP = ArrayParameters.copyFromCountingResult(right);
 		ArrayParameters arrayParameters = ArrayParameters.add(leftAP, rightAP);
 
-		CountingResult cr;
-		cr = new CountingResult(
+		CountingResultBase cr;
+		cr = new CountingResultBase(
 				null,
 				null,
 				null,
 				new String(""),
 				new String(""),
-				0,
-				0L,
-				0L,
 				-1L,
 				-1L,
 				resultOpcodeCounts,
@@ -154,15 +151,15 @@ implements Serializable, Cloneable, IFullCountingResult, Comparable<IFullCountin
 	/**
 	 * The returned CountingResult is completely different from the summands
 	 * w.r.t. the method name, etc. Hence, it is not initialised and only
-	 * holds the sum of the two added {@link CountingResult}s.
+	 * holds the sum of the two added {@link CountingResultBase}s.
 	 * Calling this method is quite expensive.
 	 * @param left the first summand
 	 * @param right the second summand
-	 * @return an instance of {@link CountingResult} where only counts are initialised
+	 * @return an instance of {@link CountingResultBase} where only counts are initialised
 	 */
 	@SuppressWarnings("dep-ann")
-	public synchronized static CountingResult addMethodsAndInstructionsOnly(
-			CountingResult left, CountingResult right){
+	public synchronized static CountingResultBase addMethodsAndInstructionsOnly(
+			CountingResultBase left, CountingResultBase right){
 		long[] resultOpcodeCounts = new long[MAX_OPCODE];
 		SortedMap<String,Long>  resultMethodCallCounts = new TreeMap<String, Long>();
 
@@ -171,16 +168,13 @@ implements Serializable, Cloneable, IFullCountingResult, Comparable<IFullCountin
 		// add up all method call counts
 		resultMethodCallCounts = addMethodCallCounts(left.methodCallCounts, right.methodCallCounts);
 
-		CountingResult cr;
-		cr = new CountingResult(
+		CountingResultBase cr;
+		cr = new CountingResultBase(
 				null, //requestID
 				null, //ownID
 				null, //callerID
 				new String(""),
 				new String(""),
-				0,
-				0L,
-				0L,
 				-1L,
 				-1L,
 				resultOpcodeCounts,
@@ -348,14 +342,6 @@ implements Serializable, Cloneable, IFullCountingResult, Comparable<IFullCountin
 	 */
 	private transient List<Integer> characterisationTypes = null;
 
-	/**
-	 * For SPECjvm2008, we are using the constants from compress.Harness:
-	 *     public static final int DATA_TYPE_COMPRESSED=3;
-     *     public static final int DATA_TYPE_MIXED=2;
-     *     public static final int DATA_TYPE_UNCOMPRESSED=1;
-	 *     public static final int DATA_TYPE_UNKNOWN=0;//
- 	 */
-	private int SPECjvm2008_compress_fileType=0;
 
 	/**
 	 * If this counting result describes "forced inlining",
@@ -374,11 +360,6 @@ implements Serializable, Cloneable, IFullCountingResult, Comparable<IFullCountin
 	 * file name of the file which is being compressed.
 	 */
 	private String ID;
-
-	/**
-	 * For example, for SPECjvm2008.Compress, this is the size of the input file (in bytes)
-	 */
-	private long inputCharacterisation=0;
 
 	private boolean invariantMethodsAreInlined = false;
 
@@ -408,12 +389,6 @@ implements Serializable, Cloneable, IFullCountingResult, Comparable<IFullCountin
 	private long[] opcodeCounts;
 	
 	/**
-	 * For example, for SPECjvm2008.Compress, this is the size of the
-	 * buffer which holds the compressed data of the input file.
-	 */
-	private long outputCharacterisation=0;
-
-	/**
 	 * A {@link UUID} that is linked to the method calling the protocol function.
 	 * Used with {@link #callerID} to construct a CCT.
 	 */
@@ -440,7 +415,7 @@ implements Serializable, Cloneable, IFullCountingResult, Comparable<IFullCountin
 	 */
 	private Long totalCountInclInvokes;
 
-	public CountingResult(//TODO make sure the instructions are "full", even if some instruction counts are zero
+	public CountingResultBase(//TODO make sure the instructions are "full", even if some instruction counts are zero
 			String qualifyingMethodName,
 			long methodInvocationBeginning,
 			long methodReportingTime,
@@ -449,7 +424,6 @@ implements Serializable, Cloneable, IFullCountingResult, Comparable<IFullCountin
 		this(//TODO make sure the instructions are "full", even if some instruction counts are zero
 				null,null,null,null,
 				qualifyingMethodName,
-				-1,-1,-1,
 				methodInvocationBeginning,
 				methodReportingTime,
 				
@@ -487,9 +461,6 @@ implements Serializable, Cloneable, IFullCountingResult, Comparable<IFullCountin
 	 * @param callerID
 	 * @param ID
 	 * @param qualifyingMethodName
-	 * @param fileType
-	 * @param inputCharacterisation
-	 * @param outputCharacterisation
 	 * @param methodInvocationBeginning
 	 * @param methodReportingTime
 	 * @param opcodeCounts
@@ -498,18 +469,14 @@ implements Serializable, Cloneable, IFullCountingResult, Comparable<IFullCountin
 	 * @param arrayCreationDimensions
 	 * @param arrayCreationTypeInfo
 	 */
-	public CountingResult(//TODO make sure the instructions are "full", even if some instruction counts are zero
+	public CountingResultBase(//TODO make sure the instructions are "full", even if some instruction counts are zero
 			UUID requestID,
 			UUID ownID,
 			UUID callerID,
 			
 			String ID,
 			String qualifyingMethodName,
-			
-			int fileType,
-			long inputCharacterisation,
-			long outputCharacterisation,
-			
+						
 			long methodInvocationBeginning,
 			long methodReportingTime,
 			
@@ -530,15 +497,12 @@ implements Serializable, Cloneable, IFullCountingResult, Comparable<IFullCountin
 		this.arrayCreationTypeInfo = arrayCreationTypeInfo;
 		
 		this.indexOfRangeBlock = -1;
-		this.inputCharacterisation = inputCharacterisation;
 		this.methodCallCounts = methodCallCounts;
 		this.methodInvocationBeginning = methodInvocationBeginning;
 		this.methodReportingTime = methodReportingTime;
-		this.outputCharacterisation = outputCharacterisation;
 		assert(opcodeCounts.length==MAX_OPCODE);
 		this.opcodeCounts = opcodeCounts;
 		this.qualifyingMethodName = qualifyingMethodName; //should be a PRIVATE setter
-		this.SPECjvm2008_compress_fileType = fileType;
 		this.totalCountExclInvokes = 0L;
 		this.totalCountInclInvokes = 0L;
 
@@ -548,15 +512,42 @@ implements Serializable, Cloneable, IFullCountingResult, Comparable<IFullCountin
 
 //		this.computeTotalOpcodeCounts();
 	}
+	/**
+	 * Construct result with fields set to 0/null;
+	 */
+	public CountingResultBase() {
+		this.setRequestID(null);
+		this.setOwnID(null);
+		this.setCallerID(null);
+		this.setID(null);
+		this.setThreadId(-1);
+		
+		this.arrayCreationCounts = null;
+		this.arrayCreationDimensions = null;
+		this.arrayCreationTypeInfo = null;
+		
+		this.indexOfRangeBlock = -1;
+		this.methodCallCounts = null;
+		this.methodInvocationBeginning = 0;
+		this.methodReportingTime = 0;
+		this.opcodeCounts = null;
+		this.qualifyingMethodName = null; //should be a PRIVATE setter
+		this.totalCountExclInvokes = 0L;
+		this.totalCountInclInvokes = 0L;
 
-	/** Adds the counts of this {@link CountingResult} instance to
+		this.characterisations = null; //now, methods modifying characterisations must check for non-nullness //used to be new ArrayList<Object>(0);//this is eating up memory...
+		this.characterisationTitles = null; //now, methods modifying characterisations must check for non-nullness //used to be new ArrayList<String>(0);
+		this.characterisationTypes = null; //now, methods modifying characterisations must check for non-nullness //used to be new ArrayList<Integer>(0);
+	}
+
+	/** Adds the counts of this {@link CountingResultBase} instance to
 	 * the counting results
-	 * of the {@link CountingResult} instance given as parameter
-	 * @param toBeAdded {@link CountingResult} instance whose counts are to be added
+	 * of the {@link CountingResultBase} instance given as parameter
+	 * @param toBeAdded {@link CountingResultBase} instance whose counts are to be added
 	 */
 	@SuppressWarnings("dep-ann")
-	public synchronized void add(CountingResult toBeAdded){
-		CountingResult skeletonResult = add(this,toBeAdded);
+	public synchronized void add(CountingResultBase toBeAdded){
+		CountingResultBase skeletonResult = add(this,toBeAdded);
 		this.methodCallCounts = skeletonResult.getMethodCallCounts();
 		this.opcodeCounts = skeletonResult.getOpcodeCounts();
 		this.arrayCreationCounts = skeletonResult.getNewArrayCounts();
@@ -565,14 +556,14 @@ implements Serializable, Cloneable, IFullCountingResult, Comparable<IFullCountin
 		skeletonResult = null;
 	}
 
-	/** Adds the counts of this {@link CountingResult} instance to
+	/** Adds the counts of this {@link CountingResultBase} instance to
 	 * the counting results
-	 * of the {@link CountingResult} instance given as parameter
-	 * @param toBeAdded {@link CountingResult} instance whose counts are to be added
+	 * of the {@link CountingResultBase} instance given as parameter
+	 * @param toBeAdded {@link CountingResultBase} instance whose counts are to be added
 	 */
 	@SuppressWarnings("dep-ann")
-	public synchronized void add_methodsInstructionsOnly(CountingResult toBeAdded){
-		CountingResult skeletonResult = addMethodsAndInstructionsOnly(this,toBeAdded);
+	public synchronized void add_methodsInstructionsOnly(CountingResultBase toBeAdded){
+		CountingResultBase skeletonResult = addMethodsAndInstructionsOnly(this,toBeAdded);
 		this.methodCallCounts = skeletonResult.getMethodCallCounts();
 		this.opcodeCounts = skeletonResult.getOpcodeCounts();
 		skeletonResult = null;
@@ -605,11 +596,11 @@ implements Serializable, Cloneable, IFullCountingResult, Comparable<IFullCountin
 	 * @see java.lang.Object#clone()
 	 */
 	@Override
-	public CountingResult clone(){ //TODO fix/test/coverage-test this!
-		CountingResult copy = null;
+	public CountingResultBase clone(){ //TODO fix/test/coverage-test this!
+		CountingResultBase copy = null;
 
 		try {
-			copy = (CountingResult) super.clone();
+			copy = (CountingResultBase) super.clone();
 		} catch (CloneNotSupportedException e) {
 			// object.clone() cannot fail
 			return null;
@@ -626,23 +617,18 @@ implements Serializable, Cloneable, IFullCountingResult, Comparable<IFullCountin
 			copyOfArrayCreationTypeInfo = Arrays.copyOf(this.arrayCreationTypeInfo, this.arrayCreationTypeInfo.length);
 		}
 		
-		copy = new CountingResult(
-				this.getRequestID(),
-				this.getOwnID(),
-				this.getCallerID(),
-				this.ID,
-				this.qualifyingMethodName,
-				this.SPECjvm2008_compress_fileType,
-				this.inputCharacterisation,
-				this.outputCharacterisation,
-				this.methodInvocationBeginning,
-				this.methodReportingTime,
-				Arrays.copyOf(this.opcodeCounts, this.opcodeCounts.length),
-				new TreeMap<String,Long>(this.methodCallCounts),
-				copyOfArrayCreationCounts,
-				copyOfArrayCreationDimensions,
-				copyOfArrayCreationTypeInfo
-				);
+		copy.setRequestID(this.getRequestID());
+		copy.setOwnID(this.getOwnID());
+		copy.setCallerID(this.getCallerID());
+		copy.setID(this.getID());
+		copy.setQualifyingMethodName(this.qualifyingMethodName);
+		copy.methodInvocationBeginning = this.methodInvocationBeginning;
+		copy.methodReportingTime = this.methodReportingTime;
+		copy.opcodeCounts = Arrays.copyOf(this.opcodeCounts, this.opcodeCounts.length);
+		copy.methodCallCounts = new TreeMap<String,Long>(this.methodCallCounts);
+		copy.arrayCreationCounts = copyOfArrayCreationCounts;
+		copy.arrayCreationDimensions = copyOfArrayCreationDimensions;
+		copy.arrayCreationTypeInfo = copyOfArrayCreationTypeInfo;
 		copy.setThreadId(this.threadId);
 		return copy;
 	}
@@ -741,25 +727,11 @@ implements Serializable, Cloneable, IFullCountingResult, Comparable<IFullCountin
 		return characterisationTypes;
 	}
 
-	/** (non-Javadoc)
-	 * @see de.uka.ipd.sdq.ByCounter.execution.ISimpleCountingResult#getFileType()
-	 */
-	public int getFileType() {
-		return SPECjvm2008_compress_fileType;
-	}
-
 	/**
 	 * @return the ID
 	 */
 	public String getID() {
 		return ID;
-	}
-
-	/** (non-Javadoc)
-	 * @see de.uka.ipd.sdq.ByCounter.execution.ISimpleCountingResult#getInputCharacterisation()
-	 */
-	public long getInputCharacterisation() {
-		return inputCharacterisation;
 	}
 
 	/**
@@ -869,13 +841,6 @@ implements Serializable, Cloneable, IFullCountingResult, Comparable<IFullCountin
 	 */
 	public long[] getOpcodeCounts() {
 		return opcodeCounts;
-	}
-
-	/** (non-Javadoc)
-	 * @see de.uka.ipd.sdq.ByCounter.execution.ISimpleCountingResult#getOutputCharacterisation()
-	 */
-	public long getOutputCharacterisation() {
-		return outputCharacterisation;
 	}
 
 	/**
@@ -1018,24 +983,10 @@ implements Serializable, Cloneable, IFullCountingResult, Comparable<IFullCountin
 	}
 
 	/**
-	 * @param fileType
-	 */
-	public void setFileType(int fileType) {
-		this.SPECjvm2008_compress_fileType = fileType;
-	}
-
-	/**
 	 * @param newID
 	 */
 	public void setID(String newID) {
 		ID = newID;
-	}
-
-	/* (non-Javadoc)
-	 * @see de.uka.ipd.sdq.ByCounter.execution.ITestCountingResult#setInputCharacterisation(long)
-	 */
-	public void setInputCharacterisation(long inputCharacterisation) {
-		this.inputCharacterisation = inputCharacterisation;
 	}
 
 	/**
@@ -1064,6 +1015,30 @@ implements Serializable, Cloneable, IFullCountingResult, Comparable<IFullCountin
 		}
 		this.methodReportingTime = methodReportingTime;
 	}
+	
+	/**
+	 * @see #getArrayCreationCounts()
+	 * @param arrayCreationCounts array creation counts
+	 */
+	public void setArrayCreationCounts(long[] arrayCreationCounts) {
+		this.arrayCreationCounts = arrayCreationCounts;
+	}
+	
+	/**
+	 * @see #getArrayCreationDimensions()
+	 * @param arrayCreationDimensions .
+	 */
+	public void setArrayCreationDimensions(int[] arrayCreationDimensions) {
+		this.arrayCreationDimensions = arrayCreationDimensions;
+	}
+	
+	/**
+	 * @see #getArrayCreationTypeInfo()
+	 * @param arrayCreationTypeInfo .
+	 */
+	public void setArrayCreationTypeInfo(String[] arrayCreationTypeInfo) {
+		this.arrayCreationTypeInfo = arrayCreationTypeInfo;
+	}
 
 	/** (non-Javadoc)
 	 * @see de.uka.ipd.sdq.ByCounter.execution.ISimpleCountingResult#setOpcodeCount(int, java.lang.Long)
@@ -1072,12 +1047,13 @@ implements Serializable, Cloneable, IFullCountingResult, Comparable<IFullCountin
 		this.opcodeCounts[opcode] = count;
 		this.totalCountsAlreadyComputed = false;
 	}
-
-	/* (non-Javadoc)
-	 * @see de.uka.ipd.sdq.ByCounter.execution.ITestCountingResult#setOutputCharacterisation(long)
+	
+	/**
+	 * @param opcodeCounts Execution counts per opcode.
+	 * @see #getOpcodeCounts()
 	 */
-	public void setOutputCharacterisation(long outputCharacterisation) {
-		this.outputCharacterisation = outputCharacterisation;
+	public void setOpcodeCounts(long[] opcodeCounts) {
+		this.opcodeCounts = opcodeCounts;
 	}
 
 	/**
@@ -1124,17 +1100,9 @@ implements Serializable, Cloneable, IFullCountingResult, Comparable<IFullCountin
 	 * @param vr
 	 * @return True, if counting results equal (shallow).
 	 */
-	public boolean shallowEquals(CountingResult vr){
-		if(this.inputCharacterisation!=vr.inputCharacterisation){
-			System.out.println("CountingResult.shallowEquals: == on inputCharacterisation: "+this.inputCharacterisation+" vs "+vr.inputCharacterisation);
-			return false;
-		}
+	public boolean shallowEquals(CountingResultBase vr){
 		if(this.invariantMethodsAreInlined!=vr.invariantMethodsAreInlined){
 			System.out.println("CountingResult.shallowEquals: == on invariantMethodsAreInlined: "+this.invariantMethodsAreInlined+" vs "+vr.invariantMethodsAreInlined);
-			return false;
-		}
-		if(this.outputCharacterisation!=vr.outputCharacterisation){
-			System.out.println("CountingResult.shallowEquals: == on outputCharacterisation: "+this.outputCharacterisation+" vs "+vr.outputCharacterisation);
 			return false;
 		}
 		if(this.qualifyingMethodName!=vr.qualifyingMethodName){
@@ -1233,10 +1201,6 @@ implements Serializable, Cloneable, IFullCountingResult, Comparable<IFullCountin
 	 */
 	public int getIndexOfRangeBlock() {
 		return indexOfRangeBlock;
-	}
-
-	public int getSPECjvm2008_compress_fileType() {
-		return this.SPECjvm2008_compress_fileType;
 	}
 
 	public long getForcedInlining_earliestStartOfInlinedMethod() {
@@ -1385,7 +1349,7 @@ implements Serializable, Cloneable, IFullCountingResult, Comparable<IFullCountin
 
 
 		int numberOfOpcodesWithNonzeroFrequencies=0;
-		for(int i = 0; i < CountingResult.MAX_OPCODE; i++) {
+		for(int i = 0; i < CountingResultBase.MAX_OPCODE; i++) {
 			currentOpcodeString = FullOpcodeMapper.getMnemonicOfOpcode(i);
 			currentOpcodeCount 	= opcodeCounts[i];
 			tabs 				= getTabs(currentOpcodeString + ":", 2);

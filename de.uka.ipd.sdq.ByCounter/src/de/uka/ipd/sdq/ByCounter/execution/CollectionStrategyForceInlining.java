@@ -2,14 +2,14 @@ package de.uka.ipd.sdq.ByCounter.execution;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.SortedMap;
-import java.util.SortedSet;
-import java.util.TreeMap;
-import java.util.TreeSet;
-import java.util.UUID;
 import java.util.Map.Entry;
+import java.util.SortedMap;
+import java.util.TreeMap;
+import java.util.UUID;
 
 import de.uka.ipd.sdq.ByCounter.instrumentation.BlockCountingMode;
+import de.uka.ipd.sdq.ByCounter.results.CountingResult;
+import de.uka.ipd.sdq.ByCounter.results.ResultCollection;
 
 /**
  * This class can be used in addition to {@link CountingResultCollector} in 
@@ -104,23 +104,20 @@ public class CollectionStrategyForceInlining extends AbstractCollectionStrategy 
 	}
 	
 	private synchronized CountingResult createNewForcedInlinedCountingResult() {
-		return new CountingResult(
-				UUID.randomUUID(),//requestID
-				UUID.randomUUID(),//ownID
-				UUID.randomUUID(),//callerID
-				"forcedInlined",//id
-				"______forcedInlined______",//qualifying method name
-				0, //filetype
-				0L, //input characterisation
-				0L, //output characterisation
-				System.nanoTime/*currentTimeMillis*/(), //invocation beginning
-				0L, //reporting time TODO use a Date-like class for this...
-				new long[CountingResult.MAX_OPCODE],//opcode counts
-				new TreeMap<String,Long>(),//method call counts
-				new long[]{},//array creation counts
-				new int[]{},//array creation dimensions
-				new String[]{}//array creation type info
-				);
+		CountingResult res = new CountingResult();
+		res.setRequestID(UUID.randomUUID());
+		res.setOwnID(UUID.randomUUID());
+		res.setCallerID(UUID.randomUUID());
+		res.setID("forcedInlined");
+		res.setQualifyingMethodName("______forcedInlined______");
+		res.setMethodInvocationBeginning(System.nanoTime/*currentTimeMillis*/());
+		res.setMethodReportingTime(0L); //reporting time TODO use a Date-like class for this...
+		res.setOpcodeCounts(new long[CountingResultBase.MAX_OPCODE]);//opcode counts
+		res.overwriteMethodCallCounts(new TreeMap<String, Long>());
+		res.setArrayCreationCounts(new long[]{});
+		res.setArrayCreationDimensions(new int[]{});
+		res.setArrayCreationTypeInfo(new String[]{});
+		return res;
 	}
 
 	@Override
@@ -218,16 +215,15 @@ public class CollectionStrategyForceInlining extends AbstractCollectionStrategy 
 	
 	/** {@inheritDoc} */
 	@Override
-	public SortedSet<CountingResult> retrieveAllCountingResults() {
+	public ResultCollection retrieveAllCountingResults() {
 		if(useDeferredBBcalculations) {
 			processDeferredResults();
 		}
-		SortedSet<CountingResult> results = new TreeSet<CountingResult>();
+		ResultCollection res = new ResultCollection();
 		if(this.hasInliningResult) {
-			results.add(countingResult);
+			res.getCountingResults().add(countingResult);
 		}
-		
-		return results;
+		return res;
 	}
 
 	public SortedMap<String, Integer> getForcedInlining_OccurenceCountsReportingMethods() {
@@ -235,7 +231,7 @@ public class CollectionStrategyForceInlining extends AbstractCollectionStrategy 
 	}
 	
 
-	public CountingResult getForcedInlining_CountingResult() {
+	public CountingResultBase getForcedInlining_CountingResult() {
 		return this.countingResult;
 	}
 
