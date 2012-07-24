@@ -19,6 +19,7 @@ import de.uka.ipd.sdq.ByCounter.parsing.LineNumberRange;
 import de.uka.ipd.sdq.ByCounter.results.CountingResult;
 import de.uka.ipd.sdq.ByCounter.results.RequestResult;
 import de.uka.ipd.sdq.ByCounter.results.ResultCollection;
+import de.uka.ipd.sdq.ByCounter.results.ThreadedCountingResult;
 
 /**
  * This class is used in {@link CountingResultCollector} in 
@@ -58,6 +59,9 @@ public class CollectionStrategyDefault extends AbstractCollectionStrategy {
 	/** Indexing infrastructure for counting regions. */
 	private CountingResultRegionIndexing countingResultRegionIndexing;
 	
+	/** Indexing infrastructure for counting thread structures. */
+	private CountingResultThreadIndexing countingResultThreadIndexing;
+	
 	/** For each method: Last length of execution sequence. For updates. */
 	private Map<UUID, Integer> blockExecutionSequenceLengthByMethod;
 
@@ -82,6 +86,7 @@ public class CollectionStrategyDefault extends AbstractCollectionStrategy {
 		this.countingResultIndexing = new CountingResultIndexing();
 		this.countingResultUpdateIndexing = new CountingResultUpdateIndexing();
 		this.countingResultRegionIndexing = new CountingResultRegionIndexing();
+		this.countingResultThreadIndexing = new CountingResultThreadIndexing();
 		this.blockExecutionSequenceLengthByMethod = new HashMap<UUID, Integer>();
 		this.currentRegion = null;
 		this.regionEnd = null;
@@ -95,6 +100,7 @@ public class CollectionStrategyDefault extends AbstractCollectionStrategy {
 		this.countingResultIndexing.clearResults();
 		this.countingResultUpdateIndexing.clearResults();
 		this.countingResultRegionIndexing.clearResults();
+		this.countingResultThreadIndexing.clearResults();
 		this.blockExecutionSequenceLengthByMethod.clear();
 	}
 
@@ -220,8 +226,12 @@ public class CollectionStrategyDefault extends AbstractCollectionStrategy {
 				newArrayType = r.newArrayType; 
 				newArrayDim = r.newArrayDim;
 			}
-	
-			CountingResult res = new CountingResult();
+			CountingResult res;
+			if(result.spawnedThreads.isEmpty()) {
+				res = new CountingResult();
+			} else {
+				res = new ThreadedCountingResult();
+			}
 			res.setRequestID(result.requestID);
 			res.setOwnID(result.ownID);
 			res.setCallerID(result.callerID);
@@ -274,6 +284,7 @@ public class CollectionStrategyDefault extends AbstractCollectionStrategy {
 					if(this.parentResultCollector.instrumentationContext.getCountingMode() == CountingMode.Regions) {
 						if(this.currentRegion != null) {
 							this.countingResultRegionIndexing.add(res, this.currentRegion);
+							this.countingResultThreadIndexing.add(res, result.spawnedThreads);
 						}
 					} else {
 						this.countingResults.add(res);
@@ -284,6 +295,7 @@ public class CollectionStrategyDefault extends AbstractCollectionStrategy {
 						}
 				
 						this.countingResultIndexing.add(res, result.reportingStart);
+						this.countingResultThreadIndexing.add(res, result.spawnedThreads);
 					}
 				} else {
 					return false;
@@ -309,6 +321,7 @@ public class CollectionStrategyDefault extends AbstractCollectionStrategy {
 					CountingResultCollector.getInstance().notifyObservers(update);
 				} else {
 					this.countingResultUpdateIndexing.add(res);
+					this.countingResultThreadIndexing.add(res, result.spawnedThreads);
 				}
 			}
 		}
@@ -439,6 +452,7 @@ public class CollectionStrategyDefault extends AbstractCollectionStrategy {
 		}
 		ret.getCountingResults().addAll(this.countingResultRegionIndexing.retrieveAllCountingResults().getCountingResults());
 		ret = findRequestResults(ret);
+		this.countingResultThreadIndexing.applyThreadStructure(ret.getCountingResults());
 		return ret;
 	}
 

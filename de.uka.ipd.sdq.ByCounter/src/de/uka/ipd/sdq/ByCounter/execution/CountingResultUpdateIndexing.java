@@ -7,6 +7,7 @@ import java.util.Queue;
 import java.util.UUID;
 
 import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentationParameters;
+import de.uka.ipd.sdq.ByCounter.results.CountingResult;
 
 /**
  * When online updates are enabled, this class holds updates to individual 
@@ -24,7 +25,7 @@ public class CountingResultUpdateIndexing {
 	/**
 	 * Map that holds counting results by method.
 	 */
-	private Map<UUID, Queue<CountingResultBase>> sectionUpdatesByMethod;
+	private Map<UUID, Queue<CountingResult>> sectionUpdatesByMethod;
 	
 	/** The method for which the last update was provided. */
 	private UUID lastUpdatedMethod;
@@ -34,7 +35,7 @@ public class CountingResultUpdateIndexing {
 	 */
 	public CountingResultUpdateIndexing() {
 		lastUpdatedSectionIndex = new HashMap<UUID, Integer>();
-		sectionUpdatesByMethod = new HashMap<UUID, Queue<CountingResultBase>>();
+		sectionUpdatesByMethod = new HashMap<UUID, Queue<CountingResult>>();
 		lastUpdatedMethod = null;
 	}
 
@@ -44,7 +45,7 @@ public class CountingResultUpdateIndexing {
 	 * updates are enabled.
 	 * @param result The calculated counting result for the update.
 	 */
-	public void add(CountingResultBase result) {
+	public void add(CountingResult result) {
 		final UUID methodID = result.getOwnID();
 		if(!methodID.equals(lastUpdatedMethod)) {
 			// we entered a new method
@@ -52,10 +53,10 @@ public class CountingResultUpdateIndexing {
 			setMethodDone(lastUpdatedMethod);
 		}
 		
-		Queue<CountingResultBase> resultQueue = sectionUpdatesByMethod.get(methodID);
+		Queue<CountingResult> resultQueue = sectionUpdatesByMethod.get(methodID);
 		if(resultQueue == null) {
 			// no entry for this method yet
-			resultQueue = new LinkedList<CountingResultBase>();
+			resultQueue = new LinkedList<CountingResult>();
 			sectionUpdatesByMethod.put(methodID, resultQueue);
 			// initialise last section index
 			lastUpdatedSectionIndex.put(methodID, -1);
@@ -80,9 +81,9 @@ public class CountingResultUpdateIndexing {
 	 * The results for the section are removed by this method.
 	 * @param resultQueue Result queue with the partial results for the section.
 	 */
-	private static void updateObserversWithSection(Queue<CountingResultBase> resultQueue) {
-		CountingResultBase resultSumForSection = resultQueue.remove();
-		for(CountingResultBase r : resultQueue) {
+	private static void updateObserversWithSection(Queue<CountingResult> resultQueue) {
+		CountingResult resultSumForSection = resultQueue.remove();
+		for(CountingResult r : resultQueue) {
 			resultSumForSection.add(r);
 		}
 		CountingResultSectionExecutionUpdate update = 
@@ -107,7 +108,7 @@ public class CountingResultUpdateIndexing {
 	 * @param methodID {@link UUID} of the method in question.
 	 */
 	public void setMethodDone(UUID methodID) {
-		Queue<CountingResultBase> resultQueue = this.sectionUpdatesByMethod.get(methodID);
+		Queue<CountingResult> resultQueue = this.sectionUpdatesByMethod.get(methodID);
 		if(resultQueue == null) {
 			return;
 		}

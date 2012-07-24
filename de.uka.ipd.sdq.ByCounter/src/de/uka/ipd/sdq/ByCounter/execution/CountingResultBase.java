@@ -433,6 +433,39 @@ implements Serializable, Cloneable, IFullCountingResult, Comparable<IFullCountin
 	}
 	
 	/**
+	 * Copy constructor.
+	 * @param src Attributes of the {@link CountingResultBase} will be copied 
+	 * in the construction of the new {@link CountingResultBase}.
+	 */
+	public CountingResultBase(final CountingResultBase src) {
+		long[] copyOfArrayCreationCounts = null;
+		int[] copyOfArrayCreationDimensions = null;
+		String[] copyOfArrayCreationTypeInfo = null;
+		
+		if(src.arrayCreationCounts != null
+				&& src.arrayCreationDimensions != null
+				&& src.arrayCreationTypeInfo != null) {
+			copyOfArrayCreationCounts = Arrays.copyOf(src.arrayCreationCounts, src.arrayCreationCounts.length);
+			copyOfArrayCreationDimensions = Arrays.copyOf(src.arrayCreationDimensions, src.arrayCreationDimensions.length);
+			copyOfArrayCreationTypeInfo = Arrays.copyOf(src.arrayCreationTypeInfo, src.arrayCreationTypeInfo.length);
+		}
+		
+		this.setRequestID(src.getRequestID());
+		this.setOwnID(src.getOwnID());
+		this.setCallerID(src.getCallerID());
+		this.setID(src.getID());
+		this.setQualifyingMethodName(src.qualifyingMethodName);
+		this.methodInvocationBeginning = src.methodInvocationBeginning;
+		this.methodReportingTime = src.methodReportingTime;
+		this.opcodeCounts = Arrays.copyOf(src.opcodeCounts, src.opcodeCounts.length);
+		this.methodCallCounts = new TreeMap<String,Long>(src.methodCallCounts);
+		this.arrayCreationCounts = copyOfArrayCreationCounts;
+		this.arrayCreationDimensions = copyOfArrayCreationDimensions;
+		this.arrayCreationTypeInfo = copyOfArrayCreationTypeInfo;
+		this.setThreadId(src.threadId);
+	}
+	
+	/**
 	 * Internal field which is using for "lazy computation"
 	 */
 	private boolean totalCountsAlreadyComputed = false;
@@ -448,7 +481,7 @@ implements Serializable, Cloneable, IFullCountingResult, Comparable<IFullCountin
 	 * Id of the thread from which the result was reported.
 	 * @see Thread#getId()
 	 */
-	private long threadId;
+	protected long threadId;
 
 	/** This constructor passes the arguments to the corresponding fields;
 	 * the five fields that do not appear (this.characterisations,
@@ -754,7 +787,7 @@ implements Serializable, Cloneable, IFullCountingResult, Comparable<IFullCountin
 	 * @see de.uka.ipd.sdq.ByCounter.execution.IFullCountingResult#getMethodCountByString(java.lang.String)
 	 */
 	public Long getMethodCountByString(String methodName){
-		Long count = this.methodCallCounts.get(methodName);//TODO check keys!
+		Long count = this.methodCallCounts.get(methodName);
 		if(count==null){
 			return new Long(NO_COUNT_AVAILABLE);
 		}
@@ -1172,9 +1205,9 @@ implements Serializable, Cloneable, IFullCountingResult, Comparable<IFullCountin
 		StringBuffer sb = new StringBuffer();
 		sb.append("\n"+
 				  "      "+this.getClass().getSimpleName()+" (hash code: "+this.hashCode()+")\n");
-		sb.append("      > Method name     : "+this.qualifyingMethodName+ " (Invocation UUID: " + this.ownID + ")\n");
+		sb.append("      > Method name     : "+this.qualifyingMethodName+ " (Own UUID: " + this.ownID + ", threadId: " + this.threadId + ")\n");
 		sb.append("      > Method duration : "+(this.methodReportingTime-this.methodInvocationBeginning)+
-				"(start: "+this.methodInvocationBeginning+", end: "+this.methodReportingTime+" \n");
+				"(start: "+this.methodInvocationBeginning+", end: "+this.methodReportingTime+")\n");
 		sb.append("      > Opcode counts   : "+Arrays.toString(this.opcodeCounts)+"\n");
 		sb.append("      > Method counts   : "+this.methodCallCounts+"\n");
 //		sb.append("      > Method input    : "+this.inputParams+"\n");
@@ -1462,4 +1495,80 @@ implements Serializable, Cloneable, IFullCountingResult, Comparable<IFullCountin
 		}
 		return compareInvBeginning;
 	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		CountingResultBase other = (CountingResultBase) obj;
+		if (this.ID == null) {
+			if (other.ID != null)
+				return false;
+		} else if (!this.ID.equals(other.ID))
+			return false;
+		if (this.callerID == null) {
+			if (other.callerID != null)
+				return false;
+		} else if (!this.callerID.equals(other.callerID))
+			return false;
+		if (this.forcedInlining_earliestStartOfInlinedMethod != other.forcedInlining_earliestStartOfInlinedMethod)
+			return false;
+		if (this.indexOfRangeBlock != other.indexOfRangeBlock)
+			return false;
+		if (this.invariantMethodsAreInlined != other.invariantMethodsAreInlined)
+			return false;
+		if (this.methodCallCounts == null) {
+			if (other.methodCallCounts != null)
+				return false;
+		} else if (!this.methodCallCounts.equals(other.methodCallCounts))
+			return false;
+		if (this.methodInvocationBeginning != other.methodInvocationBeginning)
+			return false;
+		if (this.methodReportingTime != other.methodReportingTime)
+			return false;
+		if (!Arrays.equals(this.opcodeCounts, other.opcodeCounts))
+			return false;
+		if (this.ownID == null) {
+			if (other.ownID != null)
+				return false;
+		} else if (!this.ownID.equals(other.ownID))
+			return false;
+		if (this.qualifyingMethodName == null) {
+			if (other.qualifyingMethodName != null)
+				return false;
+		} else if (!this.qualifyingMethodName
+				.equals(other.qualifyingMethodName))
+			return false;
+		if (this.requestID == null) {
+			if (other.requestID != null)
+				return false;
+		} else if (!this.requestID.equals(other.requestID))
+			return false;
+		if (this.threadId != other.threadId)
+			return false;
+		if (this.totalCountExclInvokes == null) {
+			if (other.totalCountExclInvokes != null)
+				return false;
+		} else if (!this.totalCountExclInvokes
+				.equals(other.totalCountExclInvokes))
+			return false;
+		if (this.totalCountInclInvokes == null) {
+			if (other.totalCountInclInvokes != null)
+				return false;
+		} else if (!this.totalCountInclInvokes
+				.equals(other.totalCountInclInvokes))
+			return false;
+		if (this.totalCountsAlreadyComputed != other.totalCountsAlreadyComputed)
+			return false;
+		return true;
+	}
+	
+	
 }

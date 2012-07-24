@@ -9,8 +9,8 @@ import java.util.TreeMap;
 
 import org.junit.Assert;
 
-import de.uka.ipd.sdq.ByCounter.execution.CountingResultBase;
 import de.uka.ipd.sdq.ByCounter.parsing.LineNumberRange;
+import de.uka.ipd.sdq.ByCounter.results.CountingResult;
 
 /**
  * Offers a framework to specify expectations and to compare them with the actual measurement.
@@ -171,7 +171,7 @@ public class Expectation {
 	 * @param observation
 	 *          ByCounter's output.
 	 */
-	public void compare(final CountingResultBase[] observation) {
+	public void compare(final CountingResult[] observation) {
 		if (observation == null) {
 			throw new IllegalArgumentException("observation must not be null");
 		}
@@ -186,6 +186,9 @@ public class Expectation {
 				sectExpt = this.orderedSections.get(i);
 				message = sectExpt.toString() + " not expected. Maybe wrong order.";
 				Assert.assertEquals(message, sectExpt.getSectionNumber(), observation[i].getIndexOfRangeBlock());
+				if(sectExpt.getRange() != null) {
+					Assert.assertEquals(message, sectExpt.getRange(), observation[i].getObservedElement());
+				}
 			} else {
 				sectExpt = this.unorderedSections.get(observation[i].getIndexOfRangeBlock());
 				message = "Section #" + observation[i].getIndexOfRangeBlock() + " not expected.";

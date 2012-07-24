@@ -124,21 +124,17 @@ public class TestLineNumbers extends AbstractByCounterTest {
 	public void preserveExecutionOrderOfMeasurements_12() {
 		// define expectations
 		Expectation e = new Expectation(true);
-		e.add(0).add(Opcodes.ICONST_0, 1) // first two lines
+		e.add(15, 16).add(Opcodes.ICONST_0, 1) // first two lines
 				.add(Opcodes.IINC, 1)
 				.add(Opcodes.ISTORE, 1);
-		e.add(1).add(Opcodes.ICONST_1, 1) // third line
+		e.add(17, 17).add(Opcodes.ICONST_1, 1) // third line
 				.add(Opcodes.ILOAD, 1)
 				.add(Opcodes.IMUL, 1)
 				.add(Opcodes.ISTORE, 1);
-		// define line number ranges
-		LineNumberRange[] lnrs = new LineNumberRange[2];
-		lnrs[0] = new LineNumberRange(15, 16); // first two lines
-		lnrs[1] = new LineNumberRange(17, 17); // third line
 		// run ByCounter
 		String canonicalClassName = ExecutionOrder.class.getCanonicalName();
 		String methodSignature = "void process()";
-		CountingResult[] results = this.instrumentAndExecute(lnrs, canonicalClassName, methodSignature, new Object[0]);
+		CountingResult[] results = this.instrumentAndExecute(e.getRanges(), canonicalClassName, methodSignature, new Object[0]);
         for (CountingResult r : results) {
         	r.logResult(false, true);
         }
@@ -153,21 +149,17 @@ public class TestLineNumbers extends AbstractByCounterTest {
 	@Test
 	public void preserveExecutionOrderOfMeasurements_21() {
 		Expectation e = new Expectation(true);
-		e.add(1).add(Opcodes.ICONST_0, 1) // first two lines
+		e.add(15, 16).add(Opcodes.ICONST_0, 1) // first two lines
 				.add(Opcodes.IINC, 1)
 				.add(Opcodes.ISTORE, 1);
-		e.add(0).add(Opcodes.ICONST_1, 1) // third line
+		e.add(17, 17).add(Opcodes.ICONST_1, 1) // third line
 				.add(Opcodes.ILOAD, 1)
 				.add(Opcodes.IMUL, 1)
 				.add(Opcodes.ISTORE, 1);
-		// define line number ranges
-		LineNumberRange[] lnrs = new LineNumberRange[2];
-		lnrs[0] = new LineNumberRange(17, 17); // third line
-		lnrs[1] = new LineNumberRange(15, 16); // first two lines
 		// run ByCounter
 		String canonicalClassName = ExecutionOrder.class.getCanonicalName();
 		String methodSignature = "void process()";
-		CountingResult[] results = this.instrumentAndExecute(lnrs, canonicalClassName, methodSignature, new Object[0]);
+		CountingResult[] results = this.instrumentAndExecute(e.getRanges(), canonicalClassName, methodSignature, new Object[0]);
         for (CountingResult r : results) {
         	r.logResult(false, true);
         }
@@ -493,7 +485,7 @@ public class TestLineNumbers extends AbstractByCounterTest {
 	@Test
 	public void measureMultipleLNRForOneMethod_ResultsLNR1() {
 		Expectation e = new Expectation();
-		e.add(0).add(Opcodes.IINC, 1);
+		e.add(14, 14).add(Opcodes.IINC, 1);
 
 		CountingResult[] results = runTestBranch(1);
 		e.compare(results);
@@ -514,8 +506,8 @@ public class TestLineNumbers extends AbstractByCounterTest {
 	@Test
 	public void measureMultipleLNRForOneMethod_ResultsLNR12() {
 		Expectation e = new Expectation();
-		e.add(0).add(Opcodes.IINC, 1);
-		e.add(1).add(Opcodes.ICONST_1, 1)
+		e.add(14, 14).add(Opcodes.IINC, 1);
+		e.add(17, 17).add(Opcodes.ICONST_1, 1)
 				.add(Opcodes.ILOAD, 1)
 				.add(Opcodes.ISTORE, 1)
 				.add(Opcodes.IMUL, 1);

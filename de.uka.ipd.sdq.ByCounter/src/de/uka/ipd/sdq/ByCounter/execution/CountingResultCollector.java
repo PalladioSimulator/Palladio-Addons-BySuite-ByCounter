@@ -189,7 +189,8 @@ public final class CountingResultCollector extends Observable {
 			// Result was not added by any of the strategies. This most often means
 			// that it is not needed (for instance out of region).
 			log.info("Protocolled count at " + result.executionStart + " not added.");
-		} else {
+		} else if(this.countObservers() > 0) {
+			
 			// notify observers
 			this.setChanged();
 			if(!(result instanceof ProtocolCountUpdateStructure)) {

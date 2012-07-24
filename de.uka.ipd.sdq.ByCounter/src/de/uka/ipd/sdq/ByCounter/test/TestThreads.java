@@ -4,6 +4,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.SortedSet;
 
+import junit.framework.Assert;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -13,6 +15,7 @@ import de.uka.ipd.sdq.ByCounter.execution.BytecodeCounter;
 import de.uka.ipd.sdq.ByCounter.execution.CountingResultCollector;
 import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentationParameters;
 import de.uka.ipd.sdq.ByCounter.results.CountingResult;
+import de.uka.ipd.sdq.ByCounter.results.ThreadedCountingResult;
 import de.uka.ipd.sdq.ByCounter.test.framework.expectations.Expectation;
 import de.uka.ipd.sdq.ByCounter.test.helpers.RunnableForThreading;
 import de.uka.ipd.sdq.ByCounter.test.helpers.ThreadedTestSubject;
@@ -128,6 +131,40 @@ public class TestThreads extends AbstractByCounterTest {
         
         // print ByCounter results
         CountingResult[] results = countingResults.toArray(new CountingResult[0]);
+        for (CountingResult r : results) {
+        	r.logResult(false, true);
+        }
+        CountingResultCollector.getInstance().clearResults();
+    }
+    
+    /**
+     * Tests for the correct structure of threaded counting results.
+     */
+    @Test
+    public void testThreadStructure() {
+    	// initialize ByCounter
+		BytecodeCounter counter = setupByCounter();
+		counter.instrument(methodRun);
+		counter.instrument(methodThreadRun);
+		
+		Object[] executionParameters = new Object[0];
+		counter.execute(methodRun, executionParameters);
+		
+		SortedSet<CountingResult> countingResults = CountingResultCollector.getInstance().retrieveAllCountingResults().getCountingResults();
+		removeMethodCallsWithFrequency0(countingResults);
+        
+        // print ByCounter results
+        CountingResult[] results = countingResults.toArray(new CountingResult[0]);
+        // we expect 1 result with 4 child thread results
+        Assert.assertEquals(1, results.length);
+        Assert.assertTrue("Expected ThreadedCountingResult.", results[0] instanceof ThreadedCountingResult);
+        ThreadedCountingResult tcr = (ThreadedCountingResult) results[0];
+        SortedSet<ThreadedCountingResult> spawnedResults = tcr.getSpawnedThreadedCountingResults();
+		Assert.assertEquals(4, spawnedResults.size());
+		for(ThreadedCountingResult spawn : spawnedResults) {
+			Assert.assertTrue(spawn.getSpawnedThreadedCountingResults().isEmpty());
+			Assert.assertEquals(tcr, spawn.getThreadedCountingResultSource());
+		}
         for (CountingResult r : results) {
         	r.logResult(false, true);
         }

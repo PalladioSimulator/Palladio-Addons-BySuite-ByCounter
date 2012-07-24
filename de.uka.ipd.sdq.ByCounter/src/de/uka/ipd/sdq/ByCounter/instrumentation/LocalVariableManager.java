@@ -22,7 +22,7 @@ public final class LocalVariableManager {
 
 	private static final int MAX_LOCALS = 65535;	// maximum number of locals in a method
 	private LocalVariablesSorter lvars = null;
-	private int nextRegisterOffset;		// remembered in the class instance for the next allocation;
+	private int registerOffset;		// remembered in the class instance for the next allocation;
 
 	/**
 	 * When true, use register numbers near the MAX_LOCALS constant.
@@ -31,7 +31,7 @@ public final class LocalVariableManager {
 
 	public LocalVariableManager(boolean useHighRegisters) {
 		this.useHighRegisters = useHighRegisters;
-		this.nextRegisterOffset = 2;
+		this.registerOffset = 0;
 	}
 
 	/**
@@ -50,7 +50,7 @@ public final class LocalVariableManager {
 	 */
 	@SuppressWarnings("boxing")
 	public int getNewIntVar(MethodVisitor mv) {
-		log.finest("nextRegisterOffset: "+this.nextRegisterOffset);
+		log.finest("registerOffset: "+this.registerOffset);
 		mv.visitLdcInsn(0);	// initialise with 0
 		int var = this.getNewVarFor("INT", mv, Type.INT_TYPE, 1);
 		mv.visitVarInsn(Opcodes.ISTORE, var);
@@ -73,7 +73,7 @@ public final class LocalVariableManager {
 	 */
 	@SuppressWarnings("boxing")
 	public int getNewLongVar(MethodVisitor mv) {
-		log.finest("nextRegisterOffset: "+this.nextRegisterOffset);
+		log.finest("registerOffset: "+this.registerOffset);
 		mv.visitLdcInsn(0L);	// initialise with 0
 		int var = this.getNewVarFor("LONG", mv, Type.LONG_TYPE, 2);
 		mv.visitVarInsn(Opcodes.LSTORE, var);
@@ -100,16 +100,16 @@ public final class LocalVariableManager {
 	 */
 	public int getNewVarFor(String readableDescr, MethodVisitor mv,
 			Type type, int localVarSize) {
-		log.finest("nextRegisterOffset: "+this.nextRegisterOffset);
+		log.finest("nextRegisterOffset: "+this.registerOffset);
 		int var = -1;
 		if(getUseHighRegisters()) {
-			var = MAX_LOCALS - this.nextRegisterOffset;
-			this.nextRegisterOffset += localVarSize;	// update pointer for next register
+			this.registerOffset += localVarSize;	// update pointer for register
+			var = MAX_LOCALS - this.registerOffset;
 		} else {
 			var = this.lvars.newLocal(type);
 		}
 		log.finest("Registered new "+readableDescr+"@localvar "+var);
-		log.finest("nextRegisterOffset: "+this.nextRegisterOffset);
+		log.finest("registerOffset: "+this.registerOffset);
 		return var;
 	}
 

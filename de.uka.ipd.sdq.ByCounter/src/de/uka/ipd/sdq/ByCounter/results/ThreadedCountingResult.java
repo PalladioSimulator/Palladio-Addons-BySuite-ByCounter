@@ -1,6 +1,12 @@
 package de.uka.ipd.sdq.ByCounter.results;
 
-import java.util.List;
+import java.util.Arrays;
+import java.util.SortedSet;
+import java.util.TreeSet;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import de.uka.ipd.sdq.ByCounter.execution.CountingResultBase;
 
 /**
  * A {@link CountingResult} emitted from a specific thread.
@@ -8,18 +14,27 @@ import java.util.List;
  *
  */
 public class ThreadedCountingResult extends CountingResult {
+	/**
+	 * see http://en.wikipedia.org/wiki/Data_log
+	 */
+	private static Logger log = Logger.getLogger(CountingResultBase.class.getCanonicalName());
 
 	/**
-	 * Id of the thread from which the result was reported.
-	 * @see Thread#getId()
+	 * Serialisation version.
 	 */
-	private long threadId;
+	private static final long serialVersionUID = 1L;
+
+//	/**
+//	 * Id of the thread from which the result was reported.
+//	 * @see Thread#getId()
+//	 */
+//	private long threadId;
 	
 	/**
-	 * A {@link List} of {@link ThreadedCountingResult} from threads that
+	 * A {@link SortedSet} of {@link ThreadedCountingResult} from threads that
 	 * where spawned from the thread of this result.
 	 */
-	private List<ThreadedCountingResult> spawnedThreadedCountingResults;
+	private SortedSet<ThreadedCountingResult> spawnedThreadedCountingResults;
 	
 	/**
 	 * The {@link ThreadedCountingResult} that contains this 
@@ -28,30 +43,27 @@ public class ThreadedCountingResult extends CountingResult {
 	 */
 	private ThreadedCountingResult threadedCountingResultSource;
 
-	/**
-	 * Construct the result.
-	 * @param parent The parent {@link ResultCollection} that this {@link CountingResult} 
-	 * is a part of.
-	 * @param threadId Id of the thread from which the result was reported.
-	 */
-	public ThreadedCountingResult(final ResultCollection parent, final long threadId) {
-		super(parent);
-		this.threadId = threadId;
-		this.spawnedThreadedCountingResults = null;
-		this.threadedCountingResultSource = null;
-	}
 
 	/**
-	 * Construct the result.
-	 * @param parent The parent {@link RequestResult} that this {@link CountingResult} 
-	 * is a part of.
-	 * @param threadId Id of the thread from which the result was reported.
+	 * Default constructor. Properties need to be set
+	 * manually.
 	 */
-	public ThreadedCountingResult(final RequestResult parent, final long threadId) {
-		super(parent);
-		this.threadId = threadId;
+	public ThreadedCountingResult() {
+		super();
+		this.spawnedThreadedCountingResults = new TreeSet<ThreadedCountingResult>();
+		this.threadedCountingResultSource = null;
+		this.threadId = -1;
 	}
 	
+	/**
+	 * Copy properties of src.
+	 * @param src {@link CountingResult} to copy attributes from.
+	 */
+	public ThreadedCountingResult(final CountingResult src) {
+		super(src);
+		this.spawnedThreadedCountingResults = new TreeSet<ThreadedCountingResult>();
+		this.threadedCountingResultSource = null;
+	}
 
 	/**
 	 * 
@@ -72,19 +84,19 @@ public class ThreadedCountingResult extends CountingResult {
 	}
 
 	/**
-	 * @return A {@link List} of {@link ThreadedCountingResult} from threads that
+	 * @return A {@link SortedSet} of {@link ThreadedCountingResult} from threads that
 	 * where spawned from the thread of this result.
 	 */
-	public List<ThreadedCountingResult> getSpawnedThreadedCountingResults() {
+	public SortedSet<ThreadedCountingResult> getSpawnedThreadedCountingResults() {
 		return spawnedThreadedCountingResults;
 	}
 
 	/**
-	 * @param spawnedThreadedCountingResults A {@link List} of {@link ThreadedCountingResult} from threads that
+	 * @param spawnedThreadedCountingResults A {@link SortedSet} of {@link ThreadedCountingResult} from threads that
 	 * where spawned from the thread of this result.
 	 */
 	public void setSpawnedThreadedCountingResults(
-			List<ThreadedCountingResult> spawnedThreadedCountingResults) {
+			SortedSet<ThreadedCountingResult> spawnedThreadedCountingResults) {
 		this.spawnedThreadedCountingResults = spawnedThreadedCountingResults;
 	}
 
@@ -105,5 +117,71 @@ public class ThreadedCountingResult extends CountingResult {
 	public void setThreadedCountingResultSource(
 			ThreadedCountingResult threadedCountingResultSource) {
 		this.threadedCountingResultSource = threadedCountingResultSource;
+	}
+	
+	@Override
+	public synchronized String logResult(boolean printZeros, boolean vertically) {
+		StringBuilder builder = new StringBuilder();
+		builder.append("ThreadedCountingResult [threadId=");
+		builder.append(this.threadId);
+		builder.append(", threadedCountingResultSource=");
+		builder.append(this.threadedCountingResultSource);
+		builder.append(super.logResult(printZeros, vertically, Level.FINEST));
+		builder.append(", spawnedThreadedCountingResults=");
+		builder.append(this.spawnedThreadedCountingResults);
+		builder.append("]");
+		String string = builder.toString();
+		log.log(Level.INFO, string);
+		return string;
+	}
+	@Override
+	public String toString() {
+		StringBuffer sb = new StringBuffer();
+		sb.append("\n"+
+				  "      "+this.getClass().getSimpleName()+" (hash code: "+this.hashCode()+")\n");
+		sb.append("      > Method name     : "+this.getQualifyingMethodName()+ " (Own UUID: " + this.getOwnID() + ", threadId: " + this.threadId + ")\n");
+		sb.append("      > Method duration : "+(this.getMethodReportingTime()-this.getMethodInvocationBeginning())+
+				"(start: "+this.getMethodInvocationBeginning()+", end: "+this.getMethodReportingTime()+")\n");
+		sb.append("      > Opcode counts   : "+Arrays.toString(this.getOpcodeCounts())+"\n");
+		sb.append("      > Method counts   : "+this.getMethodCallCounts()+"\n");
+		if(this.getThreadedCountingResultSource() != null) {
+			sb.append("      > Thread source   : "+this.getThreadedCountingResultSource().hashCode()+" (hash code)\n");	// toString() would cause infinite recursion
+		}
+		sb.append("      > Thread spawns   : "+this.getSpawnedThreadedCountingResults()+"\n");
+//		sb.append("      > Method input    : "+this.inputParams+"\n");
+//		sb.append("      > Method output   : "+this.outputParams+"\n");
+//		sb.append("      > Array creations : "+this.arrayCreationCounts+"\n");
+//		sb.append("      > Array dimensions: "+this.arrayCreationDimensions+"\n");
+//		sb.append("      > Array type infos: "+this.arrayCreationTypeInfo+"\n");
+//		sb.append("      > Sect. opc. cnts : "+this.sectionInstCounts+"\n");
+//		sb.append("      > Sect. meth. cnts: "+this.sectionMethCounts+"\n");
+		return sb.toString();
+	}
+	
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (!super.equals(obj))
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		ThreadedCountingResult other = (ThreadedCountingResult) obj;
+		if (this.spawnedThreadedCountingResults == null) {
+			if (other.spawnedThreadedCountingResults != null)
+				return false;
+		} else if (!this.spawnedThreadedCountingResults
+				.equals(other.spawnedThreadedCountingResults))
+			return false;
+		if (this.threadedCountingResultSource == null) {
+			if (other.threadedCountingResultSource != null)
+				return false;
+		} else if (!this.threadedCountingResultSource
+				.equals(other.threadedCountingResultSource))
+			return false;
+		return true;
 	}
 }

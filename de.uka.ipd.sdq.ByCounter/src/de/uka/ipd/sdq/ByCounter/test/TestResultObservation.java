@@ -14,7 +14,6 @@ import org.junit.runners.Parameterized;
 import org.objectweb.asm.Opcodes;
 
 import de.uka.ipd.sdq.ByCounter.execution.BytecodeCounter;
-import de.uka.ipd.sdq.ByCounter.execution.CountingResultBase;
 import de.uka.ipd.sdq.ByCounter.execution.CountingResultCollector;
 import de.uka.ipd.sdq.ByCounter.execution.CountingResultCompleteMethodExecutionUpdate;
 import de.uka.ipd.sdq.ByCounter.execution.CountingResultSectionExecutionUpdate;
@@ -176,8 +175,8 @@ public class TestResultObservation extends AbstractByCounterTest {
 				if(updateData instanceof CountingResultSectionExecutionUpdate) {
 					log.info("Notification received: " + updateData);
 					// compare the observation with the expectation
-					CountingResultBase observation = ((CountingResultSectionExecutionUpdate)updateData).sectionResult;
-					expectations[observationCounter].compare(new CountingResultBase[] {observation});
+					CountingResult observation = ((CountingResultSectionExecutionUpdate)updateData).sectionResult;
+					expectations[observationCounter].compare(new CountingResult[] {observation});
 					observationCounter++;
 				} else if(updateData instanceof CountingResultCompleteMethodExecutionUpdate) {
 					// skip complete result

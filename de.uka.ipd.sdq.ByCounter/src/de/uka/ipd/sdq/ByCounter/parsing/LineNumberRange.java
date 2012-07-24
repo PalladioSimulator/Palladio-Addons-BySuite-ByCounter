@@ -107,4 +107,39 @@ public final class LineNumberRange implements Comparable<LineNumberRange>, Seria
 		return "LineNumberRange [firstLine=" + this.firstLine + ", lastLine="
 				+ this.lastLine + "]";
 	}
+
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + this.firstLine;
+		result = prime * result + this.lastLine;
+		return result;
+	}
+
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		LineNumberRange other = (LineNumberRange) obj;
+		if (this.firstLine != other.firstLine)
+			return false;
+		if (this.lastLine != other.lastLine)
+			return false;
+		return true;
+	}
+	
+	
 }

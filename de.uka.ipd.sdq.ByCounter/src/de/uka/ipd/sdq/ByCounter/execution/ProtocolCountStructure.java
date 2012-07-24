@@ -114,6 +114,8 @@ public class ProtocolCountStructure {
 	public BlockCountingMode blockCountingMode;
 	/** Inlining of the method was specified when true. */
 	public boolean inliningSpecified;
+	/** Threads (by id) spawned in the executed method. */
+	public ArrayList<Long> spawnedThreads;
 	
 	/**
 	 * Constructor that only nulls all fields.
@@ -137,6 +139,7 @@ public class ProtocolCountStructure {
 		this.blockCountingMode = null;
 		this.counterPrecisionLong = false;
 		this.inliningSpecified = false;
+		this.spawnedThreads = null;
 	}
 	
 	/**
@@ -312,6 +315,8 @@ public class ProtocolCountStructure {
 		builder.append(this.blockExecutionSequence);
 		builder.append(", rangeBlockExecutionSequence=");
 		builder.append(this.rangeBlockExecutionSequence);
+		builder.append(", spawnedThreads=");
+		builder.append(this.spawnedThreads);
 		builder.append("]");
 		return builder.toString();
 	}

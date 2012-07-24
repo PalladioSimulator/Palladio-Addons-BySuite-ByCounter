@@ -70,6 +70,17 @@ public class CountingResult extends CountingResultBase implements Cloneable {
 	}
 	
 	/**
+	 * Copy constructor.
+	 * @param src Source to copy attributes from.
+	 */
+	public CountingResult(final CountingResult src) {
+		super(src);
+		this.observedElement = src.observedElement;
+		this.resultCollection = src.resultCollection;
+		this.requestResult = src.requestResult;
+	}
+	
+	/**
 	 * Constructs the result and initialises the fields with null.
 	 * @param parent The parent {@link ResultCollection} that this {@link CountingResult} 
 	 * is a part of.
@@ -220,5 +231,39 @@ public class CountingResult extends CountingResultBase implements Cloneable {
 	 */
 	public void setObservedElement(Object observedElement) {
 		this.observedElement = observedElement;
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (!super.equals(obj))
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		CountingResult other = (CountingResult) obj;
+		if (this.methodInvocationBeginning != other.methodInvocationBeginning)
+			return false;
+		if (this.methodReportingTime != other.methodReportingTime)
+			return false;
+		if (this.observedElement == null) {
+			if (other.observedElement != null)
+				return false;
+		} else if (!this.observedElement.equals(other.observedElement))
+			return false;
+		if (this.requestResult == null) {
+			if (other.requestResult != null)
+				return false;
+		} else if (!this.requestResult.equals(other.requestResult))
+			return false;
+		if (this.resultCollection == null) {
+			if (other.resultCollection != null)
+				return false;
+		} else if (!this.resultCollection.equals(other.resultCollection))
+			return false;
+		return true;
 	}
 }

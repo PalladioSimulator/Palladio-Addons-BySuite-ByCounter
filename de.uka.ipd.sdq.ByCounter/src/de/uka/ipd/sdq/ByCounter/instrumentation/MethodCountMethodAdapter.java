@@ -79,6 +79,8 @@ public final class MethodCountMethodAdapter extends MethodAdapter {	// evil impl
 		CountingResultCollector.class.getCanonicalName().replace('.', '/');
 
 	private static final int MAX_OPCODE = CountingResultBase.MAX_OPCODE;
+	
+	private static final String TYPE_ARRAYLIST = "java/util/ArrayList";
 
 	/**
 	 * all invoked methods and array information
@@ -206,6 +208,18 @@ public final class MethodCountMethodAdapter extends MethodAdapter {	// evil impl
 	 * defined ranges.
 	 */
 	private int rangeBlockExecutionOrderArrayListVar;
+	
+	/**
+	 * The variable of the {@link ArrayList} created for saving which 
+	 * threads have been spawned.
+	 */
+	private int threadSpawnArrayListVar;
+	
+	/**
+	 * This variable temporarily holds a thread id when it is added to the 
+	 * thread spawn array ({@link #threadSpawnArrayListVar}).
+	 */
+	private int threadIdVar;
 
 	/**
 	 * Intermediate instrumentation state.
@@ -370,25 +384,27 @@ public final class MethodCountMethodAdapter extends MethodAdapter {	// evil impl
 	}
 	
 	private void initialiseBlockExecutionOrderArrayList() {
+		this.blockExecutionOrderArrayListVar = initialiseArrayList();
+		
+		if(this.useRangeBlocks) {
+			this.rangeBlockExecutionOrderArrayListVar = initialiseArrayList();
+		}
+	}
+
+	/**
+	 * Creates a new local variable for an {@link ArrayList} and constructs it.
+	 * @return Number of the local variable.
+	 */
+	protected int initialiseArrayList() {
 		// get the number for a local variable of the type ArrayList
-		this.blockExecutionOrderArrayListVar = this.lVarManager.getNewVarFor(
+		final int var = this.lVarManager.getNewVarFor(
 				"ArrayList", mv, Type.getType(java.util.ArrayList.class), 1);
 
-		final String TYPE_ARRAYLIST = "java/util/ArrayList";
 		mv.visitTypeInsn(Opcodes.NEW, TYPE_ARRAYLIST);
 		mv.visitInsn(Opcodes.DUP);
 		mv.visitMethodInsn(Opcodes.INVOKESPECIAL, TYPE_ARRAYLIST, "<init>", "()V");
-		mv.visitVarInsn(Opcodes.ASTORE, blockExecutionOrderArrayListVar);
-		
-		if(this.useRangeBlocks) {
-			this.rangeBlockExecutionOrderArrayListVar = this.lVarManager.getNewVarFor(
-					"ArrayList", mv, Type.getType(java.util.ArrayList.class), 1);
-
-			mv.visitTypeInsn(Opcodes.NEW, TYPE_ARRAYLIST);
-			mv.visitInsn(Opcodes.DUP);
-			mv.visitMethodInsn(Opcodes.INVOKESPECIAL, TYPE_ARRAYLIST, "<init>", "()V");
-			mv.visitVarInsn(Opcodes.ASTORE, rangeBlockExecutionOrderArrayListVar);
-		}
+		mv.visitVarInsn(Opcodes.ASTORE, var);
+		return var;
 	}
 
 	/**
@@ -773,6 +789,20 @@ public final class MethodCountMethodAdapter extends MethodAdapter {	// evil impl
 						"rangeBlockExecutionSequence", "Ljava/util/ArrayList;");
 			}
 		}
+		ArrayList<Long> al = new ArrayList<Long>();
+		ProtocolCountStructure p = new ProtocolCountStructure();
+		p.spawnedThreads = al;
+		
+		// set the spawned threads and construct a new list
+		mv.visitInsn(Opcodes.DUP);
+		mv.visitVarInsn(Opcodes.ALOAD, this.threadSpawnArrayListVar);
+		mv.visitFieldInsn(Opcodes.PUTFIELD, "de/uka/ipd/sdq/ByCounter/execution/ProtocolCountStructure", 
+				"spawnedThreads", "Ljava/util/ArrayList;");
+
+		mv.visitTypeInsn(Opcodes.NEW, TYPE_ARRAYLIST);
+		mv.visitInsn(Opcodes.DUP);
+		mv.visitMethodInsn(Opcodes.INVOKESPECIAL, TYPE_ARRAYLIST, "<init>", "()V");
+		mv.visitVarInsn(Opcodes.ASTORE, this.threadSpawnArrayListVar);
 		
 
 		if(instrumentationParameters.getUseResultLogWriter()) {
@@ -995,8 +1025,6 @@ public final class MethodCountMethodAdapter extends MethodAdapter {	// evil impl
 		mv.visitMethodInsn(Opcodes.INVOKESTATIC, "java/lang/System", "nanoTime", "()J");
 		mv.visitVarInsn(Opcodes.LSTORE, timeVar);
 		
-
-		
 		// initialise counters or block execution list
 		initialiseInstructionCounters();
 		
@@ -1007,6 +1035,10 @@ public final class MethodCountMethodAdapter extends MethodAdapter {	// evil impl
 			// blocks already include method calls
 			initialiseMethodCounters();
 		}
+		// thread structure vars
+		this.threadSpawnArrayListVar = initialiseArrayList();
+		this.threadIdVar = this.lVarManager.getNewLongVar(this.mv);
+		
 		if(this.instrumentationParameters.getUseArrayParameterRecording()) {
 			initialiseArrayCounters();
 		}
@@ -1201,6 +1233,21 @@ public final class MethodCountMethodAdapter extends MethodAdapter {	// evil impl
 		countMethodCall(owner, name, desc);
 		recordParameters(this, instrumentationParameters, 
 				opcode, owner, name, desc);
+		// mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/Thread", "start", "()V");
+		if(owner.equals("java/lang/Thread") &&
+				name.equals("start") && desc.equals("()V")) {
+			// Thread.start() is called.
+			mv.visitInsn(Opcodes.DUP);	// dup the thread variable
+			// save thread id
+			mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "java/lang/Thread", "getId", "()J"); //2
+			mv.visitVarInsn(Opcodes.LSTORE, threadIdVar);
+			// add thread id to arraylist
+			mv.visitVarInsn(Opcodes.ALOAD, threadSpawnArrayListVar);
+			mv.visitVarInsn(Opcodes.LLOAD, threadIdVar);
+			mv.visitMethodInsn(Opcodes.INVOKESTATIC, "java/lang/Long", "valueOf", "(J)Ljava/lang/Long;");
+			mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "java/util/ArrayList", "add", "(Ljava/lang/Object;)Z");
+			mv.visitInsn(Opcodes.POP); // pop the return value of add
+		}
 		
 		if(this.instrumentationParameters.getTraceAndIdentifyRequests()
 				&& !name.equalsIgnoreCase("<init>")	// ignore constructor calls 

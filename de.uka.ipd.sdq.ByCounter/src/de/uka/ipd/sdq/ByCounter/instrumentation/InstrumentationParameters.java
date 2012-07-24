@@ -511,7 +511,7 @@ public final class InstrumentationParameters implements Cloneable {
 	@Override
 	public String toString() {
 		StringBuilder b = new StringBuilder("InstrumentationParameters {\n");
-		b.append("counterPrecisionIsLong:             " + this.counterPrecision + ", \n");
+		b.append("counterPrecision:             	  " + this.counterPrecision + ", \n");
 		b.append("countStatically:                    " + this.countStatically + ", \n");
 		b.append("instrumentRecursively:              " + this.instrumentRecursively + ", \n");
 		b.append("instrumentRecursivelyMaxDepth:      " + this.instrumentRecursivelyMaxDepth + ", \n");

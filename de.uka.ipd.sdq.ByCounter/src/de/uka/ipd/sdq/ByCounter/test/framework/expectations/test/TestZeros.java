@@ -7,7 +7,7 @@ import java.util.TreeMap;
 
 import org.junit.Test;
 
-import de.uka.ipd.sdq.ByCounter.execution.CountingResultBase;
+import de.uka.ipd.sdq.ByCounter.results.CountingResult;
 import de.uka.ipd.sdq.ByCounter.test.framework.expectations.Expectation;
 
 /**
@@ -31,8 +31,10 @@ public class TestZeros {
 		SortedMap<String, Long> methodCallCounts = new TreeMap<String, Long>();
 		methodCallCounts.put("testMethodTwo", 2L);
 		methodCallCounts.put("testMethodZero", 0L);
-		CountingResultBase[] observation = new CountingResultBase[1];
-		observation[0] = new CountingResultBase(null, 0L, 0L, opcodeCounts, methodCallCounts);
+		CountingResult[] observation = new CountingResult[1];
+		observation[0] = new CountingResult();
+		observation[0].setOpcodeCounts(opcodeCounts);
+		observation[0].overwriteMethodCallCounts(methodCallCounts);
 
 		// compare and catch eventual assertion error, if no error occurred or the message was wrong fail the test
 		try {

@@ -4,9 +4,12 @@ public interface ISimpleCountingResult {
 	final int NO_COUNT_AVAILABLE = -1;
 	
 	/**
-	 * TODO
-	 * @param methodName
-	 * @return Method execution count
+	 * @param methodName Fully qualifying method name (signature) including 
+	 * parameter and return types in bytecode notation. For example:
+	 * <code>java.lang.Math.abs(J)J</code>
+	 * @return Method execution count for the given method. When no count was 
+	 * recorded, {@link #NO_COUNT_AVAILABLE} ({@value #NO_COUNT_AVAILABLE}) will 
+	 * be returned.
 	 */
 	public Long getMethodCount(String methodName);
 	
