@@ -3,6 +3,7 @@ package de.uka.ipd.sdq.ByCounter.test;
 //import evaluation.TestApplications;
 //import evaluation.TestCBSE;
 //import evaluation.TestCompress;
+import de.uka.ipd.sdq.ByCounter.test.requestIDs.TestRequestIDs;
 import junit.framework.JUnit4TestAdapter;
 import junit.framework.Test;
 import junit.framework.TestSuite;
@@ -37,6 +38,7 @@ public class AllTestsSuite {
 		suite.addTest(new JUnit4TestAdapter(TestInternalClassDefinition.class));
 		suite.addTest(new JUnit4TestAdapter(TestResultObservation.class));
 		suite.addTest(new JUnit4TestAdapter(TestInstrumentationRegions.class));
+		suite.addTest(new JUnit4TestAdapter(TestRequestIDs.class));
 //		suite.addTest(new JUnit4TestAdapter(TestCBSE.class));
 //		suite.addTest(new JUnit4TestAdapter(TestCompress.class));
 //		suite.addTest(new JUnit4TestAdapter(TestApplications.class));
