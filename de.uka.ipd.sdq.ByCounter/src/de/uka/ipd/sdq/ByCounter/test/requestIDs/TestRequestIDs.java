@@ -1,6 +1,7 @@
 package de.uka.ipd.sdq.ByCounter.test.requestIDs;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.SortedSet;
 import java.util.UUID;
@@ -22,8 +23,8 @@ import de.uka.ipd.sdq.ByCounter.test.AbstractByCounterTest;
 import de.uka.ipd.sdq.ByCounter.utils.MethodDescriptor;
 
 /**
- * JUnit Test for the instrumentation of compress.
- *
+ * JUnit Test for the tracking of request Ids.
+ * Uses {@link A#main(String[])} as the instrumentation subject.
  */
 @RunWith(Parameterized.class)
 public class TestRequestIDs extends AbstractByCounterTest {	
@@ -41,7 +42,7 @@ public class TestRequestIDs extends AbstractByCounterTest {
 		super(params);
 	}
 
-	private static final MethodDescriptor METHOD_TO_EXECUTE = 
+	private static final MethodDescriptor METHOD_A_MAIN = 
 		new MethodDescriptor(A.class.getCanonicalName(), "public static void main(java.lang.String argv[]) {");
 
 	private BytecodeCounter counter;
@@ -54,7 +55,7 @@ public class TestRequestIDs extends AbstractByCounterTest {
 	@Test
 	public void testRequestIDInstrumentation() {
 		this.testClassName 			= A.class.getCanonicalName();
-		this.methodToExecute		= METHOD_TO_EXECUTE;
+		this.methodToExecute		= METHOD_A_MAIN;
 		this.executionParameters	= EXECUTION_PARAMETERS_NONE;
 		init();
 		this.instrumentationParameters.setWriteClassesToDisk(true);
@@ -74,12 +75,12 @@ public class TestRequestIDs extends AbstractByCounterTest {
 	 * Performs the actual counting by calling BytecodeCounter.count(...)
 	 */
 	private void count(){
-		MethodDescriptor methDesc1 = new MethodDescriptor(this.testClassName, "public void methodA(int reqID)");
-		MethodDescriptor methDesc2 = new MethodDescriptor(this.testClassName, "public void methodB(int reqID)");
-		MethodDescriptor methDesc3 = new MethodDescriptor(this.testClassName, "public java.lang.String doSth()");
-		MethodDescriptor methDesc4 = new MethodDescriptor(this.testClassName, "public char[] doSthElse()");
-		MethodDescriptor methDesc5 = new MethodDescriptor(this.testClassName, "public static boolean doSthDifferent(short s)");
-		MethodDescriptor methDesc6 = new MethodDescriptor(this.testClassName, "public static byte doSthStatic()");
+		MethodDescriptor methDescMethodA = new MethodDescriptor(this.testClassName, "public void methodA(int reqID)");
+		MethodDescriptor methDescMethodB = new MethodDescriptor(this.testClassName, "public void methodB(int reqID)");
+		MethodDescriptor methDescDoSth = new MethodDescriptor(this.testClassName, "public java.lang.String doSth()");
+		MethodDescriptor methDescDoSthElse = new MethodDescriptor(this.testClassName, "public char[] doSthElse()");
+		MethodDescriptor methDescDoSthDifferent = new MethodDescriptor(this.testClassName, "public static boolean doSthDifferent(short s)");
+		MethodDescriptor methDescDoSthStatic = new MethodDescriptor(this.testClassName, "public static byte doSthStatic()");
 		MethodDescriptor methDesc7 = new MethodDescriptor(this.testClassName, "public boolean parameterTest(int i, float f, java.lang.String s)");
 		MethodDescriptor methDesc8 = new MethodDescriptor(de.uka.ipd.sdq.ByCounter.test.requestIDs.A.class.getCanonicalName(), "public A(int param)");
 		
@@ -90,12 +91,13 @@ public class TestRequestIDs extends AbstractByCounterTest {
 		long start = System.nanoTime();
 		log.fine("(NOT INITIALISED)" + this.counter.getInstrumentationParams().toString());
 		List<MethodDescriptor> methDescs = new ArrayList<MethodDescriptor>();
-		methDescs.add(methDesc1);
-		methDescs.add(methDesc2);
-		methDescs.add(methDesc3);
-		methDescs.add(methDesc4);
-		methDescs.add(methDesc5);
-		methDescs.add(methDesc6);
+		// the order of adding the methods is used further down for checking the results
+		methDescs.add(methDescMethodA);
+		methDescs.add(methDescMethodB);
+		methDescs.add(methDescDoSth);
+		methDescs.add(methDescDoSthElse);
+		methDescs.add(methDescDoSthDifferent);
+		methDescs.add(methDescDoSthStatic);
 		methDescs.add(methDesc7);
 		methDescs.add(methDesc8);
 		this.counter.instrument(methDescs);
@@ -109,23 +111,33 @@ public class TestRequestIDs extends AbstractByCounterTest {
 				Math.round((double) counting/1000)+"us aka \t"+
 				Math.round((double) counting/1000000)+"ms aka \t"+
 				Math.round((double) counting/1000000000)+"s)");
+		// The executed main method spawns 2 threads and runs them.
+		
+		// There should be 2 results that are not request results because 
+		// ReqRunnable.run constructs A. Constructors cannot be tracked with 
+		// request ids.
 		ResultCollection retrieveAllCountingResults = this.resultColl.retrieveAllCountingResults();
 		SortedSet<CountingResult> finalResults = retrieveAllCountingResults.getCountingResults();
-		Assert.assertNotSame("Number of results must be != 0.", 0, finalResults.size());
+		Assert.assertSame("Number of results must be 2.", 2, finalResults.size());
 		log.info(finalResults.size()+" counting results found, logging them: ");
 		for(CountingResult r : finalResults) {
 			r.logResult(false, true);
 		}
-		
+		// There should also be 2 request results (one for each thread).
 		SortedSet<RequestResult> requestResults = retrieveAllCountingResults.getRequestResults();
 		Assert.assertSame("Number of request results must be 2.", 2, requestResults.size());
 		log.info(requestResults.size()+" request results found, logging them: ");
 		for(RequestResult rq : requestResults) {
 			log.info(rq.toString());
 			Assert.assertNotNull(rq.getCountingResults());
+			// A.methodA, A.methodB, A.doSth, A.doSthElse, A.doSthDifferent
+			Assert.assertSame("There should be 5 counting results per request.", 5, rq.getCountingResults().size());
 			UUID rid = rq.getRequestId();
+			Iterator<CountingResult> iter = rq.getCountingResults().iterator();
 			for(CountingResult r: rq.getCountingResults()) {
 				Assert.assertEquals(rid, r.getRequestID());
+				CountingResult expectedR = iter.next();
+				Assert.assertEquals(expectedR.getQualifyingMethodName(), r.getQualifyingMethodName());
 			}
 		}
 		// clear all collected results
