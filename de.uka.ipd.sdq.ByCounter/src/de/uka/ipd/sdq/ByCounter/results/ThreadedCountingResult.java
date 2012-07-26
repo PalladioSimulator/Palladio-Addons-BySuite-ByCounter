@@ -23,12 +23,6 @@ public class ThreadedCountingResult extends CountingResult {
 	 * Serialisation version.
 	 */
 	private static final long serialVersionUID = 1L;
-
-//	/**
-//	 * Id of the thread from which the result was reported.
-//	 * @see Thread#getId()
-//	 */
-//	private long threadId;
 	
 	/**
 	 * A {@link SortedSet} of {@link ThreadedCountingResult} from threads that
@@ -42,7 +36,6 @@ public class ThreadedCountingResult extends CountingResult {
 	 * {@link ThreadedCountingResult#getSpawnedThreadedCountingResults()}.
 	 */
 	private ThreadedCountingResult threadedCountingResultSource;
-
 
 	/**
 	 * Default constructor. Properties need to be set
@@ -63,6 +56,21 @@ public class ThreadedCountingResult extends CountingResult {
 		super(src);
 		this.spawnedThreadedCountingResults = new TreeSet<ThreadedCountingResult>();
 		this.threadedCountingResultSource = null;
+	}
+	
+	/* (non-Javadoc)
+	 * @see java.lang.Object#clone()
+	 */
+	@Override
+	public ThreadedCountingResult clone(){
+		ThreadedCountingResult copy = null;
+
+		copy = (ThreadedCountingResult) super.clone();
+		copy.setThreadId(this.threadId);
+		copy.setSpawnedThreadedCountingResults(
+				new TreeSet<ThreadedCountingResult>(this.spawnedThreadedCountingResults));
+		copy.setThreadedCountingResultSource(this.threadedCountingResultSource);
+		return copy;
 	}
 
 	/**
@@ -119,6 +127,9 @@ public class ThreadedCountingResult extends CountingResult {
 		this.threadedCountingResultSource = threadedCountingResultSource;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public synchronized String logResult(boolean printZeros, boolean vertically) {
 		StringBuilder builder = new StringBuilder();
@@ -134,6 +145,11 @@ public class ThreadedCountingResult extends CountingResult {
 		log.log(Level.INFO, string);
 		return string;
 	}
+	
+	/**
+	 * @return Short summary of the counting result.
+	 * @see java.lang.Object#toString()
+	 */
 	@Override
 	public String toString() {
 		StringBuffer sb = new StringBuffer();
@@ -148,13 +164,6 @@ public class ThreadedCountingResult extends CountingResult {
 			sb.append("      > Thread source   : "+this.getThreadedCountingResultSource().hashCode()+" (hash code)\n");	// toString() would cause infinite recursion
 		}
 		sb.append("      > Thread spawns   : "+this.getSpawnedThreadedCountingResults()+"\n");
-//		sb.append("      > Method input    : "+this.inputParams+"\n");
-//		sb.append("      > Method output   : "+this.outputParams+"\n");
-//		sb.append("      > Array creations : "+this.arrayCreationCounts+"\n");
-//		sb.append("      > Array dimensions: "+this.arrayCreationDimensions+"\n");
-//		sb.append("      > Array type infos: "+this.arrayCreationTypeInfo+"\n");
-//		sb.append("      > Sect. opc. cnts : "+this.sectionInstCounts+"\n");
-//		sb.append("      > Sect. meth. cnts: "+this.sectionMethCounts+"\n");
 		return sb.toString();
 	}
 	

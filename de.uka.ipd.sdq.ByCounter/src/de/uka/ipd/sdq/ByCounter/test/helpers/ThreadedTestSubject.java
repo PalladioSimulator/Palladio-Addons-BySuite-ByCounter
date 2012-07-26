@@ -46,4 +46,5 @@ public class ThreadedTestSubject {
 		}
 		log.info("Joined " + threads.length + " threads.");
 		log.info("Run finished.");
-	};}
+	};
+}

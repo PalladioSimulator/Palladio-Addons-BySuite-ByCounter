@@ -3,6 +3,7 @@ package de.uka.ipd.sdq.ByCounter.results;
 import java.io.Serializable;
 
 import de.uka.ipd.sdq.ByCounter.execution.CountingResultBase;
+import de.uka.ipd.sdq.ByCounter.execution.IFullCountingResult;
 
 /**
  * 
@@ -44,19 +45,19 @@ public class CountingResult extends CountingResultBase implements Cloneable {
 	 * this result.
 	 */
 	private Object observedElement;
-	
-	/**
-	 * The time stamp which marks the beginning of execution (i.e. run)
-	 * of the method for which this CountingResult holds bytecode counts.
-	 */
-	private long methodInvocationBeginning;
-
-	/**
-	 * The time stamp which was set immediately before this method called
-	 * the CountingResultCollector. In other words, this is
-	 * <b>approximately</b> the time when the method execution was finished.
-	 */
-	private long methodReportingTime;
+//	
+//	/**
+//	 * The time stamp which marks the beginning of execution (i.e. run)
+//	 * of the method for which this CountingResult holds bytecode counts.
+//	 */
+//	private long methodInvocationBeginning;
+//
+//	/**
+//	 * The time stamp which was set immediately before this method called
+//	 * the CountingResultCollector. In other words, this is
+//	 * <b>approximately</b> the time when the method execution was finished.
+//	 */
+//	private long methodReportingTime;
 	
 	/**
 	 * Set fields to null.
@@ -181,41 +182,41 @@ public class CountingResult extends CountingResultBase implements Cloneable {
 	public void setRequestResult(RequestResult requestResult) {
 		this.requestResult = requestResult;
 	}
-	
-	/**
-	 * @param methodInvocationBeginning The time stamp which marks the beginning of execution (i.e. run)
-	 * of the method for which this CountingResult holds bytecode counts.
-	 */
-	public void setMethodInvocationBeginning(long methodInvocationBeginning) {
-		this.methodInvocationBeginning = methodInvocationBeginning;
-	}
-
-	/**
-	 * @param methodReportingTime The time stamp which was set immediately before this method called
-	 * the CountingResultCollector. In other words, this is
-	 * <b>approximately</b> the time when the method execution was finished.
-	 */
-	public void setMethodReportingTime(long methodReportingTime) {
-		this.methodReportingTime = methodReportingTime;
-	}
-	
-	/**
-	 * @return The time stamp which marks the beginning of execution (i.e. run)
-	 * of the method for which this CountingResult holds bytecode counts.
-	 */
-	public long getMethodInvocationBeginning() {
-		return this.methodInvocationBeginning;
-	}
-	
-	/**
-	 * 
-	 * @return The time stamp which was set immediately before this method called
-	 * the CountingResultCollector. In other words, this is
-	 * <b>approximately</b> the time when the method execution was finished.
-	 */
-	public long getMethodReportingTime() {
-		return this.methodReportingTime;
-	}
+//	
+//	/**
+//	 * @param methodInvocationBeginning The time stamp which marks the beginning of execution (i.e. run)
+//	 * of the method for which this CountingResult holds bytecode counts.
+//	 */
+//	public void setMethodInvocationBeginning(long methodInvocationBeginning) {
+//		this.methodInvocationBeginning = methodInvocationBeginning;
+//	}
+//
+//	/**
+//	 * @param methodReportingTime The time stamp which was set immediately before this method called
+//	 * the CountingResultCollector. In other words, this is
+//	 * <b>approximately</b> the time when the method execution was finished.
+//	 */
+//	public void setMethodReportingTime(long methodReportingTime) {
+//		this.methodReportingTime = methodReportingTime;
+//	}
+//	
+//	/**
+//	 * @return The time stamp which marks the beginning of execution (i.e. run)
+//	 * of the method for which this CountingResult holds bytecode counts.
+//	 */
+//	public long getMethodInvocationBeginning() {
+//		return this.methodInvocationBeginning;
+//	}
+//	
+//	/**
+//	 * 
+//	 * @return The time stamp which was set immediately before this method called
+//	 * the CountingResultCollector. In other words, this is
+//	 * <b>approximately</b> the time when the method execution was finished.
+//	 */
+//	public long getMethodReportingTime() {
+//		return this.methodReportingTime;
+//	}
 
 	/**
 	 * @return The specification of instrumentation that lead to the observation of 
@@ -245,10 +246,6 @@ public class CountingResult extends CountingResultBase implements Cloneable {
 		if (getClass() != obj.getClass())
 			return false;
 		CountingResult other = (CountingResult) obj;
-		if (this.methodInvocationBeginning != other.methodInvocationBeginning)
-			return false;
-		if (this.methodReportingTime != other.methodReportingTime)
-			return false;
 		if (this.observedElement == null) {
 			if (other.observedElement != null)
 				return false;
@@ -265,5 +262,11 @@ public class CountingResult extends CountingResultBase implements Cloneable {
 		} else if (!this.resultCollection.equals(other.resultCollection))
 			return false;
 		return true;
+	}
+	
+	@Override
+	public int compareTo(IFullCountingResult o) {
+		// TODO Auto-generated method stub
+		return super.compareTo(o);
 	}
 }

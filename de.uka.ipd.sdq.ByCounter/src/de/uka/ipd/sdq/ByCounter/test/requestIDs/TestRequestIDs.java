@@ -3,6 +3,7 @@ package de.uka.ipd.sdq.ByCounter.test.requestIDs;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.SortedSet;
+import java.util.UUID;
 import java.util.logging.Logger;
 
 import junit.framework.Assert;
@@ -12,10 +13,10 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
 import de.uka.ipd.sdq.ByCounter.execution.BytecodeCounter;
-import de.uka.ipd.sdq.ByCounter.execution.CountingResultBase;
 import de.uka.ipd.sdq.ByCounter.execution.CountingResultCollector;
 import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentationParameters;
 import de.uka.ipd.sdq.ByCounter.results.CountingResult;
+import de.uka.ipd.sdq.ByCounter.results.RequestResult;
 import de.uka.ipd.sdq.ByCounter.results.ResultCollection;
 import de.uka.ipd.sdq.ByCounter.test.AbstractByCounterTest;
 import de.uka.ipd.sdq.ByCounter.utils.MethodDescriptor;
@@ -112,8 +113,20 @@ public class TestRequestIDs extends AbstractByCounterTest {
 		SortedSet<CountingResult> finalResults = retrieveAllCountingResults.getCountingResults();
 		Assert.assertNotSame("Number of results must be != 0.", 0, finalResults.size());
 		log.info(finalResults.size()+" counting results found, logging them: ");
-		for(CountingResultBase r : finalResults) {
+		for(CountingResult r : finalResults) {
 			r.logResult(false, true);
+		}
+		
+		SortedSet<RequestResult> requestResults = retrieveAllCountingResults.getRequestResults();
+		Assert.assertSame("Number of request results must be 2.", 2, requestResults.size());
+		log.info(requestResults.size()+" request results found, logging them: ");
+		for(RequestResult rq : requestResults) {
+			log.info(rq.toString());
+			Assert.assertNotNull(rq.getCountingResults());
+			UUID rid = rq.getRequestId();
+			for(CountingResult r: rq.getCountingResults()) {
+				Assert.assertEquals(rid, r.getRequestID());
+			}
 		}
 		// clear all collected results
 		this.resultColl.clearResults();

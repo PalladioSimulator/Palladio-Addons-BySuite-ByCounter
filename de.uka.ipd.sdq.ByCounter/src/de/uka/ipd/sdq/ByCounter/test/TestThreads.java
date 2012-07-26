@@ -31,8 +31,9 @@ import de.uka.ipd.sdq.ByCounter.utils.MethodDescriptor;
  */
 @RunWith(Parameterized.class)
 public class TestThreads extends AbstractByCounterTest {
+	/** Refers to {@link RunnableForThreading#run()}. */
 	private static MethodDescriptor methodThreadRun;
-
+	/** Refers to {@link ThreadedTestSubject#runThreads()}. */
 	private static MethodDescriptor methodRun;
 	
 	{
