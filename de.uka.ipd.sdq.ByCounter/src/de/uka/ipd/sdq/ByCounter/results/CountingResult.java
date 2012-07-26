@@ -3,7 +3,6 @@ package de.uka.ipd.sdq.ByCounter.results;
 import java.io.Serializable;
 
 import de.uka.ipd.sdq.ByCounter.execution.CountingResultBase;
-import de.uka.ipd.sdq.ByCounter.execution.IFullCountingResult;
 
 /**
  * 
@@ -235,6 +234,28 @@ public class CountingResult extends CountingResultBase implements Cloneable {
 	}
 
 	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime
+				* result
+				+ ((this.observedElement == null) ? 0 : this.observedElement
+						.hashCode());
+		result = prime
+				* result
+				+ ((this.requestResult == null) ? 0 : this.requestResult
+						.hashCode());
+		result = prime
+				* result
+				+ ((this.resultCollection == null) ? 0 : this.resultCollection
+						.hashCode());
+		return result;
+	}
+
+	/* (non-Javadoc)
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override
@@ -262,11 +283,5 @@ public class CountingResult extends CountingResultBase implements Cloneable {
 		} else if (!this.resultCollection.equals(other.resultCollection))
 			return false;
 		return true;
-	}
-	
-	@Override
-	public int compareTo(IFullCountingResult o) {
-		// TODO Auto-generated method stub
-		return super.compareTo(o);
 	}
 }
