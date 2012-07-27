@@ -78,6 +78,4 @@ public class RequestResult implements Comparable<RequestResult> {
 		builder.append("]");
 		return builder.toString();
 	}
-	
-	
 }

@@ -51,7 +51,8 @@ public class CountingResultThreadIndexing {
 	 * @see ThreadedCountingResult#getSpawnedThreadedCountingResults()
 	 */
 	public void applyThreadStructure(SortedSet<CountingResult> countingResults) {
-		List<CountingResult> replacedResults = new LinkedList<CountingResult>();
+		List<CountingResult> removedResults = new LinkedList<CountingResult>();
+		List<CountingResult> addedResults = new LinkedList<CountingResult>();
 		for(CountingResult r : countingResults) {
 			ArrayList<Long> spawnedThreads = this.resultsSpawnedThreads.get(r);
 			if(spawnedThreads == null || spawnedThreads.isEmpty()) {
@@ -67,16 +68,14 @@ public class CountingResultThreadIndexing {
 					tcrInner.setThreadId(rInner.getThreadId());
 					tcr.getSpawnedThreadedCountingResults().add(tcrInner);
 					tcrInner.setThreadedCountingResultSource(tcr);
-					replacedResults.add(rInner);
+					removedResults.add(rInner);
 				}
 			}
 			// replace the CountingResult with a ThreadedCountingResult
-			replacedResults.add(r);
-			countingResults.add(tcr);
+			removedResults.add(r);
+			addedResults.add(tcr);
 		}
-		List<CountingResult> mirror = new LinkedList<CountingResult>(countingResults);
-		mirror.removeAll(replacedResults);
-		countingResults.clear();
-		countingResults.addAll(mirror);
+		countingResults.removeAll(removedResults);
+		countingResults.addAll(addedResults);
 	}
 }
