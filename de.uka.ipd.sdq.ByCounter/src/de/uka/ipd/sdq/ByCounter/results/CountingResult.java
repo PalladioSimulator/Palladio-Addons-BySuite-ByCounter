@@ -2,10 +2,23 @@ package de.uka.ipd.sdq.ByCounter.results;
 
 import java.io.Serializable;
 
+import de.uka.ipd.sdq.ByCounter.execution.BytecodeCounter;
 import de.uka.ipd.sdq.ByCounter.execution.CountingResultBase;
 
 /**
- * 
+ * This class is a container for a result obtained by executing bytecode 
+ * instrumented using {@link BytecodeCounter}. The element in the code that 
+ * lead to the production of this result can be a specific method, a range of 
+ * line numbers in a method, a region specified by start and stop points, etc. 
+ * It is referenced in {@link #getObservedElement()}. 
+ * <p>
+ * The execution counts for specific bytecodes is available as 
+ * {@link #getOpcodeCounts()}. Method invocations are saved in 
+ * {@link #getMethodCallCounts()}.
+ * Depending on the type of instrumentation, more information is available. 
+ * Refer to the documentation on the get methods of this class for details. 
+ * </p> 
+ * @see CountingResultBase
  * @author Martin Krogmann
  *
  */
@@ -27,43 +40,16 @@ public class CountingResult extends CountingResultBase implements Cloneable {
 	 */
 	private RequestResult requestResult;
 
-//	/**
-//	 * This Map contains counts of method invocations, where the key is the
-//	 * method signature, the value is the invocation count.
-//	 */
-//	private SortedMap<String, Long> methodCalls;
-
-//	/**
-//	 * This array contains the counts of elementary bytecode instructions.
-//	 * The array index equals the opcode of the instruction.
-//	 */
-//	private long[] bytecodes;
-	
 	/**
 	 * The specification of instrumentation that lead to the observation of 
 	 * this result.
 	 */
 	private Object observedElement;
-//	
-//	/**
-//	 * The time stamp which marks the beginning of execution (i.e. run)
-//	 * of the method for which this CountingResult holds bytecode counts.
-//	 */
-//	private long methodInvocationBeginning;
-//
-//	/**
-//	 * The time stamp which was set immediately before this method called
-//	 * the CountingResultCollector. In other words, this is
-//	 * <b>approximately</b> the time when the method execution was finished.
-//	 */
-//	private long methodReportingTime;
-	
+
 	/**
 	 * Set fields to null.
 	 */
 	public CountingResult() {
-//		this.methodCalls = null;
-//		this.bytecodes = null;
 		this.observedElement = null;
 		this.resultCollection = null;
 		this.requestResult = null;
@@ -108,48 +94,10 @@ public class CountingResult extends CountingResultBase implements Cloneable {
 
 		copy = (CountingResult) super.clone();
 		copy.setResultCollection(this.resultCollection);
-//		copy.setBytecodes(this.bytecodes);
 		copy.setRequestResult(this.requestResult);
-//		copy.setMethodCalls(this.methodCalls);
 		copy.setObservedElement(this.observedElement);
 		return copy;
 	}
-
-//	/**
-//	 * 
-//	 * @return This Map contains counts of method invocations, where the key is the
-//	 * method signature, the value is the invocation count.
-//	 */
-//	public SortedMap<String, Long> getMethodCalls() {
-//		return methodCalls;
-//	}
-//
-//	/**
-//	 * 
-//	 * @param methodCalls This Map contains counts of method invocations, where the key is the
-//	 * method signature, the value is the invocation count.
-//	 */
-//	public void setMethodCalls(SortedMap<String, Long> methodCalls) {
-//		this.methodCalls = methodCalls;
-//	}
-//
-//	/**
-//	 * 
-//	 * @return This array contains the counts of elementary bytecode instructions.
-//	 * The array index equals the opcode of the instruction.
-//	 */
-//	public long[] getBytecodes() {
-//		return bytecodes;
-//	}
-//
-//	/**
-//	 * 
-//	 * @param bytecodes This array contains the counts of elementary bytecode instructions.
-//	 * The array index equals the opcode of the instruction.
-//	 */
-//	public void setBytecodes(long[] bytecodes) {
-//		this.bytecodes = bytecodes;
-//	}
 
 	/**
 	 * @return The parent {@link ResultCollection} that this {@link CountingResult} 
@@ -181,41 +129,6 @@ public class CountingResult extends CountingResultBase implements Cloneable {
 	public void setRequestResult(RequestResult requestResult) {
 		this.requestResult = requestResult;
 	}
-//	
-//	/**
-//	 * @param methodInvocationBeginning The time stamp which marks the beginning of execution (i.e. run)
-//	 * of the method for which this CountingResult holds bytecode counts.
-//	 */
-//	public void setMethodInvocationBeginning(long methodInvocationBeginning) {
-//		this.methodInvocationBeginning = methodInvocationBeginning;
-//	}
-//
-//	/**
-//	 * @param methodReportingTime The time stamp which was set immediately before this method called
-//	 * the CountingResultCollector. In other words, this is
-//	 * <b>approximately</b> the time when the method execution was finished.
-//	 */
-//	public void setMethodReportingTime(long methodReportingTime) {
-//		this.methodReportingTime = methodReportingTime;
-//	}
-//	
-//	/**
-//	 * @return The time stamp which marks the beginning of execution (i.e. run)
-//	 * of the method for which this CountingResult holds bytecode counts.
-//	 */
-//	public long getMethodInvocationBeginning() {
-//		return this.methodInvocationBeginning;
-//	}
-//	
-//	/**
-//	 * 
-//	 * @return The time stamp which was set immediately before this method called
-//	 * the CountingResultCollector. In other words, this is
-//	 * <b>approximately</b> the time when the method execution was finished.
-//	 */
-//	public long getMethodReportingTime() {
-//		return this.methodReportingTime;
-//	}
 
 	/**
 	 * @return The specification of instrumentation that lead to the observation of 
