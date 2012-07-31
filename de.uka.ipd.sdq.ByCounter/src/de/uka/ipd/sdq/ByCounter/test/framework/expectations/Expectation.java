@@ -150,7 +150,7 @@ public class Expectation {
 		}
 		return sectExpt;
 	}
-
+	
 	/**
 	 * Returns all known line number ranges.
 	 * 
@@ -179,8 +179,6 @@ public class Expectation {
 		String message = "Unexpected number of sections.";
 		Assert.assertEquals(message, this.getNumberOfSections(), observation.length);
 		for (int i = 0; i < observation.length; i++) {
-			long[] measuredOpcodeCounts = observation[i].getOpcodeCounts();
-			Map<String, Long> measuredMethodCallCounts = observation[i].getMethodCallCounts();
 			SectionExpectation sectExpt;
 			if (this.ordered) {
 				sectExpt = this.orderedSections.get(i);
@@ -194,7 +192,7 @@ public class Expectation {
 				message = "Section #" + observation[i].getIndexOfRangeBlock() + " not expected.";
 				Assert.assertNotNull(message, sectExpt);
 			}
-			sectExpt.compare(measuredOpcodeCounts, measuredMethodCallCounts, i);
+			sectExpt.compare(observation[i], i);
 		}
 
 	}

@@ -210,7 +210,7 @@ public class CollectionStrategyDefault extends AbstractCollectionStrategy {
 		
 		CalculatedCounts[] ccounts = calculateResultCounts(result);
 
-		for(int i = 0; i < ccounts.length; i++) {
+		for(int ccountsNum = 0; ccountsNum < ccounts.length; ccountsNum++) {
 			int[] newArrayDim = null;
 			String[] newArrayType = null;
 			if(result.newArrayCounts != null && 
@@ -237,10 +237,10 @@ public class CollectionStrategyDefault extends AbstractCollectionStrategy {
 			res.setCallerID(result.callerID);
 			res.setID(result.qualifyingMethodName); //TODO fix it --> Martin; vgl. javadocs zu CountingResult
 			res.setQualifyingMethodName(result.qualifyingMethodName);
-			res.setMethodInvocationBeginning(result.executionStart);
+			res.setMethodInvocationBeginning(result.executionStart+ccountsNum);
 			res.setMethodReportingTime(result.reportingStart);
-			res.setOpcodeCounts(ccounts[i].opcodeCounts);
-			res.overwriteMethodCallCounts(ccounts[i].methodCounts);
+			res.setOpcodeCounts(ccounts[ccountsNum].opcodeCounts);
+			res.overwriteMethodCallCounts(ccounts[ccountsNum].methodCounts);
 			res.setArrayCreationCounts(result.newArrayCounts);
 			res.setArrayCreationDimensions(newArrayDim);
 			res.setArrayCreationTypeInfo(newArrayType);
@@ -249,7 +249,7 @@ public class CollectionStrategyDefault extends AbstractCollectionStrategy {
 				// set the index of the range block, i.e. the number of the section as
 				// defined by the user in the instrumentation settings. This 
 				// enables the user to find the counts for specific sections.
-				final int indexOfRangeBlock = ccounts[i].indexOfRangeBlock;
+				final int indexOfRangeBlock = ccounts[ccountsNum].indexOfRangeBlock;
 				res.setIndexOfRangeBlock(indexOfRangeBlock);
 				
 				LineNumberRange observedRange = 

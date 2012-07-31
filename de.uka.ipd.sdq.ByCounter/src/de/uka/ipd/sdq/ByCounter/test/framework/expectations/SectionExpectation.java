@@ -4,10 +4,14 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import org.junit.Assert;
 
 import de.uka.ipd.sdq.ByCounter.parsing.LineNumberRange;
+import de.uka.ipd.sdq.ByCounter.results.CountingResult;
+import de.uka.ipd.sdq.ByCounter.results.ThreadedCountingResult;
 import de.uka.ipd.sdq.ByCounter.utils.FullOpcodeMapper;
 import de.uka.ipd.sdq.ByCounter.utils.MethodDescriptor;
 
@@ -38,6 +42,11 @@ public class SectionExpectation {
 	 * All expected method calls. The key stands for the method's name, the value stands for the expected count number.
 	 */
 	private final Map<String, Long> methodCallExpectations;
+	
+	/**
+	 * All expected spawns of threads resulting in parallel results.
+	 */
+	private SectionExpectation[] parallelExpectations;
 
 	/**
 	 * Creates a new selection expectation with an unknown line number range.
@@ -62,6 +71,7 @@ public class SectionExpectation {
 		this.range = range;
 		this.opcodeExpectations = new HashMap<Integer, Long>();
 		this.methodCallExpectations = new HashMap<String, Long>();
+		this.parallelExpectations = null;
 	}
 
 	/**
@@ -172,7 +182,7 @@ public class SectionExpectation {
 	 *          <code>public static java.lang.String valueOf(java.lang.Object obj)</code> ). Object types need to be
 	 *          specified with the full canonical name. Specifically, only the two tokens before the first '(', as well as
 	 *          everything between '(' and ')' is evaluated. Whitespaces and qualifiers like "public", "static" are
-	 *          ignored. Generic types may be ommited (and are ignored) so that "List" and "List<Integer>" are treated as
+	 *          ignored. Generic types may be omitted (and are ignored) so that "List" and "List<Integer>" are treated as
 	 *          the same since bytecode signatures ignore generics. For method parameters, only one or two tokens are
 	 *          allowed (example: "int[]" or "int[] abc"). It is advised to take the method declaration from sourcecode or
 	 *          from documentation and only adapt it, if necessary. The thing that needs to be adapted is type names for
@@ -190,19 +200,34 @@ public class SectionExpectation {
 		
 		return this.add(this.signatureToDescriptor(className, signature), number);
 	}
+	
+	/**
+	 * Creates the spawn point for parallel expectations, i.e. results from 
+	 * threads that where spawned from a single observed element.
+	 * @param threads The expectations for each parallel result.
+	 * @return The {@link SectionExpectation} with added threads.
+	 */
+	public SectionExpectation addParallel(SectionExpectation... threads) {
+		if(this.parallelExpectations != null) {
+			throw new IllegalArgumentException("Parallel expectations can only be set once.");
+		}
+		this.parallelExpectations = threads;
+		return this;
+	}
+
 
 	/**
 	 * Compares the predefined expectations with the actual measurement.
 	 * 
-	 * @param measuredOpcodeCounts
-	 *          The number of opcodes counted. Must not be null.
-	 * @param measuredMethodCallCounts
-	 *          The number of method calls counted. Must not be null.
+	 * @param observation
+	 * 			The result that was observed. Must not be null.
 	 * @param round
 	 *          The comparison round. Used for better human readable error messages. Must be greater or equal to zero.
 	 */
-	protected void compare(final long[] measuredOpcodeCounts, final Map<String, Long> measuredMethodCallCounts,
+	protected void compare(CountingResult observation,
 			final int round) {
+		final long[] measuredOpcodeCounts = observation.getOpcodeCounts();
+		final Map<String, Long> measuredMethodCallCounts = observation.getMethodCallCounts();
 		assert measuredOpcodeCounts != null : "measuredOpcodeCounts must not be null";
 		assert measuredMethodCallCounts != null : "measuredMethodCallCounts must not be null";
 		assert round >= 0 : "round must not be less than zero";
@@ -230,6 +255,52 @@ public class SectionExpectation {
 			long actual = measuredMethodCallCounts.get(method);
 			message = "Actual " + message(method, round) + " not expected but counted as " + actual;
 			Assert.assertTrue(message, actual < 0);
+		}
+		// ensure that the result is threaded if parallel expectations exist
+		if(this.parallelExpectations != null) {
+			Assert.assertTrue(message("ThreadedCountingResult", round), observation instanceof ThreadedCountingResult);
+			ThreadedCountingResult threadedObservation = (ThreadedCountingResult) observation;
+			final SortedSet<ThreadedCountingResult> observedThreads = 
+					threadedObservation.getSpawnedThreadedCountingResults();
+			// ensure that results from spawned threads are correct
+			Assert.assertEquals("Wrong number of theads.", this.parallelExpectations.length, observedThreads.size());
+			// Due to the parallel nature of execution, the order of observations
+			// is random.
+			// Find this expected result;
+			// compare the expectations for each spawned thread.
+			SortedSet<ThreadedCountingResult> unmatchedResults = new TreeSet<ThreadedCountingResult>(observedThreads);
+			for(SectionExpectation ex : this.parallelExpectations) {
+				boolean matchFound = false;
+				for(ThreadedCountingResult tcr : unmatchedResults) {
+					if(ex.matches(tcr)) {
+						unmatchedResults.remove(tcr);
+						matchFound = true;
+						break;
+					}
+				}
+				if(!matchFound) {
+					// no match at this point
+					Assert.fail("The observation does not contain a result " 
+							+ "matching " + ex);
+				}
+			}
+		}
+	}
+	
+	/**
+	 * This method is similar to {@link #compare(CountingResult, int)} but 
+	 * instead of throwing {@link AssertionError}s, it returns the result of the 
+	 * comparison.
+	 * @param tcr {@link ThreadedCountingResult} to compare this expectation to.
+	 * @return True, if the given {@link ThreadedCountingResult} matches this 
+	 * expectation. False otherwise.
+	 */
+	private boolean matches(final ThreadedCountingResult tcr) {
+		try {
+			this.compare(tcr, -1);
+			return true;
+		} catch(AssertionError ae) {
+			return false;
 		}
 	}
 
@@ -331,6 +402,8 @@ public class SectionExpectation {
 		sb.append(this.sectionNumber);
 		sb.append(", range=");
 		sb.append(this.range);
+		sb.append(", opcodeExpectations=");
+		sb.append(this.opcodeExpectations);
 		sb.append("]");
 		return sb.toString();
 	}

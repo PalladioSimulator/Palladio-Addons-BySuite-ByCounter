@@ -33,6 +33,37 @@ public class CountingResultBase
 implements Serializable, Cloneable, IFullCountingResult, Comparable<IFullCountingResult>{
 
 	/**
+	 * Class used in {@link #logResult(boolean, boolean)} with
+	 * statistics about {@link CountingResultBase#getMethodCallCounts()}.
+	 */
+	private class MethodLogInfo {
+		public long totalCountOfAllMethods;
+		public SortedSet<String> classesContainingMethodSigs;
+		
+		/** Initialise values with 0. */
+		public MethodLogInfo() {
+			this.classesContainingMethodSigs = new TreeSet<String>();
+			this.totalCountOfAllMethods = 0; //you need longs for that...
+		}
+
+	}
+
+	/**
+	 * Class used in {@link #logResult(boolean, boolean)} with
+	 * statistics about {@link CountingResultBase#getOpcodeCounts()}.
+	 */
+	private class OpcodeLogInfo {
+		public long totalCountOfAllOpcodes;
+		public int numberOfOpcodesWithNonzeroFrequencies;
+		
+		/** Initialise values with 0. */
+		public OpcodeLogInfo() {
+			this.totalCountOfAllOpcodes = 0; //you need longs for that...
+			this.numberOfOpcodesWithNonzeroFrequencies = 0;
+		}
+	}
+
+	/**
 	 * Version for {@link Serializable} interface.
 	 */
 	private static final long serialVersionUID = 1L;
@@ -1287,7 +1318,7 @@ implements Serializable, Cloneable, IFullCountingResult, Comparable<IFullCountin
 	 */
 	public synchronized String logResult(
 			boolean printZeros, //eigentlich 3 Abstufungen: gar nicht; wie gespeichert; alle opcodes (auch wenn nicht gespeichert)
-			boolean vertically, //TODO currently ignored
+			boolean vertically,
 			Level loggingLevel
 			) {
 		StringBuffer sb = new StringBuffer();
@@ -1364,73 +1395,61 @@ implements Serializable, Cloneable, IFullCountingResult, Comparable<IFullCountin
 			}
 		}
 
+		// make sure DisplayOpcodes does not interfere with the output...?
+		final OpcodeLogInfo opcodeLogInfo = this.appendOpcodesToStringBuffer(sb, printZeros, vertically);
+		final MethodLogInfo methodLogInfo = this.appendMethodCallsToStringBuffer(sb, printZeros, vertically);
+		this.appendArrayInfoToStringBuffer(sb, vertically);
+		
+		sb.append("====================================================");
+		sb.append(NEWLINE);
+		sb.append(opcodeLogInfo.totalCountOfAllOpcodes);
+		sb.append(" instruc. executions of ");
+		sb.append(opcodeLogInfo.numberOfOpcodesWithNonzeroFrequencies);
+		sb.append(" different opcodes were counted.");
+		sb.append(NEWLINE);
+		sb.append(methodLogInfo.totalCountOfAllMethods);
+		sb.append(" methods invocations of ");
+		sb.append(methodCallCounts.size());
+		sb.append(" different signatures were counted, from "+methodLogInfo.classesContainingMethodSigs.size()+" classes.");
+		sb.append(NEWLINE);
+		sb.append(NEWLINE);
+		int i=1;
+		int approxNrOfJavaPlatformClasses = 0;
+		StringBuffer sb2 = new StringBuffer();
+		sb.append("API / platform classes: \n");
+		for(String classs : methodLogInfo.classesContainingMethodSigs){
+			if(classs.startsWith("java/") || classs.startsWith("javax/") || classs.startsWith("sun/")){
+				approxNrOfJavaPlatformClasses++;
+				sb.append("class "+i+": "+classs+"\n");
+			}else{
+				sb2.append("class "+i+": "+classs+"\n");
+			}
+			i++;
+		}
+		sb.append((methodLogInfo.classesContainingMethodSigs.size()-approxNrOfJavaPlatformClasses)+
+				" are 'business' classes outside of the Java platform:\n");
+		sb.append(sb2.toString());
+		sb.append(NEWLINE);
+		sb.append(NEWLINE);
+		sb.append("== END ========= Logging CountingResult ================");
+		sb.append(NEWLINE);
+		String ret = sb.toString();
+		log.log(loggingLevel, sb.toString());
+		return ret;
+	}
+
+	/**
+	 * This method is intended for logging.
+	 * @param sb {@link StringBuffer} to append the output to.
+	 * @param vertically When false, info will be printed in a single line.
+	 */
+	public void appendArrayInfoToStringBuffer(StringBuffer sb, 
+			final boolean vertically) {
+		// No checks here (but below!) for array results, because null is also
+		// returned when array parameter recording is disabled.
 		long[] newArrayCounts 						= getNewArrayCounts();
 		int[] newArrayDims 							= getNewArrayDim();
 		String[] newArrayTypes 						= getNewArrayTypes();
-
-		// No checks here (but below!) for array results, because null is also
-		// returned when array parameter recording is disabled.
-
-		// make sure DisplayOpcodes does not interfere with the output...?
-		long totalCountOfAllOpcodes = 0; //you need longs for that...
-		long totalCountOfAllMethods = 0; //you need longs for that...
-
-		String 	tabs;					// tabulators (for logging)
-		String 	currentOpcodeString;	// opcode as string
-		long 	currentOpcodeCount;		// opcode count
-		long 	currentMethodCount = 0;	// method count
-
-
-		int numberOfOpcodesWithNonzeroFrequencies=0;
-		for(int i = 0; i < CountingResultBase.MAX_OPCODE; i++) {
-			currentOpcodeString = FullOpcodeMapper.getMnemonicOfOpcode(i);
-			currentOpcodeCount 	= opcodeCounts[i];
-			tabs 				= getTabs(currentOpcodeString + ":", 2);
-//			dataset.addValue(currentOpcodeCount, qualifyingMethodName+": instructions", currentOpcodeString);
-			if(currentOpcodeCount!=0 || printZeros){
-				sb.append(currentOpcodeString);
-				sb.append(":");
-				sb.append(tabs);
-				sb.append(currentOpcodeCount);
-				sb.append(NEWLINE);
-			}
-			if((totalCountOfAllOpcodes+currentOpcodeCount)<totalCountOfAllOpcodes){
-				log.severe("OVERFLOW while adding opcode counts... use BigInteger instead");
-			}else{
-				totalCountOfAllOpcodes += currentOpcodeCount;
-				if(currentOpcodeCount>0){
-					numberOfOpcodesWithNonzeroFrequencies++;
-				}
-			}
-		}
-
-		Iterator<String> methodSigs = methodCallCounts.keySet().iterator();
-		SortedSet<String> classesContainingMethodSigs = new TreeSet<String>();
-		String currentSig, className;
-		while(methodSigs.hasNext()) {
-			currentSig = methodSigs.next();
-			className = currentSig.split("\\.")[0];
-			classesContainingMethodSigs.add(className);
-			currentMethodCount = methodCallCounts.get(currentSig);
-			tabs = getTabs(currentSig + ":", 9);
-//			dataset.addValue(currentMethodCount, qualifyingMethodName+": methods", currentMethodSignature);
-			sb.append(currentSig);
-			sb.append(":");
-			sb.append(tabs);
-			sb.append(currentMethodCount);
-//			sb.append(" (class: "+className+")");
-			sb.append(NEWLINE);
-			if(totalCountOfAllMethods + currentMethodCount<totalCountOfAllMethods){
-				log.severe("OVERFLOW while adding method counts");
-			}else{
-				totalCountOfAllMethods += currentMethodCount;
-			}
-//			instrnames_texSB.append(currentMethodSignature+" & ");
-//			instrcounts_texSB.append(currentMethodCount+" & ");
-		}
-//		instrnames_texSB.append("total \\\\");
-//		instrcounts_texSB.append(totalCountOfAllMethods+" \\\\");
-
 		// because null is a valid value for the array*Something* arrays,
 		// we need to be carefull here.
 		if(newArrayCounts != null
@@ -1443,45 +1462,103 @@ implements Serializable, Cloneable, IFullCountingResult, Comparable<IFullCountin
 				sb.append((newArrayDims[i] > 0 ? ", dim " + newArrayDims[i] : ""));
 				sb.append(": ");
 				sb.append(newArrayCounts[i]);
+				if(vertically) {
+					sb.append(NEWLINE);
+				} else {
+					sb.append(", ");
+				}
+			}
+		}
+	}
+
+	/**
+	 * This method is intended for logging.
+	 * @param sb {@link StringBuffer} to append the output to.
+	 * @param printZeros When false, counts of 0 are not added to the output.
+	 * @param vertically When false, methods will be printed in a single line.
+	 * @return Total count of all methods.
+	 */
+	public MethodLogInfo appendMethodCallsToStringBuffer(StringBuffer sb,
+			final boolean printZeros, 
+			final boolean vertically) {
+		MethodLogInfo result = new MethodLogInfo();
+		Iterator<String> methodSigs = methodCallCounts.keySet().iterator();
+		long currentMethodCount = 0;	// method count
+		String currentSig, className;
+		while(methodSigs.hasNext()) {
+			currentSig = methodSigs.next();
+			className = currentSig.split("\\.")[0];
+			result.classesContainingMethodSigs.add(className);
+			currentMethodCount = methodCallCounts.get(currentSig);
+//			dataset.addValue(currentMethodCount, qualifyingMethodName+": methods", currentMethodSignature);
+			sb.append(currentSig);
+			sb.append(":");
+			if(vertically) {
+				String tabs = getTabs(currentSig + ":", 9);
+				sb.append(tabs);
+			}
+			sb.append(currentMethodCount);
+//			sb.append(" (class: "+className+")");
+			if(vertically) {
 				sb.append(NEWLINE);
+			} else {
+				sb.append(", ");
 			}
-		}
-		sb.append("====================================================");
-		sb.append(NEWLINE);
-		sb.append(totalCountOfAllOpcodes);
-		sb.append(" instruc. executions of ");
-		sb.append(numberOfOpcodesWithNonzeroFrequencies);
-		sb.append(" different opcodes were counted.");
-		sb.append(NEWLINE);
-		sb.append(totalCountOfAllMethods);
-		sb.append(" methods invocations of ");
-		sb.append(methodCallCounts.size());
-		sb.append(" different signatures were counted, from "+classesContainingMethodSigs.size()+" classes.");
-		sb.append(NEWLINE);
-		sb.append(NEWLINE);
-		int i=1;
-		int approxNrOfJavaPlatformClasses = 0;
-		StringBuffer sb2 = new StringBuffer();
-		sb.append("API / platform classes: \n");
-		for(String classs : classesContainingMethodSigs){
-			if(classs.startsWith("java/") || classs.startsWith("javax/") || classs.startsWith("sun/")){
-				approxNrOfJavaPlatformClasses++;
-				sb.append("class "+i+": "+classs+"\n");
+			if(result.totalCountOfAllMethods + currentMethodCount<result.totalCountOfAllMethods){
+				log.severe("OVERFLOW while adding method counts");
 			}else{
-				sb2.append("class "+i+": "+classs+"\n");
+				result.totalCountOfAllMethods += currentMethodCount;
 			}
-			i++;
+//			instrnames_texSB.append(currentMethodSignature+" & ");
+//			instrcounts_texSB.append(currentMethodCount+" & ");
 		}
-		sb.append((classesContainingMethodSigs.size()-approxNrOfJavaPlatformClasses)+
-				" are 'business' classes outside of the Java platform:\n");
-		sb.append(sb2.toString());
-		sb.append(NEWLINE);
-		sb.append(NEWLINE);
-		sb.append("== END ========= Logging CountingResult ================");
-		sb.append(NEWLINE);
-		String ret = sb.toString();
-		log.log(loggingLevel, sb.toString());
-		return ret;
+//		instrnames_texSB.append("total \\\\");
+//		instrcounts_texSB.append(totalCountOfAllMethods+" \\\\");		
+		return result;
+	}
+
+	/**
+	 * This method is intended for logging.
+	 * @param sb {@link StringBuffer} to append the output to.
+	 * @param printZeros When false, counts of 0 are not added to the output.
+	 * @param vertically When false, opcodes will be printed in a single line.
+	 * @return Counters increased when visiting the opcodes.
+	 */
+	public OpcodeLogInfo appendOpcodesToStringBuffer(StringBuffer sb, 
+			final boolean printZeros,
+			final boolean vertically) {
+		String 	currentOpcodeString;	// opcode as string
+		long 	currentOpcodeCount;		// opcode count
+
+		OpcodeLogInfo opcodeLogInfo = new OpcodeLogInfo();
+		for(int i = 0; i < CountingResultBase.MAX_OPCODE; i++) {
+			currentOpcodeString = FullOpcodeMapper.getMnemonicOfOpcode(i);
+			currentOpcodeCount 	= opcodeCounts[i];
+//			dataset.addValue(currentOpcodeCount, qualifyingMethodName+": instructions", currentOpcodeString);
+			if(currentOpcodeCount!=0 || printZeros){
+				sb.append(currentOpcodeString);
+				sb.append(":");
+				if(vertically) {
+					String tabs = getTabs(currentOpcodeString + ":", 2);
+					sb.append(tabs);
+				}
+				sb.append(currentOpcodeCount);
+				if(vertically) {
+					sb.append(NEWLINE);
+				} else {
+					sb.append(", ");
+				}
+			}
+			if((opcodeLogInfo.totalCountOfAllOpcodes+currentOpcodeCount)<opcodeLogInfo.totalCountOfAllOpcodes){
+				log.severe("OVERFLOW while adding opcode counts... use BigInteger instead");
+			}else{
+				opcodeLogInfo.totalCountOfAllOpcodes += currentOpcodeCount;
+				if(currentOpcodeCount>0){
+					opcodeLogInfo.numberOfOpcodesWithNonzeroFrequencies++;
+				}
+			}
+		}
+		return opcodeLogInfo;
 	}
 
 	/** Compares {@link #getMethodInvocationBeginning()}.
@@ -1497,6 +1574,56 @@ implements Serializable, Cloneable, IFullCountingResult, Comparable<IFullCountin
 			return -1;
 		}
 		return compareInvBeginning;
+	}
+	
+	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((this.ID == null) ? 0 : this.ID.hashCode());
+		result = prime * result
+				+ ((this.callerID == null) ? 0 : this.callerID.hashCode());
+		result = prime
+				* result
+				+ (int) (this.forcedInlining_earliestStartOfInlinedMethod ^ (this.forcedInlining_earliestStartOfInlinedMethod >>> 32));
+		result = prime * result + this.indexOfRangeBlock;
+		result = prime * result
+				+ (this.invariantMethodsAreInlined ? 1231 : 1237);
+		result = prime
+				* result
+				+ ((this.methodCallCounts == null) ? 0 : this.methodCallCounts
+						.hashCode());
+		result = prime
+				* result
+				+ (int) (this.methodInvocationBeginning ^ (this.methodInvocationBeginning >>> 32));
+		result = prime
+				* result
+				+ (int) (this.methodReportingTime ^ (this.methodReportingTime >>> 32));
+		result = prime * result + Arrays.hashCode(this.opcodeCounts);
+		result = prime * result
+				+ ((this.ownID == null) ? 0 : this.ownID.hashCode());
+		result = prime
+				* result
+				+ ((this.qualifyingMethodName == null) ? 0
+						: this.qualifyingMethodName.hashCode());
+		result = prime * result
+				+ ((this.requestID == null) ? 0 : this.requestID.hashCode());
+		result = prime * result
+				+ (int) (this.threadId ^ (this.threadId >>> 32));
+		result = prime
+				* result
+				+ ((this.totalCountExclInvokes == null) ? 0
+						: this.totalCountExclInvokes.hashCode());
+		result = prime
+				* result
+				+ ((this.totalCountInclInvokes == null) ? 0
+						: this.totalCountInclInvokes.hashCode());
+		result = prime * result
+				+ (this.totalCountsAlreadyComputed ? 1231 : 1237);
+		return result;
 	}
 
 	/* (non-Javadoc)

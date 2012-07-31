@@ -219,26 +219,7 @@ public final class CountingResultCollector extends Observable {
 		}
 		this.resultWriters.add(resultWriter);
 	}
-	
-//	/**
-//	 * Get all results the {@link CountingResultCollector} holds.
-//	 * This does not clear the {@link CountingResultCollector} list.
-//	 * You have to explicitly
-//	 * call <code>clearResults()</code> if that is your intention.
-//	 * @return A <code>Result</code> list.
-//	 */
-//	public synchronized SortedSet<CountingResult> retrieveAllCountingResults() {
-//		SortedSet<CountingResult> ret = new TreeSet<CountingResult>();
-//
-//		// add the results of all strategies
-//		for(ICollectionStrategy s : this.collectionStrategies) {
-//			SortedSet<CountingResult> results = s.retrieveAllCountingResults();
-//			ret.addAll(results);
-//		}
-//
-//		return ret;
-//	}
-	
+		
 	/**
 	 * Get all results the {@link CountingResultCollector} holds.
 	 * This does not clear the {@link CountingResultCollector} list.

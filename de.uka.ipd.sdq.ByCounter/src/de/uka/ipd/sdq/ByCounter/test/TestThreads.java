@@ -2,7 +2,9 @@ package de.uka.ipd.sdq.ByCounter.test;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 import java.util.SortedSet;
+import java.util.TreeSet;
 
 import junit.framework.Assert;
 
@@ -17,7 +19,9 @@ import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentationParameters;
 import de.uka.ipd.sdq.ByCounter.results.CountingResult;
 import de.uka.ipd.sdq.ByCounter.results.ThreadedCountingResult;
 import de.uka.ipd.sdq.ByCounter.test.framework.expectations.Expectation;
+import de.uka.ipd.sdq.ByCounter.test.framework.expectations.SectionExpectation;
 import de.uka.ipd.sdq.ByCounter.test.helpers.RunnableForThreading;
+import de.uka.ipd.sdq.ByCounter.test.helpers.RunnableIinc;
 import de.uka.ipd.sdq.ByCounter.test.helpers.ThreadedTestSubject;
 import de.uka.ipd.sdq.ByCounter.utils.MethodDescriptor;
 
@@ -32,13 +36,18 @@ import de.uka.ipd.sdq.ByCounter.utils.MethodDescriptor;
 @RunWith(Parameterized.class)
 public class TestThreads extends AbstractByCounterTest {
 	/** Refers to {@link RunnableForThreading#run()}. */
-	private static MethodDescriptor methodThreadRun;
+	private static MethodDescriptor methodRunnableFTRun;
+	/** Refers to {@link RunnableIinc#run()}. */
+	private static MethodDescriptor methodRunnableIincRun;
 	/** Refers to {@link ThreadedTestSubject#runThreads()}. */
 	private static MethodDescriptor methodRun;
 	
 	{
-		methodThreadRun = new MethodDescriptor(
+		methodRunnableFTRun = new MethodDescriptor(
 				RunnableForThreading.class.getCanonicalName(),
+				"public void run()");
+		methodRunnableIincRun = new MethodDescriptor(
+				RunnableIinc.class.getCanonicalName(),
 				"public void run()");
 		methodRun = new MethodDescriptor(
 				ThreadedTestSubject.class.getCanonicalName(),
@@ -64,37 +73,13 @@ public class TestThreads extends AbstractByCounterTest {
         // define expectations
         Expectation e = new Expectation(true);
         // the thread is executed four times
-        for(int i = 0 ; i < 4; i++) {
-	        e.add().add(Opcodes.LDC, 5)
-			        .add(Opcodes.ALOAD, 4)
-			        .add(Opcodes.ASTORE, 2)
-			        .add(Opcodes.DUP, 3)
-			        .add(Opcodes.LREM, 1)
-			        .add(Opcodes.GOTO, 1)
-			        .add(Opcodes.RETURN, 1)
-			        .add(Opcodes.GETSTATIC, 3)
-			        .add(Opcodes.INVOKEVIRTUAL, 13)
-			        .add(Opcodes.INVOKESPECIAL, 3)
-			        .add(Opcodes.INVOKESTATIC, 3)
-			        .add(Opcodes.NEW, 3)
-			        .add("java.lang.Math", "public long abs(long l)", 1)
-//			        .add("java.lang.RuntimeException", "public void RuntimeException(java.lang.Throwable t)", 0)
-			        .add("java.lang.StringBuilder", "public StringBuilder(java.lang.String s)", 3)
-			        .add("java.lang.StringBuilder", "public java.lang.StringBuilder append(long l)", 1)
-			        .add("java.lang.StringBuilder", "public java.lang.StringBuilder append(java.lang.String s)", 4)
-			        .add("java.lang.StringBuilder", "java.lang.String toString()", 3)
-			        .add("java.lang.Thread", "public java.lang.Thread currentThread()", 1)
-			        .add("java.lang.Thread", "public long getId()", 1)
-			        .add("java.lang.Thread", "public java.lang.String getName()", 1)
-			        .add("java.lang.Thread", "public void sleep(long t)", 1)
-			        .add("java.util.Random", "public long nextLong()", 1)
-			        .add("java.util.logging.Logger" , "public void info(java.lang.String s)", 2)
-	                ;
+        for(int i = 0 ; i < 4+1; i++) {
+	        addExpectationsRunnableFTRun(e.add());
         }
 		// initialize ByCounter
 		BytecodeCounter counter = this.setupByCounter();
 		
-		counter.instrument(methodThreadRun);
+		counter.instrument(methodRunnableFTRun);
 		
 		// execute with ()
 		Object[] executionParameters = new Object[0];
@@ -114,6 +99,54 @@ public class TestThreads extends AbstractByCounterTest {
     }
     
     /**
+     * Add the expectations for {@link #methodRunnableFTRun}.
+     * @param expectation Expectation to add to.
+     */
+    private SectionExpectation addExpectationsRunnableFTRun(SectionExpectation expectation) {
+    	return expectation.add(Opcodes.LDC, 5)
+        .add(Opcodes.ALOAD, 4)
+        .add(Opcodes.ASTORE, 2)
+        .add(Opcodes.DUP, 3)
+        .add(Opcodes.LREM, 1)
+        .add(Opcodes.GOTO, 1)
+        .add(Opcodes.RETURN, 1)
+        .add(Opcodes.GETSTATIC, 3)
+        .add(Opcodes.INVOKEVIRTUAL, 13)
+        .add(Opcodes.INVOKESPECIAL, 3)
+        .add(Opcodes.INVOKESTATIC, 3)
+        .add(Opcodes.NEW, 3)
+        .add("java.lang.Math", "public long abs(long l)", 1)
+//        .add("java.lang.RuntimeException", "public void RuntimeException(java.lang.Throwable t)", 0) // This exception is part of the method, but never thrown. ExpectationsFramework does however not permit expectation 0 at this point.
+        .add("java.lang.StringBuilder", "public StringBuilder(java.lang.String s)", 3)
+        .add("java.lang.StringBuilder", "public java.lang.StringBuilder append(long l)", 1)
+        .add("java.lang.StringBuilder", "public java.lang.StringBuilder append(java.lang.String s)", 4)
+        .add("java.lang.StringBuilder", "java.lang.String toString()", 3)
+        .add("java.lang.Thread", "public java.lang.Thread currentThread()", 1)
+        .add("java.lang.Thread", "public long getId()", 1)
+        .add("java.lang.Thread", "public java.lang.String getName()", 1)
+        .add("java.lang.Thread", "public void sleep(long t)", 1)
+        .add("java.util.Random", "public long nextLong()", 1)
+        .add("java.util.logging.Logger" , "public void info(java.lang.String s)", 2)
+        ;
+	}
+
+    /**
+     * Add the expectations for {@link #methodRunnableIincRun}.
+     * @param expectation Expectation to add to.
+     */
+    private SectionExpectation addExpectationsRunnableIincRun(SectionExpectation expectation) {
+    	return expectation.add(Opcodes.ICONST_0, 1)
+        .add(Opcodes.ISTORE, 1)
+        .add(Opcodes.IINC, 1)
+        .add(Opcodes.GETSTATIC, 1)
+        .add(Opcodes.ILOAD, 1)
+        .add(Opcodes.INVOKEVIRTUAL, 1)
+        .add("java.io.PrintStream", "public void println(int i)", 1)
+        .add(Opcodes.RETURN, 1)
+        ;
+	}
+    
+	/**
      * Instrument the run method that spawns threads recursively and check 
      * for results. 
      */
@@ -146,7 +179,8 @@ public class TestThreads extends AbstractByCounterTest {
     	// initialize ByCounter
 		BytecodeCounter counter = setupByCounter();
 		counter.instrument(methodRun);
-		counter.instrument(methodThreadRun);
+		counter.instrument(methodRunnableFTRun);
+		counter.instrument(methodRunnableIincRun);
 		
 		Object[] executionParameters = new Object[0];
 		counter.execute(methodRun, executionParameters);
@@ -161,11 +195,58 @@ public class TestThreads extends AbstractByCounterTest {
         Assert.assertTrue("Expected ThreadedCountingResult.", results[0] instanceof ThreadedCountingResult);
         ThreadedCountingResult tcr = (ThreadedCountingResult) results[0];
         SortedSet<ThreadedCountingResult> spawnedResults = tcr.getSpawnedThreadedCountingResults();
-		Assert.assertEquals(4, spawnedResults.size());
+		Assert.assertEquals(6, spawnedResults.size());
 		for(ThreadedCountingResult spawn : spawnedResults) {
 			Assert.assertTrue(spawn.getSpawnedThreadedCountingResults().isEmpty());
 			Assert.assertEquals(tcr, spawn.getThreadedCountingResultSource());
 		}
+		
+		Expectation e = new Expectation(true);
+		e.add(0).add(Opcodes.GETSTATIC, 4)
+		   	   	.add(Opcodes.LDC, 8)
+		   	   	.add(Opcodes.INVOKEVIRTUAL, 22)
+//		        .add("java.util.logging.Logger", "public long info(java.lang.String m)", 5)
+		        .add(Opcodes.ICONST_0, 3)
+		        .add(Opcodes.ANEWARRAY, 1)
+		        .add(Opcodes.DUP, 20)
+		        .add(Opcodes.NEW, 14)
+		        .add(Opcodes.INVOKESPECIAL, 14)
+		        .add("de.uka.ipd.sdq.ByCounter.test.helpers.RunnableForThreading", "public RunnableForThreading()", 5)
+		        .add("java.lang.Thread", "public Thread(java.lang.Runnable r, java.lang.String s)", 2)
+		        .add("java.lang.Thread", "public Thread(java.lang.Runnable r)", 4)
+		        .add(Opcodes.AASTORE, 4)
+		        .add(Opcodes.ICONST_1, 1)
+		        .add(Opcodes.ICONST_2, 1)
+		        .add(Opcodes.ICONST_3, 1)
+		        .add(Opcodes.ICONST_4, 1)
+		        .add(Opcodes.ASTORE, 13)
+		        .add(Opcodes.ALOAD, 24)
+		        .add(Opcodes.ARRAYLENGTH, 4)
+		        .add(Opcodes.ISTORE, 4)
+		        .add(Opcodes.GOTO, 2)
+		        .add(Opcodes.ILOAD, 28)
+		        .add(Opcodes.AALOAD, 8)
+		        .add("java.lang.Thread", "public void start()", 6)
+				.add(Opcodes.IINC, 8)
+				.add(Opcodes.IF_ICMPLT, 10)
+		        .add("java.lang.StringBuilder", "public StringBuilder(java.lang.String s)", 2)
+		        .add("java.lang.Thread", "public void join()", 6)
+		        .add("java.util.logging.Logger", "public void info(java.lang.String s)", 4)
+		        .add("de.uka.ipd.sdq.ByCounter.test.helpers.RunnableIinc", "public RunnableIinc()", 1)
+		        .add("java.lang.StringBuilder", "public java.lang.StringBuilder append(int i)", 2)
+		        .add("java.lang.StringBuilder", "public java.lang.StringBuilder append(java.lang.String s)", 2)
+		        .add("java.lang.StringBuilder", "public java.lang.String toString()", 2)
+		        .add(Opcodes.RETURN, 1)
+		        .addParallel(addExpectationsRunnableFTRun(new Expectation().add()),
+							addExpectationsRunnableFTRun(new Expectation().add()),
+							addExpectationsRunnableFTRun(new Expectation().add()),
+							addExpectationsRunnableFTRun(new Expectation().add()),
+							addExpectationsRunnableFTRun(new Expectation().add()),
+							addExpectationsRunnableIincRun(new Expectation().add()));
+		        ;
+		e.compare(results);
+		
+		// output for debugging purposes
         for (CountingResult r : results) {
         	r.logResult(false, true);
         }
@@ -176,19 +257,30 @@ public class TestThreads extends AbstractByCounterTest {
      * Remove method calls with frequency 0.
      * @param countingResults Counting results to change.
      */
-	private static void removeMethodCallsWithFrequency0(SortedSet<CountingResult> countingResults) {
-		for(CountingResult cr : countingResults) {
-			List<String> methodsToDiscard = new LinkedList<String>();
-			for(String m : cr.getMethodCallCounts().keySet()) {
-				if(cr.getMethodCallCounts().get(m) == 0) {
-					// mark for removal
-					methodsToDiscard.add(m);
+	private static void removeMethodCallsWithFrequency0(final SortedSet<CountingResult> countingResults) {
+		final Queue<SortedSet<CountingResult>> resultsQueue = new LinkedList<SortedSet<CountingResult>>();
+		resultsQueue.add(countingResults);
+		do {
+			SortedSet<CountingResult> currentCountingResults = resultsQueue.poll();
+			for(CountingResult cr : currentCountingResults) {
+				List<String> methodsToDiscard = new LinkedList<String>();
+				for(String m : cr.getMethodCallCounts().keySet()) {
+					if(cr.getMethodCallCounts().get(m) == 0) {
+						// mark for removal
+						methodsToDiscard.add(m);
+					}
+				}
+				// remove
+				for(String m : methodsToDiscard) {
+					cr.getMethodCallCounts().remove(m);
+				}
+				// add lists of spawned results to the queue
+				if(cr instanceof ThreadedCountingResult) {
+					ThreadedCountingResult tcr = (ThreadedCountingResult) cr;
+					TreeSet<CountingResult> spawned = new TreeSet<CountingResult>(tcr.getSpawnedThreadedCountingResults());
+					resultsQueue.add(spawned);
 				}
 			}
-			// remove
-			for(String m : methodsToDiscard) {
-				cr.getMethodCallCounts().remove(m);
-			}
-		}
+		} while(!resultsQueue.isEmpty());
 	}
 }

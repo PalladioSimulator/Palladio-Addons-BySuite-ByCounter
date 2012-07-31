@@ -1,5 +1,7 @@
 package de.uka.ipd.sdq.ByCounter.test.helpers;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.logging.Logger;
 
 /**
@@ -46,5 +48,19 @@ public class ThreadedTestSubject {
 		}
 		log.info("Joined " + threads.length + " threads.");
 		log.info("Run finished.");
+		
+		// now execute two threads sequentially
+		Thread tIinc = new Thread(new RunnableIinc());
+		Thread tRand = new Thread(new RunnableForThreading());
+		tIinc.start();
+		tIinc.join();
+		tRand.start();
+		tRand.join();
 	};
+	
+	public void runThreadsExecutor() {
+		ExecutorService es = Executors.newSingleThreadExecutor();
+		es.execute(new RunnableForThreading());
+		// TODO: extend me
+	}
 }
