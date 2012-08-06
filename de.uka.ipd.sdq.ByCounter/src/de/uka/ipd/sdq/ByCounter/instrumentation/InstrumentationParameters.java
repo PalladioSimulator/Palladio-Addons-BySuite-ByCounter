@@ -194,6 +194,11 @@ public final class InstrumentationParameters implements Cloneable {
 	private boolean provideOnlineSectionExecutionUpdates;
 	
 	/**
+	 * @see #getProvideOnlineSectionActiveUpdates()
+	 */
+	private boolean provideOnlineSectionActiveUpdates;
+	
+	/**
 	 * @see #getTraceAndIdentifyRequests()
 	 */
 	private boolean traceAndIdentifyRequests;
@@ -727,6 +732,13 @@ public final class InstrumentationParameters implements Cloneable {
 	}
 
 	/**
+	 * @return 
+	 */
+	public boolean getProvideOnlineSectionActiveUpdates() {
+		return provideOnlineSectionActiveUpdates;
+	}
+
+	/**
 	 * {@link CountingResultCollector} provides a mechanism for monitoring 
 	 * online updates on incoming results.
 	 * @see CountingResultCollector#addObserver(java.util.Observer)
@@ -736,6 +748,18 @@ public final class InstrumentationParameters implements Cloneable {
 	 */
 	public boolean getProvideOnlineSectionExecutionUpdates() {
 		return provideOnlineSectionExecutionUpdates;
+	}
+
+	/**
+	 * 
+	 * @param provideOnlineSectionEnteredUpdates
+	 * When true, the instrumented section that is currently being 
+	 * executed can be queried from the {@link CountingResultCollector}
+	 * using the method {@link CountingResultCollector#queryActiveSection()}.
+	 */
+	public void setProvideOnlineSectionActiveUpdates(
+			boolean provideOnlineSectionEnteredUpdates) {
+		this.provideOnlineSectionActiveUpdates = provideOnlineSectionEnteredUpdates;
 	}
 
 	/**
@@ -840,6 +864,11 @@ public final class InstrumentationParameters implements Cloneable {
 		if(this.useArrayParameterRecording) {
 			if(this.useBasicBlocks) {
 				throw new IllegalArgumentException("Array parameter recording is only supported with useBasicBlocks=false.");
+			}
+		}
+		if(this.provideOnlineSectionActiveUpdates) {
+			if(!this.useBasicBlocks) {
+				throw new IllegalArgumentException("Online section active updates can only be provided when instrumenting ranges (useBasicBlocks=true)");
 			}
 		}
 	}

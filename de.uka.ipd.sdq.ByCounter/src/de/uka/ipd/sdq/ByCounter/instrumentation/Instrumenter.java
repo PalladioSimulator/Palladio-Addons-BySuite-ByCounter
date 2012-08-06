@@ -336,9 +336,11 @@ public final class Instrumenter {
 		}
 		
 		// do a validity check on the resulting class
-		CheckClassAdapter.verify(this.classReader, 
-				DebugOptions.useCheckClassAdapter && DebugOptions.printCheckClassAdapterOutput, 
-				new PrintWriter(System.out));
+		if(DebugOptions.useCheckClassAdapter) {
+			CheckClassAdapter.verify(new ClassReader(this.classWriter.toByteArray()), 
+					DebugOptions.useCheckClassAdapter && DebugOptions.printCheckClassAdapterOutput, 
+					new PrintWriter(System.out));
+		}
 
 		this.timestampAfterReaderAccept_3 = System.nanoTime();
 		this.instrumentedBytes = this.classWriter.toByteArray();
@@ -492,13 +494,13 @@ public final class Instrumenter {
 		// Debug output (for bytecode output remove comments:
 		//log.fine("The new bytecode is the following:\n");
 		ClassVisitor next = this.classWriter;
-		if(DebugOptions.traceClass) {
-			ClassVisitor trace = new TraceClassVisitor(next, new PrintWriter(System.out));
-			next = trace;
-		}
 		if(DebugOptions.useCheckClassAdapter) {
 		    ClassVisitor check = new CheckClassAdapter(next);
 		    next = check;
+		}
+		if(DebugOptions.traceClass) {
+			ClassVisitor trace = new TraceClassVisitor(next, new PrintWriter(System.out));
+			next = trace;
 		}
 		// end Debug output
 	    

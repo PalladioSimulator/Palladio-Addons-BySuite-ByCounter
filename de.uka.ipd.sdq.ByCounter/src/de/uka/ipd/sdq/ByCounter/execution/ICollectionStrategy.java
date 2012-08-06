@@ -15,6 +15,7 @@ public interface ICollectionStrategy {
 	/**
 	 * Protocol the count to the collection strategy.
 	 * @param result The result to protocol.
+	 * @return True, if the result was accepted.
 	 */
 	public abstract boolean protocolCount(ProtocolCountStructure result);
 

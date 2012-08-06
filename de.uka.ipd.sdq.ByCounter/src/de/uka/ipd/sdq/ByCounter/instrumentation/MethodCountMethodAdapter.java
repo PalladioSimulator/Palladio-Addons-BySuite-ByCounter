@@ -75,7 +75,7 @@ public final class MethodCountMethodAdapter extends MethodAdapter {	// evil impl
 	 * The fully qualified class name of {@link CountingResultCollector}, but 
 	 * in bytecode form.
 	 */
-	private static final String CountingResultCollectorCanonicalNameDescriptor = 
+	private static final String COUNTINGRESULTCOLLECTOR_CANONICALNAME_DESCRIPTOR = 
 		CountingResultCollector.class.getCanonicalName().replace('.', '/');
 
 	private static final int MAX_OPCODE = CountingResultBase.MAX_OPCODE;
@@ -398,7 +398,7 @@ public final class MethodCountMethodAdapter extends MethodAdapter {	// evil impl
 	protected int initialiseArrayList() {
 		// get the number for a local variable of the type ArrayList
 		final int var = this.lVarManager.getNewVarFor(
-				"ArrayList", mv, Type.getType(java.util.ArrayList.class), 1);
+				mv, Type.getType(java.util.ArrayList.class), 1);
 
 		mv.visitTypeInsn(Opcodes.NEW, TYPE_ARRAYLIST);
 		mv.visitInsn(Opcodes.DUP);
@@ -606,6 +606,28 @@ public final class MethodCountMethodAdapter extends MethodAdapter {	// evil impl
 	}
 	
 	/**
+	 * Insert code that executes the 
+	 * {@link CountingResultCollector#protocolSectionActive(String, int)} 
+	 * method.
+	 * @param rangeBlockIndex Index of the active range block.
+	 */
+	protected void insertProtocolActiveSection(Integer rangeBlockIndex) {
+		mv.visitMethodInsn(Opcodes.INVOKESTATIC, 
+				COUNTINGRESULTCOLLECTOR_CANONICALNAME_DESCRIPTOR, 
+				"getInstance", 
+				"()L" + COUNTINGRESULTCOLLECTOR_CANONICALNAME_DESCRIPTOR + ";");
+		mv.visitLdcInsn(this.qualifyingMethodName);
+		insertIntegerPushInsn(mv, rangeBlockIndex);
+		mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL, 
+				COUNTINGRESULTCOLLECTOR_CANONICALNAME_DESCRIPTOR, 
+				"protocolSectionActive", 
+				CountingResultCollector.SIGNATURE_protocolSectionActive);
+//		CountingResultCollector.getInstance().protocolSectionActive(
+//				"abcdesafasifvwielfhacilh", 
+//				353);
+	}
+
+	/**
 	 * Calls the result collector after the method has been completed.
 	 * @see #insertResultCollectorCall(String)
 	 */
@@ -694,9 +716,9 @@ public final class MethodCountMethodAdapter extends MethodAdapter {	// evil impl
 		if(instrumentationParameters.getUseResultCollector()){
 			//use CountingResultCollector
 			this.mv.visitMethodInsn(Opcodes.INVOKESTATIC, 
-					CountingResultCollectorCanonicalNameDescriptor, 
+					COUNTINGRESULTCOLLECTOR_CANONICALNAME_DESCRIPTOR, 
 					"getInstance", 
-					"()L"+CountingResultCollectorCanonicalNameDescriptor + ";");
+					"()L"+COUNTINGRESULTCOLLECTOR_CANONICALNAME_DESCRIPTOR + ";");
 		} else {
 			log.fine("Instrumenting "+qualifyingMethodNameAndDesc+
 					" without result collector: skipping getting CountingResultCollector instance");
@@ -822,11 +844,12 @@ public final class MethodCountMethodAdapter extends MethodAdapter {	// evil impl
 		if(instrumentationParameters.getUseResultCollector()) {
 			this.mv.visitMethodInsn(//note that the stack contents are taken as input parameters! (see method signature in CountingResultCollector)
 					Opcodes.INVOKEVIRTUAL, 
-					CountingResultCollectorCanonicalNameDescriptor, 
+					COUNTINGRESULTCOLLECTOR_CANONICALNAME_DESCRIPTOR, 
 					protocolCountMethodName, 
 					protocolCountSignature
 					);
-				
+			// remove the protocol methods return value from the stack
+			mv.visitInsn(Opcodes.POP);
 		}
 	}
 
@@ -964,26 +987,8 @@ public final class MethodCountMethodAdapter extends MethodAdapter {	// evil impl
 			return;
 		}
 
-		if(this.instrumentationParameters.hasInstrumentationRegionForMethod(methodDescriptor)) {
-			this.useRegions = true;
-		}
-		// at this point, setBasicBlockLabels has been called, if it is called
-		// therefore we know whether or not to use blocks
-		Label[] basicBlockLabels = this.instrumentationState.getBasicBlockLabels(); // this can also be label blocks (i.e. for regions)
-		if(basicBlockLabels == null || basicBlockLabels.length == 0) {
-			// only use blocks if according labels have been specified
-			this.useBlockCounters = false;
-		} else if(this.instrumentationParameters.getUseBasicBlocks()) {
-			this.useBlockCounters = true;
-			if(this.methodDescriptor.getCodeAreasToInstrument() != null
-					&& this.methodDescriptor.getCodeAreasToInstrument().length != 0
-					) {
-				this.useRangeBlocks = true;
-			}
-			if(this.instrumentationParameters.getUseArrayParameterRecording()) {
-				throw new RuntimeException("Array parameter recording is not currently supported in block counting modes.");
-			}
-		}
+		// find out what to do
+		readSettings();
 		
 		// initialise counter maps here, because we now know whether basic/range 
 		// blocks need to be used
@@ -994,15 +999,17 @@ public final class MethodCountMethodAdapter extends MethodAdapter {	// evil impl
 		}
 
 		if(this.instrumentationParameters.getTraceAndIdentifyRequests()) {
+			// request id is not a typical local variable but actually a 
+			// new method parameter!
 			this.requestIDLocalVarIndex = calculateRequestIDLocalVarIndex();
 			// if we use continuous register indices, we need to make the local 
-			// variable counter aware of the request UUID 
+			// variable counter aware of the request UUID
 			if(!this.instrumentationParameters.getUseHighRegistersForCounting()) {
-				this.requestIDLocalVarIndex = lVarManager.getNewVarFor("UUID", mv, Type.getType(UUID.class), 2);
-				this.callerIDLocalVarIndex = lVarManager.getNewVarFor("UUID", mv, Type.getType(UUID.class), 2);
+				this.requestIDLocalVarIndex = lVarManager.getNewVarFor(mv, Type.getType(UUID.class), 1);
+				this.callerIDLocalVarIndex = lVarManager.getNewVarFor(mv, Type.getType(UUID.class), 1);
 			} else {
-				lVarManager.reserveLocalVar(Type.getType(UUID.class));// requestID
-				lVarManager.reserveLocalVar(Type.getType(UUID.class));// callerID
+				this.lVarManager.reserveLocalVar(Type.getType(UUID.class));// requestID
+				this.lVarManager.reserveLocalVar(Type.getType(UUID.class));// callerID
 				this.callerIDLocalVarIndex = this.requestIDLocalVarIndex + 1;
 			}
 		}
@@ -1016,10 +1023,10 @@ public final class MethodCountMethodAdapter extends MethodAdapter {	// evil impl
 			
 		// create the own UUID
 		mv.visitMethodInsn(Opcodes.INVOKESTATIC, "java/util/UUID", "randomUUID", "()Ljava/util/UUID;");
-		this.ownIDLocalVarIndex = lVarManager.getNewVarFor("UUID", mv, Type.getType(UUID.class), 2);
+		this.ownIDLocalVarIndex = this.lVarManager.getNewVarFor(mv, Type.getType(UUID.class), 1);
 		mv.visitVarInsn(Opcodes.ASTORE, ownIDLocalVarIndex);
 		
-		timeVar = lVarManager.getNewLongVar(mv);
+		timeVar = this.lVarManager.getNewLongVar(mv);
 
 		// save the time
 		mv.visitMethodInsn(Opcodes.INVOKESTATIC, "java/lang/System", "nanoTime", "()J");
@@ -1041,6 +1048,38 @@ public final class MethodCountMethodAdapter extends MethodAdapter {	// evil impl
 		
 		if(this.instrumentationParameters.getUseArrayParameterRecording()) {
 			initialiseArrayCounters();
+		}
+	}
+
+	/**
+	 * This methods uses {@link #instrumentationParameters} to set the following 
+	 * fields:
+	 * <ul>
+	 * <li>{@link #useRegions}</li>
+	 * <li>{@link #useBlockCounters}</li>
+	 * <li>{@link #useRangeBlocks}</li>
+	 * </ul>
+	 */
+	protected void readSettings() {
+		if(this.instrumentationParameters.hasInstrumentationRegionForMethod(methodDescriptor)) {
+			this.useRegions = true;
+		}
+		// at this point, setBasicBlockLabels has been called, if it is called
+		// therefore we know whether or not to use blocks
+		Label[] basicBlockLabels = this.instrumentationState.getBasicBlockLabels(); // this can also be label blocks (i.e. for regions)
+		if(basicBlockLabels == null || basicBlockLabels.length == 0) {
+			// only use blocks if according labels have been specified
+			this.useBlockCounters = false;
+		} else if(this.instrumentationParameters.getUseBasicBlocks()) {
+			this.useBlockCounters = true;
+			if(this.methodDescriptor.getCodeAreasToInstrument() != null
+					&& this.methodDescriptor.getCodeAreasToInstrument().length != 0
+					) {
+				this.useRangeBlocks = true;
+			}
+			if(this.instrumentationParameters.getUseArrayParameterRecording()) {
+				throw new RuntimeException("Array parameter recording is not currently supported in block counting modes.");
+			}
 		}
 	}
 	
@@ -1184,16 +1223,22 @@ public final class MethodCountMethodAdapter extends MethodAdapter {	// evil impl
 
 				if(this.useRangeBlocks 
 						&& this.instrumentationParameters.getRecordBlockExecutionOrder()) {
-					Integer rngeBlockIndex = this.instrumentationState.getRangeBlockContainsLabels().get(label);
-					if(rngeBlockIndex != null) {
+					Integer rangeBlockIndex = this.instrumentationState.getRangeBlockContainsLabels().get(label);
+					if(rangeBlockIndex != null) {
 						// label is part of a range block
 						insertAddIntegerToArrayList(mv,
 								this.rangeBlockExecutionOrderArrayListVar, 
-								rngeBlockIndex);
+								rangeBlockIndex);
 						if(this.instrumentationParameters.getProvideOnlineSectionExecutionUpdates()) {
 							this.insertResultCollectorUpdateCall();
 							callUpdate = false; // update already done
 						}
+					} else {
+						rangeBlockIndex = -1;
+					}
+					if(this.instrumentationParameters.getProvideOnlineSectionActiveUpdates()) {
+						// update active section
+						insertProtocolActiveSection(rangeBlockIndex);
 					}
 				}
 				if(callUpdate) {

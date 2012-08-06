@@ -40,7 +40,7 @@ public final class LocalVariableManager {
 	 * @return The variable index/identifier.
 	 */
 	public int getNewIntArrayVar(MethodVisitor mv) {
-		return this.getNewVarFor("INT[]", mv, Type.getObjectType("[I"), 1);
+		return this.getNewVarFor(mv, Type.getObjectType("[I"), 1);
 	}
 
 	/**
@@ -52,7 +52,7 @@ public final class LocalVariableManager {
 	public int getNewIntVar(MethodVisitor mv) {
 		log.finest("registerOffset: "+this.registerOffset);
 		mv.visitLdcInsn(0);	// initialise with 0
-		int var = this.getNewVarFor("INT", mv, Type.INT_TYPE, 1);
+		int var = this.getNewVarFor(mv, Type.INT_TYPE, 1);
 		mv.visitVarInsn(Opcodes.ISTORE, var);
 		return var;
 	}
@@ -63,7 +63,7 @@ public final class LocalVariableManager {
 	 * @return The variable index/identifier.
 	 */
 	public int getNewLongArrayVar(MethodVisitor mv) {
-		return this.getNewVarFor("LONG[]", mv, Type.getObjectType("[J"), 1);
+		return this.getNewVarFor(mv, Type.getObjectType("[J"), 1);
 	}
 
 	/**
@@ -75,7 +75,7 @@ public final class LocalVariableManager {
 	public int getNewLongVar(MethodVisitor mv) {
 		log.finest("registerOffset: "+this.registerOffset);
 		mv.visitLdcInsn(0L);	// initialise with 0
-		int var = this.getNewVarFor("LONG", mv, Type.LONG_TYPE, 2);
+		int var = this.getNewVarFor(mv, Type.LONG_TYPE, 2);
 		mv.visitVarInsn(Opcodes.LSTORE, var);
 		return var;
 	}
@@ -86,19 +86,18 @@ public final class LocalVariableManager {
 	 * @return The variable index/identifier.
 	 */
 	public int getNewStringArrayVar(MethodVisitor mv) {
-		return this.getNewVarFor("String[]", mv, Type.getObjectType("[Ljava/lang/String;"), 1);
+		return this.getNewVarFor(mv, Type.getObjectType("[Ljava/lang/String;"), 1);
 	}
 
 	/**
 	 * Register a new variable of type 'type'.
 	 * Do not use unless a more specialised method does not exist (yet).
-	 * @param readableDescr A readable description of the type. Used for debugging purposes only.
 	 * @param mv The {@link MethodVisitor} to use for inserting initialisation instructions.
 	 * @param type The type of the new local.
 	 * @param localVarSize The number of local variables that the var blocks. This is 1 for int, 2 for long, 1 for Object etc.
 	 * @return The variable index/identifier.
 	 */
-	public int getNewVarFor(String readableDescr, MethodVisitor mv,
+	public int getNewVarFor(MethodVisitor mv,
 			Type type, int localVarSize) {
 		log.finest("nextRegisterOffset: "+this.registerOffset);
 		int var = -1;
@@ -108,13 +107,14 @@ public final class LocalVariableManager {
 		} else {
 			var = this.lvars.newLocal(type);
 		}
+		String readableDescr = type.getClassName();
 		log.finest("Registered new "+readableDescr+"@localvar "+var);
 		log.finest("registerOffset: "+this.registerOffset);
 		return var;
 	}
 
 	/**
-	 * Use {@link #getNewIntVar(MethodVisitor)} instead wherever possible!
+	 * Use {@link #getNewIntVar(MethodVisitor)} etc. instead wherever possible!
 	 * @param type variable type.
 	 */
 	protected void reserveLocalVar(Type type) {

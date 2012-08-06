@@ -8,6 +8,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentationContext;
+import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentationParameters;
 import de.uka.ipd.sdq.ByCounter.reporting.ICountingResultWriter;
 import de.uka.ipd.sdq.ByCounter.results.ResultCollection;
 
@@ -30,7 +31,7 @@ import de.uka.ipd.sdq.ByCounter.results.ResultCollection;
  * @since 0.1
  * @version 1.2
  */
-public final class CountingResultCollector extends Observable {
+public final class CountingResultCollector extends Observable implements ICollectionStrategy {
 	
 	/** Default value for {@link #getMode()}. */
 	public static final CountingResultCollectorMode MODE_DEFAULT = CountingResultCollectorMode.UseReportingMethodChoiceByInstrumentedMethods;
@@ -44,7 +45,13 @@ public final class CountingResultCollector extends Observable {
 	 * The bytecode parameter descriptor for
 	 * {@link #protocolCount(ProtocolCountStructure)}.
 	 */
-	public static final String SIGNATURE_protocolCount = "(Lde/uka/ipd/sdq/ByCounter/execution/ProtocolCountStructure;)V";
+	public static final String SIGNATURE_protocolCount = "(Lde/uka/ipd/sdq/ByCounter/execution/ProtocolCountStructure;)Z";
+
+	/**
+	 * The bytecode parameter descriptor for 
+	 * {@link #protocolSectionActive(String, int)}.
+	 */
+	public static final String SIGNATURE_protocolSectionActive = "(Ljava/lang/String;I)V";
 
 	/**
 	 * Public singleton accessor. Use this to get a reference
@@ -104,6 +111,12 @@ public final class CountingResultCollector extends Observable {
 	private List<AbstractCollectionStrategy> collectionStrategies;
 
 	/**
+	 * When {@link InstrumentationParameters#getProvideOnlineSectionActiveUpdates()}
+	 * is true, this field hold the section last entered.
+	 */
+	private ActiveSection activeSection;
+
+	/**
 	 * Private constructor that is invoked to create the singleton instance
 	 */
 	private CountingResultCollector() {
@@ -119,6 +132,7 @@ public final class CountingResultCollector extends Observable {
 		this.collectionStrategies.add(this.strategyDefault);
 		this.collectionStrategies.add(this.inliningStrategyWished);
 		this.collectionStrategies.add(this.inliningStrategyForced);
+		this.activeSection = null;
 	}
 
 	/**
@@ -128,6 +142,7 @@ public final class CountingResultCollector extends Observable {
 		for(ICollectionStrategy s : this.collectionStrategies) {
 			s.clearResults();
 		}
+		this.activeSection = null;
 	}
 
 	/**
@@ -164,8 +179,9 @@ public final class CountingResultCollector extends Observable {
 	 * An instrumented class calls this method to report the instruction and method call counts.
 	 * TODO: how far is "synchronized" problematic in multi-threading?
 	 * @param result The result reported by an instrumented method.
+	 * @return True when the result was accepted, false when it is ignored.
 	 */
-	public synchronized void protocolCount(ProtocolCountStructure result) {
+	public synchronized boolean protocolCount(ProtocolCountStructure result) {
 		result.reportingStart = System.nanoTime();//TODO make this configurable and clear, move to an interface/class that is accessed
 		boolean handledResult = false;
 		if(this.mode==CountingResultCollectorMode.DiscardAllIncomingCountingResults){
@@ -189,6 +205,7 @@ public final class CountingResultCollector extends Observable {
 			// Result was not added by any of the strategies. This most often means
 			// that it is not needed (for instance out of region).
 			log.info("Protocolled count at " + result.executionStart + " not added.");
+			return false;
 		} else if(this.countObservers() > 0) {
 			
 			// notify observers
@@ -207,6 +224,37 @@ public final class CountingResultCollector extends Observable {
 						new CountingResultCompleteMethodExecutionUpdate(relevantResults));
 			}
 		}
+		return true;
+	}
+	
+	/**
+	 * Called by an instrumented method if 
+	 * {@link InstrumentationParameters#getProvideOnlineSectionActiveUpdates()}
+	 * is true.
+	 * @param qualifyingMethodName Qualifying method name of the reporting 
+	 * method.
+	 * @param sectionId Id of the section in the reporting method.
+	 */
+	public void protocolSectionActive(
+			final String qualifyingMethodName, 
+			final int sectionId) {
+		if(sectionId < 0) {
+			this.activeSection = null;
+		} else {
+			this.activeSection = new ActiveSection();
+			this.activeSection.qualifyingMethodName = qualifyingMethodName;
+			this.activeSection.sectionId = sectionId;
+		}
+	}
+	
+	/**
+	 * @return When a section in an instrumented method is currently being 
+	 * executed and {@link InstrumentationParameters#getProvideOnlineSectionActiveUpdates()}
+	 * is true, this section is returned as an {@link ActiveSection}.
+	 * Otherwise returns <code>null</code>.
+	 */
+	public ActiveSection queryActiveSection() {
+		return this.activeSection;
 	}
 	
 	/**

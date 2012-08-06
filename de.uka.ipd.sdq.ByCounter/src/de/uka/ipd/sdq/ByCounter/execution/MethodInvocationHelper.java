@@ -81,8 +81,9 @@ public final class MethodInvocationHelper {
 			for(int i = 0; i < methodsToCall.size(); i++) {
 				// look for a matching method
 				boolean matchFound = false;
+				final MethodDescriptor methodToCall = methodsToCall.get(i);
 				// is the method a constructor?
-				if(methodsToCall.get(i).getIsConstructor()) {
+				if(methodToCall.getIsConstructor()) {
 					Constructor<?>[] constructors = 
 						clazz.getDeclaredConstructors();
 					for(Constructor<?> c : constructors) {
@@ -93,8 +94,8 @@ public final class MethodInvocationHelper {
 						int startSplitIndex = descriptor.getSimpleMethodName().lastIndexOf('.')+1;
 						// startSplitIndex is correctly 0 (=-1+1) if no '.' is found.
 						String methodName = descriptor.getSimpleMethodName().substring(startSplitIndex);
-						if(methodName.equals(methodsToCall.get(i).getSimpleMethodName())		// matching name
-								&& descriptor.getDescriptor().equals(methodsToCall.get(i).getDescriptor()) ) {	// matching parameters
+						if(methodName.equals(methodToCall.getSimpleMethodName())		// matching name
+								&& descriptor.getDescriptor().equals(methodToCall.getDescriptor()) ) {	// matching parameters
 							// constructor found: invoke it and break the loop
 							long startMethod = System.nanoTime();
 							log.fine("Invoking method "+c.getName());
@@ -109,8 +110,8 @@ public final class MethodInvocationHelper {
 				} else { // no constructor; look for normal method
 					for(Method m : methods) {
 						MethodDescriptor descriptor = new MethodDescriptor(m);
-						if(descriptor.getSimpleMethodName().equals(methodsToCall.get(i).getSimpleMethodName())		// matching name
-								&& descriptor.getDescriptor().equals(methodsToCall.get(i).getDescriptor()) ) {	// matching parameters
+						if(descriptor.getSimpleMethodName().equals(methodToCall.getSimpleMethodName())		// matching name
+								&& descriptor.getDescriptor().equals(methodToCall.getDescriptor()) ) {	// matching parameters
 							// method found: invoke method and break the loop
 	//						log.fine(">>> Invoking method '" + buildMethodSignature(m) + "'...");
 							long startMethod = System.nanoTime();
@@ -140,7 +141,7 @@ public final class MethodInvocationHelper {
 				
 				if(!matchFound) {
 					log.severe("ERROR: Could not find a matching method with the name " 
-							+ clazz.getCanonicalName() + "." + methodsToCall.get(i).getSimpleMethodName());
+							+ clazz.getCanonicalName() + "." + methodToCall.getSimpleMethodName());
 				}
 			}
 			
