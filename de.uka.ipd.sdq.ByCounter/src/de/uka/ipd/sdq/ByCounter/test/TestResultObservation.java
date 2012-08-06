@@ -20,6 +20,8 @@ import de.uka.ipd.sdq.ByCounter.execution.CountingResultSectionExecutionUpdate;
 import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentationParameters;
 import de.uka.ipd.sdq.ByCounter.parsing.LineNumberRange;
 import de.uka.ipd.sdq.ByCounter.results.CountingResult;
+import de.uka.ipd.sdq.ByCounter.results.RequestResult;
+import de.uka.ipd.sdq.ByCounter.results.ResultCollection;
 import de.uka.ipd.sdq.ByCounter.test.framework.expectations.Expectation;
 import de.uka.ipd.sdq.ByCounter.test.helpers.TestSubjectLineNumbers;
 import de.uka.ipd.sdq.ByCounter.test.helpers.TestSubjectResultObservation;
@@ -111,7 +113,9 @@ public class TestResultObservation extends AbstractByCounterTest {
         });
 
         // run ByCounter
-        CountingResult[] results = this.instrumentAndExecute(e.getRanges());
+        RequestResult[] rResults = this.instrumentAndExecute(e.getRanges()).getRequestResults().toArray(new RequestResult[0]);
+        Assert.assertEquals(1, rResults.length);
+        CountingResult[] results = rResults[0].getCountingResults().toArray(new CountingResult[0]);
         for (CountingResult r : results) {
         	r.logResult(false, true);
         }
@@ -201,7 +205,7 @@ public class TestResultObservation extends AbstractByCounterTest {
         }
     }
 
-	private CountingResult[] instrumentAndExecute(LineNumberRange[] codeAreasToInstrument) {
+	private ResultCollection instrumentAndExecute(LineNumberRange[] codeAreasToInstrument) {
 		// initialize ByCounter
         BytecodeCounter counter = setupOnlineUpdateByCounter();
 
@@ -214,7 +218,7 @@ public class TestResultObservation extends AbstractByCounterTest {
         Object[] executionParameters = new Object[] { 10 };
         counter.execute(methodRanged, executionParameters);
 
-        return CountingResultCollector.getInstance().retrieveAllCountingResults().getCountingResults().toArray(new CountingResult[0]);
+        return CountingResultCollector.getInstance().retrieveAllCountingResults();
 	}
 
 	/**
