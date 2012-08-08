@@ -1,6 +1,10 @@
 package de.uka.ipd.sdq.ByCounter.test;
 
 import java.util.LinkedList;
+import java.util.concurrent.BrokenBarrierException;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import junit.framework.Assert;
 
@@ -15,11 +19,9 @@ import de.uka.ipd.sdq.ByCounter.execution.BytecodeCounter;
 import de.uka.ipd.sdq.ByCounter.execution.CountingResultCollector;
 import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentationParameters;
 import de.uka.ipd.sdq.ByCounter.parsing.LineNumberRange;
-import de.uka.ipd.sdq.ByCounter.results.CountingResult;
-import de.uka.ipd.sdq.ByCounter.results.RequestResult;
 import de.uka.ipd.sdq.ByCounter.test.framework.expectations.Expectation;
-import de.uka.ipd.sdq.ByCounter.test.helpers.TestSubjectLineNumbers;
-import de.uka.ipd.sdq.ByCounter.test.helpers.TestSubjectResultObservation;
+import de.uka.ipd.sdq.ByCounter.test.helpers.StatefulRunnable;
+import de.uka.ipd.sdq.ByCounter.test.helpers.SynchronizedTestSubject;
 import de.uka.ipd.sdq.ByCounter.utils.MethodDescriptor;
 
 /**
@@ -33,31 +35,56 @@ import de.uka.ipd.sdq.ByCounter.utils.MethodDescriptor;
 @RunWith(Parameterized.class)
 public class TestQueryUpdates extends AbstractByCounterTest {
 
-	private final class QueryCRCRunnable implements Runnable {
-		private static final int SLEEP_TIME = 25;
-		public boolean done = false;
+	/**
+	 * 
+	 * @author Martin Krogmann
+	 *
+	 */
+	private final class InstrumentAndExecuteMethod implements Runnable {
+		
+		private MethodDescriptor method;
+		/**
+		 * Instance of the class containing the method specified with
+		 * {@link InstrumentAndExecuteMethod#InstrumentAndExecuteMethod(MethodDescriptor)}.
+		 */
+		public Object classInstance;
+		
+		private Lock lock;
+		/**
+		 * Use {@link Object#wait()} on this object to wait until
+		 * {@link #classInstance} is set.
+		 */
+		public Condition classInstanceAvailable;
+		private boolean bClassInstanceAvailable;
+
+		public InstrumentAndExecuteMethod(final MethodDescriptor method) {
+			this.method = method;
+			this.classInstance = null;
+			this.lock = new ReentrantLock();
+			this.bClassInstanceAvailable = false;
+			this.classInstanceAvailable = lock.newCondition();
+		}
+
 		@Override
 		public void run() {
-			CountingResultCollector crc = CountingResultCollector.getInstance();
-			while(!done) {
-				ActiveSection s = crc.queryActiveSection();
-				System.out.println("ActiveSection: " + s);
-				try {
-					Thread.sleep(SLEEP_TIME);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
+			// initialize ByCounter
+			this.lock.lock();
+			BytecodeCounter counter;
+	        counter = setupQueryByCounter();
+	        counter.instrument(this.method);
+	        this.classInstance = counter.instantiate(this.method);
+	        this.bClassInstanceAvailable = true;
+	        this.classInstanceAvailable.signalAll();
+	        this.lock.unlock();
+	        Object[] executionParameters = new Object[] {};
+	        counter.execute(method, this.classInstance, executionParameters);
+		}
+		
+		public boolean isClassInstanceAvailable() {
+			return bClassInstanceAvailable;
 		}
 	}
-
-	/** Signature of the method that is used to test in {@link #testCallTreeObservation()} */
-    private static final String SIGNATURE_METHOD1 = "public void method1(boolean firstLevel) {";
-
-	/** Signature of the method that is used to test in {@link #testRangeBlockOrderedCounting()} */
-    private static final String SIGNATURE_METHOD_CALLS = "public void testNestedNormalisedLoopsWithExternalCalls(int i)";
-
+	
     /**
      * This constructor is used by the Parametrized runner for running tests with different
      * parameters.
@@ -77,139 +104,60 @@ public class TestQueryUpdates extends AbstractByCounterTest {
     public void cleanResults() {
         // clear all collected results
         super.cleanResults();
-        // delete all observers
-        CountingResultCollector.getInstance().deleteObservers();
     }
 
     /**
-     * Tests the counting of user defined line number ranges while recording the order of execution.
-     */
-    @Test
-    public void testRangeBlockOrderedCounting() {
-        // define expectations
-        Expectation e = new Expectation(true);
-        e.add(51, 53).add(Opcodes.ICONST_0, 3)
-                     .add(Opcodes.ISTORE, 3);
-        e.add(54, 54).add(Opcodes.BIPUSH, 1)
-                     .add(Opcodes.GOTO, 1)
-                     .add(Opcodes.IF_ICMPLT, 1)
-                     .add(Opcodes.ILOAD, 1);
-        e.add(55, 55).add(Opcodes.IINC, 1);
-        e.add(57, 57).add(Opcodes.IINC, 1);
-        e.add(58, 58).add(Opcodes.BIPUSH, 1)
-                     .add(Opcodes.GOTO, 1)
-                     .add(Opcodes.IF_ICMPLT, 1)
-                     .add(Opcodes.ILOAD, 1);
-        for (int i = 0; i < 12; i++) {
-            e.add(59, 59).add(Opcodes.ICONST_2, 1)
-                         .add(Opcodes.ILOAD, 1)
-                         .add(Opcodes.IMUL, 1)
-                         .add(Opcodes.ISTORE, 1);
-            e.add(61, 61).add(Opcodes.IINC, 1);
-            e.add(58, 58).add(Opcodes.BIPUSH, 1)
-                         .add(Opcodes.IF_ICMPLT, 1)
-                         .add(Opcodes.ILOAD, 1);
-        }
-        e.add(63, 63).add(Opcodes.IINC, 1);
-        e.add(54, 54).add(Opcodes.BIPUSH, 1)
-                     .add(Opcodes.IF_ICMPLT, 1)
-                     .add(Opcodes.ILOAD, 1);
-        
-        // run ByCounter
-        RequestResult[] rResults = this.instrumentAndExecute(e.getRanges());
-        Assert.assertEquals(1, rResults.length);
-        CountingResult[] results = rResults[0].getCountingResults().toArray(new CountingResult[0]);
-        for (CountingResult r : results) {
-        	r.logResult(false, true);
-        }
-        CountingResultCollector.getInstance().clearResults();
-        // compare
-        e.compare(results);
-    }
-
-    /**
-     * This test instruments and executes a mildly complex call tree to verify
-     * that the online results are not mixed up.
+     * This test instruments and executes a test subject that executes specific 
+     * sections of code in a controlled way in order to observe the currently 
+     * active sections.
      * @throws InterruptedException Can be thrown when trying to join the 
      * querying thread.
+     * @throws BrokenBarrierException 
      */
     @Test
-    public void testCallTreeObservation() throws InterruptedException {
-		// initialize ByCounter
-        BytecodeCounter counter = setupQueryByCounter();
-
-        MethodDescriptor method1 = new MethodDescriptor(
-        		TestSubjectResultObservation.class.getCanonicalName(),
-        		SIGNATURE_METHOD1);
-
-        Expectation eInit = new Expectation(true);	// false because the execution sequence is specified manually down below
-        eInit.add(0).add(Opcodes.ICONST_2, 1)
-        			  .add(Opcodes.ISTORE, 1);
-        LineNumberRange eInitLnr = new LineNumberRange(29, 29);
-        Expectation eInt = new Expectation(true);
-        eInt.add(1).add(Opcodes.IINC, 1)
-        			.add(Opcodes.GOTO, 1);
-        LineNumberRange eIntLnr = new LineNumberRange(31, 31);
-        Expectation eDouble = new Expectation(true);
-        eDouble.add(2).add(Opcodes.ILOAD, 1)
-        				   .add(Opcodes.I2D, 1)
-        				   .add(Opcodes.LDC, 1)
-        				   .add(Opcodes.DADD, 1)
-        				   .add(Opcodes.D2I, 1)
-        				   .add(Opcodes.ISTORE, 1);
-        LineNumberRange eDoubleLnr = new LineNumberRange(35, 35);
-
-        final Expectation[] expectations = new Expectation[] {
-        		eInit,					// method1
-        		eInit, eInt, eDouble, 	// method1->method2->method1
-        		eDouble 				// method1
-        };
+    public void testActiveSectionQuerying() throws InterruptedException, BrokenBarrierException {
+    	// section 1
+        LineNumberRange rangeS1 = new LineNumberRange(32, 34);
+        // section 2
+        LineNumberRange rangeS2 = new LineNumberRange(37, 42);
+        // section 3
+        LineNumberRange rangeS3 = new LineNumberRange(46, 48);
 
         // instrument all ranges
         LinkedList<LineNumberRange> ranges = new LinkedList<LineNumberRange>();
-        ranges.add(eInitLnr);
-        ranges.add(eIntLnr);
-        ranges.add(eDoubleLnr);
+        ranges.add(rangeS1);
+        ranges.add(rangeS2);
+        ranges.add(rangeS3);
 
-        method1.setCodeAreasToInstrument(ranges.toArray(new LineNumberRange[0]));
-        counter.instrument(method1);
+        MethodDescriptor methodRun = new MethodDescriptor(
+        		SynchronizedTestSubject.class.getCanonicalName(), 
+        		"public void run()");
+        methodRun.setCodeAreasToInstrument(ranges.toArray(new LineNumberRange[0]));
 
-        // start a thread that queries CountingResultCollector
-        QueryCRCRunnable queryCRCRunnable = new QueryCRCRunnable();
-		Thread queryThread = new Thread(queryCRCRunnable);
-        queryThread.start();
-        
-        // execute with (true)
-        Object[] executionParameters = new Object[] { true };
-        counter.execute(method1, executionParameters);
-        queryCRCRunnable.done = true;
-        queryThread.join();
-
-        int i = 0;
-        for(CountingResult cr : CountingResultCollector.getInstance().retrieveAllCountingResults().getCountingResults()) {
-        	cr.logResult(false, true);
-        	System.out.println(cr.getMethodInvocationBeginning());
-        	expectations[i].compare(new CountingResult[] {cr});
-        	i++;
+        InstrumentAndExecuteMethod iaem = new InstrumentAndExecuteMethod(methodRun);
+        final Thread executeThread = new Thread(iaem);
+        executeThread.start();
+        System.out.println("exec started");
+        // wait for the construction of the class instance
+        iaem.lock.lock();
+        if(!iaem.isClassInstanceAvailable()) {
+        	iaem.classInstanceAvailable.await();
         }
+        
+        final StatefulRunnable classInstance = (StatefulRunnable) iaem.classInstance;
+        iaem.lock.unlock();
+        
+        // query the sections
+		CountingResultCollector crc = CountingResultCollector.getInstance();
+		for(int i = 0; i < 2; i++) {
+			while(classInstance.getCurrentState() < i+2) {Thread.yield();} // wait for other thread
+			ActiveSection s = crc.queryActiveSection();
+			Assert.assertEquals(i+1, s.sectionId);
+			classInstance.nextState();
+	    }
+        executeThread.join();
     }
-
-	private RequestResult[] instrumentAndExecute(LineNumberRange[] codeAreasToInstrument) {
-		// initialize ByCounter
-        BytecodeCounter counter = setupQueryByCounter();
-
-        MethodDescriptor methodRanged = new MethodDescriptor(
-        		TestSubjectLineNumbers.class.getCanonicalName(),
-        		SIGNATURE_METHOD_CALLS);
-        methodRanged.setCodeAreasToInstrument(codeAreasToInstrument);
-        counter.instrument(methodRanged);
-        // execute with (10)
-        Object[] executionParameters = new Object[] { 10 };
-        counter.execute(methodRanged, executionParameters);
-
-        return CountingResultCollector.getInstance().retrieveAllCountingResults().getRequestResults().toArray(new RequestResult[0]);
-	}
-
+    
 	/**
 	 * @return A {@link BytecodeCounter} instance setup with online section
 	 * execution updates.
