@@ -855,6 +855,10 @@ public final class InstrumentationParameters implements Cloneable {
 			if(this.provideOnlineSectionExecutionUpdates == false) {
 				throw new IllegalArgumentException("provideOnlineSectionExecutionUpdates must be true when specifying instrumentation regions.");
 			}
+			if(this.hasMethodsWithCodeAreas()) {
+				// LineNumberRanges where specified
+				throw new IllegalArgumentException("When using instrumentation regions, you must not also specify code areas (LineNumberRanges) for methods.");
+			}
 		}
 		if(this.provideOnlineSectionExecutionUpdates) {
 			if(!this.useBasicBlocks) {

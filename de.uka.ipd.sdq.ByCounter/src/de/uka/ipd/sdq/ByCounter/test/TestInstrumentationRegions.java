@@ -15,6 +15,7 @@ import de.uka.ipd.sdq.ByCounter.execution.BytecodeCounter;
 import de.uka.ipd.sdq.ByCounter.execution.CountingResultCollector;
 import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentationParameters;
 import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentationRegion;
+import de.uka.ipd.sdq.ByCounter.parsing.LineNumberRange;
 import de.uka.ipd.sdq.ByCounter.results.CountingResult;
 import de.uka.ipd.sdq.ByCounter.test.framework.expectations.Expectation;
 import de.uka.ipd.sdq.ByCounter.test.helpers.TestSubject;
@@ -164,14 +165,10 @@ public class TestInstrumentationRegions extends AbstractByCounterTest {
 
 	/**
 	 * Tests feeding ByCounter with incompatible instrumentation parameters.
-	 * Also tells ByCounter to instrument a single line in a method.
+	 * Here regions are used but useBasicBlocks is set to false.
 	 */
 	@Test
-	public void testBadInstrumentationParameters() {
-		// define expectations
-		Expectation e = new Expectation();
-		e.add().add(Opcodes.ICONST_0, 1)
-			   .add(Opcodes.ISTORE, 1);
+	public void testBadInstrumentationParameters_noBasicBlocks() {
         // run ByCounter
 		String canonicalClassName = ExecutionOrder.class.getCanonicalName();
 		String methodSignature = "void process()";
@@ -194,23 +191,73 @@ public class TestInstrumentationRegions extends AbstractByCounterTest {
 		} catch(IllegalArgumentException iae) {
 			exceptionThrown = true;
 		}
-		Assert.assertTrue(exceptionThrown);
-		counter.getInstrumentationParams().setUseBasicBlocks(true);
+		Assert.assertTrue("The expected exception was not thrown. ", exceptionThrown);
+	}
+	
+
+	/**
+	 * Tests feeding ByCounter with incompatible instrumentation parameters.
+	 * Here regions are used but online execution updates are set to false.
+	 */
+	@Test
+	public void testBadInstrumentationParameters_noOnlineUpdates() {
+        // run ByCounter
+		String canonicalClassName = ExecutionOrder.class.getCanonicalName();
+		String methodSignature = "void process()";
+        MethodDescriptor methodRanged = new MethodDescriptor(canonicalClassName, methodSignature);
+        InstrumentationRegion region = new InstrumentationRegion(methodRanged, 15, methodRanged, 15);
+
+		// initialise
+        BytecodeCounter counter = setupByCounter();
+        // set up illegal parameters
         
 		// try no online updates
 		counter.getInstrumentationParams().setProvideOnlineSectionExecutionUpdates(false);
-		exceptionThrown = false;
+		List<InstrumentationRegion> instrumentationRegions = new LinkedList<InstrumentationRegion>();
+        instrumentationRegions.add(region);
+		counter.getInstrumentationParams().setInstrumentationRegions(instrumentationRegions);
+		boolean exceptionThrown = false;
 		try {
 			counter.instrument(methodRanged);
 		} catch(IllegalArgumentException iae) {
 			exceptionThrown = true;
 		}
-		Assert.assertTrue(exceptionThrown);
-		counter.getInstrumentationParams().setProvideOnlineSectionExecutionUpdates(true);
-        
+		Assert.assertTrue("The expected exception was not thrown. ", exceptionThrown);
 	}
 	
-	
+	/**
+	 * Tests feeding ByCounter with incompatible instrumentation parameters.
+	 * Here regions are used in combination with code areas.
+	 */
+	@Test
+	public void testBadInstrumentationParameters_codeAreas() {
+        // run ByCounter
+		String canonicalClassName = ExecutionOrder.class.getCanonicalName();
+		String methodSignature = "void process()";
+        MethodDescriptor methodRanged = new MethodDescriptor(canonicalClassName, methodSignature);
+        InstrumentationRegion region = new InstrumentationRegion(methodRanged, 15, methodRanged, 15);
+        // specify a code area
+        methodRanged.setCodeAreasToInstrument(new LineNumberRange[] {
+        		new LineNumberRange(16, 17)
+        });
+
+		// initialise
+        BytecodeCounter counter = setupByCounter();
+        // set up illegal parameters
+        
+		// set regions
+		List<InstrumentationRegion> instrumentationRegions = new LinkedList<InstrumentationRegion>();
+        instrumentationRegions.add(region);
+		counter.getInstrumentationParams().setInstrumentationRegions(instrumentationRegions);
+		
+		boolean exceptionThrown = false;
+		try {
+			counter.instrument(methodRanged);
+		} catch(IllegalArgumentException iae) {
+			exceptionThrown = true;
+		}
+		Assert.assertTrue("The expected exception was not thrown. ", exceptionThrown);
+	}
     
     @Override
     protected BytecodeCounter setupByCounter() {
