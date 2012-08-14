@@ -121,7 +121,7 @@ public class ByCounterWrapper {
 		handlePersistInstrumentedClasses(instrumentationParams, input);
 		input.isAggregateInternalCallsTransparently(); // TODO: implement aggregateInterncalCallsTransparently
 		input.getDefinedLogicalSets(); // TODO: implement handling definedLogicalSets
-		instrumentationParams.setInstrumentRecursively(input.isInstrumentRecursively(), 50); // TODO: Why is there a max depth of 50 specified? There should be the possibility to specify no maximal depth and instrument _all_ invoked methods. 
+		instrumentationParams.setInstrumentRecursively(input.isInstrumentRecursively()); 
 		handleBasicBlocks(instrumentationParams, input);
 		final Map<LineNumberRange, InstrumentedCodeArea> rangeCodeAreaMap = new HashMap<LineNumberRange, InstrumentedCodeArea>();
 		final Map<String, InstrumentedMethod> methodNameInstrumentedMethodMap = new HashMap<String, InstrumentedMethod>();
