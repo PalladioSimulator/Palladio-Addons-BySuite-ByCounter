@@ -242,7 +242,7 @@ public class TestBytecodeCounter extends AbstractByCounterTest {
 				testClass.getCanonicalName(),
 				testClassMethodCallTest); //$NON-NLS-1$
 		
-		counter.getInstrumentationParams().setInstrumentRecursively(true, 5);
+		counter.getInstrumentationParams().setInstrumentRecursively(true);
 		
 		//3. now tell ByCounter to instrument the specified method
 		counter.instrument(myMethod);
@@ -395,7 +395,7 @@ public class TestBytecodeCounter extends AbstractByCounterTest {
 				TestSubjectInterfaceMethods.class.getCanonicalName(),
 				"void methodA1()");
 		
-		counter.getInstrumentationParams().setInstrumentRecursively(true, 5);
+		counter.getInstrumentationParams().setInstrumentRecursively(true);
 		
 		//3. now tell ByCounter to instrument the specified method
 		counter.instrument(myMethod);
@@ -410,7 +410,7 @@ public class TestBytecodeCounter extends AbstractByCounterTest {
 			newResult.logResult(false, true);
 		}
 		
-		counter.getInstrumentationParams().setInstrumentRecursively(false, 0);
+		counter.getInstrumentationParams().setInstrumentRecursively(false);
 	}
 	
 

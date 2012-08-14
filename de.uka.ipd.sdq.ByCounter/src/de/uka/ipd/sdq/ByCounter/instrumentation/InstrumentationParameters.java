@@ -69,9 +69,6 @@ public final class InstrumentationParameters implements Cloneable {
 
 	/** Default value for {@link #getInstrumentRecursively()}. */
 	public static final boolean INSTRUMENT_RECURSIVELY_DEFAULT = false;
-	
-	/** Default value for {@link #getInstrumentRecursivelyMaxDepth()}. */
-	public static final int INSTRUMENT_RECURSIVELY_MAX_DEPTH_DEFAULT = 0;
 
 	/** Default value for {@link #getMethodsToInstrument()}. */
 	public static final List<MethodDescriptor> METHODS_TO_INSTRUMENT_DEFAULT = null;
@@ -137,11 +134,6 @@ public final class InstrumentationParameters implements Cloneable {
 	 * @see #setInstrumentRecursivly(boolean, int)
 	 */
 	private boolean instrumentRecursively;
-	
-	/**
-	 * @see #instrumentRecursively
-	 */
-	private int instrumentRecursivelyMaxDepth;
 	
 	/** Descriptions of the methods that shall be instrumented. */
 	private List<MethodDescriptor> methodsToInstrument;
@@ -294,7 +286,6 @@ public final class InstrumentationParameters implements Cloneable {
 		this.instrumentationScopeOverrideMethodLevel = INSTRUMENTATION_SCOPE_OVERRIDE_METHOD_LEVEL_DEFAULT;
 		this.recordBlockExecutionOrder = RECORD_BLOCK_EXECUTION_ORDER_DEFAULT;
 		this.instrumentRecursively = INSTRUMENT_RECURSIVELY_DEFAULT;
-		this.instrumentRecursivelyMaxDepth = INSTRUMENT_RECURSIVELY_MAX_DEPTH_DEFAULT;
 		this.provideOnlineSectionExecutionUpdates = PROVIDE_ONLINE_SECTION_EXECUTION_UPDATES_DEFAULT;
 		this.instrumentationRegions = INSTRUMENTATION_REGIONS_DEFAULT;
 	}
@@ -319,7 +310,6 @@ public final class InstrumentationParameters implements Cloneable {
 		copy.instrumentationScopeOverrideClassLevel = this.instrumentationScopeOverrideClassLevel;
 		copy.instrumentationScopeOverrideMethodLevel = this.instrumentationScopeOverrideMethodLevel;
 		copy.instrumentRecursively = this.instrumentRecursively;
-		copy.instrumentRecursivelyMaxDepth = this.instrumentRecursivelyMaxDepth;
 		copy.methodsToInstrument = this.methodsToInstrument == null ? null : new LinkedList<MethodDescriptor>(this.methodsToInstrument);
 		copy.provideOnlineSectionExecutionUpdates = this.provideOnlineSectionExecutionUpdates;
 		copy.rangeBlocks = this.rangeBlocks;
@@ -519,7 +509,6 @@ public final class InstrumentationParameters implements Cloneable {
 		b.append("counterPrecision:             	  " + this.counterPrecision + ", \n");
 		b.append("countStatically:                    " + this.countStatically + ", \n");
 		b.append("instrumentRecursively:              " + this.instrumentRecursively + ", \n");
-		b.append("instrumentRecursivelyMaxDepth:      " + this.instrumentRecursivelyMaxDepth + ", \n");
 		b.append("methodsToInstrument:                " + this.methodsToInstrument + ", \n");
 		b.append("instrumentationRegions:             " + this.instrumentationRegions + ", \n");
 		b.append("rangeBlocks:                        " + this.rangeBlocks + ", \n");
@@ -671,29 +660,11 @@ public final class InstrumentationParameters implements Cloneable {
 	 * When set, instruments methods called from the {@link #setMethodsToInstrument(List)} that 
 	 * are not Java API methods (packages java.*, javax.* sun.*) and not 
 	 * native methods.
-	 * Recursion will stop when {@link #getInstrumentRecursivelyMaxDepth} is 
-	 * reached.
 	 * @param instrumentRecursively When true, the above aplies.
 	 * specified for instrumentation (@see {@link #setMethodsToInstrument}).
 	 */
 	public void setInstrumentRecursively(boolean instrumentRecursively) {
 		this.instrumentRecursively = instrumentRecursively;
-	}
-
-	/**
-	 * @see #setInstrumentRecursively(boolean)
-	 */
-	public void setInstrumentRecursively(boolean instrumentRecursively, int maxDepth) {
-		this.instrumentRecursively = instrumentRecursively;
-		this.instrumentRecursivelyMaxDepth = maxDepth;
-	}
-
-	/**
-	 * @see #setInstrumentRecursively(boolean)
-	 * @return depth
-	 */
-	public int getInstrumentRecursivelyMaxDepth() {
-		return this.instrumentRecursivelyMaxDepth;
 	}
 
 	/**

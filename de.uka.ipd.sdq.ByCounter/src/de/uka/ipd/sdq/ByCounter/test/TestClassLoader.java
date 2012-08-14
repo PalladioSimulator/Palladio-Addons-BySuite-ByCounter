@@ -80,7 +80,7 @@ public class TestClassLoader {
 		
 		// instrument
 		InstrumentationParameters instrumentationParams = new InstrumentationParameters();
-		instrumentationParams.setInstrumentRecursively(true, 50);
+		instrumentationParams.setInstrumentRecursively(true);
 		instrumentationParams.setUseBasicBlocks(true);
 		List<MethodDescriptor> methodsToInstrument = new ArrayList<MethodDescriptor>();
 		descriptor.setCodeAreasToInstrument(lnrs.toArray(new LineNumberRange[0]));

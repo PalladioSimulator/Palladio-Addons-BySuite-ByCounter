@@ -116,7 +116,7 @@ public class TestInternalClassDefinition {
 		//2. Specify the method to be instrumented (several methods are supported as well)
 		MethodDescriptor myMethod = new MethodDescriptor(TestSubjectInterfaceMethods.class.getCanonicalName(), SIGNATURE_METHOD);
 		
-		counter.getInstrumentationParams().setInstrumentRecursively(true, 5);
+		counter.getInstrumentationParams().setInstrumentRecursively(true);
 		
 		//3. now tell ByCounter to instrument the specified method
 		counter.instrument(myMethod);

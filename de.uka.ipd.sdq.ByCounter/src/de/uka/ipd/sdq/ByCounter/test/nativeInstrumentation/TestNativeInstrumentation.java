@@ -77,7 +77,7 @@ public class TestNativeInstrumentation {
 		init();
 		
 		// setup recursive instrumentation
-		this.instrumentationParameters.setInstrumentRecursively(true, 5);
+		this.instrumentationParameters.setInstrumentRecursively(true);
 		
 		count();
 	}

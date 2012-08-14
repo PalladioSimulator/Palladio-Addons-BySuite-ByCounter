@@ -576,7 +576,7 @@ public class TestLineNumbers extends AbstractByCounterTest {
 		// initialize ByCounter
 		BytecodeCounter counter = new BytecodeCounter();
 		counter.setInstrumentationParams(this.instrumentationParameters);
-		counter.getInstrumentationParams().setInstrumentRecursively(true, 50);
+		counter.getInstrumentationParams().setInstrumentRecursively(true);
 		counter.getInstrumentationParams().setUseBasicBlocks(true);
 		MethodDescriptor methodRanged = new MethodDescriptor(Branch.class.getCanonicalName(), "public int process(int input)");
 		methodRanged.setCodeAreasToInstrument(lnrs.toArray(new LineNumberRange[0]));
