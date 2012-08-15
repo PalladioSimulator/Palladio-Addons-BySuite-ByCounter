@@ -78,7 +78,7 @@ public class TestThreads extends AbstractByCounterTest {
         Expectation e = new Expectation(true);
         // the thread is executed four times
         for(int i = 0 ; i < 4+1; i++) {
-	        addExpectationsRunnableFTRun(e.add());
+	        e.add(createExpectationsRunnableFTRun());
         }
 		// initialize ByCounter
 		BytecodeCounter counter = this.setupByCounter();
@@ -102,10 +102,10 @@ public class TestThreads extends AbstractByCounterTest {
     }
     
     /**
-     * Add the expectations for {@link #methodRunnableForThreadingRun}.
-     * @param expectation Expectation to add to.
+     * Create the expectations for {@link #methodRunnableForThreadingRun}.
      */
-    private SectionExpectation addExpectationsRunnableFTRun(SectionExpectation expectation) {
+    private SectionExpectation createExpectationsRunnableFTRun() {
+    	SectionExpectation expectation = new Expectation(true).add();
     	return expectation.add(Opcodes.LDC, 5)
         .add(Opcodes.ALOAD, 4)
         .add(Opcodes.ASTORE, 2)
@@ -134,10 +134,10 @@ public class TestThreads extends AbstractByCounterTest {
 	}
 
     /**
-     * Add the expectations for {@link #methodRunnableIincRun}.
-     * @param expectation Expectation to add to.
+     * Create the expectations for {@link #methodRunnableIincRun}.
      */
-    private SectionExpectation addExpectationsRunnableIincRun(SectionExpectation expectation) {
+    private SectionExpectation createExpectationsRunnableIincRun() {
+    	SectionExpectation expectation = new Expectation(true).add();
     	return expectation.add(Opcodes.ICONST_0, 1)
         .add(Opcodes.ISTORE, 1)
         .add(Opcodes.IINC, 1)
@@ -239,12 +239,12 @@ public class TestThreads extends AbstractByCounterTest {
 		        .add("java.lang.StringBuilder", "public java.lang.StringBuilder append(java.lang.String s)", 2)
 		        .add("java.lang.StringBuilder", "public java.lang.String toString()", 2)
 		        .add(Opcodes.RETURN, 1)
-		        .addParallel(addExpectationsRunnableFTRun(new Expectation().add()),
-							addExpectationsRunnableFTRun(new Expectation().add()),
-							addExpectationsRunnableFTRun(new Expectation().add()),
-							addExpectationsRunnableFTRun(new Expectation().add()),
-							addExpectationsRunnableFTRun(new Expectation().add()),
-							addExpectationsRunnableIincRun(new Expectation().add()));
+		        .addParallel(createExpectationsRunnableFTRun(),
+		        		createExpectationsRunnableFTRun(),
+		        		createExpectationsRunnableFTRun(),
+		        		createExpectationsRunnableFTRun(),
+		        		createExpectationsRunnableFTRun(),
+							createExpectationsRunnableIincRun());
 		        ;
 		e.compare(results);
 		

@@ -143,12 +143,33 @@ public class Expectation {
 			this.biggestSectionNumber = sectionNumber;
 		}
 		SectionExpectation sectExpt = new SectionExpectation(sectionNumber, range);
+		addSectionExpectation(sectionNumber, sectExpt);
+		return sectExpt;
+	}
+
+	/**
+	 * 
+	 * @param sectExpt {@link SectionExpectation} to add to the expectation.
+	 * @return The given {@link SectionExpectation}.
+	 */
+	public SectionExpectation add(final SectionExpectation sectExpt) {
+		this.addSectionExpectation(SECTION_NUMBER_NOT_SET, sectExpt);
+		return sectExpt;
+	}
+
+	/**
+	 * Adds the given {@link SectionExpectation} to the internal data structures
+	 * @param sectionNumber 
+	 * The new section's number if unordered. Has to be greater or equal <code>0</code> or 
+	 * {@link #SECTION_NUMBER_NOT_SET}.
+	 * @param sectExpt The {@link SectionExpectation} to add.
+	 */
+	private void addSectionExpectation(final int sectionNumber, SectionExpectation sectExpt) {
 		if (this.ordered) {
 			this.orderedSections.add(sectExpt);
 		} else {
 			this.unorderedSections.put(sectionNumber, sectExpt);
 		}
-		return sectExpt;
 	}
 	
 	/**
