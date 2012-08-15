@@ -6,8 +6,6 @@ import java.util.Queue;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import junit.framework.Assert;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -190,19 +188,9 @@ public class TestThreads extends AbstractByCounterTest {
 		SortedSet<CountingResult> countingResults = CountingResultCollector.getInstance().retrieveAllCountingResults().getCountingResults();
 		removeMethodCallsWithFrequency0(countingResults);
         
-        // print ByCounter results
+        // check ByCounter results against expectations
         CountingResult[] results = countingResults.toArray(new CountingResult[0]);
         // we expect 1 result with 4 child thread results
-        Assert.assertEquals(1, results.length);
-        Assert.assertTrue("Expected ThreadedCountingResult.", results[0] instanceof ThreadedCountingResult);
-        ThreadedCountingResult tcr = (ThreadedCountingResult) results[0];
-        SortedSet<ThreadedCountingResult> spawnedResults = tcr.getSpawnedThreadedCountingResults();
-		Assert.assertEquals(6, spawnedResults.size());
-		for(ThreadedCountingResult spawn : spawnedResults) {
-			Assert.assertTrue(spawn.getSpawnedThreadedCountingResults().isEmpty());
-			Assert.assertEquals(tcr, spawn.getThreadedCountingResultSource());
-		}
-		
 		Expectation e = new Expectation(true);
 		e.add(0).add(Opcodes.GETSTATIC, 4)
 		   	   	.add(Opcodes.LDC, 8)

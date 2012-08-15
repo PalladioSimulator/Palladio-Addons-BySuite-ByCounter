@@ -263,7 +263,10 @@ public class SectionExpectation {
 			final SortedSet<ThreadedCountingResult> observedThreads = 
 					threadedObservation.getSpawnedThreadedCountingResults();
 			// ensure that results from spawned threads are correct
-			Assert.assertEquals("Wrong number of theads.", this.parallelExpectations.length, observedThreads.size());
+			Assert.assertEquals("Wrong number of threads.", this.parallelExpectations.length, observedThreads.size());
+			for(ThreadedCountingResult spawn : observedThreads) {
+				Assert.assertEquals(threadedObservation, spawn.getThreadedCountingResultSource());
+			}
 			// Due to the parallel nature of execution, the order of observations
 			// is random.
 			// Find this expected result;
