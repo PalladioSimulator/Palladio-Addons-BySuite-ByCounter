@@ -140,8 +140,6 @@ public class TestBytecodeCounter extends AbstractByCounterTest {
 			Assert.assertNotSame(r.getOpcodeCounts().length, 0);
 			r.logResult(false, true);
 		}
-		// clear all collected results
-		resultColl.clearResults();
 
 	}
 	
@@ -337,8 +335,6 @@ public class TestBytecodeCounter extends AbstractByCounterTest {
 //			Assert.assertNotSame(r.getOpcodeCounts().size(), 0);
 //			resultColl.logResult(r, true, true);
 //		}
-		// clear all collected results
-		resultColl.clearResults();
 
 	}
 	

@@ -36,14 +36,14 @@ import de.uka.ipd.sdq.ByCounter.utils.MethodDescriptor;
 @RunWith(Parameterized.class)
 public class TestThreads extends AbstractByCounterTest {
 	/** Refers to {@link RunnableForThreading#run()}. */
-	private static MethodDescriptor methodRunnableFTRun;
+	private static MethodDescriptor methodRunnableForThreadingRun;
 	/** Refers to {@link RunnableIinc#run()}. */
 	private static MethodDescriptor methodRunnableIincRun;
 	/** Refers to {@link ThreadedTestSubject#runThreads()}. */
 	private static MethodDescriptor methodRun;
 	
 	{
-		methodRunnableFTRun = new MethodDescriptor(
+		methodRunnableForThreadingRun = new MethodDescriptor(
 				RunnableForThreading.class.getCanonicalName(),
 				"public void run()");
 		methodRunnableIincRun = new MethodDescriptor(
@@ -66,7 +66,11 @@ public class TestThreads extends AbstractByCounterTest {
     }
 
     /**
-     * Tests the counting of user defined line number ranges while recording the order of execution.
+     * Tests the counting of user defined line number ranges while recording 
+     * the order of execution.
+     * This test case does not instrument the method that spawns the threads
+     * (using Thread.start()). Therefore results are not expected as 
+     * {@link ThreadedCountingResult}.
      */
     @Test
     public void testInstrumentRunnable() {
@@ -79,7 +83,7 @@ public class TestThreads extends AbstractByCounterTest {
 		// initialize ByCounter
 		BytecodeCounter counter = this.setupByCounter();
 		
-		counter.instrument(methodRunnableFTRun);
+		counter.instrument(methodRunnableForThreadingRun);
 		
 		// execute with ()
 		Object[] executionParameters = new Object[0];
@@ -93,13 +97,12 @@ public class TestThreads extends AbstractByCounterTest {
         for (CountingResult r : results) {
         	r.logResult(false, true);
         }
-        CountingResultCollector.getInstance().clearResults();
         // compare
         e.compare(results);
     }
     
     /**
-     * Add the expectations for {@link #methodRunnableFTRun}.
+     * Add the expectations for {@link #methodRunnableForThreadingRun}.
      * @param expectation Expectation to add to.
      */
     private SectionExpectation addExpectationsRunnableFTRun(SectionExpectation expectation) {
@@ -168,7 +171,6 @@ public class TestThreads extends AbstractByCounterTest {
         for (CountingResult r : results) {
         	r.logResult(false, true);
         }
-        CountingResultCollector.getInstance().clearResults();
     }
     
     /**
@@ -179,7 +181,7 @@ public class TestThreads extends AbstractByCounterTest {
     	// initialize ByCounter
 		BytecodeCounter counter = setupByCounter();
 		counter.instrument(methodRun);
-		counter.instrument(methodRunnableFTRun);
+		counter.instrument(methodRunnableForThreadingRun);
 		counter.instrument(methodRunnableIincRun);
 		
 		Object[] executionParameters = new Object[0];
@@ -250,7 +252,6 @@ public class TestThreads extends AbstractByCounterTest {
         for (CountingResult r : results) {
         	r.logResult(false, true);
         }
-        CountingResultCollector.getInstance().clearResults();
     }
 
     /**

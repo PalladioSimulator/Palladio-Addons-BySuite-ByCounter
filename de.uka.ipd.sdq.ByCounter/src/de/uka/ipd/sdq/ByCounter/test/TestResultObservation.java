@@ -119,7 +119,6 @@ public class TestResultObservation extends AbstractByCounterTest {
         for (CountingResult r : results) {
         	r.logResult(false, true);
         }
-        CountingResultCollector.getInstance().clearResults();
         // compare
         e.compare(results);
     }

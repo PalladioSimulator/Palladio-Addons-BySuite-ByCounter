@@ -604,7 +604,7 @@ public class TestASMBytecodes extends AbstractByCounterTest {
 
 	/**
 	 * RETURN statements:
-	 * RETURN, ARETURN, DRETURN, FRETURN, IRETURN
+	 * RETURN
 	 */
 	@Test
 	public void testReturn() {
@@ -637,12 +637,20 @@ public class TestASMBytecodes extends AbstractByCounterTest {
 
         e.compare(new CountingResult[] {r});
 		cleanResults();
+	}
 
+	/**
+	 * RETURN statements:
+	 * ARETURN
+	 */
+	@Test
+	public void testAReturn() {
+		CountingResult r;
 		// ARETURN
 		r = Utils.getCountingResultForTest(counter,
 				new MethodDescriptor(testClassName, "public static java.lang.String checkcast()"));
 		// define expectations
-        e = new Expectation(false);
+		Expectation e = new Expectation(false);
         e.add()	// "section"
          .add(Opcodes.ARETURN, 1)
 
@@ -653,8 +661,16 @@ public class TestASMBytecodes extends AbstractByCounterTest {
          .add(Opcodes.CHECKCAST, 1);
 
         e.compare(new CountingResult[] {r});
-		cleanResults();
+	}
 
+	/**
+	 * RETURN statements:
+	 * DRETURN
+	 */
+	@Test
+	public void testDReturn() {
+		CountingResult r;
+		Expectation e;
 		// DRETURN
 		r = Utils.getCountingResultForTest(counter,
 				new MethodDescriptor(testClassName, "public static double getaDouble()"));
@@ -666,8 +682,16 @@ public class TestASMBytecodes extends AbstractByCounterTest {
         // unrelated opcodes:
          .add(Opcodes.LDC, 1);
         e.compare(new CountingResult[] {r});
-		cleanResults();
+	}
 
+	/**
+	 * RETURN statements:
+	 * FRETURN
+	 */
+	@Test
+	public void testFReturn() {
+		CountingResult r;
+		Expectation e;
 		// FRETURN
 		r = Utils.getCountingResultForTest(counter,
 				new MethodDescriptor(testClassName, "public static float math()"));
@@ -729,8 +753,16 @@ public class TestASMBytecodes extends AbstractByCounterTest {
 	    .add(Opcodes.L2I, 3);
 
         e.compare(new CountingResult[] {r});
-		cleanResults();
+	}
 
+	/**
+	 * RETURN statements:
+	 * IRETURN
+	 */
+	@Test
+	public void testIReturn() {
+		CountingResult r;
+		Expectation e;
 		// IRETURN
 		r = Utils.getCountingResultForTest(counter,
 				new MethodDescriptor(testClassName, "public static int branches()"));
@@ -762,6 +794,5 @@ public class TestASMBytecodes extends AbstractByCounterTest {
          .add(Opcodes.ICONST_0, 1);
 
         e.compare(new CountingResult[] {r});
-		cleanResults();
 	}
 }

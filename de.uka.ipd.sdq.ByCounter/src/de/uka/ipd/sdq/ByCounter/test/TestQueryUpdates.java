@@ -1,7 +1,6 @@
 package de.uka.ipd.sdq.ByCounter.test;
 
 import java.util.LinkedList;
-import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -12,14 +11,12 @@ import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
-import org.objectweb.asm.Opcodes;
 
 import de.uka.ipd.sdq.ByCounter.execution.ActiveSection;
 import de.uka.ipd.sdq.ByCounter.execution.BytecodeCounter;
 import de.uka.ipd.sdq.ByCounter.execution.CountingResultCollector;
 import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentationParameters;
 import de.uka.ipd.sdq.ByCounter.parsing.LineNumberRange;
-import de.uka.ipd.sdq.ByCounter.test.framework.expectations.Expectation;
 import de.uka.ipd.sdq.ByCounter.test.helpers.StatefulRunnable;
 import de.uka.ipd.sdq.ByCounter.test.helpers.SynchronizedTestSubject;
 import de.uka.ipd.sdq.ByCounter.utils.MethodDescriptor;
@@ -112,10 +109,9 @@ public class TestQueryUpdates extends AbstractByCounterTest {
      * active sections.
      * @throws InterruptedException Can be thrown when trying to join the 
      * querying thread.
-     * @throws BrokenBarrierException 
      */
     @Test
-    public void testActiveSectionQuerying() throws InterruptedException, BrokenBarrierException {
+    public void testActiveSectionQuerying() throws InterruptedException {
     	// section 1
         LineNumberRange rangeS1 = new LineNumberRange(32, 34);
         // section 2

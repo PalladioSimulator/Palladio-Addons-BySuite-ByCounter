@@ -127,7 +127,6 @@ public class TestInstrumentationRegions extends AbstractByCounterTest {
         	r.logResult(false, true);
         }
         expectation.compare(results);
-        CountingResultCollector.getInstance().clearResults();
     }
     
 

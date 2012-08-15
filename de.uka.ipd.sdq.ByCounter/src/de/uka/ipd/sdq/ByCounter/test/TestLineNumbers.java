@@ -298,7 +298,6 @@ public class TestLineNumbers extends AbstractByCounterTest {
         for (CountingResult r : results) {
         	r.logResult(false, true);
         }
-        CountingResultCollector.getInstance().clearResults();
         // compare
         e.compare(results);
     }
@@ -341,7 +340,6 @@ public class TestLineNumbers extends AbstractByCounterTest {
         for (CountingResult r : results) {
         	r.logResult(false, true);
         }
-        CountingResultCollector.getInstance().clearResults();
         // compare
         e.compare(results);
     }
@@ -394,7 +392,6 @@ public class TestLineNumbers extends AbstractByCounterTest {
         for (CountingResult r : results) {
         	r.logResult(false, true);
         }
-        CountingResultCollector.getInstance().clearResults();
         // compare
         e.compare(results);
     }
@@ -423,7 +420,6 @@ public class TestLineNumbers extends AbstractByCounterTest {
         for (CountingResult r : results) {
         	r.logResult(false, true);
         }
-        CountingResultCollector.getInstance().clearResults();
         // compare
         e.compare(results);
     }
@@ -437,7 +433,6 @@ public class TestLineNumbers extends AbstractByCounterTest {
         MethodDescriptor d = new MethodDescriptor(DEFAULT_SUBJECT_CANONICAL, SIGNATURE_LINE_NUMBERS);
         counter.instrument(d);
         counter.execute(d, new Object[0]);
-        CountingResultCollector.getInstance().clearResults();
     }
 
     @Test
@@ -468,7 +463,6 @@ public class TestLineNumbers extends AbstractByCounterTest {
         for (CountingResult r : results) {
         	r.logResult(false, true);
         }
-        CountingResultCollector.getInstance().clearResults();
 		// compare
 		e.compare(results);
     }
