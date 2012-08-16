@@ -3,6 +3,8 @@ package de.uka.ipd.sdq.ByCounter.test.framework.expectations;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -44,9 +46,12 @@ public class SectionExpectation {
 	private final Map<String, Long> methodCallExpectations;
 	
 	/**
-	 * All expected spawns of threads resulting in parallel results.
+	 * All expected spawned threads resulting in parallel expectation. The order
+	 * of spawning within this section is independent of the order of this list.
+	 * The expectation is only that one thread is spawned for each
+	 * {@link SectionExpectation} in the list.
 	 */
-	private SectionExpectation[] parallelExpectations;
+	private List<SectionExpectation> parallelExpectations;
 	
 	/**
 	 * Creates a new selection expectation without a section number and line number range.
@@ -78,7 +83,7 @@ public class SectionExpectation {
 		this.range = range;
 		this.opcodeExpectations = new HashMap<Integer, Long>();
 		this.methodCallExpectations = new HashMap<String, Long>();
-		this.parallelExpectations = null;
+		this.parallelExpectations = new LinkedList<SectionExpectation>();
 	}
 
 	/**
@@ -208,6 +213,15 @@ public class SectionExpectation {
 		return this.add(this.signatureToDescriptor(className, signature), number);
 	}
 	
+	/**Adds a section expectation for a thread spawned within the observed element.
+	 * @param expectation The section expectation for the thread.
+	 * @return The {@link SectionExpectation} with the parallel expectations.
+	 */
+	public SectionExpectation addParallel(SectionExpectation expectation) {
+		this.parallelExpectations.add(expectation);
+		return this;
+	}
+	
 	/**
 	 * Creates the spawn point for parallel expectations, i.e. results from 
 	 * threads that where spawned from a single observed element.
@@ -215,10 +229,9 @@ public class SectionExpectation {
 	 * @return The {@link SectionExpectation} with added threads.
 	 */
 	public SectionExpectation addParallel(SectionExpectation... threads) {
-		if(this.parallelExpectations != null) {
-			throw new IllegalArgumentException("Parallel expectations can only be set once.");
+		for (SectionExpectation expectation : threads) {
+			this.parallelExpectations.add(expectation);
 		}
-		this.parallelExpectations = threads;
 		return this;
 	}
 
@@ -270,17 +283,19 @@ public class SectionExpectation {
 			final SortedSet<ThreadedCountingResult> observedThreads = 
 					threadedObservation.getSpawnedThreadedCountingResults();
 			// ensure that results from spawned threads are correct
-			Assert.assertEquals("Wrong number of threads.", this.parallelExpectations.length, observedThreads.size());
+			Assert.assertEquals("Wrong number of threads and parallel expectations.", this.parallelExpectations.size(), observedThreads.size());
 			for(ThreadedCountingResult spawn : observedThreads) {
-				Assert.assertEquals(threadedObservation, spawn.getThreadedCountingResultSource());
+				Assert.assertEquals("The observed thread was not spawned wihtin the observed section.", threadedObservation, spawn.getThreadedCountingResultSource());
 			}
-			// Due to the parallel nature of execution, the order of observations
-			// is random.
-			// Find this expected result;
-			// compare the expectations for each spawned thread.
+			/* The order of the observed spawned threads within the section does not depend on the
+			 * on the order of the parallelExpectations list. Each spawned thread is compared if
+			 * it matches an expectation. Only if all SectionExpectations are successfully matched the
+			 * comparison itself is successful.
+			 */
 			SortedSet<ThreadedCountingResult> unmatchedResults = new TreeSet<ThreadedCountingResult>(observedThreads);
+			boolean matchFound;
 			for(SectionExpectation ex : this.parallelExpectations) {
-				boolean matchFound = false;
+				matchFound = false;
 				for(ThreadedCountingResult tcr : unmatchedResults) {
 					if(ex.matches(tcr)) {
 						unmatchedResults.remove(tcr);
