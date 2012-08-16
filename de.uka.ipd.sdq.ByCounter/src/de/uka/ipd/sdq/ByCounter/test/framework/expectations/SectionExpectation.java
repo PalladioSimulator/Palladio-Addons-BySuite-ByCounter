@@ -47,6 +47,13 @@ public class SectionExpectation {
 	 * All expected spawns of threads resulting in parallel results.
 	 */
 	private SectionExpectation[] parallelExpectations;
+	
+	/**
+	 * Creates a new selection expectation without a section number and line number range.
+	 */ 
+	protected SectionExpectation() {
+		this(Expectation.SECTION_NUMBER_NOT_SET, null);
+	}
 
 	/**
 	 * Creates a new selection expectation with an unknown line number range.
