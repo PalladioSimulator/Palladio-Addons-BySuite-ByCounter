@@ -288,7 +288,7 @@ public class SectionExpectation {
 	 *          The comparison round. Used for better human readable error messages. Must be greater or equal to zero.
 	 */
 	protected void compare_parallel(CountingResult observation, final int round) {
-		if(this.parallelExpectations == null) {
+		if(this.parallelExpectations == null || this.parallelExpectations.isEmpty()) {
 			// no parallel expectations exist
 			Assert.assertFalse(message("Unexpected ThreadedCountingResult", round), observation instanceof ThreadedCountingResult);
 			return;
