@@ -276,16 +276,38 @@ public class SectionExpectation {
 			Assert.assertTrue(message, actual < 0);
 		}
 		// compare parallel expectations and ensure that the result is threaded if parallel expectations exist
-		if(this.parallelExpectations != null) {
-			Assert.assertTrue(message("ThreadedCountingResult", round), observation instanceof ThreadedCountingResult);
-			ThreadedCountingResult threadedObservation = (ThreadedCountingResult) observation;
-			final SortedSet<ThreadedCountingResult> observedThreads = 
-					threadedObservation.getSpawnedThreadedCountingResults();
-			// ensure that results from spawned threads are correct
-			Assert.assertEquals("Wrong number of threads and parallel expectations.", this.parallelExpectations.size(), observedThreads.size());
-			for(ThreadedCountingResult spawn : observedThreads) {
-				Assert.assertEquals("The observed thread was not spawned wihtin the observed section.", threadedObservation, spawn.getThreadedCountingResultSource());
-			}
+		compare_parallel(observation, round);
+	}
+
+	/**
+	 * Compares the predefined parallel expectations to the observation.
+	 * @see #compare(CountingResult, int)
+	 * @param observation
+	 * 			The result that was observed. Must not be null.
+	 * @param round
+	 *          The comparison round. Used for better human readable error messages. Must be greater or equal to zero.
+	 */
+	protected void compare_parallel(CountingResult observation, final int round) {
+		if(this.parallelExpectations == null) {
+			// no parallel expectations exist
+			Assert.assertFalse(message("Unexpected ThreadedCountingResult", round), observation instanceof ThreadedCountingResult);
+			return;
+		}
+		Assert.assertTrue(message("ThreadedCountingResult", round), observation instanceof ThreadedCountingResult);
+		ThreadedCountingResult threadedObservation = (ThreadedCountingResult) observation;
+		final SortedSet<ThreadedCountingResult> observedThreads = 
+				threadedObservation.getSpawnedThreadedCountingResults();
+		// ensure that results from spawned threads are correct
+		Assert.assertEquals("Wrong number of threads and parallel expectations.", this.parallelExpectations.size(), observedThreads.size());
+		for(ThreadedCountingResult spawn : observedThreads) {
+			Assert.assertEquals("The observed thread was not spawned wihtin the observed section.", threadedObservation, spawn.getThreadedCountingResultSource());
+		}
+		if(this.parallelExpectations.size() == 1
+				&& observedThreads.size() == 1) {
+			// this is a case where the mapping of the observation to the 
+			// expectation is possible: compare conventionally
+			this.parallelExpectations.get(0).compare(observedThreads.first(), round);
+		} else {
 			/* The order of the observed spawned threads within the section does not depend on the
 			 * on the order of the parallelExpectations list. Each spawned thread is compared if
 			 * it matches an expectation. Only if all SectionExpectations are successfully matched, the
@@ -325,7 +347,6 @@ public class SectionExpectation {
 				}
 				Assert.fail(msg.toString());
 			}
-
 		}
 	}
 	
@@ -446,6 +467,8 @@ public class SectionExpectation {
 		sb.append(this.range);
 		sb.append(", opcodeExpectations=");
 		sb.append(this.opcodeExpectations);
+		sb.append(", parallelExpectations=");
+		sb.append(this.parallelExpectations);
 		sb.append("]");
 		return sb.toString();
 	}
