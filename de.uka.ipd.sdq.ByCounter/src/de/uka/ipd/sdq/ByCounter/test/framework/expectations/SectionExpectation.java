@@ -290,7 +290,9 @@ public class SectionExpectation {
 	protected void compare_parallel(CountingResult observation, final int round) {
 		if(this.parallelExpectations == null || this.parallelExpectations.isEmpty()) {
 			// no parallel expectations exist
-			Assert.assertFalse(message("Unexpected ThreadedCountingResult", round), observation instanceof ThreadedCountingResult);
+			if(observation instanceof ThreadedCountingResult) {
+				Assert.assertEquals(message("Unexpected spawnded threads", round), 0, ((ThreadedCountingResult)observation).getSpawnedThreadedCountingResults().size());
+			}
 			return;
 		}
 		Assert.assertTrue(message("ThreadedCountingResult", round), observation instanceof ThreadedCountingResult);
