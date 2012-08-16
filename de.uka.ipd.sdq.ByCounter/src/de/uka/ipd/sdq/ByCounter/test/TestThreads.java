@@ -6,6 +6,7 @@ import java.util.Queue;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import org.clapper.util.config.SectionExistsException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -103,8 +104,7 @@ public class TestThreads extends AbstractByCounterTest {
      * Create the expectations for {@link #methodRunnableForThreadingRun}.
      */
     private SectionExpectation createExpectationsRunnableFTRun() {
-    	SectionExpectation expectation = new Expectation(true).add();
-    	return expectation.add(Opcodes.LDC, 5)
+    	return new SectionExpectation().add(Opcodes.LDC, 5)
         .add(Opcodes.ALOAD, 4)
         .add(Opcodes.ASTORE, 2)
         .add(Opcodes.DUP, 3)
