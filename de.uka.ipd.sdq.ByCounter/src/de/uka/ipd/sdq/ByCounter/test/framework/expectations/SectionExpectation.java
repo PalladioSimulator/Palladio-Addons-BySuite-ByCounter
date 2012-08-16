@@ -51,7 +51,7 @@ public class SectionExpectation {
 	/**
 	 * Creates a new selection expectation without a section number and line number range.
 	 */ 
-	protected SectionExpectation() {
+	public SectionExpectation() {
 		this(Expectation.SECTION_NUMBER_NOT_SET, null);
 	}
 
@@ -61,7 +61,7 @@ public class SectionExpectation {
 	 * @param sectionNumber
 	 *          The new section's number. Has to be greater or equal zero.
 	 */
-	protected SectionExpectation(final int sectionNumber) {
+	public SectionExpectation(final int sectionNumber) {
 		this(sectionNumber, null);
 	}
 
@@ -73,7 +73,7 @@ public class SectionExpectation {
 	 * @param range
 	 *          The line number range of the new section. If the range is unknown, this should be <code>null</code>.
 	 */
-	protected SectionExpectation(final int sectionNumber, final LineNumberRange range) {
+	public SectionExpectation(final int sectionNumber, final LineNumberRange range) {
 		this.sectionNumber = sectionNumber;
 		this.range = range;
 		this.opcodeExpectations = new HashMap<Integer, Long>();
