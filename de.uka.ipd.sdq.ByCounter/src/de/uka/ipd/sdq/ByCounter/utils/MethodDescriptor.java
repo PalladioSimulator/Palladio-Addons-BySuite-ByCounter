@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Stack;
 import java.util.UUID;
@@ -427,6 +428,27 @@ public final class MethodDescriptor implements Comparable<MethodDescriptor>, Ser
 	 * Only used for {@link #_constructMethodDescriptorFromASM(String, String, String)}
 	 */
 	private MethodDescriptor() {
+	}
+	
+	/**
+	 * Copy constructor.
+	 * @param template {@link MethodDescriptor} to create a copy of.
+	 */
+	public MethodDescriptor(final MethodDescriptor template) {
+		this.className = template.className;
+		if(template.codeAreasToInstrument != null) {
+			this.codeAreasToInstrument = Arrays.copyOf(
+					template.codeAreasToInstrument, 
+					template.codeAreasToInstrument.length);
+		}
+		this.context = template.context;
+		this.descriptor = template.descriptor;
+		this.inlineImmediately = template.inlineImmediately;
+		this.isConstructor = template.isConstructor;
+		this.isInvariant = template.isInvariant;
+		this.methodIsStatic = template.methodIsStatic;
+		this.packageName = template.packageName;
+		this.simpleMethodName = template.simpleMethodName;
 	}
 
 	/**
