@@ -7,7 +7,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.SortedSet;
-import java.util.TreeSet;
 
 import org.junit.Assert;
 
@@ -276,7 +275,7 @@ public class SectionExpectation {
 			message = "Actual " + message(method, round) + " not expected but counted as " + actual;
 			Assert.assertTrue(message, actual < 0);
 		}
-		// ensure that the result is threaded if parallel expectations exist
+		// compare parallel expectations and ensure that the result is threaded if parallel expectations exist
 		if(this.parallelExpectations != null) {
 			Assert.assertTrue(message("ThreadedCountingResult", round), observation instanceof ThreadedCountingResult);
 			ThreadedCountingResult threadedObservation = (ThreadedCountingResult) observation;
@@ -289,10 +288,11 @@ public class SectionExpectation {
 			}
 			/* The order of the observed spawned threads within the section does not depend on the
 			 * on the order of the parallelExpectations list. Each spawned thread is compared if
-			 * it matches an expectation. Only if all SectionExpectations are successfully matched the
+			 * it matches an expectation. Only if all SectionExpectations are successfully matched, the
 			 * comparison itself is successful.
 			 */
-			SortedSet<ThreadedCountingResult> unmatchedResults = new TreeSet<ThreadedCountingResult>(observedThreads);
+			List<ThreadedCountingResult> unmatchedResults = new LinkedList<ThreadedCountingResult>(observedThreads);
+			List<SectionExpectation> unmatchedExpectations = new LinkedList<SectionExpectation>();
 			boolean matchFound;
 			for(SectionExpectation ex : this.parallelExpectations) {
 				matchFound = false;
@@ -304,11 +304,28 @@ public class SectionExpectation {
 					}
 				}
 				if(!matchFound) {
-					// no match at this point
-					Assert.fail("The observation does not contain a result " 
-							+ "matching " + ex);
+					unmatchedExpectations.add(ex);
 				}
 			}
+			if (unmatchedExpectations.size() > 0) { // report error and details
+				StringBuilder msg = new StringBuilder();
+				msg.append("Some expectations were not met. Available Expectations: ");
+				for (int i = 0; i < unmatchedExpectations.size(); i++) {
+					msg.append(unmatchedExpectations.get(i));
+					if (i < unmatchedExpectations.size() - 1) {
+						msg.append(",");
+					}
+				}
+				msg.append(". Available results: ");
+				for (int i = 0; i < unmatchedResults.size(); i++) {
+					msg.append(unmatchedResults.get(i));
+					if (i < unmatchedResults.size() - 1) {
+						msg.append(",");
+					}
+				}
+				Assert.fail(msg.toString());
+			}
+
 		}
 	}
 	
