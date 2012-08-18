@@ -234,9 +234,9 @@ public final class RangeBlockAnalyser extends LabelBlockAnalyser {
 		
 		// * first of all, gather the instructions for each label block		Map<Label, InstructionBlockDescriptor> instructionBlocks = this.constructInstructionBlocks(instructions.iterator());
 		List<InstructionBlockLocation> labelBlocks = this.constructInstructionBlocks(instructions.iterator());
-		
-		this.lineNumberAnalyser.postAnalysisEvent(instructions);
 
+		// construct line number information
+		this.lineNumberAnalyser.postAnalysisEvent(instructions);
 		// update set of line numbers to find
 		for(int line : this.lineNumberAnalyser.getFoundLineNumbers()) {
 			this.lineNumbersNotYetFound.remove(line);

@@ -18,6 +18,13 @@ import org.objectweb.asm.tree.TryCatchBlockNode;
 import de.uka.ipd.sdq.ByCounter.instrumentation.IInstructionAnalyser;
 import de.uka.ipd.sdq.ByCounter.utils.MethodDescriptor;
 
+/**
+ * {@link IInstructionAnalyser} build for the purpose of finding line numbers 
+ * in methods and associating them with labels even if the label is not directly
+ * specified with the line number information given in the bytecode.
+ * 
+ * @author Martin Krogmann
+ */
 public class LineNumberAnalyser implements IInstructionAnalyser {
 
 	/** The smallest value for linenumber in the analysed method.

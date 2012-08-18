@@ -32,7 +32,26 @@ public class CountingResultThreadIndexing {
 	 * @param spawnedThreads Threads spawned by the result elements thread.
 	 */
 	public void add(final CountingResult res, final ArrayList<Long> spawnedThreads) {
-		this.resultsSpawnedThreads.put(res, spawnedThreads);
+		final int indexOfRangeBlock = res.getIndexOfRangeBlock();
+		final ArrayList<Long> threadSpawns = new ArrayList<Long>();
+		if(indexOfRangeBlock >= 0) {
+			// using range blocks
+			// the list contains threadId, srcSectionNumber, ... (alternating)
+			for(int i = 0; i < spawnedThreads.size()/2; i++) {
+				long threadId = spawnedThreads.get(2*i);
+				long srcSectionNumber = spawnedThreads.get(2*i+1);
+				if(res.getIndexOfRangeBlock() == srcSectionNumber) {
+					threadSpawns.add(threadId);
+				}
+			}
+		} else {
+			// not using sections
+			// only threadIds in the list
+			for(long threadId : spawnedThreads) {
+				threadSpawns.add(threadId);
+			}
+		}
+		this.resultsSpawnedThreads.put(res, threadSpawns);
 	}
 
 	/**
@@ -61,8 +80,8 @@ public class CountingResultThreadIndexing {
 			// we have spawned threads
 			ThreadedCountingResult tcr = new ThreadedCountingResult(r);//((ThreadedCountingResult)r);
 			tcr.setThreadId(r.threadId);
+			// find and add them
 			for(CountingResult rInner : countingResults) {
-				// find and add them
 				if(spawnedThreads.contains(rInner.getThreadId())) {
 					ThreadedCountingResult tcrInner = new ThreadedCountingResult(rInner);
 					tcrInner.setThreadId(rInner.getThreadId());

@@ -226,6 +226,13 @@ public final class MethodCountMethodAdapter extends MethodAdapter {	// evil impl
 	 */
 	private InstrumentationState instrumentationState;
 
+	/**
+	 * This is the index of the local variable used to save the currently 
+	 * active section in an instrumented method. This is used for instance to 
+	 * locate thread spawns.
+	 */
+	private int currentActiveSectionVar;
+
 	
 	/**
 	 * Creates the method adapter.
@@ -612,19 +619,23 @@ public final class MethodCountMethodAdapter extends MethodAdapter {	// evil impl
 	 * @param rangeBlockIndex Index of the active range block.
 	 */
 	protected void insertProtocolActiveSection(Integer rangeBlockIndex) {
-		mv.visitMethodInsn(Opcodes.INVOKESTATIC, 
-				COUNTINGRESULTCOLLECTOR_CANONICALNAME_DESCRIPTOR, 
-				"getInstance", 
-				"()L" + COUNTINGRESULTCOLLECTOR_CANONICALNAME_DESCRIPTOR + ";");
-		mv.visitLdcInsn(this.qualifyingMethodName);
-		insertIntegerPushInsn(mv, rangeBlockIndex);
-		mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL, 
-				COUNTINGRESULTCOLLECTOR_CANONICALNAME_DESCRIPTOR, 
-				"protocolSectionActive", 
-				CountingResultCollector.SIGNATURE_protocolSectionActive);
-//		CountingResultCollector.getInstance().protocolSectionActive(
-//				"abcdesafasifvwielfhacilh", 
-//				353);
+		// set current section
+		mv.visitLdcInsn(new Long(rangeBlockIndex));
+		mv.visitVarInsn(Opcodes.LSTORE, this.currentActiveSectionVar);
+		
+		if(this.instrumentationParameters.getProvideOnlineSectionActiveUpdates()) {
+			// call CountingResultCollector
+			mv.visitMethodInsn(Opcodes.INVOKESTATIC, 
+					COUNTINGRESULTCOLLECTOR_CANONICALNAME_DESCRIPTOR, 
+					"getInstance", 
+					"()L" + COUNTINGRESULTCOLLECTOR_CANONICALNAME_DESCRIPTOR + ";");
+			mv.visitLdcInsn(this.qualifyingMethodName);
+			insertIntegerPushInsn(mv, rangeBlockIndex);
+			mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL, 
+					COUNTINGRESULTCOLLECTOR_CANONICALNAME_DESCRIPTOR, 
+					"protocolSectionActive", 
+					CountingResultCollector.SIGNATURE_protocolSectionActive);
+		}
 	}
 
 	/**
@@ -811,9 +822,6 @@ public final class MethodCountMethodAdapter extends MethodAdapter {	// evil impl
 						"rangeBlockExecutionSequence", "Ljava/util/ArrayList;");
 			}
 		}
-		ArrayList<Long> al = new ArrayList<Long>();
-		ProtocolCountStructure p = new ProtocolCountStructure();
-		p.spawnedThreads = al;
 		
 		// set the spawned threads and construct a new list
 		mv.visitInsn(Opcodes.DUP);
@@ -889,6 +897,28 @@ public final class MethodCountMethodAdapter extends MethodAdapter {	// evil impl
 		this.log.fine("variable "+basicBlockListVar+" holds array of longs that hold "+
 				indicesOfBasicBlockCounters.length+" opcode counts ");
 		return basicBlockListVar;
+	}
+
+	protected void insertCountThreadStart() {
+		mv.visitInsn(Opcodes.DUP);	// dup the thread variable
+		// save thread id
+		mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "java/lang/Thread", "getId", "()J"); //2
+		mv.visitVarInsn(Opcodes.LSTORE, threadIdVar);
+		// add thread id to arraylist
+		mv.visitVarInsn(Opcodes.ALOAD, threadSpawnArrayListVar);
+		mv.visitVarInsn(Opcodes.LLOAD, threadIdVar);
+		mv.visitMethodInsn(Opcodes.INVOKESTATIC, "java/lang/Long", "valueOf", "(J)Ljava/lang/Long;");
+		mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "java/util/ArrayList", "add", "(Ljava/lang/Object;)Z");
+		mv.visitInsn(Opcodes.POP); // pop the return value of add
+
+		if(this.useRangeBlocks) {
+			// add active section number to arraylist
+			mv.visitVarInsn(Opcodes.ALOAD, threadSpawnArrayListVar);
+			mv.visitVarInsn(Opcodes.LLOAD, this.currentActiveSectionVar);
+			mv.visitMethodInsn(Opcodes.INVOKESTATIC, "java/lang/Long", "valueOf", "(J)Ljava/lang/Long;");
+			mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "java/util/ArrayList", "add", "(Ljava/lang/Object;)Z");
+			mv.visitInsn(Opcodes.POP); // pop the return value of add
+		}
 	}
 
 	/**
@@ -1045,6 +1075,7 @@ public final class MethodCountMethodAdapter extends MethodAdapter {	// evil impl
 		// thread structure vars
 		this.threadSpawnArrayListVar = initialiseArrayList();
 		this.threadIdVar = this.lVarManager.getNewLongVar(this.mv);
+		this.currentActiveSectionVar = this.lVarManager.getNewLongVar(this.mv);
 		
 		if(this.instrumentationParameters.getUseArrayParameterRecording()) {
 			initialiseArrayCounters();
@@ -1236,10 +1267,9 @@ public final class MethodCountMethodAdapter extends MethodAdapter {	// evil impl
 					} else {
 						rangeBlockIndex = -1;
 					}
-					if(this.instrumentationParameters.getProvideOnlineSectionActiveUpdates()) {
-						// update active section
-						insertProtocolActiveSection(rangeBlockIndex);
-					}
+
+					// update active section
+					insertProtocolActiveSection(rangeBlockIndex);
 				}
 				if(callUpdate) {
 					this.insertResultCollectorUpdateCall();
@@ -1282,16 +1312,7 @@ public final class MethodCountMethodAdapter extends MethodAdapter {	// evil impl
 		if(owner.equals("java/lang/Thread") &&
 				name.equals("start") && desc.equals("()V")) {
 			// Thread.start() is called.
-			mv.visitInsn(Opcodes.DUP);	// dup the thread variable
-			// save thread id
-			mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "java/lang/Thread", "getId", "()J"); //2
-			mv.visitVarInsn(Opcodes.LSTORE, threadIdVar);
-			// add thread id to arraylist
-			mv.visitVarInsn(Opcodes.ALOAD, threadSpawnArrayListVar);
-			mv.visitVarInsn(Opcodes.LLOAD, threadIdVar);
-			mv.visitMethodInsn(Opcodes.INVOKESTATIC, "java/lang/Long", "valueOf", "(J)Ljava/lang/Long;");
-			mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "java/util/ArrayList", "add", "(Ljava/lang/Object;)Z");
-			mv.visitInsn(Opcodes.POP); // pop the return value of add
+			insertCountThreadStart();
 		}
 		
 		if(this.instrumentationParameters.getTraceAndIdentifyRequests()

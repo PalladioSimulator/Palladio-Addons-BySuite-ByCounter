@@ -205,23 +205,23 @@ public class BlockResultCalculation {
 		
 		if(result.blockCountingMode == BlockCountingMode.BasicBlocks) {
 			// just add the complete basic block
+			CalculatedCounts c = new CalculatedCounts();
+			c.init();
 			for(Integer blockIndex : result.blockExecutionSequence) {
-				CalculatedCounts c = new CalculatedCounts();
-				c.init();
 				c.addMethodCallCounts(this.currentBasicBlocks[blockIndex].getMethodCallCounts(), 1);
 				c.addOpcodeCounts(this.currentBasicBlocks[blockIndex].getOpcodeCounts(), 1);
-				resultCounts.add(c);
 			}
+			resultCounts.add(c);
 		} else if(result.blockCountingMode == BlockCountingMode.LabelBlocks) {
 			// label blocks
 			// just add the complete label block
+			CalculatedCounts c = new CalculatedCounts();
+			c.init();
 			for(Integer blockIndex : result.blockExecutionSequence) {
-				CalculatedCounts c = new CalculatedCounts();
-				c.init();
 				c.addMethodCallCounts(this.currentLabelBlocks[blockIndex].getMethodCallCounts(), 1);
 				c.addOpcodeCounts(this.currentLabelBlocks[blockIndex].getOpcodeCounts(), 1);
-				resultCounts.add(c);
 			}
+			resultCounts.add(c);
 		} else if(result.blockCountingMode == BlockCountingMode.RangeBlocks) {
 			// range blocks
 			final Map<Integer, List<RangeBlockDescriptor>> rangeBlocksByBasicBlock = 

@@ -6,7 +6,6 @@ import java.util.Queue;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import org.clapper.util.config.SectionExistsException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -15,6 +14,7 @@ import org.objectweb.asm.Opcodes;
 import de.uka.ipd.sdq.ByCounter.execution.BytecodeCounter;
 import de.uka.ipd.sdq.ByCounter.execution.CountingResultCollector;
 import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentationParameters;
+import de.uka.ipd.sdq.ByCounter.parsing.LineNumberRange;
 import de.uka.ipd.sdq.ByCounter.results.CountingResult;
 import de.uka.ipd.sdq.ByCounter.results.ThreadedCountingResult;
 import de.uka.ipd.sdq.ByCounter.test.framework.expectations.Expectation;
@@ -240,6 +240,62 @@ public class TestThreads extends AbstractByCounterTest {
         for (CountingResult r : results) {
         	r.logResult(false, true);
         }
+    }
+    
+
+    /**
+     * Tests for TODO
+     */
+    @Test
+    public void testThreadOverlap() {
+    	// initialize ByCounter
+		BytecodeCounter counter = setupByCounter();
+		counter.getInstrumentationParams().setUseBasicBlocks(true);
+		
+		// specify the part "sequential" part of the runThreads method
+		MethodDescriptor myMethodRun = new MethodDescriptor(methodRun);
+		myMethodRun.setCodeAreasToInstrument(new LineNumberRange[] {
+				new LineNumberRange(53, 58)
+		});
+		
+		counter.instrument(myMethodRun);
+		counter.instrument(methodRunnableForThreadingRun);
+		counter.instrument(methodRunnableIincRun);
+		
+		Object[] executionParameters = new Object[0];
+		counter.execute(myMethodRun, executionParameters);
+		
+		SortedSet<CountingResult> countingResults = CountingResultCollector.getInstance().retrieveAllCountingResults().getCountingResults();
+		removeMethodCallsWithFrequency0(countingResults);
+        
+        // check ByCounter results against expectations
+        CountingResult[] results = countingResults.toArray(new CountingResult[0]);
+        // we expect 1 result with 2 child thread results
+		Expectation e = new Expectation(true);
+		e.add(53, 58).add(Opcodes.NEW, 4)
+		   	   	.add(Opcodes.DUP, 4)
+		        .add(Opcodes.INVOKESPECIAL, 4)
+		        .add("de.uka.ipd.sdq.ByCounter.test.helpers.RunnableIinc", "public RunnableIinc()", 1)
+		        .add("java.lang.Thread", "public Thread(java.lang.Runnable r)", 2)
+		        .add(Opcodes.ASTORE, 2)
+		        .add("de.uka.ipd.sdq.ByCounter.test.helpers.RunnableForThreading", "public RunnableForThreading()", 1)
+		        .add(Opcodes.ALOAD, 4)
+		        .add(Opcodes.INVOKEVIRTUAL, 4)
+		        .add("java.lang.Thread", "public void start()", 2)
+		        .add("java.lang.Thread", "public void join()", 2)
+		        .addParallel(createExpectationsRunnableFTRun(),
+							createExpectationsRunnableIincRun());
+		        ;
+        // the thread is executed four times before the specified code area
+        for(int i = 0 ; i < 4; i++) {
+	        e.add(createExpectationsRunnableFTRun());
+        }
+		// output for debugging purposes
+        for (CountingResult r : results) {
+        	r.logResult(false, true);
+        }
+		e.compare(results);
+		
     }
 
     /**

@@ -114,7 +114,9 @@ public class ProtocolCountStructure {
 	public BlockCountingMode blockCountingMode;
 	/** Inlining of the method was specified when true. */
 	public boolean inliningSpecified;
-	/** Threads (by id) spawned in the executed method. */
+	/** Threads (by id) spawned in the executed method. 
+	 * If range blocks are used, every second value is the number of the 
+	 * range block from which the thread was spawned. */
 	public ArrayList<Long> spawnedThreads;
 	
 	/**
