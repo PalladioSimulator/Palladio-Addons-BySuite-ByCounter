@@ -15,6 +15,7 @@ import java.util.Set;
 
 import de.uka.ipd.sdq.ByCounter.execution.BytecodeCounter;
 import de.uka.ipd.sdq.ByCounter.execution.CountingMode;
+import de.uka.ipd.sdq.ByCounter.execution.CountingResultCollector;
 import de.uka.ipd.sdq.ByCounter.parsing.InstructionBlockSerialisation;
 import de.uka.ipd.sdq.ByCounter.parsing.LineNumberRange;
 
@@ -79,6 +80,12 @@ public class InstrumentationContext implements Serializable {
 	private CountingMode countingMode;
 	
 	/**
+	 * When true, the currently executed section can be queried using 
+	 * {@link CountingResultCollector#queryActiveSection()}.
+	 */
+	private boolean queryActiveSectionSupported;
+	
+	/**
 	 * Construct the instrumentation context.
 	 */
 	public InstrumentationContext() {
@@ -90,6 +97,7 @@ public class InstrumentationContext implements Serializable {
 		this.blockCountingMode = new HashMap<String, BlockCountingMode>();
 		this.countingMode = CountingMode.Default;
 		this.rangesByMethod = new HashMap<String, LineNumberRange[]>();
+		this.queryActiveSectionSupported = false;
 	}
 	
 	private static void checkVersion(final long version) {
@@ -251,7 +259,26 @@ public class InstrumentationContext implements Serializable {
 		return this.countingMode;
 	}
 
+	/**
+	 * @return {@link LineNumberRange}s defined by each method.
+	 */
 	public Map<String, LineNumberRange[]> getRangesByMethod() {
 		return this.rangesByMethod;
+	}
+
+	/**
+	 * @return When true, the currently executed section can be queried using 
+	 * {@link CountingResultCollector#queryActiveSection()}.
+	 */
+	public boolean getQueryActiveSectionSupported() {
+		return queryActiveSectionSupported;
+	}
+
+	/**
+	 * @param queryActiveSectionSupported When true, the currently executed section can be queried using 
+	 * {@link CountingResultCollector#queryActiveSection()}.
+	 */
+	public void setQueryActiveSectionSupported(boolean queryActiveSectionSupported) {
+		this.queryActiveSectionSupported = queryActiveSectionSupported;
 	}
 }

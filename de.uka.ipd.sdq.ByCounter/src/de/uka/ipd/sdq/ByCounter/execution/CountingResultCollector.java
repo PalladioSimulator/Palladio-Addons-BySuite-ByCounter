@@ -252,8 +252,13 @@ public final class CountingResultCollector extends Observable implements ICollec
 	 * executed and {@link InstrumentationParameters#getProvideOnlineSectionActiveUpdates()}
 	 * is true, this section is returned as an {@link ActiveSection}.
 	 * Otherwise returns <code>null</code>.
+	 * @throws InvalidQueryException Thrown when the instrumentation does not
+	 * support the query. 
 	 */
-	public ActiveSection queryActiveSection() {
+	public ActiveSection queryActiveSection() throws InvalidQueryException {
+		if(!this.instrumentationContext.getQueryActiveSectionSupported()) {
+			throw new InvalidQueryException("The instrumentation does not provide support for querying active sections.");
+		}
 		return this.activeSection;
 	}
 	

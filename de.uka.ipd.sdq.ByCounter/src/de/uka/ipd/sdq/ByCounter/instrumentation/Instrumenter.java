@@ -418,11 +418,14 @@ public final class Instrumenter {
 				}else{
 					String message = "SUCCESS with instrumenting \n"+
 					this.instrumentationState.getMethodsToInstrumentCalculated().get(i).toString_Linebreaks();
+					// set properties for the instrumentation context
 					if(this.instrumentationParameters.getInstrumentationRegions().isEmpty()) {
 						this.instrumentationState.getInstrumentationContext().setCountingMode(CountingMode.Default);
 					} else {
 						this.instrumentationState.getInstrumentationContext().setCountingMode(CountingMode.Regions);
 					}
+					this.instrumentationState.getInstrumentationContext().setQueryActiveSectionSupported(
+							this.instrumentationParameters.getProvideOnlineSectionActiveUpdates());
 					this.log.info(message);
 	//				String s = javax.swing.JOptionPane.showInputDialog("OK: "+message);
 				}

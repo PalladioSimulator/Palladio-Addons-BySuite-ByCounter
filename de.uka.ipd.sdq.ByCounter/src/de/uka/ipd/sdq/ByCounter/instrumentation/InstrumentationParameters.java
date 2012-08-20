@@ -703,7 +703,9 @@ public final class InstrumentationParameters implements Cloneable {
 	}
 
 	/**
-	 * @return 
+	 * @return When true, the instrumented section that is currently being 
+	 * executed can be queried from the {@link CountingResultCollector}
+	 * using the method {@link CountingResultCollector#queryActiveSection()}
 	 */
 	public boolean getProvideOnlineSectionActiveUpdates() {
 		return provideOnlineSectionActiveUpdates;
