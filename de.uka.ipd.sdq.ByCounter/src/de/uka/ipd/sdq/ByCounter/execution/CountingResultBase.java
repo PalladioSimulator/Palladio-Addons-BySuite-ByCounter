@@ -6,6 +6,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.SortedMap;
 import java.util.SortedSet;
 import java.util.TreeMap;
@@ -14,6 +16,7 @@ import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import de.uka.ipd.sdq.ByCounter.parsing.ArrayCreation;
 import de.uka.ipd.sdq.ByCounter.reporting.ICountingResultWriter;
 import de.uka.ipd.sdq.ByCounter.utils.FullOpcodeMapper;
 import de.uka.ipd.sdq.ByCounter.utils.IAllJavaOpcodes;
@@ -95,15 +98,14 @@ implements Serializable, Cloneable, IFullCountingResult, Comparable<IFullCountin
 	public synchronized static CountingResultBase add(CountingResultBase left, CountingResultBase right){
 		long[] resultOpcodeCounts = new long[MAX_OPCODE];
 		SortedMap<String,Long>  resultMethodCallCounts = new TreeMap<String, Long>();
+		Map<ArrayCreation, Long> resultArrayCreationCounts;
 
 		// add up all opcode counts
 		resultOpcodeCounts = addOpcodeCounts(left.opcodeCounts, right.opcodeCounts);
 		// add up all method call counts
 		resultMethodCallCounts = addMethodCallCounts(left.methodCallCounts, right.methodCallCounts);
 		// add up all array creation parameters
-		ArrayParameters leftAP = ArrayParameters.copyFromCountingResult(left);
-		ArrayParameters rightAP = ArrayParameters.copyFromCountingResult(right);
-		ArrayParameters arrayParameters = ArrayParameters.add(leftAP, rightAP);
+		resultArrayCreationCounts = addArrayCreationCounts(left.arrayCreationCounts, right.arrayCreationCounts);
 
 		CountingResultBase cr;
 		cr = new CountingResultBase(
@@ -116,9 +118,7 @@ implements Serializable, Cloneable, IFullCountingResult, Comparable<IFullCountin
 				-1L,
 				resultOpcodeCounts,
 				resultMethodCallCounts,
-				arrayParameters.newArrayCounts,
-				arrayParameters.newArrayDim,
-				arrayParameters.newArrayTypes);
+				resultArrayCreationCounts);
 
 		return cr;
 	}
@@ -180,6 +180,56 @@ implements Serializable, Cloneable, IFullCountingResult, Comparable<IFullCountin
 	}
 
 	/**
+	 * Add up array creation counts..
+	 * @param arrayCreationCountsLeft Left operand.
+	 * @param arrayCreationCountsRight Right operand.
+	 * @return The sum.
+	 */
+	private static Map<ArrayCreation, Long> addArrayCreationCounts(
+			Map<ArrayCreation, Long> arrayCreationCountsLeft,
+			Map<ArrayCreation, Long> arrayCreationCountsRight) {
+		Map<ArrayCreation, Long> resultArrayCreationCounts = new HashMap<ArrayCreation, Long>();
+		ArrayCreation keyACreation;
+		Long resultValue;
+		ArrayCreation rightKeyACreation;
+		Long rightValue;
+
+		if(arrayCreationCountsLeft == null
+				|| arrayCreationCountsLeft.isEmpty()) {
+			return arrayCreationCountsRight;
+		}
+		if(arrayCreationCountsRight == null
+				|| arrayCreationCountsRight.isEmpty()) {
+			return arrayCreationCountsLeft;
+		}
+
+		// set all array creation counts for which 'left' has keys:
+		Iterator<ArrayCreation> iteratorMethods = arrayCreationCountsLeft.keySet().iterator();
+		while (iteratorMethods.hasNext()) {
+			keyACreation = iteratorMethods.next();
+			rightValue = arrayCreationCountsRight.get(keyACreation);
+			resultValue = arrayCreationCountsLeft.get(keyACreation);
+			if(rightValue != null) {
+				resultValue += rightValue;
+			}
+			resultArrayCreationCounts.put(
+					keyACreation,
+					new Long(resultValue));
+		}
+		// set all method call counts for which only 'right' has keys:
+		Iterator<ArrayCreation> methodsKeysetRight = arrayCreationCountsRight.keySet().iterator();
+		while (methodsKeysetRight.hasNext()) {
+			rightKeyACreation = methodsKeysetRight.next();
+			rightValue = arrayCreationCountsRight.get(rightKeyACreation);
+			resultValue = resultArrayCreationCounts.get(rightKeyACreation);
+			if(resultValue == null) {
+				resultArrayCreationCounts.put(rightKeyACreation, rightValue);
+			}
+		}
+		return resultArrayCreationCounts;
+	}
+
+	/**
 	 * The returned CountingResult is completely different from the summands
 	 * w.r.t. the method name, etc. Hence, it is not initialised and only
 	 * holds the sum of the two added {@link CountingResultBase}s.
@@ -193,11 +243,14 @@ implements Serializable, Cloneable, IFullCountingResult, Comparable<IFullCountin
 			CountingResultBase left, CountingResultBase right){
 		long[] resultOpcodeCounts = new long[MAX_OPCODE];
 		SortedMap<String,Long>  resultMethodCallCounts = new TreeMap<String, Long>();
+		Map<ArrayCreation,Long>  resultArrayCreationCounts = new HashMap<ArrayCreation, Long>();
 
 		// add up all opcode counts
 		resultOpcodeCounts = addOpcodeCounts(left.opcodeCounts, right.opcodeCounts);
 		// add up all method call counts
 		resultMethodCallCounts = addMethodCallCounts(left.methodCallCounts, right.methodCallCounts);
+		// add up all method call counts
+		resultArrayCreationCounts = addArrayCreationCounts(left.arrayCreationCounts, right.arrayCreationCounts);
 
 		CountingResultBase cr;
 		cr = new CountingResultBase(
@@ -210,9 +263,7 @@ implements Serializable, Cloneable, IFullCountingResult, Comparable<IFullCountin
 				-1L,
 				resultOpcodeCounts,
 				resultMethodCallCounts,
-				null, //resultNewArrayCountsArray,
-				null, //resultNewArrayDimArray,
-				null //resultNewArrayTypeArray,
+				resultArrayCreationCounts
 				);
 		return cr;
 	}
@@ -338,19 +389,9 @@ implements Serializable, Cloneable, IFullCountingResult, Comparable<IFullCountin
 	}
 
 	/**
-	 * TODO
+	 * Counts for constructions of specific array types.
 	 */
-	private transient long[] arrayCreationCounts = null;
-
-	/**
-	 * TODO
-	 */
-	private transient int[] arrayCreationDimensions = null;
-
-	/**
-	 * TODO
-	 */
-	private transient String[] arrayCreationTypeInfo = null;
+	private transient Map<ArrayCreation, Long> arrayCreationCounts = null;
 
 	/**
 	 * A {@link UUID} that is linked to the method calling the method that
@@ -460,7 +501,7 @@ implements Serializable, Cloneable, IFullCountingResult, Comparable<IFullCountin
 				
 				opcodeCounts,
 				methodCallCounts,
-				null,null,null);
+				null);
 	}
 	
 	/**
@@ -469,16 +510,10 @@ implements Serializable, Cloneable, IFullCountingResult, Comparable<IFullCountin
 	 * in the construction of the new {@link CountingResultBase}.
 	 */
 	public CountingResultBase(final CountingResultBase src) {
-		long[] copyOfArrayCreationCounts = null;
-		int[] copyOfArrayCreationDimensions = null;
-		String[] copyOfArrayCreationTypeInfo = null;
+		Map<ArrayCreation, Long> copyOfArrayCreationCounts = null;
 		
-		if(src.arrayCreationCounts != null
-				&& src.arrayCreationDimensions != null
-				&& src.arrayCreationTypeInfo != null) {
-			copyOfArrayCreationCounts = Arrays.copyOf(src.arrayCreationCounts, src.arrayCreationCounts.length);
-			copyOfArrayCreationDimensions = Arrays.copyOf(src.arrayCreationDimensions, src.arrayCreationDimensions.length);
-			copyOfArrayCreationTypeInfo = Arrays.copyOf(src.arrayCreationTypeInfo, src.arrayCreationTypeInfo.length);
+		if(src.arrayCreationCounts != null) {
+			copyOfArrayCreationCounts = new TreeMap<ArrayCreation, Long>(src.arrayCreationCounts);
 		}
 		
 		this.setRequestID(src.getRequestID());
@@ -491,8 +526,6 @@ implements Serializable, Cloneable, IFullCountingResult, Comparable<IFullCountin
 		this.opcodeCounts = Arrays.copyOf(src.opcodeCounts, src.opcodeCounts.length);
 		this.methodCallCounts = new TreeMap<String,Long>(src.methodCallCounts);
 		this.arrayCreationCounts = copyOfArrayCreationCounts;
-		this.arrayCreationDimensions = copyOfArrayCreationDimensions;
-		this.arrayCreationTypeInfo = copyOfArrayCreationTypeInfo;
 		this.setThreadId(src.threadId);
 	}
 	
@@ -530,8 +563,6 @@ implements Serializable, Cloneable, IFullCountingResult, Comparable<IFullCountin
 	 * @param opcodeCounts
 	 * @param methodCallCounts
 	 * @param arrayCreationCounts
-	 * @param arrayCreationDimensions
-	 * @param arrayCreationTypeInfo
 	 */
 	public CountingResultBase(//TODO make sure the instructions are "full", even if some instruction counts are zero
 			UUID requestID,
@@ -547,9 +578,7 @@ implements Serializable, Cloneable, IFullCountingResult, Comparable<IFullCountin
 			long[] opcodeCounts,
 			SortedMap<String, Long> methodCallCounts,
 			
-			long[] arrayCreationCounts,
-			int[] arrayCreationDimensions,
-			String[] arrayCreationTypeInfo) {
+			Map<ArrayCreation, Long> arrayCreationCounts) {
 		this.setRequestID(requestID);
 		this.setOwnID(ownID);
 		this.setCallerID(callerID);
@@ -557,8 +586,6 @@ implements Serializable, Cloneable, IFullCountingResult, Comparable<IFullCountin
 		this.setThreadId(-1);
 		
 		this.arrayCreationCounts = arrayCreationCounts;
-		this.arrayCreationDimensions = arrayCreationDimensions;
-		this.arrayCreationTypeInfo = arrayCreationTypeInfo;
 		
 		this.indexOfRangeBlock = -1;
 		this.methodCallCounts = methodCallCounts;
@@ -587,8 +614,6 @@ implements Serializable, Cloneable, IFullCountingResult, Comparable<IFullCountin
 		this.setThreadId(-1);
 		
 		this.arrayCreationCounts = null;
-		this.arrayCreationDimensions = null;
-		this.arrayCreationTypeInfo = null;
 		
 		this.indexOfRangeBlock = -1;
 		this.methodCallCounts = null;
@@ -614,9 +639,7 @@ implements Serializable, Cloneable, IFullCountingResult, Comparable<IFullCountin
 		CountingResultBase skeletonResult = add(this,toBeAdded);
 		this.methodCallCounts = skeletonResult.getMethodCallCounts();
 		this.opcodeCounts = skeletonResult.getOpcodeCounts();
-		this.arrayCreationCounts = skeletonResult.getNewArrayCounts();
-		this.arrayCreationDimensions = skeletonResult.getNewArrayDim();
-		this.arrayCreationTypeInfo = skeletonResult.getNewArrayTypes();
+		this.arrayCreationCounts = skeletonResult.getArrayCreationCounts();
 		skeletonResult = null;
 	}
 
@@ -669,16 +692,10 @@ implements Serializable, Cloneable, IFullCountingResult, Comparable<IFullCountin
 			// object.clone() cannot fail
 			return null;
 		}
-		long[] copyOfArrayCreationCounts = null;
-		int[] copyOfArrayCreationDimensions = null;
-		String[] copyOfArrayCreationTypeInfo = null;
+		Map<ArrayCreation, Long> copyOfArrayCreationCounts = null;
 		
-		if(this.arrayCreationCounts != null
-				&& this.arrayCreationDimensions != null
-				&& this.arrayCreationTypeInfo != null) {
-			copyOfArrayCreationCounts = Arrays.copyOf(this.arrayCreationCounts, this.arrayCreationCounts.length);
-			copyOfArrayCreationDimensions = Arrays.copyOf(this.arrayCreationDimensions, this.arrayCreationDimensions.length);
-			copyOfArrayCreationTypeInfo = Arrays.copyOf(this.arrayCreationTypeInfo, this.arrayCreationTypeInfo.length);
+		if(this.arrayCreationCounts != null) {
+			copyOfArrayCreationCounts = new TreeMap<ArrayCreation, Long>(this.arrayCreationCounts);
 		}
 		
 		copy.setRequestID(this.getRequestID());
@@ -691,8 +708,6 @@ implements Serializable, Cloneable, IFullCountingResult, Comparable<IFullCountin
 		copy.opcodeCounts = Arrays.copyOf(this.opcodeCounts, this.opcodeCounts.length);
 		copy.methodCallCounts = new TreeMap<String,Long>(this.methodCallCounts);
 		copy.arrayCreationCounts = copyOfArrayCreationCounts;
-		copy.arrayCreationDimensions = copyOfArrayCreationDimensions;
-		copy.arrayCreationTypeInfo = copyOfArrayCreationTypeInfo;
 		copy.setThreadId(this.threadId);
 		return copy;
 	}
@@ -735,31 +750,7 @@ implements Serializable, Cloneable, IFullCountingResult, Comparable<IFullCountin
 		this.totalCountInclInvokes = prevNewTotalCountInclInvokes;
 		this.totalCountsAlreadyComputed = true;
 	}
-
-	/**
-	 * TODO
-	 * @return TODO
-	 */
-	public long[] getArrayCreationCounts() {
-		return this.arrayCreationCounts;
-	}
-
-	/**
-	 * TODO
-	 * @return TODO
-	 */
-	public int[] getArrayCreationDimensions() {
-		return arrayCreationDimensions;
-	}
-
-	/**
-	 * TODO
-	 * @return TODO
-	 */
-	public String[] getArrayCreationTypeInfo() {
-		return arrayCreationTypeInfo;
-	}
-
+	
 	/**
 	 * @return the callerID
 	 */
@@ -843,25 +834,8 @@ implements Serializable, Cloneable, IFullCountingResult, Comparable<IFullCountin
 	 * Simple getter
 	 * @return Counts for array constructions when recording was enabled; <code>null</code> else.
 	 */
-	public long[] getNewArrayCounts() {
+	public Map<ArrayCreation, Long> getArrayCreationCounts() {
 		return arrayCreationCounts;
-	}
-
-	/**
-	 * Simple getter for the dimension of the new array if applicable; -1 else.
-	 * @return The array dimension when recording was enabled as descriped
-	 * above. Null else.
-	 */
-	public int[] getNewArrayDim() {
-		return arrayCreationDimensions;
-	}
-
-	/**
-	 * Simple getter for the types of the new arrays.
-	 * @return The array type when recording was enabled. Null else.
-	 */
-	public String[] getNewArrayTypes() {
-		return arrayCreationTypeInfo;
 	}
 
 	/** (non-Javadoc)
@@ -1084,24 +1058,8 @@ implements Serializable, Cloneable, IFullCountingResult, Comparable<IFullCountin
 	 * @see #getArrayCreationCounts()
 	 * @param arrayCreationCounts array creation counts
 	 */
-	public void setArrayCreationCounts(long[] arrayCreationCounts) {
+	public void setArrayCreationCounts(Map<ArrayCreation, Long> arrayCreationCounts) {
 		this.arrayCreationCounts = arrayCreationCounts;
-	}
-	
-	/**
-	 * @see #getArrayCreationDimensions()
-	 * @param arrayCreationDimensions .
-	 */
-	public void setArrayCreationDimensions(int[] arrayCreationDimensions) {
-		this.arrayCreationDimensions = arrayCreationDimensions;
-	}
-	
-	/**
-	 * @see #getArrayCreationTypeInfo()
-	 * @param arrayCreationTypeInfo .
-	 */
-	public void setArrayCreationTypeInfo(String[] arrayCreationTypeInfo) {
-		this.arrayCreationTypeInfo = arrayCreationTypeInfo;
 	}
 
 	/** (non-Javadoc)
@@ -1447,21 +1405,17 @@ implements Serializable, Cloneable, IFullCountingResult, Comparable<IFullCountin
 			final boolean vertically) {
 		// No checks here (but below!) for array results, because null is also
 		// returned when array parameter recording is disabled.
-		long[] newArrayCounts 						= getNewArrayCounts();
-		int[] newArrayDims 							= getNewArrayDim();
-		String[] newArrayTypes 						= getNewArrayTypes();
+		Map<ArrayCreation, Long> newArrayCounts = getArrayCreationCounts();
 		// because null is a valid value for the array*Something* arrays,
 		// we need to be carefull here.
-		if(newArrayCounts != null
-				&& newArrayDims != null
-				&& newArrayTypes != null) {
-			for(int i = 0; i < newArrayCounts.length; i++) {
+		if(newArrayCounts != null) {
+			for(Entry<ArrayCreation, Long> e : newArrayCounts.entrySet()) {
 				sb.append("new array of type '");
-				sb.append(newArrayTypes[i]);
+				sb.append(e.getKey().getTypeDesc());
 				sb.append("'");
-				sb.append((newArrayDims[i] > 0 ? ", dim " + newArrayDims[i] : ""));
+				sb.append(", dim " + e.getKey().getNumberOfDimensions());
 				sb.append(": ");
-				sb.append(newArrayCounts[i]);
+				sb.append(e.getValue());
 				if(vertically) {
 					sb.append(NEWLINE);
 				} else {

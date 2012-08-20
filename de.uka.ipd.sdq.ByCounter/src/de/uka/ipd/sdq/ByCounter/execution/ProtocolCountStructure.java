@@ -28,9 +28,9 @@ import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentationParameters;
  */
 public class ProtocolCountStructure {
 	/** Signature of constructor.*/
-	public static final String SIGNATURE_CONSTRUCTOR_INT = "(JLjava/lang/String;[I[I[Ljava/lang/String;[I[I[Ljava/lang/String;Ljava/util/UUID;Ljava/util/UUID;Ljava/util/UUID;ZI)V";
+	public static final String SIGNATURE_CONSTRUCTOR_INT = "(JLjava/lang/String;[I[I[Ljava/lang/String;[ILjava/util/UUID;Ljava/util/UUID;Ljava/util/UUID;ZI)V";
 	/** Signature of constructor.*/
-	public static final String SIGNATURE_CONSTRUCTOR_LONG = "(JLjava/lang/String;[J[J[Ljava/lang/String;[J[I[Ljava/lang/String;Ljava/util/UUID;Ljava/util/UUID;Ljava/util/UUID;ZI)V";
+	public static final String SIGNATURE_CONSTRUCTOR_LONG = "(JLjava/lang/String;[J[J[Ljava/lang/String;[JLjava/util/UUID;Ljava/util/UUID;Ljava/util/UUID;ZI)V";
 	/**
 	 * Use integer variables as counters.
 	 */
@@ -77,18 +77,6 @@ public class ProtocolCountStructure {
 	public int[] newArrayCountsInt;
 	/** @see #newArrayCountsInt */
 	public long[] newArrayCounts;
-	/**
-	 * Depending on the type of the specific *newarray
-	 * call, this is either a type integer or the dimension for the array.
-	 * The index is the same as for newArrayCounts and newArrayDesc.
-	 */
-	public int[] newArrayTypeOrDim;
-	/**
-	 * For array consisting of object types, this is the
-	 * type descriptor.
-	 * The index is the same as for newArrayCounts and newArrayTypeOrDim.
-	 */
-	public String[] newArrayDescr;
 	/** The time at which this result arrives in the result collector. */
 	public long reportingStart;
 	/**
@@ -132,8 +120,6 @@ public class ProtocolCountStructure {
 		this.calledMethods = null;
 		this.newArrayCountsInt = null;
 		this.newArrayCounts = null;
-		this.newArrayTypeOrDim = null;
-		this.newArrayDescr = null;
 		this.reportingStart = 0L;
 		this.requestID = null;
 		this.ownID = null;
@@ -152,8 +138,6 @@ public class ProtocolCountStructure {
 	 * @param methodCallCounts {@link #methodCallCountsInt}
 	 * @param calledMethods {@link #calledMethods}
 	 * @param newArrayCounts {@link #newArrayCountsInt}
-	 * @param newArrayTypeOrDim {@link #newArrayTypeOrDim}
-	 * @param newArrayDescr {@link #newArrayDescr}
 	 * @param requestID {@link #requestID}
 	 * @param ownID {@link #ownID}
 	 * @param callerID {@link #callerID}
@@ -167,8 +151,6 @@ public class ProtocolCountStructure {
 			final int[] methodCallCounts,
 			final String[] calledMethods,
 			final int[] newArrayCounts,
-			final int[] newArrayTypeOrDim,
-			final String[] newArrayDescr,
 			final UUID requestID,
 			final UUID ownID,
 			final UUID callerID,
@@ -180,8 +162,6 @@ public class ProtocolCountStructure {
 		this.methodCallCountsInt = methodCallCounts;
 		this.calledMethods = calledMethods;
 		this.newArrayCountsInt = newArrayCounts;
-		this.newArrayTypeOrDim = newArrayTypeOrDim;
-		this.newArrayDescr = newArrayDescr;
 		this.requestID = requestID;
 		this.ownID = ownID;
 		this.callerID = callerID;
@@ -201,8 +181,6 @@ public class ProtocolCountStructure {
 	 * @param methodCallCounts {@link #methodCallCountsInt}
 	 * @param calledMethods {@link #calledMethods}
 	 * @param newArrayCounts {@link #newArrayCountsInt}
-	 * @param newArrayTypeOrDim {@link #newArrayTypeOrDim}
-	 * @param newArrayDescr {@link #newArrayDescr}
 	 * @param requestID {@link #requestID}
 	 * @param ownID {@link #ownID}
 	 * @param callerID {@link #callerID}
@@ -216,8 +194,6 @@ public class ProtocolCountStructure {
 			final long[] methodCallCounts,
 			final String[] calledMethods,
 			final long[] newArrayCounts,
-			final int[] newArrayTypeOrDim,
-			final String[] newArrayDescr,
 			final UUID requestID,
 			final UUID ownID,
 			final UUID callerID, 
@@ -229,8 +205,6 @@ public class ProtocolCountStructure {
 		this.methodCallCounts = methodCallCounts;
 		this.calledMethods = calledMethods;
 		this.newArrayCounts = newArrayCounts;
-		this.newArrayTypeOrDim = newArrayTypeOrDim;
-		this.newArrayDescr = newArrayDescr;
 		this.requestID = requestID;
 		this.ownID = ownID;
 		this.callerID = callerID;
@@ -303,10 +277,6 @@ public class ProtocolCountStructure {
 		builder.append(Arrays.toString(this.newArrayCountsInt));
 		builder.append(", newArrayCounts=");
 		builder.append(Arrays.toString(this.newArrayCounts));
-		builder.append(", newArrayTypeOrDim=");
-		builder.append(Arrays.toString(this.newArrayTypeOrDim));
-		builder.append(", newArrayDescr=");
-		builder.append(Arrays.toString(this.newArrayDescr));
 		builder.append(", requestID=");
 		builder.append(this.requestID);
 		builder.append(", ownID=");

@@ -50,6 +50,11 @@ public class InstrumentationState {
 	private Map<Label, Integer> rangeBlockContainsLabels;
 
 	/**
+	 * Method invocations by method containing the call.
+	 */
+	private Map<String, List<String>> methodInvocations;
+
+	/**
 	 * Initialises all fields.
 	 */
 	public InstrumentationState() {
@@ -57,6 +62,7 @@ public class InstrumentationState {
     	this.setSuccessFullyInstrumentedMethods(new ArrayList<MethodDescriptor>());
     	this.rangeBlockContainsLabels = new HashMap<Label, Integer>();
     	this.basicBlockLabels = new Label[0];
+    	this.methodInvocations = new HashMap<String, List<String>>();
 	}
 
 	/**
@@ -124,5 +130,15 @@ public class InstrumentationState {
 	public void setRangeBlockContainsLabels(
 			Map<Label, Integer> rangeBlockContainsLabels) {
 		this.rangeBlockContainsLabels = rangeBlockContainsLabels;
+	}
+
+	/**
+	 * Get the list containing all method signatures that were called in the 
+	 * visited method.
+	 * @return A map containing method signatures of invocations per method.
+	 * @see MethodDescriptor#getCanonicalMethodName()
+	 */
+	public Map<String, List<String>> getMethodInvocations() {
+		return this.methodInvocations;
 	}
 }

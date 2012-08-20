@@ -27,8 +27,6 @@ public class ProtocolCountUpdateStructure extends ProtocolCountStructure {
 	 * @param methodCallCounts {@link #methodCallCountsInt}
 	 * @param calledMethods {@link #calledMethods}
 	 * @param newArrayCounts {@link #newArrayCountsInt}
-	 * @param newArrayTypeOrDim {@link #newArrayTypeOrDim}
-	 * @param newArrayDescr {@link #newArrayDescr}
 	 * @param requestID {@link #requestID}
 	 * @param ownID {@link #ownID}
 	 * @param callerID {@link #callerID}
@@ -42,16 +40,14 @@ public class ProtocolCountUpdateStructure extends ProtocolCountStructure {
 			final int[] methodCallCounts,
 			final String[] calledMethods,
 			final int[] newArrayCounts,
-			final int[] newArrayTypeOrDim,
-			final String[] newArrayDescr,
 			final UUID requestID,
 			final UUID ownID,
 			final UUID callerID,
 			final boolean inliningSpecified,
 			final int blockCountingMode) {
 		super(executionStart, qualifyingMethodName, opcodeCounts, 
-				methodCallCounts, calledMethods, newArrayCounts, newArrayTypeOrDim,
-				newArrayDescr, requestID, ownID, callerID, inliningSpecified, blockCountingMode);
+				methodCallCounts, calledMethods, newArrayCounts, 
+				requestID, ownID, callerID, inliningSpecified, blockCountingMode);
 	}
 	
 	/**
@@ -62,8 +58,6 @@ public class ProtocolCountUpdateStructure extends ProtocolCountStructure {
 	 * @param methodCallCounts {@link #methodCallCountsInt}
 	 * @param calledMethods {@link #calledMethods}
 	 * @param newArrayCounts {@link #newArrayCountsInt}
-	 * @param newArrayTypeOrDim {@link #newArrayTypeOrDim}
-	 * @param newArrayDescr {@link #newArrayDescr}
 	 * @param requestID {@link #requestID}
 	 * @param ownID {@link #ownID}
 	 * @param callerID {@link #callerID}
@@ -77,15 +71,13 @@ public class ProtocolCountUpdateStructure extends ProtocolCountStructure {
 			final long[] methodCallCounts,
 			final String[] calledMethods,
 			final long[] newArrayCounts,
-			final int[] newArrayTypeOrDim,
-			final String[] newArrayDescr,
 			final UUID requestID,
 			final UUID ownID,
 			final UUID callerID, 
 			final boolean inliningSpecified,
 			final int blockCountingMode) {
 		super(executionStart, qualifyingMethodName, opcodeCounts, 
-				methodCallCounts, calledMethods, newArrayCounts, newArrayTypeOrDim,
-				newArrayDescr, requestID, ownID, callerID, inliningSpecified, blockCountingMode);
+				methodCallCounts, calledMethods, newArrayCounts, 
+				requestID, ownID, callerID, inliningSpecified, blockCountingMode);
 	}
 }

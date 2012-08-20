@@ -10,12 +10,14 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import de.uka.ipd.sdq.ByCounter.execution.BytecodeCounter;
 import de.uka.ipd.sdq.ByCounter.execution.CountingMode;
 import de.uka.ipd.sdq.ByCounter.execution.CountingResultCollector;
+import de.uka.ipd.sdq.ByCounter.parsing.ArrayCreation;
 import de.uka.ipd.sdq.ByCounter.parsing.InstructionBlockSerialisation;
 import de.uka.ipd.sdq.ByCounter.parsing.LineNumberRange;
 
@@ -84,6 +86,11 @@ public class InstrumentationContext implements Serializable {
 	 * {@link CountingResultCollector#queryActiveSection()}.
 	 */
 	private boolean queryActiveSectionSupported;
+
+	/**
+	 * Array creation types by method.
+	 */
+	private Map<String, List<ArrayCreation>> arrayCreations;
 	
 	/**
 	 * Construct the instrumentation context.
@@ -94,6 +101,7 @@ public class InstrumentationContext implements Serializable {
 		this.rangeBlocks = new InstructionBlockSerialisation();
 		this.labelBlocks = new InstructionBlockSerialisation();
 		this.instrumentationRegions = new HashSet<InstrumentationRegion>();
+		this.arrayCreations = new HashMap<String, List<ArrayCreation>>();
 		this.blockCountingMode = new HashMap<String, BlockCountingMode>();
 		this.countingMode = CountingMode.Default;
 		this.rangesByMethod = new HashMap<String, LineNumberRange[]>();
@@ -280,5 +288,12 @@ public class InstrumentationContext implements Serializable {
 	 */
 	public void setQueryActiveSectionSupported(boolean queryActiveSectionSupported) {
 		this.queryActiveSectionSupported = queryActiveSectionSupported;
+	}
+
+	/**
+	 * @return Array creation types by method.
+	 */
+	public Map<String, List<ArrayCreation>> getArrayCreations() {
+		return this.arrayCreations;
 	}
 }

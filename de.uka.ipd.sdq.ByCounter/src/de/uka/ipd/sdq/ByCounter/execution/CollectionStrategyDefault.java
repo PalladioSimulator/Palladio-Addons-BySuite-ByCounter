@@ -12,9 +12,9 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.UUID;
 
-import de.uka.ipd.sdq.ByCounter.instrumentation.AdditionalOpcodeInformation;
 import de.uka.ipd.sdq.ByCounter.instrumentation.BlockCountingMode;
 import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentationRegion;
+import de.uka.ipd.sdq.ByCounter.parsing.ArrayCreation;
 import de.uka.ipd.sdq.ByCounter.parsing.LineNumberRange;
 import de.uka.ipd.sdq.ByCounter.results.CountingResult;
 import de.uka.ipd.sdq.ByCounter.results.RequestResult;
@@ -29,18 +29,6 @@ import de.uka.ipd.sdq.ByCounter.results.ThreadedCountingResult;
  *
  */
 public class CollectionStrategyDefault extends AbstractCollectionStrategy {
-
-	
-	/**
-	 * Simple data structure to hold converted information about new array creation.
-	 * @see CountingResultCollector#analyzeArrayParams(long[], String[], int[])
-	 * No initialisation happens on construction.
-	 */
-	private static class NewArrayTypeAndDimension {
-		String[] newArrayType;
-		int[] newArrayDim;
-	}
-	
 
 	/**
 	 *	A {@link SortedSet} that holds the results.
@@ -104,67 +92,6 @@ public class CollectionStrategyDefault extends AbstractCollectionStrategy {
 		this.blockExecutionSequenceLengthByMethod.clear();
 	}
 
-	
-	/**
-	 * Decode the information saved for array parameters.
-	 * @param newArrayCounts Array initialisation counts reported from ByCounter
-	 * @param newArrayDescr Array descriptors reported from ByCounter
-	 * @param newArrayTypeOrDim Array types/dimensions reported from ByCounter
-	 */
-	public static synchronized NewArrayTypeAndDimension analyzeArrayParams(long[] newArrayCounts, String[] newArrayDescr,
-			int[] newArrayTypeOrDim) {
-		NewArrayTypeAndDimension result = new NewArrayTypeAndDimension();
-		// process information for the *newarray counts
-		result.newArrayType = new String[newArrayCounts.length];
-		result.newArrayDim = new int[newArrayCounts.length];
-
-		for(int i = 0; i < newArrayCounts.length; i++) {
-			// check whether the type is coded into the integer
-			if(newArrayDescr[i] == AdditionalOpcodeInformation.NO_INFORMATION_STRING) {
-				String str = null;
-				// convert the type to a readable string
-				switch(newArrayTypeOrDim[i]) {
-				case 4:
-					str = "boolean";
-					break;
-				case 5:
-					str = "char";
-					break;
-				case 6:
-					str = "float";
-					break;
-				case 7:
-					str = "double";
-					break;
-				case 8:
-					str = "byte";
-					break;
-				case 9:
-					str = "short";
-					break;
-				case 10:
-					str = "int";
-					break;
-				case 11:
-					str = "long";
-					break;
-				default:
-					throw new IllegalArgumentException("Unknown object type id: " + newArrayTypeOrDim[i]);
-				}
-				result.newArrayType[i] = str;
-				// no dimension information here
-				result.newArrayDim[i] = AdditionalOpcodeInformation.NO_INFORMATION_INT;
-			} else {
-				// Type is there as descriptor - just copy it
-				result.newArrayType[i] = newArrayDescr[i];
-				// copy the dimension information
-				result.newArrayDim[i] = newArrayTypeOrDim[i];
-			}
-		}
-		return result;
-
-	}
-
 	/** 
 	 * @return Indexing infrastructure for counting results.
 	 */
@@ -175,13 +102,6 @@ public class CollectionStrategyDefault extends AbstractCollectionStrategy {
 	/** Add to counting results. */
 	@Override
 	public boolean protocolCount(ProtocolCountStructure result) {
-		if(result.newArrayCounts != null) {
-			// assert equal length of newarray inputs
-			if(result.newArrayCounts.length != result.newArrayDescr.length
-					|| result.newArrayDescr.length != result.newArrayTypeOrDim.length) {
-				throw new IllegalArgumentException("Reported new array count structures must match in length.");
-			}
-		}
 		// Is this an update?
 		if(!(result instanceof ProtocolCountUpdateStructure)) {
 			// This is not an update so all updates are done.
@@ -211,20 +131,16 @@ public class CollectionStrategyDefault extends AbstractCollectionStrategy {
 		CalculatedCounts[] ccounts = calculateResultCounts(result);
 
 		for(int ccountsNum = 0; ccountsNum < ccounts.length; ccountsNum++) {
-			int[] newArrayDim = null;
-			String[] newArrayType = null;
+			Map<ArrayCreation, Long> arrayCreationCounts = null;
 			if(result.newArrayCounts != null && 
-					result.newArrayCounts.length != 0 && 
-					result.newArrayTypeOrDim != null && 
-					result.newArrayTypeOrDim.length != 0 && 
-					result.newArrayDescr != null && 
-					result.newArrayDescr.length != 0) {
-				NewArrayTypeAndDimension r = analyzeArrayParams(
-						result.newArrayCounts,
-						result.newArrayDescr, 
-						result.newArrayTypeOrDim);
-				newArrayType = r.newArrayType; 
-				newArrayDim = r.newArrayDim;
+					result.newArrayCounts.length != 0) {
+				// create the map for array creation counts
+				arrayCreationCounts = new HashMap<ArrayCreation, Long>();
+				List<ArrayCreation> creations = this.parentResultCollector.instrumentationContext.getArrayCreations().get(result.qualifyingMethodName);
+				for(int i = 0; i < result.newArrayCounts.length; i++) {
+					long count = result.newArrayCounts[i];
+					arrayCreationCounts.put(creations.get(i), count);
+				}
 			}
 			CountingResult res;
 			if(result.spawnedThreads.isEmpty()) {
@@ -241,9 +157,7 @@ public class CollectionStrategyDefault extends AbstractCollectionStrategy {
 			res.setMethodReportingTime(result.reportingStart);
 			res.setOpcodeCounts(ccounts[ccountsNum].opcodeCounts);
 			res.overwriteMethodCallCounts(ccounts[ccountsNum].methodCounts);
-			res.setArrayCreationCounts(result.newArrayCounts);
-			res.setArrayCreationDimensions(newArrayDim);
-			res.setArrayCreationTypeInfo(newArrayType);
+			res.setArrayCreationCounts(arrayCreationCounts);
 			res.setThreadId(Thread.currentThread().getId());
 			if(result.blockCountingMode == BlockCountingMode.RangeBlocks) {
 				// set the index of the range block, i.e. the number of the section as

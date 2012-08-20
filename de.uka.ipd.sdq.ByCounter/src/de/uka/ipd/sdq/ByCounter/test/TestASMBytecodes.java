@@ -1,5 +1,6 @@
 package de.uka.ipd.sdq.ByCounter.test;
 
+import java.util.Map;
 import java.util.logging.Logger;
 
 import junit.framework.Assert;
@@ -12,6 +13,7 @@ import org.objectweb.asm.Opcodes;
 
 import de.uka.ipd.sdq.ByCounter.execution.BytecodeCounter;
 import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentationParameters;
+import de.uka.ipd.sdq.ByCounter.parsing.ArrayCreation;
 import de.uka.ipd.sdq.ByCounter.results.CountingResult;
 import de.uka.ipd.sdq.ByCounter.test.framework.expectations.Expectation;
 import de.uka.ipd.sdq.ByCounter.test.helpers.ASMBytecodeOccurences;
@@ -128,13 +130,20 @@ public class TestASMBytecodes extends AbstractByCounterTest {
          .add(Opcodes.ICONST_0, 15);
 
         e.compare(new CountingResult[] {r});
+        Map<ArrayCreation, Long> accs = r.getArrayCreationCounts();
 
-		Assert.assertNotNull(r.getNewArrayTypes());
-		Assert.assertEquals("java/lang/Object", r.getNewArrayTypes()[0]);
-		Assert.assertEquals(2, r.getNewArrayDim()[1]);
-		Assert.assertEquals(9, r.getNewArrayCounts().length);
-		for(int i = 0; i < r.getNewArrayCounts().length; i++) {
-			Assert.assertEquals(1, r.getNewArrayCounts()[i]);
+		Assert.assertNotNull(accs);
+		ArrayCreation objectArray = new ArrayCreation();
+		objectArray.setTypeDesc("java/lang/Object");
+		Assert.assertTrue(accs.containsKey(objectArray));
+
+		ArrayCreation dim2Array = new ArrayCreation();
+		dim2Array.setTypeDesc("[[Ljava/lang/Object;");
+		dim2Array.setNumberOfDimensions(2);
+		Assert.assertTrue("Expected a count for the creation of a 2d array.", accs.containsKey(dim2Array));
+		Assert.assertEquals(9, accs.size());
+		for(ArrayCreation ac : accs.keySet()) {
+			Assert.assertEquals(1, accs.get(ac).longValue());
 		}
 		this.counter.getInstrumentationParams().setUseArrayParameterRecording(oldUseArrayParameterRecording);
 	}

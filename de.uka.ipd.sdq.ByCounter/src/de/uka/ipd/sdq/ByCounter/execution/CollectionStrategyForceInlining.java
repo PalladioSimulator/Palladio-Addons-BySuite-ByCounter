@@ -8,6 +8,7 @@ import java.util.TreeMap;
 import java.util.UUID;
 
 import de.uka.ipd.sdq.ByCounter.instrumentation.BlockCountingMode;
+import de.uka.ipd.sdq.ByCounter.parsing.ArrayCreation;
 import de.uka.ipd.sdq.ByCounter.results.CountingResult;
 import de.uka.ipd.sdq.ByCounter.results.ResultCollection;
 
@@ -114,9 +115,7 @@ public class CollectionStrategyForceInlining extends AbstractCollectionStrategy 
 		res.setMethodReportingTime(0L); //reporting time TODO use a Date-like class for this...
 		res.setOpcodeCounts(new long[CountingResultBase.MAX_OPCODE]);//opcode counts
 		res.overwriteMethodCallCounts(new TreeMap<String, Long>());
-		res.setArrayCreationCounts(new long[]{});
-		res.setArrayCreationDimensions(new int[]{});
-		res.setArrayCreationTypeInfo(new String[]{});
+		res.setArrayCreationCounts(new TreeMap<ArrayCreation, Long>());
 		return res;
 	}
 

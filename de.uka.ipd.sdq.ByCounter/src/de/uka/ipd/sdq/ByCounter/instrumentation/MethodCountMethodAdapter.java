@@ -20,6 +20,7 @@ import de.uka.ipd.sdq.ByCounter.execution.CountingResultBase;
 import de.uka.ipd.sdq.ByCounter.execution.CountingResultCollector;
 import de.uka.ipd.sdq.ByCounter.execution.ProtocolCountStructure;
 import de.uka.ipd.sdq.ByCounter.execution.ProtocolCountUpdateStructure;
+import de.uka.ipd.sdq.ByCounter.parsing.ArrayCreation;
 import de.uka.ipd.sdq.ByCounter.utils.JavaType;
 import de.uka.ipd.sdq.ByCounter.utils.JavaTypeEnum;
 import de.uka.ipd.sdq.ByCounter.utils.MethodDescriptor;
@@ -81,11 +82,6 @@ public final class MethodCountMethodAdapter extends MethodAdapter {	// evil impl
 	private static final int MAX_OPCODE = CountingResultBase.MAX_OPCODE;
 	
 	private static final String TYPE_ARRAYLIST = "java/util/ArrayList";
-
-	/**
-	 * all invoked methods and array information
-	 */
-	private AdditionalOpcodeInformation additionalOpcInfo; 
 	
 	private boolean arrayCountersInitialised = false;
 	
@@ -260,7 +256,7 @@ public final class MethodCountMethodAdapter extends MethodAdapter {	// evil impl
 		this.instrumentationState = instrumentationState;
 		// basicBlockCounters xor instrunctionCounters are initialised in visitCode()
 		this.methodCounters 		= new HashMap<String, Integer>();
-		this.arrayCreationCounters	= null;	// this is set in #setMethodInvocations
+		this.arrayCreationCounters	= null;	// this is set in #initialiseArrayCounters()
 		this.characterisationHooks	= new HashSet<ICharacterisationHook>();
 		this.classNameBC = className;
 		this.superNameBC = superName;
@@ -275,35 +271,20 @@ public final class MethodCountMethodAdapter extends MethodAdapter {	// evil impl
 	}
 	
 	/**
-	 * Count the construction of an array with the given parameters 
-	 * where applicable. Use AdditionalOpcodeInformation.NO_INFORMATION*
-	 * if a parameter is not used. If this method is called, 
+	 * Count the construction of an array with the given parameters. 
+	 * If this method is called, 
 	 * then is counted only in addition to countOpcode, which is called for any opcode.
 	 * TODO assert that this method is not called on its own without countOpcode
-	 * @param integer Integer information. For array of a primitive type 
-	 * such as int[], long[], etc. this encodes the type while 's' contains 
-	 * no information.
-	 * For multidimensional arrays, this holds the dimension while 's' holds the 
-	 * type.
-	 * <p>
-	 * For new object type arrays this is empty and 's' holds the type.
-	 * </p>
-	 * @param s String information. For primitive type arrays such as int[], long[],
-	 * etc. this is empty. In all other cases this holds the type information.
+	 * @param aCreation {@link ArrayCreation} to count.
 	 */
-	private void countArrayConstruction(int integer, String s) {
+	private void countArrayConstruction(ArrayCreation aCreation) {
 		if(this.useBlockCounters) {
 			return;
 		}
-		if(this.additionalOpcInfo == null) {
-			this.log.severe("The AdditionalOpcodeInfo was not set.");
-		} else {
-			// use the assigned variable index
-			int id = this.additionalOpcInfo.getIndexOfAdditionInformation(integer, s);
-			assert id != -1;
-			int index = this.arrayCreationCounters[id];
-			insertCounterIncrement(index);
-		}
+		// use the assigned variable index
+		List<ArrayCreation> arrayCreations = this.instrumentationState.getInstrumentationContext().getArrayCreations().get(methodDescriptor.getCanonicalMethodName());
+		int var = this.arrayCreationCounters[arrayCreations.indexOf(aCreation)];
+		insertCounterIncrement(var);
 	}
 
 	/**
@@ -317,22 +298,18 @@ public final class MethodCountMethodAdapter extends MethodAdapter {	// evil impl
 		if(this.useBlockCounters) {
 			return;
 		}
-		if(this.additionalOpcInfo == null) {
-			this.log.severe("The AdditionalOpcodeInfo was not set.");
-		} else {
-			if(this.methodCounters==null){
-				this.log.severe("methodCounters is null");
-			}
-			// use the assigned variable index
-			String signature = MethodDescriptor._constructMethodDescriptorFromASM(
-						owner, name, desc).getCanonicalMethodName();
-			if(signature==null){
-				this.log.severe("signature is null");
-			}
-		
-			int index = this.methodCounters.get(signature);
-			insertCounterIncrement(index);
+		if(this.methodCounters==null){
+			this.log.severe("methodCounters is null");
 		}
+		// use the assigned variable index
+		String signature = MethodDescriptor._constructMethodDescriptorFromASM(
+					owner, name, desc).getCanonicalMethodName();
+		if(signature==null){
+			this.log.severe("signature is null");
+		}
+	
+		int index = this.methodCounters.get(signature);
+		insertCounterIncrement(index);
 	}
 
 	/**
@@ -375,18 +352,18 @@ public final class MethodCountMethodAdapter extends MethodAdapter {	// evil impl
 					"initialiseInstructionCounters and before initialiseMethodCounters"));
 		}
 		this.arrayCountersInitialised = true;
-		int additionalInformationSize = this.additionalOpcInfo.getIntInformation().length;
-		int var;	// the index for the new variable
+		final int arrayCreationSize = 
+				this.instrumentationState.getInstrumentationContext()
+				.getArrayCreations().get(
+						this.methodDescriptor.getCanonicalMethodName()
+						).size();
 		// Initialize registers for all array constructions.
-		// make sure the information lists are synchronized 
-		assert additionalInformationSize
-			== this.additionalOpcInfo.getStringInformation().size();
+		this.arrayCreationCounters = new int[arrayCreationSize];
 		for(int i = 0; 
-				i < additionalInformationSize; 
+				i < arrayCreationSize; 
 				i++) {
-			var = getNewCounterVar();
 			// use index in list as id
-			this.arrayCreationCounters[i] = var;
+			this.arrayCreationCounters[i] = getNewCounterVar();
 		}
 	}
 	
@@ -459,14 +436,11 @@ public final class MethodCountMethodAdapter extends MethodAdapter {	// evil impl
 		this.methodCountersInitialised = true;
 		int var;	// the index for the new variable
 		// Initialize registers for all method invocations.
-		int nrOfMethods = this.additionalOpcInfo.getMethodInvokations().size();
+		List<String> methodInvocations = this.instrumentationState.getMethodInvocations().get(this.methodDescriptor.getCanonicalMethodName());
+		int nrOfMethods = methodInvocations.size();
 		this.log.fine(nrOfMethods+" methods to allocate counters for");
-		String method;
-		for(int i = 0; 
-				i < nrOfMethods;
-				i++) {
+		for(String method : methodInvocations) {
 			var = getNewCounterVar();
-			method = this.additionalOpcInfo.getMethodInvokations().get(i);
 			this.methodCounters.put(method, var);
 		}
 	}
@@ -682,13 +656,9 @@ public final class MethodCountMethodAdapter extends MethodAdapter {	// evil impl
 		}
 		
 		int newArrayListVar = -1;
-		int newArrayTypeOrDimListVar = -1;
-		int newArrayDescVar = -1;
 		if(instrumentationParameters.getUseArrayParameterRecording()) {
 			// store the newarray counts in an array
 			newArrayListVar = insertAndFillCounterArrayFromRegisters(this.arrayCreationCounters);
-			newArrayTypeOrDimListVar = insertAndFillIntArray(additionalOpcInfo.getIntInformation());
-			newArrayDescVar = insertAndFillNewStringArray(additionalOpcInfo.getStringInformation());
 			log.fine("Array parameter recording ON: "+arrayCreationCounters.length+
 					" array counters");
 		}
@@ -763,11 +733,7 @@ public final class MethodCountMethodAdapter extends MethodAdapter {	// evil impl
 				&& this.instrumentationParameters.getCounterPrecision() == InstrumentationCounterPrecision.Long)) {
 			if(instrumentationParameters.getUseArrayParameterRecording()) {
 				this.mv.visitVarInsn(Opcodes.ALOAD, newArrayListVar);
-				this.mv.visitVarInsn(Opcodes.ALOAD, newArrayTypeOrDimListVar);
-				this.mv.visitVarInsn(Opcodes.ALOAD, newArrayDescVar);
 			} else {
-				this.mv.visitInsn(Opcodes.ACONST_NULL);
-				this.mv.visitInsn(Opcodes.ACONST_NULL);
 				this.mv.visitInsn(Opcodes.ACONST_NULL);
 			}
 		}
@@ -864,8 +830,9 @@ public final class MethodCountMethodAdapter extends MethodAdapter {	// evil impl
 	protected int insertResultCollectorCall_createMethodCountsArrays() {
 		// set up an index array for the method counters
 		int[] indicesOfMethodCounters = new int[this.methodCounters.size()];
+		List<String> methodInvocations = this.instrumentationState.getMethodInvocations().get(this.methodDescriptor.getCanonicalMethodName());
 		for(int i = 0; i < indicesOfMethodCounters.length; i++) {
-			indicesOfMethodCounters[i] = this.methodCounters.get(this.additionalOpcInfo.getMethodInvokations().get(i));
+			indicesOfMethodCounters[i] = this.methodCounters.get(methodInvocations.get(i));
 		}
 		// store the method counts
 		int methodListVar = insertAndFillCounterArrayFromRegisters(indicesOfMethodCounters);
@@ -873,9 +840,9 @@ public final class MethodCountMethodAdapter extends MethodAdapter {	// evil impl
 				indicesOfMethodCounters.length+" method counts ");
 		
 		// Store the method signatures.
-		this.methodInvocationArrayVar = insertAndFillNewStringArray(this.additionalOpcInfo.getMethodInvokations());
+		this.methodInvocationArrayVar = insertAndFillNewStringArray(methodInvocations);
 		this.log.fine("variable "+this.methodInvocationArrayVar+" holds array of string that hold "+
-				this.additionalOpcInfo.getMethodInvokations().size()+" method names");
+				methodInvocations.size()+" method names");
 		return methodListVar;
 	}
 
@@ -986,18 +953,6 @@ public final class MethodCountMethodAdapter extends MethodAdapter {	// evil impl
 	public void setLVS(LocalVariablesSorter pLvars) {
 		this.lVarManager.setLVS(pLvars);
 	}
-
-	/**
-	 * Sets the MethodInvocationsFinder that is used to determine registers
-	 * for method invocation counts.
-	 * This must be called before this Adapter is evaluated.//TODO is this ensured/asserted/checken?
-	 * @param additionalOpcInfo Finder instance.
-	 */
-	public void setMethodInvocations(AdditionalOpcodeInformation additionalOpcInfo) {
-		this.additionalOpcInfo = additionalOpcInfo;
-		this.arrayCreationCounters = new int[additionalOpcInfo.getIntInformation().length];
-	}
-
 
 	/**
 	 * This is being called at the beginning of the method.
@@ -1208,9 +1163,9 @@ public final class MethodCountMethodAdapter extends MethodAdapter {	// evil impl
 			// Check whether this is a NEWARRAY instruction.
 			if(instrumentationParameters.getUseArrayParameterRecording() 
 					&& opcode == Opcodes.NEWARRAY) {
-				this.countArrayConstruction(
-						operand, //(primitive) array type 
-						AdditionalOpcodeInformation.NO_INFORMATION_STRING);
+				ArrayCreation creation = new ArrayCreation();
+				creation.setTypeOpcode(operand);//(primitive) array type 
+				this.countArrayConstruction(creation);
 			}
 		}
 		mv.visitIntInsn(opcode, operand);
@@ -1350,9 +1305,10 @@ public final class MethodCountMethodAdapter extends MethodAdapter {	// evil impl
 				!= InstrumentationScopeModeEnum.InstrumentNothing) {		
 			countOpcode(Opcodes.MULTIANEWARRAY);
 			if(instrumentationParameters.getUseArrayParameterRecording()) {
-				this.countArrayConstruction(
-						dims, 	//dimensions 
-						desc);	//type (?)
+				ArrayCreation creation = new ArrayCreation();
+				creation.setNumberOfDimensions(dims);
+				creation.setTypeDesc(desc);
+				this.countArrayConstruction(creation);
 			}
 		}
 		mv.visitMultiANewArrayInsn(desc, dims);
@@ -1375,9 +1331,9 @@ public final class MethodCountMethodAdapter extends MethodAdapter {	// evil impl
 			// Check whether this is a ANEWARRAY instruction.
 			if(instrumentationParameters.getUseArrayParameterRecording() 
 					&& opcode == Opcodes.ANEWARRAY) {
-				this.countArrayConstruction(
-						AdditionalOpcodeInformation.NO_INFORMATION_INT, //dimension of the array is passed separately, not on the stack TODO: how?
-						desc);
+				ArrayCreation creation = new ArrayCreation();
+				creation.setTypeDesc(desc);
+				this.countArrayConstruction(creation);
 			}
 		}
 		mv.visitTypeInsn(opcode, desc);

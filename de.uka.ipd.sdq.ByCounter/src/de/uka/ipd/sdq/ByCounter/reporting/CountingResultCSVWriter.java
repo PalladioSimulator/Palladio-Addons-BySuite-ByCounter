@@ -8,11 +8,14 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.logging.Logger;
 
 import de.uka.ipd.sdq.ByCounter.execution.CountingResultBase;
+import de.uka.ipd.sdq.ByCounter.parsing.ArrayCreation;
 import de.uka.ipd.sdq.ByCounter.results.CountingResult;
 import de.uka.ipd.sdq.ByCounter.utils.ASMOpcodesMapper;
 
@@ -428,15 +431,11 @@ public class CountingResultCSVWriter implements ICountingResultWriter {
 			@SuppressWarnings("unused")
 			boolean writeDown = true; //TODO if false, write "to the left"
 			
-			long[] newArrayCounts 	= cr.getNewArrayCounts();
-			int[] newArrayDims 		= cr.getNewArrayDim();
-			String[] newArrayTypes 	= cr.getNewArrayTypes();
+			Map<ArrayCreation, Long> newArrayCounts = cr.getArrayCreationCounts();
 			
-			if(newArrayCounts != null 
-				&& newArrayDims != null 
-				&& newArrayTypes != null) {
+			if(newArrayCounts != null) {
 				int numberOfColumns_arr = 3;
-				int numberOfRows_arr = newArrayCounts.length;
+				int numberOfRows_arr = newArrayCounts.size();
 				List<String> columnTitles_arr = new ArrayList<String>();
 				columnTitles_arr.add("Type");//"\"Type\"");
 				columnTitles_arr.add("Dimension");//"\"Dimension\"");
@@ -454,10 +453,10 @@ public class CountingResultCSVWriter implements ICountingResultWriter {
 				columns_arr.add(countsColumn_arr);
 				
 				//TODO check if aggregated...
-				for(int i = 0; i < newArrayCounts.length; i++) {
-					typesColumn_arr.add(newArrayTypes[i]);
-					dimColumn_arr.add(newArrayDims[i]);
-					countsColumn_arr.add(newArrayCounts[i]);//hier auch potentiell Ueberlauf
+				for(Entry<ArrayCreation, Long> e : newArrayCounts.entrySet()) {
+					typesColumn_arr.add(e.getKey().getTypeDesc());
+					dimColumn_arr.add(e.getKey().getNumberOfDimensions());
+					countsColumn_arr.add(e.getValue());//hier auch potentiell Ueberlauf
 //					log.info("SKIPPED new array of type '" + newArrayTypes[i] + "'" 
 //							+ (newArrayDims[i] > 0 ? ", dim " + newArrayDims[i] : "")
 //							+ ": " + newArrayCounts[i]);

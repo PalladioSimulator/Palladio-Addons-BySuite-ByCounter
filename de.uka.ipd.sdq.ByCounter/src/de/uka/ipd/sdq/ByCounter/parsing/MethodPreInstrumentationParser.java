@@ -3,6 +3,7 @@ package de.uka.ipd.sdq.ByCounter.parsing;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -20,7 +21,6 @@ import org.objectweb.asm.tree.MultiANewArrayInsnNode;
 import org.objectweb.asm.tree.TryCatchBlockNode;
 import org.objectweb.asm.tree.TypeInsnNode;
 
-import de.uka.ipd.sdq.ByCounter.instrumentation.AdditionalOpcodeInformation;
 import de.uka.ipd.sdq.ByCounter.instrumentation.BlockCountingMode;
 import de.uka.ipd.sdq.ByCounter.instrumentation.IInstructionAnalyser;
 import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentationParameters;
@@ -41,8 +41,6 @@ import de.uka.ipd.sdq.ByCounter.utils.MethodDescriptor;
  * @version 1.2
  */
 public final class MethodPreInstrumentationParser extends MethodAdapter {
-		
-	private AdditionalOpcodeInformation additionalOpcInfo = null;
 	
 	/** User specified parameters */
 	private InstrumentationParameters instrumentationParameters;
@@ -73,6 +71,9 @@ public final class MethodPreInstrumentationParser extends MethodAdapter {
 	/** Intermediate results of the instrumentation. */
 	private InstrumentationState instrumentationState;
 
+	/** The currently analysed method. */
+	private MethodDescriptor method;
+
 	/**
 	 * @param access As from ClassVisitor.
 	 * @param name As from ClassVisitor.
@@ -95,10 +96,10 @@ public final class MethodPreInstrumentationParser extends MethodAdapter {
 		super(new MethodNode(access, name, desc, null, null));
 		this.log = Logger.getLogger(this.getClass().getCanonicalName());
 		this.nextVisitor = mv;
-		this.additionalOpcInfo = new AdditionalOpcodeInformation();
 		this.methodCountMethodAdapter = methodCountMethodAdapter;
 		this.instrumentationParameters = parameters;
 		this.instrumentationState = state;
+		this.method = method;
 		this.hasRangeBlocks = (method.getCodeAreasToInstrument() != null
 						&& method.getCodeAreasToInstrument().length != 0);
 		
@@ -141,20 +142,6 @@ public final class MethodPreInstrumentationParser extends MethodAdapter {
 	}
 
 	/**
-	 * Get the list containing all method signatures that were called in the 
-	 * visited method.
-	 * @return A map containing method signatures as keys in the form 
-	 * <code>owner + "." + name + desc</code>. Signatures are specific to 
-	 * the object they are invoked on. This means that a certain methods 
-	 * may be more than once in the array. However, their signatures differ, 
-	 * as the owner property differs.
-	 * @see MethodDescriptor#getCanonicalMethodName()
-	 */
-	public AdditionalOpcodeInformation getAdditionalOpcodeInformation() {
-		return this.additionalOpcInfo;
-	}
-
-	/**
 	 * Visiting the end of the method allows to collect the needed method 
 	 * invocation information.
 	 */
@@ -168,7 +155,12 @@ public final class MethodPreInstrumentationParser extends MethodAdapter {
 			this.labelAfterInvokeAnalyser.postAnalysisEvent(mn.instructions);
 		}
 		
-		{			
+		{
+			this.instrumentationState.getMethodInvocations().put(
+					method.getCanonicalMethodName(), 
+					new LinkedList<String>());
+			this.instrumentationState.getInstrumentationContext().getArrayCreations().put(
+					this.method.getCanonicalMethodName(), new LinkedList<ArrayCreation>());
 			Iterator<AbstractInsnNode> iterator = mn.instructions.iterator();
 			while(iterator.hasNext()) {
 				AbstractInsnNode insn = iterator.next();
@@ -208,10 +200,6 @@ public final class MethodPreInstrumentationParser extends MethodAdapter {
 			analyser.postAnalysisEvent(mn.instructions);
 		}
 		
-		// pass the gathered information to the methodCountMethodAdapter
-		this.methodCountMethodAdapter.setMethodInvocations(this.additionalOpcInfo);
-
-		
 		// check whether the method is marked as instrumented.
 		checkMethodMarkedAsInstrumented();
 
@@ -231,11 +219,18 @@ public final class MethodPreInstrumentationParser extends MethodAdapter {
 			MethodInsnNode method = ((MethodInsnNode)insn);
 			String sig = MethodDescriptor._constructMethodDescriptorFromASM(
 					method.owner, method.name, method.desc).getCanonicalMethodName();
-			if(!this.additionalOpcInfo.getMethodInvokations().contains(sig)) {
-				this.additionalOpcInfo.getMethodInvokations().add(sig);
+			List<String> methodInvocations = this.instrumentationState.getMethodInvocations().get(this.method.getCanonicalMethodName());
+			if(!methodInvocations.contains(sig)) {
+				methodInvocations.add(sig);
 			}
 		} else if(this.instrumentationParameters.getUseArrayParameterRecording()) { 
-			analyseForArrayParameterRecording(insn);
+			ArrayCreation arrayCreation = analyseForArrayParameterRecording(insn);
+			if(arrayCreation != null) {
+				List<ArrayCreation> arrayCreations = this.instrumentationState.getInstrumentationContext().getArrayCreations().get(this.method.getCanonicalMethodName());
+				if(!arrayCreations.contains(arrayCreation)) {
+					arrayCreations.add(arrayCreation);
+				}
+			}
 		}
 
 		for(IInstructionAnalyser analyser : this.instructionAnalysers) {
@@ -245,45 +240,33 @@ public final class MethodPreInstrumentationParser extends MethodAdapter {
 	
 
 
-	/**
-	 * 
+	/** 
 	 * @param insn Instruction to analyse.
+	 * @return An instance of {@link ArrayCreation} if the given instruction 
+	 * creates an array. Else null.
 	 */
-	private void analyseForArrayParameterRecording(final AbstractInsnNode insn) {
+	private ArrayCreation analyseForArrayParameterRecording(final AbstractInsnNode insn) {
+		ArrayCreation arrayCreation = new ArrayCreation();
 		if(insn instanceof IntInsnNode 
 				&& insn.getOpcode() == Opcodes.NEWARRAY) {
 			// get the type integer for the newarray call
 			IntInsnNode node = ((IntInsnNode)insn);
-			// since the integer contains the type, duplicates are not wanted.
-			if(this.additionalOpcInfo.getIndexOfAdditionInformation(
-					node.operand, 
-					AdditionalOpcodeInformation.NO_INFORMATION_STRING) == -1) {
-				// add the entry
-				this.additionalOpcInfo.addAdditionalInformation(node.operand,
-						AdditionalOpcodeInformation.NO_INFORMATION_STRING);
-			}
+			arrayCreation.setTypeOpcode(node.operand);
+			return arrayCreation;
 		} else if(insn instanceof TypeInsnNode 
 				&& insn.getOpcode() == Opcodes.ANEWARRAY) {
 			// get the type string for the anewarray call
 			TypeInsnNode node = ((TypeInsnNode)insn);
-			if(this.additionalOpcInfo.getIndexOfAdditionInformation(
-					AdditionalOpcodeInformation.NO_INFORMATION_INT, 
-					node.desc) == -1) {
-				this.additionalOpcInfo.addAdditionalInformation(
-						AdditionalOpcodeInformation.NO_INFORMATION_INT,
-						node.desc);
-			}
+			arrayCreation.setTypeDesc(node.desc);
+			return arrayCreation;
 		} else if(insn instanceof MultiANewArrayInsnNode) {
 			// get the type string and dimension integer
 			MultiANewArrayInsnNode node = ((MultiANewArrayInsnNode)insn);
-			if(this.additionalOpcInfo.getIndexOfAdditionInformation(
-					node.dims, 
-					node.desc) == -1) {
-				this.additionalOpcInfo.addAdditionalInformation(
-						node.dims,
-						node.desc);
-			}
+			arrayCreation.setTypeDesc(node.desc);
+			arrayCreation.setNumberOfDimensions(node.dims);
+			return arrayCreation;
 		}
+		return null;
 	}
 
 

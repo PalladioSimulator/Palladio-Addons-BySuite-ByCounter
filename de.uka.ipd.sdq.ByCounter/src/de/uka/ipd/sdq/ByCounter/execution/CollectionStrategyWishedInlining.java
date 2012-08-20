@@ -4,6 +4,7 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.UUID;
 
+import de.uka.ipd.sdq.ByCounter.parsing.ArrayCreation;
 import de.uka.ipd.sdq.ByCounter.results.CountingResult;
 import de.uka.ipd.sdq.ByCounter.results.ResultCollection;
 
@@ -51,9 +52,7 @@ public class CollectionStrategyWishedInlining extends
 		this.inlined_countingResult.setMethodReportingTime(0L); //reporting time TODO use a Date-like class for this...
 		this.inlined_countingResult.setOpcodeCounts(new long[CountingResultBase.MAX_OPCODE]);//opcode counts
 		this.inlined_countingResult.overwriteMethodCallCounts(new TreeMap<String, Long>());
-		this.inlined_countingResult.setArrayCreationCounts(new long[]{});
-		this.inlined_countingResult.setArrayCreationDimensions(new int[]{});
-		this.inlined_countingResult.setArrayCreationTypeInfo(new String[]{});
+		this.inlined_countingResult.setArrayCreationCounts(new TreeMap<ArrayCreation, Long>());
 		this.inlined_methodsMap = new TreeMap<String, Integer>();
 	}
 	
