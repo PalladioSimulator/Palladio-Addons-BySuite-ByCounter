@@ -15,6 +15,7 @@ import org.junit.runners.Parameterized;
 import de.uka.ipd.sdq.ByCounter.execution.ActiveSection;
 import de.uka.ipd.sdq.ByCounter.execution.BytecodeCounter;
 import de.uka.ipd.sdq.ByCounter.execution.CountingResultCollector;
+import de.uka.ipd.sdq.ByCounter.execution.InvalidQueryException;
 import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentationParameters;
 import de.uka.ipd.sdq.ByCounter.parsing.LineNumberRange;
 import de.uka.ipd.sdq.ByCounter.test.helpers.StatefulRunnable;
@@ -109,9 +110,11 @@ public class TestQueryUpdates extends AbstractByCounterTest {
      * active sections.
      * @throws InterruptedException Can be thrown when trying to join the 
      * querying thread.
+     * @throws InvalidQueryException Can be thrown when querying of the active
+     * section was not supported. 
      */
     @Test
-    public void testActiveSectionQuerying() throws InterruptedException {
+    public void testActiveSectionQuerying() throws InterruptedException, InvalidQueryException {
     	// section 1
         LineNumberRange rangeS1 = new LineNumberRange(32, 34);
         // section 2
