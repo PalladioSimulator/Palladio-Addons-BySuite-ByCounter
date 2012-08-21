@@ -31,6 +31,10 @@ public class ExecutionSettings implements Cloneable {
 	/** Default value for {@link #getParentClassLoader()}. */
 	public static final InstrumentationClassLoader PARENT_CLASS_LOADER_DEFAULT = null;
 
+	/** Default value for {@link #getWaitForThreadsToFinnish()}. */
+	private static final boolean WAIT_FOR_THREADS_TO_FINNISH_DEFAULT = true;
+
+
 	/**
 	 * Classes defined as internal when using recursive result retrieval.
 	 * 
@@ -58,6 +62,11 @@ public class ExecutionSettings implements Cloneable {
 	private ClassLoader parentClassLoader;
 
 	/**
+	 * @see #getWaitForThreadsToFinnish()
+	 */
+	private boolean waitForThreadsToFinnish;
+
+	/**
 	 * Construct {@link ExecutionSettings} by setting every field to it's 
 	 * default value. 
 	 */
@@ -66,6 +75,7 @@ public class ExecutionSettings implements Cloneable {
 		this.internalClassesDefinition = INTERNAL_CLASSES_DEFINITION_DEFAULT;
 		this.addUpResultsRecursively = ADD_UP_RESULTS_RECURSIVELY_DEFAULT;
 		this.setParentClassLoader(PARENT_CLASS_LOADER_DEFAULT);
+		this.waitForThreadsToFinnish = WAIT_FOR_THREADS_TO_FINNISH_DEFAULT;
 	}
 	
 	/* (non-Javadoc)
@@ -85,6 +95,8 @@ public class ExecutionSettings implements Cloneable {
 		copy.internalClassesDefinition = this.internalClassesDefinition;
 		copy.countingResultCollectorMode = this.countingResultCollectorMode;
 		copy.parentClassLoader = this.parentClassLoader;
+		copy.addUpResultsRecursively = this.addUpResultsRecursively;
+		copy.waitForThreadsToFinnish = this.waitForThreadsToFinnish;
 		
 		return copy;
 	}
@@ -216,5 +228,25 @@ public class ExecutionSettings implements Cloneable {
 	 */
 	public ClassLoader getParentClassLoader() {
 		return parentClassLoader;
+	}
+
+	/**
+	 * @return When true, 
+	 * {@link BytecodeCounter#execute(de.uka.ipd.sdq.ByCounter.utils.MethodDescriptor, Object, Object[])}
+	 * waits for all threads from instrumented methods to finish before 
+	 * returning.
+	 */
+	public boolean getWaitForThreadsToFinnish() {
+		return this.waitForThreadsToFinnish;
+	}
+	
+	/**
+	 * @param waitForThreadsToFinnish When true, 
+	 * {@link BytecodeCounter#execute(de.uka.ipd.sdq.ByCounter.utils.MethodDescriptor, Object, Object[])}
+	 * waits for all threads from instrumented methods to finish before 
+	 * returning.
+	 */
+	public void setWaitForThreadsToFinnish(boolean waitForThreadsToFinnish) {
+		this.waitForThreadsToFinnish = waitForThreadsToFinnish;
 	}
 }

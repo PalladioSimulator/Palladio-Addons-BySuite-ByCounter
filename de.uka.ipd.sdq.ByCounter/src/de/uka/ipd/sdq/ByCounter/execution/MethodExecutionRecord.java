@@ -22,7 +22,7 @@ public class MethodExecutionRecord {
 	/**
 	 * Execution parameters for the executed methods ({@link #methodsCalled}.
 	 */
-	public List<RuntimeMethodParameters> methodCallParams;
+	public List<Object[]> methodCallParams;
 	
 	/** Settings of the execution */
 	public ExecutionSettings executionSettings;

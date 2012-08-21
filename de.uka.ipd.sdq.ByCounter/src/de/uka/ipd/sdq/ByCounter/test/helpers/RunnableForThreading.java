@@ -17,6 +17,11 @@ public class RunnableForThreading implements Runnable {
 	 */
 	static Random random = new Random(System.currentTimeMillis());
 	
+	/**
+	 * Minimum sleep time for {@link #run()} in milliseconds.
+	 */
+	public long baseSleepTime = 0;
+	
 
 	@Override
 	public void run() {
@@ -25,7 +30,7 @@ public class RunnableForThreading implements Runnable {
 				+ "; Name: " + currentThread.getName();
 		log.info("Runnable called: " + id);
 		try {
-			Thread.sleep(Math.abs(random.nextLong()) % 1000);
+			Thread.sleep(baseSleepTime + Math.abs(random.nextLong()) % 1000);
 		} catch (InterruptedException e) {
 			throw new RuntimeException(e);
 		}

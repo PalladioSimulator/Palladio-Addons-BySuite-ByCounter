@@ -56,7 +56,7 @@ public final class MethodInvocationHelper {
 			Class<? extends Object> clazz,
 			Object parentObject, 
 			List<MethodDescriptor> methodsToCall, 
-			List<RuntimeMethodParameters> params) {
+			List<Object[]> params) {
 		InvocationResultData invocationResult = new InvocationResultData();
 		log.fine("Calling methods "+methodsToCall+
 				"\n\t\t on object instance "+parentObject+" " +
@@ -66,14 +66,14 @@ public final class MethodInvocationHelper {
 			
 			// assure that params is correct
 			if(params == null) {
-				params = new ArrayList<RuntimeMethodParameters>(methodsToCall.size());
+				params = new ArrayList<Object[]>(methodsToCall.size());
 			} else if (params.size() < methodsToCall.size()){
 				log.warning("Warning: callMethods called with less " +
 						"parameterlists than methods. " +
 						"Assuming no parameters for those methods.");
 				// fill up the list
 				for(int i = params.size(); i < methodsToCall.size(); i++) {
-					params.add(new RuntimeMethodParameters());
+					params.add(new Object[0]);
 				}
 			}
 			
@@ -99,7 +99,7 @@ public final class MethodInvocationHelper {
 							// constructor found: invoke it and break the loop
 							long startMethod = System.nanoTime();
 							log.fine("Invoking method "+c.getName());
-							invocationResult.returnValue = c.newInstance(params.get(i).getParameters());
+							invocationResult.returnValue = c.newInstance(params.get(i));
 							long stopMethod = System.nanoTime();
 							invocationResult.duration = stopMethod - startMethod;
 							log.info("MethodInvocationHelper: Calling method "+c.getName()+" over reflection. Duration: "+ invocationResult.duration +" ns");
@@ -117,7 +117,7 @@ public final class MethodInvocationHelper {
 							long startMethod = System.nanoTime();
 							log.fine("Invoking method "+m.getName());
 							try {
-								invocationResult.returnValue = m.invoke(parentObject, params.get(i).getParameters());
+								invocationResult.returnValue = m.invoke(parentObject, params.get(i));
 							} catch(InvocationTargetException ei) {
 								log.severe("Invocation error while trying to execute method.");
 								if(ei.getCause().getClass() == StackOverflowError.class) {

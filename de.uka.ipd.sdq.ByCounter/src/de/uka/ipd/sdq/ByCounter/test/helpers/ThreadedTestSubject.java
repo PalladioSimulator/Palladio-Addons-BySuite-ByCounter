@@ -63,4 +63,15 @@ public class ThreadedTestSubject {
 		es.execute(new RunnableForThreading());
 		// TODO: extend me
 	}
+	
+	/**
+	 * Spawns a thread but does not join.
+	 * @param sleepBase Minimum time the thread sleeps before returning.
+	 */
+	public void runThreadsNoJoin(long sleepBase) {
+		RunnableForThreading runnableForThreading = new RunnableForThreading();
+		runnableForThreading.baseSleepTime = sleepBase;
+		Thread tRand = new Thread(runnableForThreading);
+		tRand.start();
+	}
 }

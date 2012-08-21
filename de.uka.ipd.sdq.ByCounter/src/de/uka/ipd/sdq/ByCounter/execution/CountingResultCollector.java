@@ -54,6 +54,12 @@ public final class CountingResultCollector extends Observable implements ICollec
 	public static final String SIGNATURE_protocolSectionActive = "(Ljava/lang/String;I)V";
 
 	/**
+	 * The bytecode parameter descriptor for 
+	 * {@link #protocolSpawnedThread(Thread)}.
+	 */
+	public static final String SIGNATURE_protocolSpawnedThread = "(Ljava/lang/Thread;)V";
+
+	/**
 	 * Public singleton accessor. Use this to get a reference
 	 * to the singleton instance.
 	 * @return The singleton instance of {@link CountingResultCollector}.
@@ -103,6 +109,9 @@ public final class CountingResultCollector extends Observable implements ICollec
 
 	/** Inlining result collection strategy for methods requesting inlining. */
 	private AbstractCollectionStrategy inliningStrategyWished;
+	
+	/** Spawned threads as reported from instrumented methods. */
+	private List<Thread> spawnedThreads;
 
 	/** Default result collection Strategy */
 	private AbstractCollectionStrategy strategyDefault;
@@ -133,16 +142,20 @@ public final class CountingResultCollector extends Observable implements ICollec
 		this.collectionStrategies.add(this.inliningStrategyWished);
 		this.collectionStrategies.add(this.inliningStrategyForced);
 		this.activeSection = null;
+		this.spawnedThreads = new LinkedList<Thread>();
 	}
 
 	/**
 	 * Clear all results in the internal list.
+	 * Also resets the currently active section of execution and
+	 * the list of threads spawned from instrumented code.
 	 */
 	public synchronized void clearResults() {
 		for(ICollectionStrategy s : this.collectionStrategies) {
 			s.clearResults();
 		}
 		this.activeSection = null;
+		this.spawnedThreads.clear();
 	}
 
 	/**
@@ -155,6 +168,7 @@ public final class CountingResultCollector extends Observable implements ICollec
 
 	/** 
 	 * @see BytecodeCounter#setExecutionSettings(ExecutionSettings)
+	 * @see CountingResultCollectorMode
 	 * @returnCurrent Counting mode.
 	 */
 	public CountingResultCollectorMode getMode() {
@@ -173,6 +187,24 @@ public final class CountingResultCollector extends Observable implements ICollec
 	 */
 	public void monitorShouldStop() {
 		this.setMonitorShouldStop(true);
+	}
+	
+	/**
+	 * Join with all threads that were spawned from instrumented methods.
+	 * Instrumented methods register spawned threads with 
+	 * {@link #protocolSpawnedThread(Thread)}.
+	 * <p>
+	 * After successfully joining all threads, the threads are removed from the
+	 * internal list of spawned threads.
+	 * </p>
+	 * @throws InterruptedException Thrown when {@link Thread#join()} was 
+	 * interrupted.
+	 */
+	public void joinSpawnedThreads() throws InterruptedException {
+		for(Thread t : this.spawnedThreads) {
+			t.join();
+		}
+		this.spawnedThreads.clear();
 	}
 	
 	/**
@@ -245,6 +277,14 @@ public final class CountingResultCollector extends Observable implements ICollec
 			this.activeSection.qualifyingMethodName = qualifyingMethodName;
 			this.activeSection.sectionId = sectionId;
 		}
+	}
+	
+	/**
+	 * Called by an instrumented method if a {@link Thread} is spawned.
+	 * @param thread Thread object for a started thread.
+	 */
+	public void protocolSpawnedThread(final Thread thread) {
+		this.spawnedThreads.add(thread);
 	}
 	
 	/**

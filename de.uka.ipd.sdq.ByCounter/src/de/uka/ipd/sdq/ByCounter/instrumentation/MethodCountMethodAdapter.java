@@ -56,7 +56,7 @@ import de.uka.ipd.sdq.ByCounter.utils.MethodDescriptor;
  * @since 0.1
  * @version 1.2
  */
-public final class MethodCountMethodAdapter extends MethodAdapter {	// evil implements instead of static import
+public final class MethodCountMethodAdapter extends MethodAdapter {
 	
 	/**
 	 * Statistical counter.
@@ -228,6 +228,11 @@ public final class MethodCountMethodAdapter extends MethodAdapter {	// evil impl
 	 * locate thread spawns.
 	 */
 	private int currentActiveSectionVar;
+
+	/**
+	 * Variable used to temporarily hold a {@link Thread} object.
+	 */
+	private int tmpThreadVar;
 
 	
 	/**
@@ -867,6 +872,21 @@ public final class MethodCountMethodAdapter extends MethodAdapter {	// evil impl
 	}
 
 	protected void insertCountThreadStart() {
+		if(this.instrumentationParameters.getProvideJoinThreadsAbility()) {
+			mv.visitInsn(Opcodes.DUP);	// dup the thread variable
+			// get CRC instance
+			mv.visitVarInsn(Opcodes.ASTORE, this.tmpThreadVar); // save it to a tmp var
+			mv.visitMethodInsn(Opcodes.INVOKESTATIC, 
+					COUNTINGRESULTCOLLECTOR_CANONICALNAME_DESCRIPTOR, 
+					"getInstance", 
+					"()Lde/uka/ipd/sdq/ByCounter/execution/CountingResultCollector;");
+			// call protocolSpawnedThread()
+			mv.visitVarInsn(Opcodes.ALOAD, this.tmpThreadVar);
+			mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL, 
+					COUNTINGRESULTCOLLECTOR_CANONICALNAME_DESCRIPTOR, 
+					"protocolSpawnedThread", 
+					CountingResultCollector.SIGNATURE_protocolSpawnedThread);
+		}
 		mv.visitInsn(Opcodes.DUP);	// dup the thread variable
 		// save thread id
 		mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "java/lang/Thread", "getId", "()J"); //2
@@ -1031,6 +1051,9 @@ public final class MethodCountMethodAdapter extends MethodAdapter {	// evil impl
 		this.threadSpawnArrayListVar = initialiseArrayList();
 		this.threadIdVar = this.lVarManager.getNewLongVar(this.mv);
 		this.currentActiveSectionVar = this.lVarManager.getNewLongVar(this.mv);
+		if(this.instrumentationParameters.getProvideJoinThreadsAbility()) {
+			this.tmpThreadVar = this.lVarManager.getNewVarFor(mv, Type.getType(Thread.class), 1);
+		}
 		
 		if(this.instrumentationParameters.getUseArrayParameterRecording()) {
 			initialiseArrayCounters();

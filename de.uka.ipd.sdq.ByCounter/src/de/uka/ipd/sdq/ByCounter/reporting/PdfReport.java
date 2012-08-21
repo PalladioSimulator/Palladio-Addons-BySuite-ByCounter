@@ -124,7 +124,7 @@ public class PdfReport implements ICountingResultWriter {
 		for(int i = 0; i < numExecutedMethods; i++) {
 			Paragraph p1 = new Paragraph();
 			p1.add(new Paragraph(methodExecution.methodsCalled.get(i).getCanonicalMethodName()));
-			p1.add(new Paragraph("Parameters: " + Arrays.toString(methodExecution.methodCallParams.get(i).getParameters())));
+			p1.add(new Paragraph("Parameters: " + Arrays.toString(methodExecution.methodCallParams.get(i))));
 			list.add(new ListItem(p1));
 		}
 		p.add(list);

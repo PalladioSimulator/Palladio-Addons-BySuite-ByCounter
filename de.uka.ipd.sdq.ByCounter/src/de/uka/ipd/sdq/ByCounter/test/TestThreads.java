@@ -6,6 +6,8 @@ import java.util.Queue;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import junit.framework.Assert;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -105,7 +107,7 @@ public class TestThreads extends AbstractByCounterTest {
      */
     private SectionExpectation createExpectationsRunnableFTRun() {
     	return new SectionExpectation().add(Opcodes.LDC, 5)
-        .add(Opcodes.ALOAD, 4)
+        .add(Opcodes.ALOAD, 5)
         .add(Opcodes.ASTORE, 2)
         .add(Opcodes.DUP, 3)
         .add(Opcodes.LREM, 1)
@@ -116,6 +118,8 @@ public class TestThreads extends AbstractByCounterTest {
         .add(Opcodes.INVOKESPECIAL, 3)
         .add(Opcodes.INVOKESTATIC, 3)
         .add(Opcodes.NEW, 3)
+        .add(Opcodes.LADD, 1)
+        .add(Opcodes.GETFIELD, 1)
         .add("java.lang.Math", "public long abs(long l)", 1)
 //        .add("java.lang.RuntimeException", "public void RuntimeException(java.lang.Throwable t)", 0) // This exception is part of the method, but never thrown. ExpectationsFramework does however not permit expectation 0 at this point.
         .add("java.lang.StringBuilder", "public StringBuilder(java.lang.String s)", 3)
@@ -169,6 +173,76 @@ public class TestThreads extends AbstractByCounterTest {
         for (CountingResult r : results) {
         	r.logResult(false, true);
         }
+    }
+    
+    /**
+     * Test ByCounters ability to wait for spawned threads to finish. 
+     * @throws InterruptedException 
+     */
+    @Test
+    public void testJoinThreads() throws InterruptedException {
+    	// initialize ByCounter
+		BytecodeCounter counter = setupByCounter();
+		counter.getInstrumentationParams().setProvideJoinThreadsAbility(true);
+		MethodDescriptor runThreadsNoJoinMD = new MethodDescriptor(
+				ThreadedTestSubject.class.getCanonicalName(), 
+				"public void runThreadsNoJoin(long sleepBase)");
+		counter.instrument(runThreadsNoJoinMD);
+		counter.instrument(methodRunnableForThreadingRun);
+		
+        // define expectations
+        Expectation e = new Expectation(true);
+        e.add(0)
+        .add(Opcodes.LLOAD, 1)
+        .add(Opcodes.ALOAD, 3)
+        .add(Opcodes.ASTORE, 2)
+        .add(Opcodes.DUP, 2)
+        .add(Opcodes.RETURN, 1)
+        .add(Opcodes.PUTFIELD, 1)
+        .add(Opcodes.INVOKEVIRTUAL, 1)
+        .add(Opcodes.INVOKESPECIAL, 2)
+        .add(Opcodes.NEW, 2)
+        .add(RunnableForThreading.class.getCanonicalName(), "public RunnableForThreading()", 1)
+        .add(Thread.class.getCanonicalName(), "public Thread(java.lang.Runnable r)", 1)
+        .add(Thread.class.getCanonicalName(), "public void start()", 1)
+        .addParallel(this.createExpectationsRunnableFTRun());
+        ;
+		
+		counter.getExecutionSettings().setWaitForThreadsToFinnish(false);
+		long sleepTime = 0;
+		Object[] executionParameters;
+		long t;
+		// make sure the execute call executes faster than the spawned thread
+		// if joining does not work
+		do {
+			CountingResultCollector.getInstance().clearResults();
+			sleepTime += 1000;
+			executionParameters = new Object[] {sleepTime};
+			t = System.currentTimeMillis();
+			counter.execute(runThreadsNoJoinMD, executionParameters);
+			t = Math.abs(t - System.currentTimeMillis());
+		} while(t > sleepTime);
+		CountingResultCollector.getInstance().joinSpawnedThreads();
+
+        // compare results
+        SortedSet<CountingResult> countingResults = CountingResultCollector.getInstance().retrieveAllCountingResults().getCountingResults();
+        removeMethodCallsWithFrequency0(countingResults);
+        CountingResult[] results = countingResults.toArray(new CountingResult[0]);
+        e.compare(results);
+
+		CountingResultCollector.getInstance().clearResults();
+		counter.getExecutionSettings().setWaitForThreadsToFinnish(true);
+		t = System.currentTimeMillis();
+		counter.execute(runThreadsNoJoinMD, executionParameters);
+		t = Math.abs(t - System.currentTimeMillis());
+		Assert.assertTrue("Counter.execute must not return before spawned threads finished.", 
+				t > sleepTime);
+		
+        // compare results
+        countingResults = CountingResultCollector.getInstance().retrieveAllCountingResults().getCountingResults();
+        removeMethodCallsWithFrequency0(countingResults);
+        results = countingResults.toArray(new CountingResult[0]);
+        e.compare(results);
     }
     
     /**

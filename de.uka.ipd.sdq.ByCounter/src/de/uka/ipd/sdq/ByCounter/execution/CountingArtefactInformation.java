@@ -32,7 +32,7 @@ implements Comparable<CountingArtefactInformation>{
 	/**
 	 * Input parameters used for counting
 	 */
-	private List<RuntimeMethodParameters> inputPrms;
+	private List<Object[]> inputPrms;
 	
 	/**
 	 * TODO {@link CountingArtefactInformation} always corresponds to an instrumented class/method, or not?
@@ -54,7 +54,7 @@ implements Comparable<CountingArtefactInformation>{
      * TODO what if several methods executed? 
      * or, then, one artefact information per executed method? 
      */
-    private List<RuntimeMethodParameters> outputPrms;
+    private List<Object[]> outputPrms;
     
     /**
      * The timestamp (from System.nanoTime()) when the method 
@@ -90,9 +90,9 @@ implements Comparable<CountingArtefactInformation>{
     		CountingResultIndexing indexing,
 			String methodName,
 			Long invocationReceivedTime,
-			List<RuntimeMethodParameters> inputPrms,
+			List<Object[]> inputPrms,
 			Long resultsReceivedByCollectorTime,
-			List<RuntimeMethodParameters> outputPrms){
+			List<Object[]> outputPrms){
 		this(indexing);
 //		this.exitingTime = null;//field removed
 		this.inputPrms = inputPrms;
@@ -141,7 +141,7 @@ implements Comparable<CountingArtefactInformation>{
 	/**Simple getter
 	 * @return inputPrms
 	 */
-	public List<RuntimeMethodParameters> getInputPrms() {
+	public List<Object[]> getInputPrms() {
 		return this.inputPrms;
 	}
 
@@ -162,7 +162,7 @@ implements Comparable<CountingArtefactInformation>{
 	/**Simple getter
 	 * @return outputPrms
 	 */
-	public List<RuntimeMethodParameters> getOutputPrms() {
+	public List<Object[]> getOutputPrms() {
 		return this.outputPrms;
 	}
 
@@ -204,7 +204,7 @@ implements Comparable<CountingArtefactInformation>{
 	/** Simple setter
 	 * @param inputPrms to be set
 	 */
-	public void setInputPrms(List<RuntimeMethodParameters> inputPrms) {
+	public void setInputPrms(List<Object[]> inputPrms) {
 		this.inputPrms = inputPrms;
 	}
 
@@ -232,7 +232,7 @@ implements Comparable<CountingArtefactInformation>{
 	/** Simple setter
 	 * @param outputPrms to be set
 	 */
-	public void setOutputPrms(List<RuntimeMethodParameters> outputPrms) {
+	public void setOutputPrms(List<Object[]> outputPrms) {
 		this.outputPrms = outputPrms;
 	}
 

@@ -166,51 +166,18 @@ public final class BytecodeCounter {
 	
 	/**
 	 * Execute the method specified by methodToExecute using the given parameters.
-	 * Every time you call execute on a non-static method, the containing class 
-	 * will be instantiated by ByCounter.
+	 * Static methods can be executed with parameter target equals {@code null}. 
 	 * @param methodToExecute A {@link MethodDescriptor} describing the 
 	 * specific method that shall be executed.
-	 * @param params Parameters as an array of Objects that are 
-	 * used to execute the method specified by methodToExecute. Use an empty 
-	 * array for methods that take no parameters. 
-	 * @return Result and duration of execution.
-	 */
-	public synchronized InvocationResultData execute(MethodDescriptor methodToExecute, Object[] params) {
-		int[] conversions = {};
-		RuntimeMethodParameters rtParams = new RuntimeMethodParameters(params, conversions);
-		return this.execute(methodToExecute, rtParams);
-	}
-
-	/**
-	 * Execute the method specified by methodToExecute using the given parameters on the given instance.
-	 * @param methodToExecute A {@link MethodDescriptor} describing the 
-	 * specific method that shall be executed.
-	 * @param params Parameters as an array of Objects that are 
-	 * used to execute the method specified by methodToExecute. Use an empty 
-	 * array for methods that take no parameters. 
-	 * @return Result and duration of execution.
-	 */
-	public synchronized InvocationResultData execute(MethodDescriptor methodToExecute, Object target, Object[] params) {
-		int[] conversions = {};
-		RuntimeMethodParameters rtParams = new RuntimeMethodParameters(params, conversions);
-		return this.execute(methodToExecute, target, rtParams);
-	}
-
-	/**
-	 * Execute the method specified by methodToExecute using the given parameters.
-	 * Every time you call execute on a non-static method, the containing class 
-	 * will be instantiated by ByCounter.
-	 * @param methodToExecute A {@link MethodDescriptor} describing the 
-	 * specific method that shall be executed.
-	 * @param params Parameters as {@link RuntimeMethodParameters} that are 
-	 * used to execute the method specified by methodToExecute. Use the 
-	 * default constructor of {@link RuntimeMethodParameters} for methods 
-	 * that take no parameters.
+	 * @param params Parameters that are 
+	 * used to execute the method specified by methodToExecute. Use 
+	 * <code>new Object[0]</code> for methods that take no parameters.
 	 * @return Result and duration of execution. 
+	 * @see BytecodeCounter#setExecutionSettings(ExecutionSettings)
 	 */
 	public synchronized InvocationResultData execute(MethodDescriptor methodToExecute, 
-			RuntimeMethodParameters params) {
-		return execute(methodToExecute, instantiate(methodToExecute), params);
+			Object[] params) {
+		return this.execute(methodToExecute, instantiate(methodToExecute), params);
 	}
 	
 	/**
@@ -219,16 +186,16 @@ public final class BytecodeCounter {
 	 * @param methodToExecute A {@link MethodDescriptor} describing the 
 	 * specific method that shall be executed.
 	 * @param target Instance on which the method is executed. 
-	 * @param params Parameters as {@link RuntimeMethodParameters} that are 
-	 * used to execute the method specified by methodToExecute. Use the 
-	 * default constructor of {@link RuntimeMethodParameters} for methods 
-	 * that take no parameters.
+	 * @param params Parameters that are 
+	 * used to execute the method specified by methodToExecute. Use 
+	 * <code>new Object[0]</code> for methods that take no parameters.
 	 * @return Result and duration of execution. 
+	 * @see BytecodeCounter#setExecutionSettings(ExecutionSettings)
 	 */
 	public synchronized InvocationResultData execute(MethodDescriptor methodToExecute, Object target, 
-			RuntimeMethodParameters params) {
+			Object[] params) {
 		int expected = MethodDescriptor.getParametersTypesFromDesc(methodToExecute.getDescriptor()).length;
-		int actual = params.getParameters().length;
+		int actual = params.length;
 		if (expected != actual) {
 			throw new IllegalArgumentException("Wrong number of parameters! expected: " + expected + ", actual: " + actual);
 		}
@@ -237,7 +204,7 @@ public final class BytecodeCounter {
 		// call the method
 		List<MethodDescriptor> methodsToCall = new ArrayList<MethodDescriptor>(1);
 		methodsToCall.add(methodToExecute);
-		List<RuntimeMethodParameters> methodCallParams = new ArrayList<RuntimeMethodParameters>(1);
+		List<Object[]> methodCallParams = new ArrayList<Object[]>(1);
 		methodCallParams.add(params);
 		if(!methodToExecute.getMethodIsStatic() && target==null) {
 			log.severe("objInstance is null");
@@ -269,6 +236,14 @@ public final class BytecodeCounter {
 				target, 
 				methodsToCall, 
 				methodCallParams);
+		if(this.executionSettings.getWaitForThreadsToFinnish()) {
+			// wait for everything to finish before returning
+			try {
+				CountingResultCollector.getInstance().joinSpawnedThreads();
+			} catch (InterruptedException e) {
+				throw new RuntimeException("Could not wait for spawned threads to finish.", e);
+			}
+		}
 		return invocationResult;
 	}
 

@@ -90,7 +90,9 @@ public final class InstrumentationParameters implements Cloneable {
 
 	/** Default value for {@link #getProvideOnlineSectionExecutionUpdates()}. */
 	private static final boolean PROVIDE_ONLINE_SECTION_EXECUTION_UPDATES_DEFAULT = false;
-
+	
+	/** Default value for #{@link #getProvideJoinThreadsAbility()}. */
+	private static final boolean PROVIDE_JOIN_THREADS_ABILITY_DEFAULT = true;
 	
 	/**
 	 * Directory in which result log files are written by default.
@@ -180,6 +182,11 @@ public final class InstrumentationParameters implements Cloneable {
 	 */
 	private boolean recordBlockExecutionOrder;
 	
+	/**
+	 * @see #getProvideJoinThreadsAbility()
+	 */
+	private boolean provideJoinThreadsAbility;
+
 	/**
 	 * @see #getProvideOnlineSectionExecutionUpdates()
 	 */
@@ -287,6 +294,7 @@ public final class InstrumentationParameters implements Cloneable {
 		this.recordBlockExecutionOrder = RECORD_BLOCK_EXECUTION_ORDER_DEFAULT;
 		this.instrumentRecursively = INSTRUMENT_RECURSIVELY_DEFAULT;
 		this.provideOnlineSectionExecutionUpdates = PROVIDE_ONLINE_SECTION_EXECUTION_UPDATES_DEFAULT;
+		this.provideJoinThreadsAbility = PROVIDE_JOIN_THREADS_ABILITY_DEFAULT;
 		this.instrumentationRegions = INSTRUMENTATION_REGIONS_DEFAULT;
 	}
 	
@@ -311,6 +319,8 @@ public final class InstrumentationParameters implements Cloneable {
 		copy.instrumentationScopeOverrideMethodLevel = this.instrumentationScopeOverrideMethodLevel;
 		copy.instrumentRecursively = this.instrumentRecursively;
 		copy.methodsToInstrument = this.methodsToInstrument == null ? null : new LinkedList<MethodDescriptor>(this.methodsToInstrument);
+		copy.provideJoinThreadsAbility = this.provideJoinThreadsAbility;
+		copy.provideOnlineSectionActiveUpdates = this.provideOnlineSectionActiveUpdates;
 		copy.provideOnlineSectionExecutionUpdates = this.provideOnlineSectionExecutionUpdates;
 		copy.rangeBlocks = this.rangeBlocks;
 		copy.recordBlockExecutionOrder = this.recordBlockExecutionOrder;
@@ -511,6 +521,9 @@ public final class InstrumentationParameters implements Cloneable {
 		b.append("instrumentRecursively:              " + this.instrumentRecursively + ", \n");
 		b.append("methodsToInstrument:                " + this.methodsToInstrument + ", \n");
 		b.append("instrumentationRegions:             " + this.instrumentationRegions + ", \n");
+		b.append("provideJoinThreadsAbility:          " + this.provideJoinThreadsAbility + ", \n");
+		b.append("provideOnlineSectionActiveUpdates:  " + this.provideOnlineSectionActiveUpdates + ", \n");
+		b.append("provideOnlineSectionExecutionUpdates:" + this.provideOnlineSectionExecutionUpdates + ", \n");
 		b.append("rangeBlocks:                        " + this.rangeBlocks + ", \n");
 		b.append("recordBlockExecutionOrder:          " + this.recordBlockExecutionOrder + ", \n");
 		b.append("resultLogFileName:                  " + this.resultLogFileName + ", \n");
@@ -700,6 +713,24 @@ public final class InstrumentationParameters implements Cloneable {
 	 */
 	public boolean getRecordBlockExecutionOrder() {
 		return recordBlockExecutionOrder;
+	}
+
+	/**
+	 * @return When true, allows ByCounter to wait for all threads spawned 
+	 * from instrumented methods to complete.
+	 * @see CountingResultCollector#joinSpawnedThreads()
+	 */
+	public boolean getProvideJoinThreadsAbility() {
+		return this.provideJoinThreadsAbility;
+	}
+	
+	/**
+	 * @param provideJoinThreadsAbility When true, allows ByCounter to wait for all threads spawned 
+	 * from instrumented methods to complete.
+	 * @see CountingResultCollector#joinSpawnedThreads()
+	 */
+	public void setProvideJoinThreadsAbility(boolean provideJoinThreadsAbility) {
+		this.provideJoinThreadsAbility = provideJoinThreadsAbility;
 	}
 
 	/**
