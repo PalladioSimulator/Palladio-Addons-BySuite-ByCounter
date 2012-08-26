@@ -16,12 +16,12 @@ import de.fzi.gast.core.corePackage;
 import de.fzi.gast.functions.Method;
 import de.fzi.gast.statements.BlockStatement;
 import de.fzi.gast.statements.Statement;
-import de.fzi.gast.statements.statementsPackage;
 import de.uka.ipd.sdq.ByCounter.parsing.LineNumberRange;
 import de.uka.ipd.sdq.ByCounter.utils.MethodDescriptor;
 import edu.kit.ipd.sdq.bycounter.input.EntityToInstrument;
 import edu.kit.ipd.sdq.bycounter.input.InstrumentedCodeArea;
 import edu.kit.ipd.sdq.bycounter.input.InstrumentedMethod;
+import edu.kit.ipd.sdq.bycounter.input.InstrumentedRegion;
 import edu.kit.ipd.sdq.bycounter.input.util.InputSwitch;
 
 /**Converter for {@link EntityToInstrument} to ByCounter terms.
@@ -43,6 +43,18 @@ public class EntityToInstrumentToByCounterSwitch extends InputSwitch<Boolean> {
 	/**  List of available GAST Root Nodes. */
 	private final LinkedList<Root> availableGastRootNodes;
 
+	/**
+	 * Constructs the entity switch and specifies the data structures that are 
+	 * filled by this class.
+	 * @param methodsToInstrument Initialized {@link List} of 
+	 * {@link MethodDescriptor}s that is filled by this class.
+	 * @param rangeCodeAreaMap The mapping of ByCounter ranges to code areas 
+	 * in the model is constructed by this class.
+	 * @param methodNameInstrumentedMethodMap Mapping of the fully qualified 
+	 * method name to a {@link InstrumentedMethod}. Created by this class.
+	 * @param availableGastRootNodes List of available GAST root nodes that 
+	 * will be extended by this class if new GAST root nodes are encountered.
+	 */
 	public EntityToInstrumentToByCounterSwitch(
 			final List<MethodDescriptor> methodsToInstrument,
 			final Map<LineNumberRange, InstrumentedCodeArea> rangeCodeAreaMap,
@@ -57,7 +69,7 @@ public class EntityToInstrumentToByCounterSwitch extends InputSwitch<Boolean> {
 	@Override
 	public Boolean caseInstrumentedMethod(InstrumentedMethod instrumentedMethod) {
 		addRootNodeToAvailableRootNodes(instrumentedMethod);
-		Method method = instrumentedMethod.getMethod();
+		final Method method = instrumentedMethod.getMethod();
 		MethodDescriptor methodDesc = new MethodDescriptor(
 				method.getSurroundingClass().getQualifiedName(),
 				ByCounterWrapper.constructSignature(method));
@@ -65,6 +77,12 @@ public class EntityToInstrumentToByCounterSwitch extends InputSwitch<Boolean> {
 		methodNameInstrumentedMethodMap.put(
 				methodDesc.getCanonicalMethodName(), instrumentedMethod);
 		return true;
+	}
+	
+	@Override
+	public Boolean caseInstrumentedRegion(InstrumentedRegion object) {
+		// TODO Auto-generated method stub
+		return super.caseInstrumentedRegion(object);
 	}
 	
 	@Override
@@ -133,7 +151,7 @@ public class EntityToInstrumentToByCounterSwitch extends InputSwitch<Boolean> {
 			throw new IllegalArgumentException("The statement ("
 					+ area.getFrom()
 					+ ") linked by getFrom() of the instrumentation area("
-					+ area + ") could not be mapped to a LineNumberRang.");
+					+ area + ") could not be mapped to a LineNumberRange.");
 		} else {
 			firstLine = tempRange.firstLine;
 		}
@@ -142,7 +160,7 @@ public class EntityToInstrumentToByCounterSwitch extends InputSwitch<Boolean> {
 			throw new IllegalArgumentException("The statement ("
 					+ area.getTo()
 					+ ") linked by getTo() of the instrumentation area("
-					+ area + ") could not be mapped to a LineNumberRang.");
+					+ area + ") could not be mapped to a LineNumberRange.");
 		} else {
 			lastLine = tempRange.lastLine;
 		}

@@ -7,45 +7,28 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.SortedSet;
 import java.util.logging.Logger;
 
-import org.eclipse.emf.common.util.EList;
-
-import de.fzi.gast.accesses.DeclarationTypeAccess;
 import de.fzi.gast.core.Root;
-import de.fzi.gast.functions.Constructor;
-import de.fzi.gast.functions.Function;
 import de.fzi.gast.functions.Method;
-import de.fzi.gast.types.GASTClass;
-import de.fzi.gast.types.GASTType;
 import de.fzi.gast.variables.FormalParameter;
 import de.uka.ipd.sdq.ByCounter.execution.BytecodeCounter;
-import de.uka.ipd.sdq.ByCounter.execution.CountingResultBase;
 import de.uka.ipd.sdq.ByCounter.execution.CountingResultCollector;
 import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentationCounterPrecision;
 import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentationParameters;
 import de.uka.ipd.sdq.ByCounter.parsing.LineNumberRange;
 import de.uka.ipd.sdq.ByCounter.results.CountingResult;
-import de.uka.ipd.sdq.ByCounter.utils.ASMOpcodesMapper;
-import de.uka.ipd.sdq.ByCounter.utils.JavaType;
+import de.uka.ipd.sdq.ByCounter.results.RequestResult;
+import de.uka.ipd.sdq.ByCounter.results.ThreadedCountingResult;
 import de.uka.ipd.sdq.ByCounter.utils.JavaTypeEnum;
 import de.uka.ipd.sdq.ByCounter.utils.MethodDescriptor;
-import edu.kit.ipd.sdq.bycounter.input.AggregationType;
 import edu.kit.ipd.sdq.bycounter.input.EntityToInstrument;
 import edu.kit.ipd.sdq.bycounter.input.InstrumentationProfile;
 import edu.kit.ipd.sdq.bycounter.input.InstrumentedCodeArea;
 import edu.kit.ipd.sdq.bycounter.input.InstrumentedMethod;
-import edu.kit.ipd.sdq.bycounter.input.InternalResultStorageType;
-import edu.kit.ipd.sdq.bycounter.output.EnvironmentDescription;
-import edu.kit.ipd.sdq.bycounter.output.FunctionCall;
-import edu.kit.ipd.sdq.bycounter.output.JavaVMCall;
-import edu.kit.ipd.sdq.bycounter.output.MeasurementRun;
-import edu.kit.ipd.sdq.bycounter.output.ObservedEntityExecution;
 import edu.kit.ipd.sdq.bycounter.output.OutputFactory;
-import edu.kit.ipd.sdq.bycounter.output.Request;
-import edu.kit.ipd.sdq.bycounter.output.ResourceDemands;
+import edu.kit.ipd.sdq.bycounter.output.ResultCollection;
 
 /**
  * Control ByCounter using EMF models.
@@ -64,10 +47,6 @@ public class ByCounterWrapper {
 	private BytecodeCounter bycounter;
 	/** Current instrumentation configuration. */
 	private InstrumentationProfile inputModel;
-	/** Mapping of ByCounter ranges to {@link InstrumentedCodeArea}. */
-	private Map<LineNumberRange, InstrumentedCodeArea> rangeCodeAreaMap;
-	/** Mapping of the fully qualified method name to a {@link InstrumentedMethod}. */
-	private Map<String, InstrumentedMethod> methodNameInstrumentedMethodMap;
 	/** List of available GAST Root Nodes. */
 	private final LinkedList<Root> availableGastRootNodes = new LinkedList<Root>();
 	/** A map that maps the string representation of simple java 
@@ -110,14 +89,6 @@ public class ByCounterWrapper {
 		}
 		// create ByCounter instrumentation parameters
 		InstrumentationParameters instrumentationParams = new InstrumentationParameters();
-		if(input.getTemporaryResultsType() == InternalResultStorageType.IN_MEMORY) {
-			// TODO: IN_MEMORY: This seems to be the default method and work correctly. Either remove the TODO or configure ByCounter in a correct way for the case that the default behavior is changed.
-		} else if(input.getTemporaryResultsType() == InternalResultStorageType.ON_HDD) {
-			// TODO: Is ON_HDD supported?
-			throw new IllegalArgumentException("The parameter value ON_HDD for temporaryResultsType is not supported yet.");
-		} else {
-			throw new IllegalArgumentException("The parameter value " + input.getTemporaryResultsType() + " for temporaryResultsType is not supported yet.");
-		}
 		handlePersistInstrumentedClasses(instrumentationParams, input);
 		input.isAggregateInternalCallsTransparently(); // TODO: implement aggregateInterncalCallsTransparently
 		input.getDefinedLogicalSets(); // TODO: implement handling definedLogicalSets
@@ -130,8 +101,6 @@ public class ByCounterWrapper {
 
 		// update instrumentation parameters and instrument
 		this.inputModel = input;
-		this.rangeCodeAreaMap = rangeCodeAreaMap;
-		this.methodNameInstrumentedMethodMap = methodNameInstrumentedMethodMap;
 		this.bycounter.setInstrumentationParams(instrumentationParams);
 		this.bycounter.instrument();
 	}
@@ -249,24 +218,18 @@ public class ByCounterWrapper {
 	 * {@link #execute(Method, Object[])}
 	 * since the last call to this method.
 	 */
-	public MeasurementRun generateResult() {
-		MeasurementRun run = outputFactory.createMeasurementRun();
+	public ResultCollection generateResult() {
+		ResultCollection run = outputFactory.createResultCollection();
+		final de.uka.ipd.sdq.ByCounter.results.ResultCollection resultCollection = 
+				CountingResultCollector.getInstance().retrieveAllCountingResults();
 
-		// TODO @Martin: Why is the input model and not the information in ByCounter used for this distinction?
-		if(this.inputModel.getAggregationType() == AggregationType.OFFLINE) {
-			throw new IllegalArgumentException("AggregationType " + this.inputModel.getAggregationType() + " is not supported.");
-		} else if(inputModel.getAggregationType() == AggregationType.ONLINE) {
-			// do nothing
+		// convert request results
+		final SortedSet<RequestResult> requestResults;
+		requestResults = resultCollection.getRequestResults();
+		for(RequestResult rr : requestResults) {
+			edu.kit.ipd.sdq.bycounter.output.RequestResult req = mapRequestResult(rr);
+			run.getRequestResults().add(req);
 		}
-		// TODO: Enhance by supporting EnvironmentCharacterisation 
-		EnvironmentDescription environmentDesc = null;
-		run.setEnvironmentCharacterisation(environmentDesc);
-		
-		SortedSet<CountingResult> results;
-		results = CountingResultCollector.getInstance().retrieveAllCountingResults().getCountingResults();
-		
-		Request req = outputFactory.createRequest();
-		run.getRequests().add(req);
 		
 		/* create a lookup map to find the LineNumberRange arrays of methods. 
 		 * This is necessary because CountingResults only know the index of the corresponding 
@@ -279,15 +242,15 @@ public class ByCounterWrapper {
 			MethodDescriptor md = iter.next();
 			fqMethodNameToLineNumberRanges.put(md.getCanonicalMethodName(), md.getCodeAreasToInstrument());
 		}
-		for(CountingResultBase result : results) {
-			ObservedEntityExecution oee = convertCountingResultToOEE(
-					fqMethodNameToLineNumberRanges, result);
-			if (oee != null) {
-				// store only if the result is valid
-				req.getObservedExecutionSequence().add(oee);
-			} else {
-				// counting result generated due to automated instrumentation of internal classes which are not covered by an OEE.
-			}
+
+		// convert ordinary results including threaded counting results
+		final SortedSet<CountingResult> results;
+		results = resultCollection.getCountingResults();
+
+		edu.kit.ipd.sdq.bycounter.output.CountingResult cr;
+		for(CountingResult result : results)  { 
+			cr = mapCountingResult(result);
+			run.getCountingResults().add(cr);
 		}
 		
 		// results have been stored in the EMF model and are now removed from ByCounter
@@ -296,233 +259,59 @@ public class ByCounterWrapper {
 		return run;
 	}
 
-	/**Converts a {@link CountingResultBase} into an {@link ObservedEntityExecution} including Java VM calls and method invocations. 
-	 * @param lineNumberRangesByMethodName A map to get LineNumerRange arrays for a given method
-	 * @return A {@link ObservedEntityExecution} instance with all the informations of the provided {@link CountingResultBase} instance. <code>null</code> if the result could not be matched. 
+	/**
+	 * Maps from {@link RequestResult} to 
+	 * {@link edu.kit.ipd.sdq.bycounter.output.RequestResult}.
+	 * @param rr {@link RequestResult} to convert.
+	 * @return {@link edu.kit.ipd.sdq.bycounter.output.RequestResult} created 
+	 * from rr.
 	 */
-	private ObservedEntityExecution convertCountingResultToOEE(Map<String, LineNumberRange[]> lineNumberRangesByMethodName,
-			CountingResultBase result) {
-		ObservedEntityExecution oee = outputFactory.createObservedEntityExecution();
-		// find the EntityToInstrument to which the result belongs
-		EntityToInstrument instrumentedEntity;
-		if(result.getIndexOfRangeBlock() >= 0) {
-			// we have the result for an instrumented code area
-			instrumentedEntity = rangeCodeAreaMap.get(getLineNumberRange(lineNumberRangesByMethodName, result));
-		} else {
-			// we have the result for an instrumented method
-			instrumentedEntity = methodNameInstrumentedMethodMap.get(result.getQualifyingMethodName());
-			if (instrumentedEntity == null) {
-				return null;
-			}
+	private static edu.kit.ipd.sdq.bycounter.output.RequestResult mapRequestResult(
+			RequestResult rr) {
+		edu.kit.ipd.sdq.bycounter.output.RequestResult req = 
+				outputFactory.createRequestResult();
+		req.setRequestId(rr.getRequestId());
+		for(CountingResult cr : rr.getCountingResults()) {
+			req.getCountingResults().add(mapCountingResult(cr));
 		}
-		if ( instrumentedEntity == null ) {
-			return null;
-		} else {
-			oee.setEntity(instrumentedEntity);
-		}
-		oee.setEntity(instrumentedEntity);
-		ResourceDemands resourceDemands = outputFactory.createResourceDemands();
-		oee.setResourceDemands(resourceDemands);
-
-		// set the bytecode counts
-		JavaVMCall vmCall;
-		for(int opc = 0; opc < result.getOpcodeCounts().length; opc++) {
-			vmCall = outputFactory.createJavaVMCall();
-			vmCall.setId(new Integer(opc).byteValue());
-			vmCall.setNumberObservations(result.getOpcodeCounts()[opc]);
-			vmCall.setName(ASMOpcodesMapper.getInstance().getOpcodeString(opc));
-			resourceDemands.getJavaVMCall().add(vmCall);
-		}
-		
-		// set the method call counts
-		FunctionCall fCall;
-		for(Entry<String, Long> methodCall : result.getMethodCallCounts().entrySet()) {
-			fCall = outputFactory.createFunctionCall();
-			fCall.setNumberObservations(methodCall.getValue());
-			fCall.setFunction(findFunctionForString(methodCall.getKey()));
-			
-			// TODO @Martin: correct content or model to reflect actual behavior
-			fCall.setNative(false);
-			fCall.setSynchronized(false);
-			// parameter instances are not recorded and hence not logged in the model
-
-			resourceDemands.getFunctionCalls().add(fCall);
-		}
-		return oee;
-	}
-
-	/**Find the Function which belongs to the provided BytecodeCounter output string.
-	 * @param bcName BytecodeCounter representation of the function name.
-	 * @return GAST Function referenced by the name.
-	 */
-	private Function findFunctionForString(String bcName) {
-		int sigStartIndex = bcName.indexOf('(');
-		String fqmn = bcName.substring(0, sigStartIndex); // fully qualified method name
-		String sig = bcName.substring(sigStartIndex);	  // signature part including parameters in braces and return type (== desc)
-		
-		String fqcn = fqmn.substring(0, fqmn.lastIndexOf('.'));	// FullyQualifiedClassName (== owner)
-		String fn = fqmn.substring(fqmn.lastIndexOf('.') + 1, fqmn.length()).replace('/', '.'); // FunctionName (== name)
-		// use the MethodDescriptor class to consider the details
-		MethodDescriptor methodDesc = MethodDescriptor._constructMethodDescriptorFromASM(fqcn, fn, sig); 
-		String fqpn = methodDesc.getPackageName(); // FullyQualifiedPackageName 
-		
-		for (Root node : availableGastRootNodes) {
-			// find Package
-			de.fzi.gast.core.Package pkg = node.getPackageByQualifiedName(fqpn);
-			if (pkg != null) {
-				for (GASTClass clazz : pkg.getClasses()) {
-					// find Class
-					if (clazz.getQualifiedName().equals(fqcn)) {
-						// TODO @Martin: Check which native classes need special handling 
-						if (fqcn.startsWith("java.lang")) {
-							return null;
-						}
-						// find and return Method/Constructor
-						for (Constructor constructor : clazz.getConstructors()) {
-							if (methodDesc.getSimpleMethodName().equals(constructor.getSimpleName())) {
-								if(doSignaturesMatch(constructor, sig)) {
-									return constructor;
-								}
-							}
-						}
-						for (Method method : clazz.getMethods()) {
-							if (methodDesc.getSimpleMethodName().equals(method.getSimpleName())) {
-								if(doSignaturesMatch(method, sig)) {
-									return method;
-								}
-							}
-						}
-					}
-				}
-			}
-		}
-		throw new IllegalArgumentException("Could not find a method for the given BytecodeCounter name '" + bcName + "'. ");
+		return req;
 	}
 
 	/**
-	 * @param fn GAST function to check.
-	 * @param sig Signature of a method as given by ByCounter. This starts 
-	 * with '(' and ends with the return type. Example: <code>()V<code> for a 
-	 * method without parameters and a void return type.
-	 * @return When the formal parameters and the return type of fn match the 
-	 * description of sig, true is returned. False in all other cases.
+	 * Converts from the Java {@link CountingResult} to
+	 * the EMF {@link edu.kit.ipd.sdq.bycounter.output.CountingResult}.
+	 * @param cr {@link CountingResult} to convert.
+	 * @return EMF {@link edu.kit.ipd.sdq.bycounter.output.CountingResult}.
 	 */
-	private boolean doSignaturesMatch(Function fn, String sig) {
-		EList<FormalParameter> formalParams = fn.getFormalParameters();
-		DeclarationTypeAccess retTypeDec = fn.getReturnTypeDeclaration();
-		JavaType retType = MethodDescriptor.getReturnTypeFromDesc(sig);
-		JavaType[] paramTypes = MethodDescriptor.getParametersTypesFromDesc(sig);
-		
-		// compare return type
-		if(retTypeDec == null) { // TODO: verify null==void?
-			if(retType.getType() != JavaTypeEnum.Void) {
-				return false;
-			} else {
-				// return types match; continue with parameter tests
+	private static edu.kit.ipd.sdq.bycounter.output.CountingResult mapCountingResult(
+			CountingResult cr) {
+		edu.kit.ipd.sdq.bycounter.output.CountingResult result;
+		if(cr instanceof ThreadedCountingResult) {
+			final ThreadedCountingResult tcr = (ThreadedCountingResult)cr;
+			edu.kit.ipd.sdq.bycounter.output.ThreadedCountingResult tResult = 
+					outputFactory.createThreadedCountingResult();
+			// map properties specific to threaded counting result
+			tResult.setThreadId(tcr.getThreadId());
+			for(ThreadedCountingResult tcrr : tcr.getSpawnedThreadedCountingResults()) {
+				// map spawned result
+				edu.kit.ipd.sdq.bycounter.output.ThreadedCountingResult mappedTcrr = 
+						(edu.kit.ipd.sdq.bycounter.output.ThreadedCountingResult)mapCountingResult(tcrr);
+				tResult.getSpawnedThreadedCountingResults().add(mappedTcrr);
 			}
+			result = tResult;
 		} else {
-			if(!doTypesMatch(retTypeDec.getTargetType(), retType)) {
-				return false;
-			} else {
-				// return types match; continue with parameter tests
-			}
+			result = outputFactory.createCountingResult();
 		}
-		
-		// compare parameters
-		if(formalParams.size() != paramTypes.length) {
-			return false;
-		}		
-		if(paramTypes.length == 0) {
-			// no parameters: no need to do more tests
-			return true;
-		} else {
-			// compare all parameters
-			int i = 0;
-			for(FormalParameter p : formalParams) {
-				if(doTypesMatch(p.getType(), paramTypes[i])) {
-					i++;
-					continue;
-				} else {
-					return false;
-				}
-			}
-		}
-		return true;
-	}
-
-	/**
-	 * @param type GAST type
-	 * @param javaType Java type as parsed by ByCounter
-	 * @return True when the types match. False otherwise.
-	 */
-	private boolean doTypesMatch(GASTType type, JavaType javaType) {
-		String typeName = type.getQualifiedName();
-		if(gastTypeJavaTypeMap.containsKey(typeName)) {
-			// we have a simple java type
-			if(gastTypeJavaTypeMap.get(typeName).equals(javaType.getType())) {
-				return true;
-			} else {
-				return false;
-			}
-		} else {
-			// gast array types are identical to the Java notation, ie. int[][]
-			int arrayDim = 0;	// the dimension of the array if type is an array type.
-			int ind = typeName.indexOf("[");
-			String innerTypeFQCN = "";
-			if(ind >= 0) {
-				innerTypeFQCN = typeName.substring(0, ind);
-				do {
-					ind = typeName.indexOf("[", ind+2);
-					arrayDim++;
-				} while(ind >= 0);
-				
-				// check all dimensions of the array
-				JavaType currentType = javaType;
-				for(int i = 0; i < arrayDim; i++) {
-					if(!currentType.getType().equals(JavaTypeEnum.Array)) {
-						return false;
-					}
-					currentType = currentType.getChildElementType();
-				}
-				// check the inner type (int for the example above)
-				if(currentType.getType().equals(JavaTypeEnum.Object)) {
-					return currentType.getCanonicalClassName().equals(innerTypeFQCN);
-				} else {
-					if(gastTypeJavaTypeMap.containsKey(innerTypeFQCN)) {
-						// we have a simple java type
-						if(gastTypeJavaTypeMap.get(innerTypeFQCN).equals(currentType.getType())) {
-							return true;
-						} else {
-							return false;
-						}
-					}
-					throw new RuntimeException("Unknown type: " + innerTypeFQCN);
-				}
-			} else if(javaType.getType().equals(JavaTypeEnum.Object)) {
-				if(typeName.contains("$")) {
-					// assume a generic type
-					return javaType.getCanonicalClassName().equals(Object.class.getCanonicalName());
-				} else {
-					// object type
-					return typeName.equals(javaType.getCanonicalClassName());
-				}
-			}
-			throw new RuntimeException("The type matching for this type ('" 
-					+ type.getQualifiedName() + "') is not implemented yet.");
-		}
-	}
-
-	/**Gets the {@link LineNumberRange} for given results.
-	 * @param lineNumberRangesByMethodName A map to get LineNumerRange arrays for a given method
-	 * @param result A {@link CountingResultBase} for a line number range
-	 * @return The line number range to which the CountingResult belongs
-	 */
-	private static LineNumberRange getLineNumberRange(
-			final Map<String, LineNumberRange[]> lineNumberRangesByMethodName, 
-			final CountingResultBase result) {
-		int index = result.getIndexOfRangeBlock();
-		LineNumberRange[] ranges = 
-			lineNumberRangesByMethodName.get(result.getQualifyingMethodName());
-		return ranges[index];
+		// map the properies of the base class
+		result.setArrayCreationCounts(cr.getArrayCreationCounts());
+		result.setCallerId(cr.getCallerID());
+		result.setMethodCallCounts(cr.getMethodCallCounts());
+		result.setMethodInvocationBeginning(cr.getMethodInvocationBeginning());
+		result.setMethodReportingTime(cr.getMethodReportingTime());
+		result.setObservedElement(cr.getObservedElement());
+		result.setOwnId(cr.getOwnID());
+		result.setQualifyingMethodName(cr.getQualifyingMethodName());
+	
+		return result;
 	}
 }
