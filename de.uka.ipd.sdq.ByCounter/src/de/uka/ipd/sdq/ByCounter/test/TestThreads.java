@@ -139,7 +139,7 @@ public class TestThreads extends AbstractByCounterTest {
      * Create the expectations for {@link #methodRunnableIincRun}.
      */
     private SectionExpectation createExpectationsRunnableIincRun() {
-    	SectionExpectation expectation = new Expectation(true).add();
+    	SectionExpectation expectation = new SectionExpectation();
     	return expectation.add(Opcodes.ICONST_0, 1)
         .add(Opcodes.ISTORE, 1)
         .add(Opcodes.IINC, 1)
@@ -151,9 +151,64 @@ public class TestThreads extends AbstractByCounterTest {
         ;
 	}
     
+
+    /**
+     * Create the expectations for {@link #methodRun}.
+     * @param sectionNumber SectionNumber of the created SectionExpectation.
+     */
+    private SectionExpectation createExpectationsRunThreads(int sectionNumber) {
+    	SectionExpectation e = new SectionExpectation(sectionNumber);
+    	return e.add(Opcodes.GETSTATIC, 4)
+		   	   	.add(Opcodes.LDC, 8)
+		   	   	.add(Opcodes.INVOKEVIRTUAL, 22)
+//		        .add("java.util.logging.Logger", "public long info(java.lang.String m)", 5)
+		        .add(Opcodes.ICONST_0, 3)
+		        .add(Opcodes.ANEWARRAY, 1)
+		        .add(Opcodes.DUP, 20)
+		        .add(Opcodes.NEW, 14)
+		        .add(Opcodes.INVOKESPECIAL, 14)
+		        .add("de.uka.ipd.sdq.ByCounter.test.helpers.RunnableForThreading", "public RunnableForThreading()", 5)
+		        .add("java.lang.Thread", "public Thread(java.lang.Runnable r, java.lang.String s)", 2)
+		        .add("java.lang.Thread", "public Thread(java.lang.Runnable r)", 4)
+		        .add(Opcodes.AASTORE, 4)
+		        .add(Opcodes.ICONST_1, 1)
+		        .add(Opcodes.ICONST_2, 1)
+		        .add(Opcodes.ICONST_3, 1)
+		        .add(Opcodes.ICONST_4, 1)
+		        .add(Opcodes.ASTORE, 13)
+		        .add(Opcodes.ALOAD, 24)
+		        .add(Opcodes.ARRAYLENGTH, 4)
+		        .add(Opcodes.ISTORE, 4)
+		        .add(Opcodes.GOTO, 2)
+		        .add(Opcodes.ILOAD, 28)
+		        .add(Opcodes.AALOAD, 8)
+		        .add("java.lang.Thread", "public void start()", 6)
+				.add(Opcodes.IINC, 8)
+				.add(Opcodes.IF_ICMPLT, 10)
+		        .add("java.lang.StringBuilder", "public StringBuilder(java.lang.String s)", 2)
+		        .add("java.lang.Thread", "public void join()", 6)
+		        .add("java.util.logging.Logger", "public void info(java.lang.String s)", 4)
+		        .add("de.uka.ipd.sdq.ByCounter.test.helpers.RunnableIinc", "public RunnableIinc()", 1)
+		        .add("java.lang.StringBuilder", "public java.lang.StringBuilder append(int i)", 2)
+		        .add("java.lang.StringBuilder", "public java.lang.StringBuilder append(java.lang.String s)", 2)
+		        .add("java.lang.StringBuilder", "public java.lang.String toString()", 2)
+		        .add(Opcodes.RETURN, 1)
+		        .addParallel(createExpectationsRunnableFTRun(),
+		        		createExpectationsRunnableFTRun(),
+		        		createExpectationsRunnableFTRun(),
+		        		createExpectationsRunnableFTRun(),
+		        		createExpectationsRunnableFTRun(),
+							createExpectationsRunnableIincRun());
+	}
+    
 	/**
      * Instrument the run method that spawns threads recursively and check 
      * for results. 
+     * <p>
+     * This currently demonstrates a shortcoming of recursive instrumentation.
+     * ByCounter is unable to find that it needs to instrument implementations 
+     * of {@link Runnable#run()}.
+     * </p>
      */
     @Test
     public void testInstrumentRunRecursivly() {
@@ -167,12 +222,22 @@ public class TestThreads extends AbstractByCounterTest {
 		
 		SortedSet<CountingResult> countingResults = CountingResultCollector.getInstance().retrieveAllCountingResults().getCountingResults();
 		removeMethodCallsWithFrequency0(countingResults);
+
+        // define expectations
+        Expectation e = new Expectation(true);
+        e.add(createExpectationsRunThreads(0));
         
         // print ByCounter results
         CountingResult[] results = countingResults.toArray(new CountingResult[0]);
+
         for (CountingResult r : results) {
         	r.logResult(false, true);
         }
+        
+        // This will fail because currently the threads run methods are not
+        // being instrumented. Recursive instrumentation is unable to make the
+        // connection between thread.start() and the triggered run method.
+        e.compare(results);
     }
     
     /**
@@ -266,48 +331,7 @@ public class TestThreads extends AbstractByCounterTest {
         CountingResult[] results = countingResults.toArray(new CountingResult[0]);
         // we expect 1 result with 4 child thread results
 		Expectation e = new Expectation(true);
-		e.add(0).add(Opcodes.GETSTATIC, 4)
-		   	   	.add(Opcodes.LDC, 8)
-		   	   	.add(Opcodes.INVOKEVIRTUAL, 22)
-//		        .add("java.util.logging.Logger", "public long info(java.lang.String m)", 5)
-		        .add(Opcodes.ICONST_0, 3)
-		        .add(Opcodes.ANEWARRAY, 1)
-		        .add(Opcodes.DUP, 20)
-		        .add(Opcodes.NEW, 14)
-		        .add(Opcodes.INVOKESPECIAL, 14)
-		        .add("de.uka.ipd.sdq.ByCounter.test.helpers.RunnableForThreading", "public RunnableForThreading()", 5)
-		        .add("java.lang.Thread", "public Thread(java.lang.Runnable r, java.lang.String s)", 2)
-		        .add("java.lang.Thread", "public Thread(java.lang.Runnable r)", 4)
-		        .add(Opcodes.AASTORE, 4)
-		        .add(Opcodes.ICONST_1, 1)
-		        .add(Opcodes.ICONST_2, 1)
-		        .add(Opcodes.ICONST_3, 1)
-		        .add(Opcodes.ICONST_4, 1)
-		        .add(Opcodes.ASTORE, 13)
-		        .add(Opcodes.ALOAD, 24)
-		        .add(Opcodes.ARRAYLENGTH, 4)
-		        .add(Opcodes.ISTORE, 4)
-		        .add(Opcodes.GOTO, 2)
-		        .add(Opcodes.ILOAD, 28)
-		        .add(Opcodes.AALOAD, 8)
-		        .add("java.lang.Thread", "public void start()", 6)
-				.add(Opcodes.IINC, 8)
-				.add(Opcodes.IF_ICMPLT, 10)
-		        .add("java.lang.StringBuilder", "public StringBuilder(java.lang.String s)", 2)
-		        .add("java.lang.Thread", "public void join()", 6)
-		        .add("java.util.logging.Logger", "public void info(java.lang.String s)", 4)
-		        .add("de.uka.ipd.sdq.ByCounter.test.helpers.RunnableIinc", "public RunnableIinc()", 1)
-		        .add("java.lang.StringBuilder", "public java.lang.StringBuilder append(int i)", 2)
-		        .add("java.lang.StringBuilder", "public java.lang.StringBuilder append(java.lang.String s)", 2)
-		        .add("java.lang.StringBuilder", "public java.lang.String toString()", 2)
-		        .add(Opcodes.RETURN, 1)
-		        .addParallel(createExpectationsRunnableFTRun(),
-		        		createExpectationsRunnableFTRun(),
-		        		createExpectationsRunnableFTRun(),
-		        		createExpectationsRunnableFTRun(),
-		        		createExpectationsRunnableFTRun(),
-							createExpectationsRunnableIincRun());
-		        ;
+		e.add(createExpectationsRunThreads(0));
 		e.compare(results);
 		
 		// output for debugging purposes
@@ -318,7 +342,8 @@ public class TestThreads extends AbstractByCounterTest {
     
 
     /**
-     * Tests for TODO
+     * Test for retrieving results when the executed method ends before all 
+     * instrumented threads end.
      */
     @Test
     public void testThreadOverlap() {
