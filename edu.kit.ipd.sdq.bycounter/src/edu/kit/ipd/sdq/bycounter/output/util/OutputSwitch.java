@@ -10,10 +10,10 @@ import de.uka.ipd.sdq.identifier.Identifier;
 
 import edu.kit.ipd.sdq.bycounter.output.*;
 
-import java.util.List;
-
-import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.EPackage;
+
+import org.eclipse.emf.ecore.util.Switch;
 
 /**
  * <!-- begin-user-doc -->
@@ -28,7 +28,7 @@ import org.eclipse.emf.ecore.EObject;
  * @see edu.kit.ipd.sdq.bycounter.output.OutputPackage
  * @generated
  */
-public class OutputSwitch<T> {
+public class OutputSwitch<T> extends Switch<T> {
 	/**
 	 * The cached model package
 	 * <!-- begin-user-doc -->
@@ -50,14 +50,16 @@ public class OutputSwitch<T> {
 	}
 
 	/**
-	 * Calls <code>caseXXX</code> for each class of the model until one returns a non null result; it yields that result.
+	 * Checks whether this is a switch for the given package.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the first non-null result returned by a <code>caseXXX</code> call.
+	 * @parameter ePackage the package in question.
+	 * @return whether this is a switch for the given package.
 	 * @generated
 	 */
-	public T doSwitch(EObject theEObject) {
-		return doSwitch(theEObject.eClass(), theEObject);
+	@Override
+	protected boolean isSwitchFor(EPackage ePackage) {
+		return ePackage == modelPackage;
 	}
 
 	/**
@@ -67,26 +69,7 @@ public class OutputSwitch<T> {
 	 * @return the first non-null result returned by a <code>caseXXX</code> call.
 	 * @generated
 	 */
-	protected T doSwitch(EClass theEClass, EObject theEObject) {
-		if (theEClass.eContainer() == modelPackage) {
-			return doSwitch(theEClass.getClassifierID(), theEObject);
-		}
-		else {
-			List<EClass> eSuperTypes = theEClass.getESuperTypes();
-			return
-				eSuperTypes.isEmpty() ?
-					defaultCase(theEObject) :
-					doSwitch(eSuperTypes.get(0), theEObject);
-		}
-	}
-
-	/**
-	 * Calls <code>caseXXX</code> for each class of the model until one returns a non null result; it yields that result.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the first non-null result returned by a <code>caseXXX</code> call.
-	 * @generated
-	 */
+	@Override
 	protected T doSwitch(int classifierID, EObject theEObject) {
 		switch (classifierID) {
 			case OutputPackage.OUTPUT_MODEL_REPOSITORY: {
@@ -96,97 +79,28 @@ public class OutputSwitch<T> {
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case OutputPackage.MEASUREMENT_RUN: {
-				MeasurementRun measurementRun = (MeasurementRun)theEObject;
-				T result = caseMeasurementRun(measurementRun);
-				if (result == null) result = caseIdentifier(measurementRun);
+			case OutputPackage.RESULT_COLLECTION: {
+				ResultCollection resultCollection = (ResultCollection)theEObject;
+				T result = caseResultCollection(resultCollection);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case OutputPackage.ENVIRONMENT_DESCRIPTION: {
-				EnvironmentDescription environmentDescription = (EnvironmentDescription)theEObject;
-				T result = caseEnvironmentDescription(environmentDescription);
-				if (result == null) result = caseIdentifier(environmentDescription);
+			case OutputPackage.REQUEST_RESULT: {
+				RequestResult requestResult = (RequestResult)theEObject;
+				T result = caseRequestResult(requestResult);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case OutputPackage.REQUEST: {
-				Request request = (Request)theEObject;
-				T result = caseRequest(request);
-				if (result == null) result = caseIdentifier(request);
+			case OutputPackage.COUNTING_RESULT: {
+				CountingResult countingResult = (CountingResult)theEObject;
+				T result = caseCountingResult(countingResult);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case OutputPackage.OBSERVED_ENTITY_EXECUTION: {
-				ObservedEntityExecution observedEntityExecution = (ObservedEntityExecution)theEObject;
-				T result = caseObservedEntityExecution(observedEntityExecution);
-				if (result == null) result = caseIdentifier(observedEntityExecution);
-				if (result == null) result = defaultCase(theEObject);
-				return result;
-			}
-			case OutputPackage.RESOURCE_DEMANDS: {
-				ResourceDemands resourceDemands = (ResourceDemands)theEObject;
-				T result = caseResourceDemands(resourceDemands);
-				if (result == null) result = caseIdentifier(resourceDemands);
-				if (result == null) result = defaultCase(theEObject);
-				return result;
-			}
-			case OutputPackage.FUNCTION_CALL: {
-				FunctionCall functionCall = (FunctionCall)theEObject;
-				T result = caseFunctionCall(functionCall);
-				if (result == null) result = caseIdentifier(functionCall);
-				if (result == null) result = defaultCase(theEObject);
-				return result;
-			}
-			case OutputPackage.PARAMETER_INSTANCE: {
-				ParameterInstance parameterInstance = (ParameterInstance)theEObject;
-				T result = caseParameterInstance(parameterInstance);
-				if (result == null) result = caseIdentifier(parameterInstance);
-				if (result == null) result = defaultCase(theEObject);
-				return result;
-			}
-			case OutputPackage.PARAMETER_CHARACTERISATION: {
-				ParameterCharacterisation parameterCharacterisation = (ParameterCharacterisation)theEObject;
-				T result = caseParameterCharacterisation(parameterCharacterisation);
-				if (result == null) result = caseIdentifier(parameterCharacterisation);
-				if (result == null) result = defaultCase(theEObject);
-				return result;
-			}
-			case OutputPackage.JAVA_VM_CALL: {
-				JavaVMCall javaVMCall = (JavaVMCall)theEObject;
-				T result = caseJavaVMCall(javaVMCall);
-				if (result == null) result = defaultCase(theEObject);
-				return result;
-			}
-			case OutputPackage.DOUBLE_CHARACTERISATION: {
-				DoubleCharacterisation doubleCharacterisation = (DoubleCharacterisation)theEObject;
-				T result = caseDoubleCharacterisation(doubleCharacterisation);
-				if (result == null) result = caseParameterCharacterisation(doubleCharacterisation);
-				if (result == null) result = caseIdentifier(doubleCharacterisation);
-				if (result == null) result = defaultCase(theEObject);
-				return result;
-			}
-			case OutputPackage.LONG_CHARACTERISATION: {
-				LongCharacterisation longCharacterisation = (LongCharacterisation)theEObject;
-				T result = caseLongCharacterisation(longCharacterisation);
-				if (result == null) result = caseParameterCharacterisation(longCharacterisation);
-				if (result == null) result = caseIdentifier(longCharacterisation);
-				if (result == null) result = defaultCase(theEObject);
-				return result;
-			}
-			case OutputPackage.BOOLEAN_CHARACTERISATION: {
-				BooleanCharacterisation booleanCharacterisation = (BooleanCharacterisation)theEObject;
-				T result = caseBooleanCharacterisation(booleanCharacterisation);
-				if (result == null) result = caseParameterCharacterisation(booleanCharacterisation);
-				if (result == null) result = caseIdentifier(booleanCharacterisation);
-				if (result == null) result = defaultCase(theEObject);
-				return result;
-			}
-			case OutputPackage.STRING_CHARACTERISATION: {
-				StringCharacterisation stringCharacterisation = (StringCharacterisation)theEObject;
-				T result = caseStringCharacterisation(stringCharacterisation);
-				if (result == null) result = caseParameterCharacterisation(stringCharacterisation);
-				if (result == null) result = caseIdentifier(stringCharacterisation);
+			case OutputPackage.THREADED_COUNTING_RESULT: {
+				ThreadedCountingResult threadedCountingResult = (ThreadedCountingResult)theEObject;
+				T result = caseThreadedCountingResult(threadedCountingResult);
+				if (result == null) result = caseCountingResult(threadedCountingResult);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
@@ -210,197 +124,62 @@ public class OutputSwitch<T> {
 	}
 
 	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Measurement Run</em>'.
+	 * Returns the result of interpreting the object as an instance of '<em>Result Collection</em>'.
 	 * <!-- begin-user-doc -->
 	 * This implementation returns null;
 	 * returning a non-null result will terminate the switch.
 	 * <!-- end-user-doc -->
 	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Measurement Run</em>'.
+	 * @return the result of interpreting the object as an instance of '<em>Result Collection</em>'.
 	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
 	 * @generated
 	 */
-	public T caseMeasurementRun(MeasurementRun object) {
+	public T caseResultCollection(ResultCollection object) {
 		return null;
 	}
 
 	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Environment Description</em>'.
+	 * Returns the result of interpreting the object as an instance of '<em>Request Result</em>'.
 	 * <!-- begin-user-doc -->
 	 * This implementation returns null;
 	 * returning a non-null result will terminate the switch.
 	 * <!-- end-user-doc -->
 	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Environment Description</em>'.
+	 * @return the result of interpreting the object as an instance of '<em>Request Result</em>'.
 	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
 	 * @generated
 	 */
-	public T caseEnvironmentDescription(EnvironmentDescription object) {
+	public T caseRequestResult(RequestResult object) {
 		return null;
 	}
 
 	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Request</em>'.
+	 * Returns the result of interpreting the object as an instance of '<em>Counting Result</em>'.
 	 * <!-- begin-user-doc -->
 	 * This implementation returns null;
 	 * returning a non-null result will terminate the switch.
 	 * <!-- end-user-doc -->
 	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Request</em>'.
+	 * @return the result of interpreting the object as an instance of '<em>Counting Result</em>'.
 	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
 	 * @generated
 	 */
-	public T caseRequest(Request object) {
+	public T caseCountingResult(CountingResult object) {
 		return null;
 	}
 
 	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Observed Entity Execution</em>'.
+	 * Returns the result of interpreting the object as an instance of '<em>Threaded Counting Result</em>'.
 	 * <!-- begin-user-doc -->
 	 * This implementation returns null;
 	 * returning a non-null result will terminate the switch.
 	 * <!-- end-user-doc -->
 	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Observed Entity Execution</em>'.
+	 * @return the result of interpreting the object as an instance of '<em>Threaded Counting Result</em>'.
 	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
 	 * @generated
 	 */
-	public T caseObservedEntityExecution(ObservedEntityExecution object) {
-		return null;
-	}
-
-	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Resource Demands</em>'.
-	 * <!-- begin-user-doc -->
-	 * This implementation returns null;
-	 * returning a non-null result will terminate the switch.
-	 * <!-- end-user-doc -->
-	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Resource Demands</em>'.
-	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-	 * @generated
-	 */
-	public T caseResourceDemands(ResourceDemands object) {
-		return null;
-	}
-
-	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Function Call</em>'.
-	 * <!-- begin-user-doc -->
-	 * This implementation returns null;
-	 * returning a non-null result will terminate the switch.
-	 * <!-- end-user-doc -->
-	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Function Call</em>'.
-	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-	 * @generated
-	 */
-	public T caseFunctionCall(FunctionCall object) {
-		return null;
-	}
-
-	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Parameter Instance</em>'.
-	 * <!-- begin-user-doc -->
-	 * This implementation returns null;
-	 * returning a non-null result will terminate the switch.
-	 * <!-- end-user-doc -->
-	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Parameter Instance</em>'.
-	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-	 * @generated
-	 */
-	public T caseParameterInstance(ParameterInstance object) {
-		return null;
-	}
-
-	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Parameter Characterisation</em>'.
-	 * <!-- begin-user-doc -->
-	 * This implementation returns null;
-	 * returning a non-null result will terminate the switch.
-	 * <!-- end-user-doc -->
-	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Parameter Characterisation</em>'.
-	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-	 * @generated
-	 */
-	public T caseParameterCharacterisation(ParameterCharacterisation object) {
-		return null;
-	}
-
-	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Java VM Call</em>'.
-	 * <!-- begin-user-doc -->
-	 * This implementation returns null;
-	 * returning a non-null result will terminate the switch.
-	 * <!-- end-user-doc -->
-	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Java VM Call</em>'.
-	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-	 * @generated
-	 */
-	public T caseJavaVMCall(JavaVMCall object) {
-		return null;
-	}
-
-	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Double Characterisation</em>'.
-	 * <!-- begin-user-doc -->
-	 * This implementation returns null;
-	 * returning a non-null result will terminate the switch.
-	 * <!-- end-user-doc -->
-	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Double Characterisation</em>'.
-	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-	 * @generated
-	 */
-	public T caseDoubleCharacterisation(DoubleCharacterisation object) {
-		return null;
-	}
-
-	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Long Characterisation</em>'.
-	 * <!-- begin-user-doc -->
-	 * This implementation returns null;
-	 * returning a non-null result will terminate the switch.
-	 * <!-- end-user-doc -->
-	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Long Characterisation</em>'.
-	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-	 * @generated
-	 */
-	public T caseLongCharacterisation(LongCharacterisation object) {
-		return null;
-	}
-
-	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Boolean Characterisation</em>'.
-	 * <!-- begin-user-doc -->
-	 * This implementation returns null;
-	 * returning a non-null result will terminate the switch.
-	 * <!-- end-user-doc -->
-	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Boolean Characterisation</em>'.
-	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-	 * @generated
-	 */
-	public T caseBooleanCharacterisation(BooleanCharacterisation object) {
-		return null;
-	}
-
-	/**
-	 * Returns the result of interpreting the object as an instance of '<em>String Characterisation</em>'.
-	 * <!-- begin-user-doc -->
-	 * This implementation returns null;
-	 * returning a non-null result will terminate the switch.
-	 * <!-- end-user-doc -->
-	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>String Characterisation</em>'.
-	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-	 * @generated
-	 */
-	public T caseStringCharacterisation(StringCharacterisation object) {
+	public T caseThreadedCountingResult(ThreadedCountingResult object) {
 		return null;
 	}
 
@@ -430,6 +209,7 @@ public class OutputSwitch<T> {
 	 * @see #doSwitch(org.eclipse.emf.ecore.EObject)
 	 * @generated
 	 */
+	@Override
 	public T defaultCase(EObject object) {
 		return null;
 	}

@@ -86,6 +86,10 @@ public class InputAdapterFactory extends AdapterFactoryImpl {
 				return createInstrumentationProfileRepositoryAdapter();
 			}
 			@Override
+			public Adapter caseEntityToInstrument(EntityToInstrument object) {
+				return createEntityToInstrumentAdapter();
+			}
+			@Override
 			public Adapter caseInstrumentedCodeArea(InstrumentedCodeArea object) {
 				return createInstrumentedCodeAreaAdapter();
 			}
@@ -94,8 +98,8 @@ public class InputAdapterFactory extends AdapterFactoryImpl {
 				return createInstrumentedMethodAdapter();
 			}
 			@Override
-			public Adapter caseEntityToInstrument(EntityToInstrument object) {
-				return createEntityToInstrumentAdapter();
+			public Adapter caseInstrumentedRegion(InstrumentedRegion object) {
+				return createInstrumentedRegionAdapter();
 			}
 			@Override
 			public Adapter caseIdentifier(Identifier object) {
@@ -164,6 +168,20 @@ public class InputAdapterFactory extends AdapterFactoryImpl {
 	}
 
 	/**
+	 * Creates a new adapter for an object of class '{@link edu.kit.ipd.sdq.bycounter.input.EntityToInstrument <em>Entity To Instrument</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see edu.kit.ipd.sdq.bycounter.input.EntityToInstrument
+	 * @generated
+	 */
+	public Adapter createEntityToInstrumentAdapter() {
+		return null;
+	}
+
+	/**
 	 * Creates a new adapter for an object of class '{@link edu.kit.ipd.sdq.bycounter.input.InstrumentedCodeArea <em>Instrumented Code Area</em>}'.
 	 * <!-- begin-user-doc -->
 	 * This default implementation returns null so that we can easily ignore cases;
@@ -192,16 +210,16 @@ public class InputAdapterFactory extends AdapterFactoryImpl {
 	}
 
 	/**
-	 * Creates a new adapter for an object of class '{@link edu.kit.ipd.sdq.bycounter.input.EntityToInstrument <em>Entity To Instrument</em>}'.
+	 * Creates a new adapter for an object of class '{@link edu.kit.ipd.sdq.bycounter.input.InstrumentedRegion <em>Instrumented Region</em>}'.
 	 * <!-- begin-user-doc -->
 	 * This default implementation returns null so that we can easily ignore cases;
 	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
 	 * <!-- end-user-doc -->
 	 * @return the new adapter.
-	 * @see edu.kit.ipd.sdq.bycounter.input.EntityToInstrument
+	 * @see edu.kit.ipd.sdq.bycounter.input.InstrumentedRegion
 	 * @generated
 	 */
-	public Adapter createEntityToInstrumentAdapter() {
+	public Adapter createInstrumentedRegionAdapter() {
 		return null;
 	}
 

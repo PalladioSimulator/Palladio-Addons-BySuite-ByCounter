@@ -61,17 +61,10 @@ public class OutputFactoryImpl extends EFactoryImpl implements OutputFactory {
 	public EObject create(EClass eClass) {
 		switch (eClass.getClassifierID()) {
 			case OutputPackage.OUTPUT_MODEL_REPOSITORY: return createOutputModelRepository();
-			case OutputPackage.MEASUREMENT_RUN: return createMeasurementRun();
-			case OutputPackage.REQUEST: return createRequest();
-			case OutputPackage.OBSERVED_ENTITY_EXECUTION: return createObservedEntityExecution();
-			case OutputPackage.RESOURCE_DEMANDS: return createResourceDemands();
-			case OutputPackage.FUNCTION_CALL: return createFunctionCall();
-			case OutputPackage.PARAMETER_INSTANCE: return createParameterInstance();
-			case OutputPackage.JAVA_VM_CALL: return createJavaVMCall();
-			case OutputPackage.DOUBLE_CHARACTERISATION: return createDoubleCharacterisation();
-			case OutputPackage.LONG_CHARACTERISATION: return createLongCharacterisation();
-			case OutputPackage.BOOLEAN_CHARACTERISATION: return createBooleanCharacterisation();
-			case OutputPackage.STRING_CHARACTERISATION: return createStringCharacterisation();
+			case OutputPackage.RESULT_COLLECTION: return createResultCollection();
+			case OutputPackage.REQUEST_RESULT: return createRequestResult();
+			case OutputPackage.COUNTING_RESULT: return createCountingResult();
+			case OutputPackage.THREADED_COUNTING_RESULT: return createThreadedCountingResult();
 			default:
 				throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
 		}
@@ -92,9 +85,9 @@ public class OutputFactoryImpl extends EFactoryImpl implements OutputFactory {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public MeasurementRun createMeasurementRun() {
-		MeasurementRunImpl measurementRun = new MeasurementRunImpl();
-		return measurementRun;
+	public ResultCollection createResultCollection() {
+		ResultCollectionImpl resultCollection = new ResultCollectionImpl();
+		return resultCollection;
 	}
 
 	/**
@@ -102,9 +95,9 @@ public class OutputFactoryImpl extends EFactoryImpl implements OutputFactory {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public Request createRequest() {
-		RequestImpl request = new RequestImpl();
-		return request;
+	public RequestResult createRequestResult() {
+		RequestResultImpl requestResult = new RequestResultImpl();
+		return requestResult;
 	}
 
 	/**
@@ -112,9 +105,9 @@ public class OutputFactoryImpl extends EFactoryImpl implements OutputFactory {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public ObservedEntityExecution createObservedEntityExecution() {
-		ObservedEntityExecutionImpl observedEntityExecution = new ObservedEntityExecutionImpl();
-		return observedEntityExecution;
+	public CountingResult createCountingResult() {
+		CountingResultImpl countingResult = new CountingResultImpl();
+		return countingResult;
 	}
 
 	/**
@@ -122,79 +115,9 @@ public class OutputFactoryImpl extends EFactoryImpl implements OutputFactory {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public ResourceDemands createResourceDemands() {
-		ResourceDemandsImpl resourceDemands = new ResourceDemandsImpl();
-		return resourceDemands;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public FunctionCall createFunctionCall() {
-		FunctionCallImpl functionCall = new FunctionCallImpl();
-		return functionCall;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public ParameterInstance createParameterInstance() {
-		ParameterInstanceImpl parameterInstance = new ParameterInstanceImpl();
-		return parameterInstance;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public JavaVMCall createJavaVMCall() {
-		JavaVMCallImpl javaVMCall = new JavaVMCallImpl();
-		return javaVMCall;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public DoubleCharacterisation createDoubleCharacterisation() {
-		DoubleCharacterisationImpl doubleCharacterisation = new DoubleCharacterisationImpl();
-		return doubleCharacterisation;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public LongCharacterisation createLongCharacterisation() {
-		LongCharacterisationImpl longCharacterisation = new LongCharacterisationImpl();
-		return longCharacterisation;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public BooleanCharacterisation createBooleanCharacterisation() {
-		BooleanCharacterisationImpl booleanCharacterisation = new BooleanCharacterisationImpl();
-		return booleanCharacterisation;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public StringCharacterisation createStringCharacterisation() {
-		StringCharacterisationImpl stringCharacterisation = new StringCharacterisationImpl();
-		return stringCharacterisation;
+	public ThreadedCountingResult createThreadedCountingResult() {
+		ThreadedCountingResultImpl threadedCountingResult = new ThreadedCountingResultImpl();
+		return threadedCountingResult;
 	}
 
 	/**

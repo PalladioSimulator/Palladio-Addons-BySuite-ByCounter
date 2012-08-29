@@ -7,8 +7,12 @@
 package edu.kit.ipd.sdq.bycounter.input;
 
 import de.fzi.gast.functions.Method;
+
 import de.uka.ipd.sdq.identifier.Identifier;
 
+import java.util.Map;
+
+import org.eclipse.emf.common.util.DiagnosticChain;
 import org.eclipse.emf.common.util.EList;
 
 /**
@@ -16,26 +20,19 @@ import org.eclipse.emf.common.util.EList;
  * A representation of the model object '<em><b>Instrumentation Profile</b></em>'.
  * <!-- end-user-doc -->
  *
- * <!-- begin-model-doc -->
- * self.summationExcludes->size()>0 implies self.aggregateInternalCallsTransparently=true
- * 
- * <!-- end-model-doc -->
- *
  * <p>
  * The following features are supported:
  * <ul>
  *   <li>{@link edu.kit.ipd.sdq.bycounter.input.InstrumentationProfile#getDefinedLogicalSets <em>Defined Logical Sets</em>}</li>
  *   <li>{@link edu.kit.ipd.sdq.bycounter.input.InstrumentationProfile#isInstrumentRecursively <em>Instrument Recursively</em>}</li>
  *   <li>{@link edu.kit.ipd.sdq.bycounter.input.InstrumentationProfile#isAggregateInternalCallsTransparently <em>Aggregate Internal Calls Transparently</em>}</li>
- *   <li>{@link edu.kit.ipd.sdq.bycounter.input.InstrumentationProfile#getAggregationType <em>Aggregation Type</em>}</li>
  *   <li>{@link edu.kit.ipd.sdq.bycounter.input.InstrumentationProfile#getPersistInstrumentedClasses <em>Persist Instrumented Classes</em>}</li>
- *   <li>{@link edu.kit.ipd.sdq.bycounter.input.InstrumentationProfile#getTemporaryResultsType <em>Temporary Results Type</em>}</li>
- *   <li>{@link edu.kit.ipd.sdq.bycounter.input.InstrumentationProfile#getEntitiesToInstrument <em>Entities To Instrument</em>}</li>
  *   <li>{@link edu.kit.ipd.sdq.bycounter.input.InstrumentationProfile#getIntrumentationProfileRepository <em>Intrumentation Profile Repository</em>}</li>
  *   <li>{@link edu.kit.ipd.sdq.bycounter.input.InstrumentationProfile#isInstrumentUsingLongCounters <em>Instrument Using Long Counters</em>}</li>
  *   <li>{@link edu.kit.ipd.sdq.bycounter.input.InstrumentationProfile#isInstrumentUsingBasicBlocks <em>Instrument Using Basic Blocks</em>}</li>
  *   <li>{@link edu.kit.ipd.sdq.bycounter.input.InstrumentationProfile#isTraceAndIdentifyRequests <em>Trace And Identify Requests</em>}</li>
  *   <li>{@link edu.kit.ipd.sdq.bycounter.input.InstrumentationProfile#getAggregationExcludes <em>Aggregation Excludes</em>}</li>
+ *   <li>{@link edu.kit.ipd.sdq.bycounter.input.InstrumentationProfile#getEntitiesToInstrument <em>Entities To Instrument</em>}</li>
  * </ul>
  * </p>
  *
@@ -117,36 +114,6 @@ public interface InstrumentationProfile extends Identifier {
 	void setAggregateInternalCallsTransparently(boolean value);
 
 	/**
-	 * Returns the value of the '<em><b>Aggregation Type</b></em>' attribute.
-	 * The default value is <code>"ONLINE"</code>.
-	 * The literals are from the enumeration {@link edu.kit.ipd.sdq.bycounter.input.AggregationType}.
-	 * <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of the '<em>Aggregation Type</em>' attribute isn't clear,
-	 * there really should be more of a description here...
-	 * </p>
-	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Aggregation Type</em>' attribute.
-	 * @see edu.kit.ipd.sdq.bycounter.input.AggregationType
-	 * @see #setAggregationType(AggregationType)
-	 * @see edu.kit.ipd.sdq.bycounter.input.InputPackage#getInstrumentationProfile_AggregationType()
-	 * @model default="ONLINE" required="true" ordered="false"
-	 * @generated
-	 */
-	AggregationType getAggregationType();
-
-	/**
-	 * Sets the value of the '{@link edu.kit.ipd.sdq.bycounter.input.InstrumentationProfile#getAggregationType <em>Aggregation Type</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Aggregation Type</em>' attribute.
-	 * @see edu.kit.ipd.sdq.bycounter.input.AggregationType
-	 * @see #getAggregationType()
-	 * @generated
-	 */
-	void setAggregationType(AggregationType value);
-
-	/**
 	 * Returns the value of the '<em><b>Persist Instrumented Classes</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <p>
@@ -171,54 +138,6 @@ public interface InstrumentationProfile extends Identifier {
 	 * @generated
 	 */
 	void setPersistInstrumentedClasses(String value);
-
-	/**
-	 * Returns the value of the '<em><b>Temporary Results Type</b></em>' attribute.
-	 * The default value is <code>"IN_MEMORY"</code>.
-	 * The literals are from the enumeration {@link edu.kit.ipd.sdq.bycounter.input.InternalResultStorageType}.
-	 * <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of the '<em>Temporary Results Type</em>' attribute isn't clear,
-	 * there really should be more of a description here...
-	 * </p>
-	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Temporary Results Type</em>' attribute.
-	 * @see edu.kit.ipd.sdq.bycounter.input.InternalResultStorageType
-	 * @see #setTemporaryResultsType(InternalResultStorageType)
-	 * @see edu.kit.ipd.sdq.bycounter.input.InputPackage#getInstrumentationProfile_TemporaryResultsType()
-	 * @model default="IN_MEMORY" required="true" ordered="false"
-	 * @generated
-	 */
-	InternalResultStorageType getTemporaryResultsType();
-
-	/**
-	 * Sets the value of the '{@link edu.kit.ipd.sdq.bycounter.input.InstrumentationProfile#getTemporaryResultsType <em>Temporary Results Type</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Temporary Results Type</em>' attribute.
-	 * @see edu.kit.ipd.sdq.bycounter.input.InternalResultStorageType
-	 * @see #getTemporaryResultsType()
-	 * @generated
-	 */
-	void setTemporaryResultsType(InternalResultStorageType value);
-
-	/**
-	 * Returns the value of the '<em><b>Entities To Instrument</b></em>' containment reference list.
-	 * The list contents are of type {@link edu.kit.ipd.sdq.bycounter.input.EntityToInstrument}.
-	 * It is bidirectional and its opposite is '{@link edu.kit.ipd.sdq.bycounter.input.EntityToInstrument#getInstrumentationProfile <em>Instrumentation Profile</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of the '<em>Entities To Instrument</em>' containment reference list isn't clear,
-	 * there really should be more of a description here...
-	 * </p>
-	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Entities To Instrument</em>' containment reference list.
-	 * @see edu.kit.ipd.sdq.bycounter.input.InputPackage#getInstrumentationProfile_EntitiesToInstrument()
-	 * @see edu.kit.ipd.sdq.bycounter.input.EntityToInstrument#getInstrumentationProfile
-	 * @model opposite="instrumentationProfile" containment="true" ordered="false"
-	 * @generated
-	 */
-	EList<EntityToInstrument> getEntitiesToInstrument();
 
 	/**
 	 * Returns the value of the '<em><b>Intrumentation Profile Repository</b></em>' container reference.
@@ -344,5 +263,35 @@ public interface InstrumentationProfile extends Identifier {
 	 * @generated
 	 */
 	EList<Method> getAggregationExcludes();
+
+	/**
+	 * Returns the value of the '<em><b>Entities To Instrument</b></em>' containment reference list.
+	 * The list contents are of type {@link edu.kit.ipd.sdq.bycounter.input.EntityToInstrument}.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Entities To Instrument</em>' containment reference list isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Entities To Instrument</em>' containment reference list.
+	 * @see edu.kit.ipd.sdq.bycounter.input.InputPackage#getInstrumentationProfile_EntitiesToInstrument()
+	 * @model containment="true" ordered="false"
+	 * @generated
+	 */
+	EList<EntityToInstrument> getEntitiesToInstrument();
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * <!-- begin-model-doc -->
+	 * self.summationExcludes->size()>0 implies self.aggregateInternalCallsTransparently=true
+	 * 
+	 * @param diagnostics The chain of diagnostics to which problems are to be appended.
+	 * @param context The cache of context-specific information.
+	 * <!-- end-model-doc -->
+	 * @model
+	 * @generated
+	 */
+	boolean SummationexcludesonlyallowedifsummationisactiveandaggregateInternalCallsTransparentlyistrue(DiagnosticChain diagnostics, Map<Object, Object> context);
 
 } // InstrumentationProfile

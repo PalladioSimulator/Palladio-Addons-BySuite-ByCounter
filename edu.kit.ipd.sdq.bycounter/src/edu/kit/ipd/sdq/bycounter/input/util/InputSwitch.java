@@ -10,10 +10,10 @@ import de.uka.ipd.sdq.identifier.Identifier;
 
 import edu.kit.ipd.sdq.bycounter.input.*;
 
-import java.util.List;
-
-import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.EPackage;
+
+import org.eclipse.emf.ecore.util.Switch;
 
 /**
  * <!-- begin-user-doc -->
@@ -28,7 +28,7 @@ import org.eclipse.emf.ecore.EObject;
  * @see edu.kit.ipd.sdq.bycounter.input.InputPackage
  * @generated
  */
-public class InputSwitch<T> {
+public class InputSwitch<T> extends Switch<T> {
 	/**
 	 * The cached model package
 	 * <!-- begin-user-doc -->
@@ -50,14 +50,16 @@ public class InputSwitch<T> {
 	}
 
 	/**
-	 * Calls <code>caseXXX</code> for each class of the model until one returns a non null result; it yields that result.
+	 * Checks whether this is a switch for the given package.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the first non-null result returned by a <code>caseXXX</code> call.
+	 * @parameter ePackage the package in question.
+	 * @return whether this is a switch for the given package.
 	 * @generated
 	 */
-	public T doSwitch(EObject theEObject) {
-		return doSwitch(theEObject.eClass(), theEObject);
+	@Override
+	protected boolean isSwitchFor(EPackage ePackage) {
+		return ePackage == modelPackage;
 	}
 
 	/**
@@ -67,26 +69,7 @@ public class InputSwitch<T> {
 	 * @return the first non-null result returned by a <code>caseXXX</code> call.
 	 * @generated
 	 */
-	protected T doSwitch(EClass theEClass, EObject theEObject) {
-		if (theEClass.eContainer() == modelPackage) {
-			return doSwitch(theEClass.getClassifierID(), theEObject);
-		}
-		else {
-			List<EClass> eSuperTypes = theEClass.getESuperTypes();
-			return
-				eSuperTypes.isEmpty() ?
-					defaultCase(theEObject) :
-					doSwitch(eSuperTypes.get(0), theEObject);
-		}
-	}
-
-	/**
-	 * Calls <code>caseXXX</code> for each class of the model until one returns a non null result; it yields that result.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the first non-null result returned by a <code>caseXXX</code> call.
-	 * @generated
-	 */
+	@Override
 	protected T doSwitch(int classifierID, EObject theEObject) {
 		switch (classifierID) {
 			case InputPackage.INSTRUMENTATION_PROFILE: {
@@ -110,11 +93,16 @@ public class InputSwitch<T> {
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
+			case InputPackage.ENTITY_TO_INSTRUMENT: {
+				EntityToInstrument entityToInstrument = (EntityToInstrument)theEObject;
+				T result = caseEntityToInstrument(entityToInstrument);
+				if (result == null) result = defaultCase(theEObject);
+				return result;
+			}
 			case InputPackage.INSTRUMENTED_CODE_AREA: {
 				InstrumentedCodeArea instrumentedCodeArea = (InstrumentedCodeArea)theEObject;
 				T result = caseInstrumentedCodeArea(instrumentedCodeArea);
 				if (result == null) result = caseEntityToInstrument(instrumentedCodeArea);
-				if (result == null) result = caseIdentifier(instrumentedCodeArea);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
@@ -122,14 +110,13 @@ public class InputSwitch<T> {
 				InstrumentedMethod instrumentedMethod = (InstrumentedMethod)theEObject;
 				T result = caseInstrumentedMethod(instrumentedMethod);
 				if (result == null) result = caseEntityToInstrument(instrumentedMethod);
-				if (result == null) result = caseIdentifier(instrumentedMethod);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case InputPackage.ENTITY_TO_INSTRUMENT: {
-				EntityToInstrument entityToInstrument = (EntityToInstrument)theEObject;
-				T result = caseEntityToInstrument(entityToInstrument);
-				if (result == null) result = caseIdentifier(entityToInstrument);
+			case InputPackage.INSTRUMENTED_REGION: {
+				InstrumentedRegion instrumentedRegion = (InstrumentedRegion)theEObject;
+				T result = caseInstrumentedRegion(instrumentedRegion);
+				if (result == null) result = caseEntityToInstrument(instrumentedRegion);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
@@ -183,6 +170,21 @@ public class InputSwitch<T> {
 	}
 
 	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Entity To Instrument</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Entity To Instrument</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseEntityToInstrument(EntityToInstrument object) {
+		return null;
+	}
+
+	/**
 	 * Returns the result of interpreting the object as an instance of '<em>Instrumented Code Area</em>'.
 	 * <!-- begin-user-doc -->
 	 * This implementation returns null;
@@ -213,17 +215,17 @@ public class InputSwitch<T> {
 	}
 
 	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Entity To Instrument</em>'.
+	 * Returns the result of interpreting the object as an instance of '<em>Instrumented Region</em>'.
 	 * <!-- begin-user-doc -->
 	 * This implementation returns null;
 	 * returning a non-null result will terminate the switch.
 	 * <!-- end-user-doc -->
 	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Entity To Instrument</em>'.
+	 * @return the result of interpreting the object as an instance of '<em>Instrumented Region</em>'.
 	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
 	 * @generated
 	 */
-	public T caseEntityToInstrument(EntityToInstrument object) {
+	public T caseInstrumentedRegion(InstrumentedRegion object) {
 		return null;
 	}
 
@@ -253,6 +255,7 @@ public class InputSwitch<T> {
 	 * @see #doSwitch(org.eclipse.emf.ecore.EObject)
 	 * @generated
 	 */
+	@Override
 	public T defaultCase(EObject object) {
 		return null;
 	}

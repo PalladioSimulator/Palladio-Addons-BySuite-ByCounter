@@ -22,7 +22,6 @@ import de.fzi.gast.variables.variablesPackage;
 
 import de.uka.ipd.sdq.identifier.IdentifierPackage;
 
-import edu.kit.ipd.sdq.bycounter.input.AggregationType;
 import edu.kit.ipd.sdq.bycounter.input.EntityToInstrument;
 import edu.kit.ipd.sdq.bycounter.input.InputFactory;
 import edu.kit.ipd.sdq.bycounter.input.InputPackage;
@@ -30,8 +29,10 @@ import edu.kit.ipd.sdq.bycounter.input.InstrumentationProfile;
 import edu.kit.ipd.sdq.bycounter.input.InstrumentationProfileRepository;
 import edu.kit.ipd.sdq.bycounter.input.InstrumentedCodeArea;
 import edu.kit.ipd.sdq.bycounter.input.InstrumentedMethod;
-import edu.kit.ipd.sdq.bycounter.input.InternalResultStorageType;
+import edu.kit.ipd.sdq.bycounter.input.InstrumentedRegion;
 import edu.kit.ipd.sdq.bycounter.input.LogicalSet;
+
+import edu.kit.ipd.sdq.bycounter.input.util.InputValidator;
 
 import edu.kit.ipd.sdq.bycounter.output.OutputPackage;
 
@@ -39,9 +40,11 @@ import edu.kit.ipd.sdq.bycounter.output.impl.OutputPackageImpl;
 
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.EEnum;
+import org.eclipse.emf.ecore.EGenericType;
+import org.eclipse.emf.ecore.EOperation;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EReference;
+import org.eclipse.emf.ecore.EValidator;
 import org.eclipse.emf.ecore.EcorePackage;
 
 import org.eclipse.emf.ecore.impl.EPackageImpl;
@@ -79,6 +82,13 @@ public class InputPackageImpl extends EPackageImpl implements InputPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	private EClass entityToInstrumentEClass = null;
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	private EClass instrumentedCodeAreaEClass = null;
 
 	/**
@@ -93,21 +103,7 @@ public class InputPackageImpl extends EPackageImpl implements InputPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	private EClass entityToInstrumentEClass = null;
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	private EEnum aggregationTypeEEnum = null;
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	private EEnum internalResultStorageTypeEEnum = null;
+	private EClass instrumentedRegionEClass = null;
 
 	/**
 	 * Creates an instance of the model <b>Package</b>, registered with
@@ -177,6 +173,15 @@ public class InputPackageImpl extends EPackageImpl implements InputPackage {
 		theInputPackage.initializePackageContents();
 		theOutputPackage.initializePackageContents();
 
+		// Register package validator
+		EValidator.Registry.INSTANCE.put
+			(theInputPackage, 
+			 new EValidator.Descriptor() {
+				 public EValidator getEValidator() {
+					 return InputValidator.INSTANCE;
+				 }
+			 });
+
 		// Mark meta-data to indicate it can't be changed
 		theInputPackage.freeze();
 
@@ -227,7 +232,7 @@ public class InputPackageImpl extends EPackageImpl implements InputPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getInstrumentationProfile_AggregationType() {
+	public EAttribute getInstrumentationProfile_PersistInstrumentedClasses() {
 		return (EAttribute)instrumentationProfileEClass.getEStructuralFeatures().get(3);
 	}
 
@@ -236,35 +241,8 @@ public class InputPackageImpl extends EPackageImpl implements InputPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getInstrumentationProfile_PersistInstrumentedClasses() {
-		return (EAttribute)instrumentationProfileEClass.getEStructuralFeatures().get(4);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public EAttribute getInstrumentationProfile_TemporaryResultsType() {
-		return (EAttribute)instrumentationProfileEClass.getEStructuralFeatures().get(5);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public EReference getInstrumentationProfile_EntitiesToInstrument() {
-		return (EReference)instrumentationProfileEClass.getEStructuralFeatures().get(6);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
 	public EReference getInstrumentationProfile_IntrumentationProfileRepository() {
-		return (EReference)instrumentationProfileEClass.getEStructuralFeatures().get(7);
+		return (EReference)instrumentationProfileEClass.getEStructuralFeatures().get(4);
 	}
 
 	/**
@@ -273,7 +251,7 @@ public class InputPackageImpl extends EPackageImpl implements InputPackage {
 	 * @generated
 	 */
 	public EAttribute getInstrumentationProfile_InstrumentUsingLongCounters() {
-		return (EAttribute)instrumentationProfileEClass.getEStructuralFeatures().get(8);
+		return (EAttribute)instrumentationProfileEClass.getEStructuralFeatures().get(5);
 	}
 
 	/**
@@ -282,7 +260,7 @@ public class InputPackageImpl extends EPackageImpl implements InputPackage {
 	 * @generated
 	 */
 	public EAttribute getInstrumentationProfile_InstrumentUsingBasicBlocks() {
-		return (EAttribute)instrumentationProfileEClass.getEStructuralFeatures().get(9);
+		return (EAttribute)instrumentationProfileEClass.getEStructuralFeatures().get(6);
 	}
 
 	/**
@@ -291,7 +269,7 @@ public class InputPackageImpl extends EPackageImpl implements InputPackage {
 	 * @generated
 	 */
 	public EAttribute getInstrumentationProfile_TraceAndIdentifyRequests() {
-		return (EAttribute)instrumentationProfileEClass.getEStructuralFeatures().get(10);
+		return (EAttribute)instrumentationProfileEClass.getEStructuralFeatures().get(7);
 	}
 
 	/**
@@ -300,7 +278,16 @@ public class InputPackageImpl extends EPackageImpl implements InputPackage {
 	 * @generated
 	 */
 	public EReference getInstrumentationProfile_AggregationExcludes() {
-		return (EReference)instrumentationProfileEClass.getEStructuralFeatures().get(11);
+		return (EReference)instrumentationProfileEClass.getEStructuralFeatures().get(8);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EReference getInstrumentationProfile_EntitiesToInstrument() {
+		return (EReference)instrumentationProfileEClass.getEStructuralFeatures().get(9);
 	}
 
 	/**
@@ -346,6 +333,15 @@ public class InputPackageImpl extends EPackageImpl implements InputPackage {
 	 */
 	public EReference getInstrumentationProfileRepository_InstrumentationProfile() {
 		return (EReference)instrumentationProfileRepositoryEClass.getEStructuralFeatures().get(0);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EClass getEntityToInstrument() {
+		return entityToInstrumentEClass;
 	}
 
 	/**
@@ -425,8 +421,8 @@ public class InputPackageImpl extends EPackageImpl implements InputPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EClass getEntityToInstrument() {
-		return entityToInstrumentEClass;
+	public EClass getInstrumentedRegion() {
+		return instrumentedRegionEClass;
 	}
 
 	/**
@@ -434,8 +430,8 @@ public class InputPackageImpl extends EPackageImpl implements InputPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EReference getEntityToInstrument_InstrumentationProfile() {
-		return (EReference)entityToInstrumentEClass.getEStructuralFeatures().get(0);
+	public EAttribute getInstrumentedRegion_StartLine() {
+		return (EAttribute)instrumentedRegionEClass.getEStructuralFeatures().get(0);
 	}
 
 	/**
@@ -443,8 +439,8 @@ public class InputPackageImpl extends EPackageImpl implements InputPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EEnum getAggregationType() {
-		return aggregationTypeEEnum;
+	public EAttribute getInstrumentedRegion_StopLine() {
+		return (EAttribute)instrumentedRegionEClass.getEStructuralFeatures().get(1);
 	}
 
 	/**
@@ -452,8 +448,17 @@ public class InputPackageImpl extends EPackageImpl implements InputPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EEnum getInternalResultStorageType() {
-		return internalResultStorageTypeEEnum;
+	public EReference getInstrumentedRegion_StartMethod() {
+		return (EReference)instrumentedRegionEClass.getEStructuralFeatures().get(2);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EReference getInstrumentedRegion_StopMethod() {
+		return (EReference)instrumentedRegionEClass.getEStructuralFeatures().get(3);
 	}
 
 	/**
@@ -488,15 +493,13 @@ public class InputPackageImpl extends EPackageImpl implements InputPackage {
 		createEReference(instrumentationProfileEClass, INSTRUMENTATION_PROFILE__DEFINED_LOGICAL_SETS);
 		createEAttribute(instrumentationProfileEClass, INSTRUMENTATION_PROFILE__INSTRUMENT_RECURSIVELY);
 		createEAttribute(instrumentationProfileEClass, INSTRUMENTATION_PROFILE__AGGREGATE_INTERNAL_CALLS_TRANSPARENTLY);
-		createEAttribute(instrumentationProfileEClass, INSTRUMENTATION_PROFILE__AGGREGATION_TYPE);
 		createEAttribute(instrumentationProfileEClass, INSTRUMENTATION_PROFILE__PERSIST_INSTRUMENTED_CLASSES);
-		createEAttribute(instrumentationProfileEClass, INSTRUMENTATION_PROFILE__TEMPORARY_RESULTS_TYPE);
-		createEReference(instrumentationProfileEClass, INSTRUMENTATION_PROFILE__ENTITIES_TO_INSTRUMENT);
 		createEReference(instrumentationProfileEClass, INSTRUMENTATION_PROFILE__INTRUMENTATION_PROFILE_REPOSITORY);
 		createEAttribute(instrumentationProfileEClass, INSTRUMENTATION_PROFILE__INSTRUMENT_USING_LONG_COUNTERS);
 		createEAttribute(instrumentationProfileEClass, INSTRUMENTATION_PROFILE__INSTRUMENT_USING_BASIC_BLOCKS);
 		createEAttribute(instrumentationProfileEClass, INSTRUMENTATION_PROFILE__TRACE_AND_IDENTIFY_REQUESTS);
 		createEReference(instrumentationProfileEClass, INSTRUMENTATION_PROFILE__AGGREGATION_EXCLUDES);
+		createEReference(instrumentationProfileEClass, INSTRUMENTATION_PROFILE__ENTITIES_TO_INSTRUMENT);
 
 		logicalSetEClass = createEClass(LOGICAL_SET);
 		createEReference(logicalSetEClass, LOGICAL_SET__INTERNAL_CLASSES);
@@ -504,6 +507,8 @@ public class InputPackageImpl extends EPackageImpl implements InputPackage {
 
 		instrumentationProfileRepositoryEClass = createEClass(INSTRUMENTATION_PROFILE_REPOSITORY);
 		createEReference(instrumentationProfileRepositoryEClass, INSTRUMENTATION_PROFILE_REPOSITORY__INSTRUMENTATION_PROFILE);
+
+		entityToInstrumentEClass = createEClass(ENTITY_TO_INSTRUMENT);
 
 		instrumentedCodeAreaEClass = createEClass(INSTRUMENTED_CODE_AREA);
 		createEReference(instrumentedCodeAreaEClass, INSTRUMENTED_CODE_AREA__FROM);
@@ -515,12 +520,11 @@ public class InputPackageImpl extends EPackageImpl implements InputPackage {
 		createEAttribute(instrumentedMethodEClass, INSTRUMENTED_METHOD__INSTRUMENT_DERIVED);
 		createEReference(instrumentedMethodEClass, INSTRUMENTED_METHOD__METHOD);
 
-		entityToInstrumentEClass = createEClass(ENTITY_TO_INSTRUMENT);
-		createEReference(entityToInstrumentEClass, ENTITY_TO_INSTRUMENT__INSTRUMENTATION_PROFILE);
-
-		// Create enums
-		aggregationTypeEEnum = createEEnum(AGGREGATION_TYPE);
-		internalResultStorageTypeEEnum = createEEnum(INTERNAL_RESULT_STORAGE_TYPE);
+		instrumentedRegionEClass = createEClass(INSTRUMENTED_REGION);
+		createEAttribute(instrumentedRegionEClass, INSTRUMENTED_REGION__START_LINE);
+		createEAttribute(instrumentedRegionEClass, INSTRUMENTED_REGION__STOP_LINE);
+		createEReference(instrumentedRegionEClass, INSTRUMENTED_REGION__START_METHOD);
+		createEReference(instrumentedRegionEClass, INSTRUMENTED_REGION__STOP_METHOD);
 	}
 
 	/**
@@ -563,22 +567,29 @@ public class InputPackageImpl extends EPackageImpl implements InputPackage {
 		instrumentationProfileRepositoryEClass.getESuperTypes().add(theIdentifierPackage.getIdentifier());
 		instrumentedCodeAreaEClass.getESuperTypes().add(this.getEntityToInstrument());
 		instrumentedMethodEClass.getESuperTypes().add(this.getEntityToInstrument());
-		entityToInstrumentEClass.getESuperTypes().add(theIdentifierPackage.getIdentifier());
+		instrumentedRegionEClass.getESuperTypes().add(this.getEntityToInstrument());
 
 		// Initialize classes and features; add operations and parameters
 		initEClass(instrumentationProfileEClass, InstrumentationProfile.class, "InstrumentationProfile", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getInstrumentationProfile_DefinedLogicalSets(), this.getLogicalSet(), this.getLogicalSet_InstrumentationProfile(), "definedLogicalSets", null, 0, -1, InstrumentationProfile.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
 		initEAttribute(getInstrumentationProfile_InstrumentRecursively(), ecorePackage.getEBoolean(), "instrumentRecursively", "true", 1, 1, InstrumentationProfile.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
 		initEAttribute(getInstrumentationProfile_AggregateInternalCallsTransparently(), ecorePackage.getEBoolean(), "aggregateInternalCallsTransparently", "true", 1, 1, InstrumentationProfile.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
-		initEAttribute(getInstrumentationProfile_AggregationType(), this.getAggregationType(), "aggregationType", "ONLINE", 1, 1, InstrumentationProfile.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
 		initEAttribute(getInstrumentationProfile_PersistInstrumentedClasses(), theEcorePackage.getEString(), "persistInstrumentedClasses", null, 1, 1, InstrumentationProfile.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
-		initEAttribute(getInstrumentationProfile_TemporaryResultsType(), this.getInternalResultStorageType(), "temporaryResultsType", "IN_MEMORY", 1, 1, InstrumentationProfile.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
-		initEReference(getInstrumentationProfile_EntitiesToInstrument(), this.getEntityToInstrument(), this.getEntityToInstrument_InstrumentationProfile(), "entitiesToInstrument", null, 0, -1, InstrumentationProfile.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
 		initEReference(getInstrumentationProfile_IntrumentationProfileRepository(), this.getInstrumentationProfileRepository(), this.getInstrumentationProfileRepository_InstrumentationProfile(), "intrumentationProfileRepository", null, 0, 1, InstrumentationProfile.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
 		initEAttribute(getInstrumentationProfile_InstrumentUsingLongCounters(), ecorePackage.getEBoolean(), "instrumentUsingLongCounters", "true", 1, 1, InstrumentationProfile.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
 		initEAttribute(getInstrumentationProfile_InstrumentUsingBasicBlocks(), ecorePackage.getEBoolean(), "instrumentUsingBasicBlocks", "true", 1, 1, InstrumentationProfile.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
 		initEAttribute(getInstrumentationProfile_TraceAndIdentifyRequests(), ecorePackage.getEBoolean(), "traceAndIdentifyRequests", "false", 1, 1, InstrumentationProfile.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
 		initEReference(getInstrumentationProfile_AggregationExcludes(), thefunctionsPackage.getMethod(), null, "aggregationExcludes", null, 0, -1, InstrumentationProfile.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+		initEReference(getInstrumentationProfile_EntitiesToInstrument(), this.getEntityToInstrument(), null, "entitiesToInstrument", null, 0, -1, InstrumentationProfile.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+
+		EOperation op = addEOperation(instrumentationProfileEClass, ecorePackage.getEBoolean(), "SummationexcludesonlyallowedifsummationisactiveandaggregateInternalCallsTransparentlyistrue", 0, 1, IS_UNIQUE, IS_ORDERED);
+		addEParameter(op, ecorePackage.getEDiagnosticChain(), "diagnostics", 0, 1, IS_UNIQUE, IS_ORDERED);
+		EGenericType g1 = createEGenericType(ecorePackage.getEMap());
+		EGenericType g2 = createEGenericType(ecorePackage.getEJavaObject());
+		g1.getETypeArguments().add(g2);
+		g2 = createEGenericType(ecorePackage.getEJavaObject());
+		g1.getETypeArguments().add(g2);
+		addEParameter(op, g1, "context", 0, 1, IS_UNIQUE, IS_ORDERED);
 
 		initEClass(logicalSetEClass, LogicalSet.class, "LogicalSet", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getLogicalSet_InternalClasses(), thetypesPackage.getGASTClass(), null, "internalClasses", null, 0, -1, LogicalSet.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
@@ -586,6 +597,8 @@ public class InputPackageImpl extends EPackageImpl implements InputPackage {
 
 		initEClass(instrumentationProfileRepositoryEClass, InstrumentationProfileRepository.class, "InstrumentationProfileRepository", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getInstrumentationProfileRepository_InstrumentationProfile(), this.getInstrumentationProfile(), this.getInstrumentationProfile_IntrumentationProfileRepository(), "instrumentationProfile", null, 0, -1, InstrumentationProfileRepository.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+
+		initEClass(entityToInstrumentEClass, EntityToInstrument.class, "EntityToInstrument", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
 		initEClass(instrumentedCodeAreaEClass, InstrumentedCodeArea.class, "InstrumentedCodeArea", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getInstrumentedCodeArea_From(), thestatementsPackage.getStatement(), null, "from", null, 1, 1, InstrumentedCodeArea.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
@@ -597,17 +610,11 @@ public class InputPackageImpl extends EPackageImpl implements InputPackage {
 		initEAttribute(getInstrumentedMethod_InstrumentDerived(), ecorePackage.getEBoolean(), "instrumentDerived", "false", 1, 1, InstrumentedMethod.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
 		initEReference(getInstrumentedMethod_Method(), thefunctionsPackage.getMethod(), null, "method", null, 1, 1, InstrumentedMethod.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
 
-		initEClass(entityToInstrumentEClass, EntityToInstrument.class, "EntityToInstrument", IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEReference(getEntityToInstrument_InstrumentationProfile(), this.getInstrumentationProfile(), this.getInstrumentationProfile_EntitiesToInstrument(), "instrumentationProfile", null, 0, 1, EntityToInstrument.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
-
-		// Initialize enums and add enum literals
-		initEEnum(aggregationTypeEEnum, AggregationType.class, "AggregationType");
-		addEEnumLiteral(aggregationTypeEEnum, AggregationType.ONLINE);
-		addEEnumLiteral(aggregationTypeEEnum, AggregationType.OFFLINE);
-
-		initEEnum(internalResultStorageTypeEEnum, InternalResultStorageType.class, "InternalResultStorageType");
-		addEEnumLiteral(internalResultStorageTypeEEnum, InternalResultStorageType.IN_MEMORY);
-		addEEnumLiteral(internalResultStorageTypeEEnum, InternalResultStorageType.ON_HDD);
+		initEClass(instrumentedRegionEClass, InstrumentedRegion.class, "InstrumentedRegion", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEAttribute(getInstrumentedRegion_StartLine(), ecorePackage.getEInt(), "startLine", null, 1, 1, InstrumentedRegion.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+		initEAttribute(getInstrumentedRegion_StopLine(), ecorePackage.getEInt(), "stopLine", null, 1, 1, InstrumentedRegion.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+		initEReference(getInstrumentedRegion_StartMethod(), thefunctionsPackage.getMethod(), null, "startMethod", null, 1, 1, InstrumentedRegion.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+		initEReference(getInstrumentedRegion_StopMethod(), thefunctionsPackage.getMethod(), null, "stopMethod", null, 1, 1, InstrumentedRegion.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
 
 		// Create resource
 		createResource(eNS_URI);

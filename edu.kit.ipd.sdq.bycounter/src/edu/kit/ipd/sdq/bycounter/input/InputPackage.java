@@ -10,7 +10,6 @@ import de.uka.ipd.sdq.identifier.IdentifierPackage;
 
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.EEnum;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EReference;
 
@@ -109,40 +108,13 @@ public interface InputPackage extends EPackage {
 	int INSTRUMENTATION_PROFILE__AGGREGATE_INTERNAL_CALLS_TRANSPARENTLY = IdentifierPackage.IDENTIFIER_FEATURE_COUNT + 2;
 
 	/**
-	 * The feature id for the '<em><b>Aggregation Type</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int INSTRUMENTATION_PROFILE__AGGREGATION_TYPE = IdentifierPackage.IDENTIFIER_FEATURE_COUNT + 3;
-
-	/**
 	 * The feature id for the '<em><b>Persist Instrumented Classes</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int INSTRUMENTATION_PROFILE__PERSIST_INSTRUMENTED_CLASSES = IdentifierPackage.IDENTIFIER_FEATURE_COUNT + 4;
-
-	/**
-	 * The feature id for the '<em><b>Temporary Results Type</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int INSTRUMENTATION_PROFILE__TEMPORARY_RESULTS_TYPE = IdentifierPackage.IDENTIFIER_FEATURE_COUNT + 5;
-
-	/**
-	 * The feature id for the '<em><b>Entities To Instrument</b></em>' containment reference list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int INSTRUMENTATION_PROFILE__ENTITIES_TO_INSTRUMENT = IdentifierPackage.IDENTIFIER_FEATURE_COUNT + 6;
+	int INSTRUMENTATION_PROFILE__PERSIST_INSTRUMENTED_CLASSES = IdentifierPackage.IDENTIFIER_FEATURE_COUNT + 3;
 
 	/**
 	 * The feature id for the '<em><b>Intrumentation Profile Repository</b></em>' container reference.
@@ -151,7 +123,7 @@ public interface InputPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int INSTRUMENTATION_PROFILE__INTRUMENTATION_PROFILE_REPOSITORY = IdentifierPackage.IDENTIFIER_FEATURE_COUNT + 7;
+	int INSTRUMENTATION_PROFILE__INTRUMENTATION_PROFILE_REPOSITORY = IdentifierPackage.IDENTIFIER_FEATURE_COUNT + 4;
 
 	/**
 	 * The feature id for the '<em><b>Instrument Using Long Counters</b></em>' attribute.
@@ -160,7 +132,7 @@ public interface InputPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int INSTRUMENTATION_PROFILE__INSTRUMENT_USING_LONG_COUNTERS = IdentifierPackage.IDENTIFIER_FEATURE_COUNT + 8;
+	int INSTRUMENTATION_PROFILE__INSTRUMENT_USING_LONG_COUNTERS = IdentifierPackage.IDENTIFIER_FEATURE_COUNT + 5;
 
 	/**
 	 * The feature id for the '<em><b>Instrument Using Basic Blocks</b></em>' attribute.
@@ -169,7 +141,7 @@ public interface InputPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int INSTRUMENTATION_PROFILE__INSTRUMENT_USING_BASIC_BLOCKS = IdentifierPackage.IDENTIFIER_FEATURE_COUNT + 9;
+	int INSTRUMENTATION_PROFILE__INSTRUMENT_USING_BASIC_BLOCKS = IdentifierPackage.IDENTIFIER_FEATURE_COUNT + 6;
 
 	/**
 	 * The feature id for the '<em><b>Trace And Identify Requests</b></em>' attribute.
@@ -178,7 +150,7 @@ public interface InputPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int INSTRUMENTATION_PROFILE__TRACE_AND_IDENTIFY_REQUESTS = IdentifierPackage.IDENTIFIER_FEATURE_COUNT + 10;
+	int INSTRUMENTATION_PROFILE__TRACE_AND_IDENTIFY_REQUESTS = IdentifierPackage.IDENTIFIER_FEATURE_COUNT + 7;
 
 	/**
 	 * The feature id for the '<em><b>Aggregation Excludes</b></em>' containment reference list.
@@ -187,7 +159,16 @@ public interface InputPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int INSTRUMENTATION_PROFILE__AGGREGATION_EXCLUDES = IdentifierPackage.IDENTIFIER_FEATURE_COUNT + 11;
+	int INSTRUMENTATION_PROFILE__AGGREGATION_EXCLUDES = IdentifierPackage.IDENTIFIER_FEATURE_COUNT + 8;
+
+	/**
+	 * The feature id for the '<em><b>Entities To Instrument</b></em>' containment reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int INSTRUMENTATION_PROFILE__ENTITIES_TO_INSTRUMENT = IdentifierPackage.IDENTIFIER_FEATURE_COUNT + 9;
 
 	/**
 	 * The number of structural features of the '<em>Instrumentation Profile</em>' class.
@@ -196,7 +177,7 @@ public interface InputPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int INSTRUMENTATION_PROFILE_FEATURE_COUNT = IdentifierPackage.IDENTIFIER_FEATURE_COUNT + 12;
+	int INSTRUMENTATION_PROFILE_FEATURE_COUNT = IdentifierPackage.IDENTIFIER_FEATURE_COUNT + 10;
 
 	/**
 	 * The meta object id for the '{@link edu.kit.ipd.sdq.bycounter.input.impl.LogicalSetImpl <em>Logical Set</em>}' class.
@@ -289,25 +270,7 @@ public interface InputPackage extends EPackage {
 	 * @see edu.kit.ipd.sdq.bycounter.input.impl.InputPackageImpl#getEntityToInstrument()
 	 * @generated
 	 */
-	int ENTITY_TO_INSTRUMENT = 5;
-
-	/**
-	 * The feature id for the '<em><b>Id</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int ENTITY_TO_INSTRUMENT__ID = IdentifierPackage.IDENTIFIER__ID;
-
-	/**
-	 * The feature id for the '<em><b>Instrumentation Profile</b></em>' container reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int ENTITY_TO_INSTRUMENT__INSTRUMENTATION_PROFILE = IdentifierPackage.IDENTIFIER_FEATURE_COUNT + 0;
+	int ENTITY_TO_INSTRUMENT = 3;
 
 	/**
 	 * The number of structural features of the '<em>Entity To Instrument</em>' class.
@@ -316,7 +279,7 @@ public interface InputPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int ENTITY_TO_INSTRUMENT_FEATURE_COUNT = IdentifierPackage.IDENTIFIER_FEATURE_COUNT + 1;
+	int ENTITY_TO_INSTRUMENT_FEATURE_COUNT = 0;
 
 	/**
 	 * The meta object id for the '{@link edu.kit.ipd.sdq.bycounter.input.impl.InstrumentedCodeAreaImpl <em>Instrumented Code Area</em>}' class.
@@ -326,25 +289,7 @@ public interface InputPackage extends EPackage {
 	 * @see edu.kit.ipd.sdq.bycounter.input.impl.InputPackageImpl#getInstrumentedCodeArea()
 	 * @generated
 	 */
-	int INSTRUMENTED_CODE_AREA = 3;
-
-	/**
-	 * The feature id for the '<em><b>Id</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int INSTRUMENTED_CODE_AREA__ID = ENTITY_TO_INSTRUMENT__ID;
-
-	/**
-	 * The feature id for the '<em><b>Instrumentation Profile</b></em>' container reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int INSTRUMENTED_CODE_AREA__INSTRUMENTATION_PROFILE = ENTITY_TO_INSTRUMENT__INSTRUMENTATION_PROFILE;
+	int INSTRUMENTED_CODE_AREA = 4;
 
 	/**
 	 * The feature id for the '<em><b>From</b></em>' reference.
@@ -381,25 +326,7 @@ public interface InputPackage extends EPackage {
 	 * @see edu.kit.ipd.sdq.bycounter.input.impl.InputPackageImpl#getInstrumentedMethod()
 	 * @generated
 	 */
-	int INSTRUMENTED_METHOD = 4;
-
-	/**
-	 * The feature id for the '<em><b>Id</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int INSTRUMENTED_METHOD__ID = ENTITY_TO_INSTRUMENT__ID;
-
-	/**
-	 * The feature id for the '<em><b>Instrumentation Profile</b></em>' container reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int INSTRUMENTED_METHOD__INSTRUMENTATION_PROFILE = ENTITY_TO_INSTRUMENT__INSTRUMENTATION_PROFILE;
+	int INSTRUMENTED_METHOD = 5;
 
 	/**
 	 * The feature id for the '<em><b>Implementation Or Derived</b></em>' containment reference list.
@@ -447,24 +374,59 @@ public interface InputPackage extends EPackage {
 	int INSTRUMENTED_METHOD_FEATURE_COUNT = ENTITY_TO_INSTRUMENT_FEATURE_COUNT + 4;
 
 	/**
-	 * The meta object id for the '{@link edu.kit.ipd.sdq.bycounter.input.AggregationType <em>Aggregation Type</em>}' enum.
+	 * The meta object id for the '{@link edu.kit.ipd.sdq.bycounter.input.impl.InstrumentedRegionImpl <em>Instrumented Region</em>}' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see edu.kit.ipd.sdq.bycounter.input.AggregationType
-	 * @see edu.kit.ipd.sdq.bycounter.input.impl.InputPackageImpl#getAggregationType()
+	 * @see edu.kit.ipd.sdq.bycounter.input.impl.InstrumentedRegionImpl
+	 * @see edu.kit.ipd.sdq.bycounter.input.impl.InputPackageImpl#getInstrumentedRegion()
 	 * @generated
 	 */
-	int AGGREGATION_TYPE = 6;
+	int INSTRUMENTED_REGION = 6;
 
 	/**
-	 * The meta object id for the '{@link edu.kit.ipd.sdq.bycounter.input.InternalResultStorageType <em>Internal Result Storage Type</em>}' enum.
+	 * The feature id for the '<em><b>Start Line</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see edu.kit.ipd.sdq.bycounter.input.InternalResultStorageType
-	 * @see edu.kit.ipd.sdq.bycounter.input.impl.InputPackageImpl#getInternalResultStorageType()
 	 * @generated
+	 * @ordered
 	 */
-	int INTERNAL_RESULT_STORAGE_TYPE = 7;
+	int INSTRUMENTED_REGION__START_LINE = ENTITY_TO_INSTRUMENT_FEATURE_COUNT + 0;
+
+	/**
+	 * The feature id for the '<em><b>Stop Line</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int INSTRUMENTED_REGION__STOP_LINE = ENTITY_TO_INSTRUMENT_FEATURE_COUNT + 1;
+
+	/**
+	 * The feature id for the '<em><b>Start Method</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int INSTRUMENTED_REGION__START_METHOD = ENTITY_TO_INSTRUMENT_FEATURE_COUNT + 2;
+
+	/**
+	 * The feature id for the '<em><b>Stop Method</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int INSTRUMENTED_REGION__STOP_METHOD = ENTITY_TO_INSTRUMENT_FEATURE_COUNT + 3;
+
+	/**
+	 * The number of structural features of the '<em>Instrumented Region</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int INSTRUMENTED_REGION_FEATURE_COUNT = ENTITY_TO_INSTRUMENT_FEATURE_COUNT + 4;
 
 
 	/**
@@ -511,17 +473,6 @@ public interface InputPackage extends EPackage {
 	EAttribute getInstrumentationProfile_AggregateInternalCallsTransparently();
 
 	/**
-	 * Returns the meta object for the attribute '{@link edu.kit.ipd.sdq.bycounter.input.InstrumentationProfile#getAggregationType <em>Aggregation Type</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Aggregation Type</em>'.
-	 * @see edu.kit.ipd.sdq.bycounter.input.InstrumentationProfile#getAggregationType()
-	 * @see #getInstrumentationProfile()
-	 * @generated
-	 */
-	EAttribute getInstrumentationProfile_AggregationType();
-
-	/**
 	 * Returns the meta object for the attribute '{@link edu.kit.ipd.sdq.bycounter.input.InstrumentationProfile#getPersistInstrumentedClasses <em>Persist Instrumented Classes</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -531,28 +482,6 @@ public interface InputPackage extends EPackage {
 	 * @generated
 	 */
 	EAttribute getInstrumentationProfile_PersistInstrumentedClasses();
-
-	/**
-	 * Returns the meta object for the attribute '{@link edu.kit.ipd.sdq.bycounter.input.InstrumentationProfile#getTemporaryResultsType <em>Temporary Results Type</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Temporary Results Type</em>'.
-	 * @see edu.kit.ipd.sdq.bycounter.input.InstrumentationProfile#getTemporaryResultsType()
-	 * @see #getInstrumentationProfile()
-	 * @generated
-	 */
-	EAttribute getInstrumentationProfile_TemporaryResultsType();
-
-	/**
-	 * Returns the meta object for the containment reference list '{@link edu.kit.ipd.sdq.bycounter.input.InstrumentationProfile#getEntitiesToInstrument <em>Entities To Instrument</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the containment reference list '<em>Entities To Instrument</em>'.
-	 * @see edu.kit.ipd.sdq.bycounter.input.InstrumentationProfile#getEntitiesToInstrument()
-	 * @see #getInstrumentationProfile()
-	 * @generated
-	 */
-	EReference getInstrumentationProfile_EntitiesToInstrument();
 
 	/**
 	 * Returns the meta object for the container reference '{@link edu.kit.ipd.sdq.bycounter.input.InstrumentationProfile#getIntrumentationProfileRepository <em>Intrumentation Profile Repository</em>}'.
@@ -610,6 +539,17 @@ public interface InputPackage extends EPackage {
 	EReference getInstrumentationProfile_AggregationExcludes();
 
 	/**
+	 * Returns the meta object for the containment reference list '{@link edu.kit.ipd.sdq.bycounter.input.InstrumentationProfile#getEntitiesToInstrument <em>Entities To Instrument</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the containment reference list '<em>Entities To Instrument</em>'.
+	 * @see edu.kit.ipd.sdq.bycounter.input.InstrumentationProfile#getEntitiesToInstrument()
+	 * @see #getInstrumentationProfile()
+	 * @generated
+	 */
+	EReference getInstrumentationProfile_EntitiesToInstrument();
+
+	/**
 	 * Returns the meta object for class '{@link edu.kit.ipd.sdq.bycounter.input.LogicalSet <em>Logical Set</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -661,6 +601,16 @@ public interface InputPackage extends EPackage {
 	 * @generated
 	 */
 	EReference getInstrumentationProfileRepository_InstrumentationProfile();
+
+	/**
+	 * Returns the meta object for class '{@link edu.kit.ipd.sdq.bycounter.input.EntityToInstrument <em>Entity To Instrument</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for class '<em>Entity To Instrument</em>'.
+	 * @see edu.kit.ipd.sdq.bycounter.input.EntityToInstrument
+	 * @generated
+	 */
+	EClass getEntityToInstrument();
 
 	/**
 	 * Returns the meta object for class '{@link edu.kit.ipd.sdq.bycounter.input.InstrumentedCodeArea <em>Instrumented Code Area</em>}'.
@@ -749,45 +699,58 @@ public interface InputPackage extends EPackage {
 	EReference getInstrumentedMethod_Method();
 
 	/**
-	 * Returns the meta object for class '{@link edu.kit.ipd.sdq.bycounter.input.EntityToInstrument <em>Entity To Instrument</em>}'.
+	 * Returns the meta object for class '{@link edu.kit.ipd.sdq.bycounter.input.InstrumentedRegion <em>Instrumented Region</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for class '<em>Entity To Instrument</em>'.
-	 * @see edu.kit.ipd.sdq.bycounter.input.EntityToInstrument
+	 * @return the meta object for class '<em>Instrumented Region</em>'.
+	 * @see edu.kit.ipd.sdq.bycounter.input.InstrumentedRegion
 	 * @generated
 	 */
-	EClass getEntityToInstrument();
+	EClass getInstrumentedRegion();
 
 	/**
-	 * Returns the meta object for the container reference '{@link edu.kit.ipd.sdq.bycounter.input.EntityToInstrument#getInstrumentationProfile <em>Instrumentation Profile</em>}'.
+	 * Returns the meta object for the attribute '{@link edu.kit.ipd.sdq.bycounter.input.InstrumentedRegion#getStartLine <em>Start Line</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the container reference '<em>Instrumentation Profile</em>'.
-	 * @see edu.kit.ipd.sdq.bycounter.input.EntityToInstrument#getInstrumentationProfile()
-	 * @see #getEntityToInstrument()
+	 * @return the meta object for the attribute '<em>Start Line</em>'.
+	 * @see edu.kit.ipd.sdq.bycounter.input.InstrumentedRegion#getStartLine()
+	 * @see #getInstrumentedRegion()
 	 * @generated
 	 */
-	EReference getEntityToInstrument_InstrumentationProfile();
+	EAttribute getInstrumentedRegion_StartLine();
 
 	/**
-	 * Returns the meta object for enum '{@link edu.kit.ipd.sdq.bycounter.input.AggregationType <em>Aggregation Type</em>}'.
+	 * Returns the meta object for the attribute '{@link edu.kit.ipd.sdq.bycounter.input.InstrumentedRegion#getStopLine <em>Stop Line</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for enum '<em>Aggregation Type</em>'.
-	 * @see edu.kit.ipd.sdq.bycounter.input.AggregationType
+	 * @return the meta object for the attribute '<em>Stop Line</em>'.
+	 * @see edu.kit.ipd.sdq.bycounter.input.InstrumentedRegion#getStopLine()
+	 * @see #getInstrumentedRegion()
 	 * @generated
 	 */
-	EEnum getAggregationType();
+	EAttribute getInstrumentedRegion_StopLine();
 
 	/**
-	 * Returns the meta object for enum '{@link edu.kit.ipd.sdq.bycounter.input.InternalResultStorageType <em>Internal Result Storage Type</em>}'.
+	 * Returns the meta object for the reference '{@link edu.kit.ipd.sdq.bycounter.input.InstrumentedRegion#getStartMethod <em>Start Method</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for enum '<em>Internal Result Storage Type</em>'.
-	 * @see edu.kit.ipd.sdq.bycounter.input.InternalResultStorageType
+	 * @return the meta object for the reference '<em>Start Method</em>'.
+	 * @see edu.kit.ipd.sdq.bycounter.input.InstrumentedRegion#getStartMethod()
+	 * @see #getInstrumentedRegion()
 	 * @generated
 	 */
-	EEnum getInternalResultStorageType();
+	EReference getInstrumentedRegion_StartMethod();
+
+	/**
+	 * Returns the meta object for the reference '{@link edu.kit.ipd.sdq.bycounter.input.InstrumentedRegion#getStopMethod <em>Stop Method</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the reference '<em>Stop Method</em>'.
+	 * @see edu.kit.ipd.sdq.bycounter.input.InstrumentedRegion#getStopMethod()
+	 * @see #getInstrumentedRegion()
+	 * @generated
+	 */
+	EReference getInstrumentedRegion_StopMethod();
 
 	/**
 	 * Returns the factory that creates the instances of the model.
@@ -846,36 +809,12 @@ public interface InputPackage extends EPackage {
 		EAttribute INSTRUMENTATION_PROFILE__AGGREGATE_INTERNAL_CALLS_TRANSPARENTLY = eINSTANCE.getInstrumentationProfile_AggregateInternalCallsTransparently();
 
 		/**
-		 * The meta object literal for the '<em><b>Aggregation Type</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute INSTRUMENTATION_PROFILE__AGGREGATION_TYPE = eINSTANCE.getInstrumentationProfile_AggregationType();
-
-		/**
 		 * The meta object literal for the '<em><b>Persist Instrumented Classes</b></em>' attribute feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
 		EAttribute INSTRUMENTATION_PROFILE__PERSIST_INSTRUMENTED_CLASSES = eINSTANCE.getInstrumentationProfile_PersistInstrumentedClasses();
-
-		/**
-		 * The meta object literal for the '<em><b>Temporary Results Type</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute INSTRUMENTATION_PROFILE__TEMPORARY_RESULTS_TYPE = eINSTANCE.getInstrumentationProfile_TemporaryResultsType();
-
-		/**
-		 * The meta object literal for the '<em><b>Entities To Instrument</b></em>' containment reference list feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EReference INSTRUMENTATION_PROFILE__ENTITIES_TO_INSTRUMENT = eINSTANCE.getInstrumentationProfile_EntitiesToInstrument();
 
 		/**
 		 * The meta object literal for the '<em><b>Intrumentation Profile Repository</b></em>' container reference feature.
@@ -916,6 +855,14 @@ public interface InputPackage extends EPackage {
 		 * @generated
 		 */
 		EReference INSTRUMENTATION_PROFILE__AGGREGATION_EXCLUDES = eINSTANCE.getInstrumentationProfile_AggregationExcludes();
+
+		/**
+		 * The meta object literal for the '<em><b>Entities To Instrument</b></em>' containment reference list feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference INSTRUMENTATION_PROFILE__ENTITIES_TO_INSTRUMENT = eINSTANCE.getInstrumentationProfile_EntitiesToInstrument();
 
 		/**
 		 * The meta object literal for the '{@link edu.kit.ipd.sdq.bycounter.input.impl.LogicalSetImpl <em>Logical Set</em>}' class.
@@ -960,6 +907,16 @@ public interface InputPackage extends EPackage {
 		 * @generated
 		 */
 		EReference INSTRUMENTATION_PROFILE_REPOSITORY__INSTRUMENTATION_PROFILE = eINSTANCE.getInstrumentationProfileRepository_InstrumentationProfile();
+
+		/**
+		 * The meta object literal for the '{@link edu.kit.ipd.sdq.bycounter.input.impl.EntityToInstrumentImpl <em>Entity To Instrument</em>}' class.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @see edu.kit.ipd.sdq.bycounter.input.impl.EntityToInstrumentImpl
+		 * @see edu.kit.ipd.sdq.bycounter.input.impl.InputPackageImpl#getEntityToInstrument()
+		 * @generated
+		 */
+		EClass ENTITY_TO_INSTRUMENT = eINSTANCE.getEntityToInstrument();
 
 		/**
 		 * The meta object literal for the '{@link edu.kit.ipd.sdq.bycounter.input.impl.InstrumentedCodeAreaImpl <em>Instrumented Code Area</em>}' class.
@@ -1030,42 +987,46 @@ public interface InputPackage extends EPackage {
 		EReference INSTRUMENTED_METHOD__METHOD = eINSTANCE.getInstrumentedMethod_Method();
 
 		/**
-		 * The meta object literal for the '{@link edu.kit.ipd.sdq.bycounter.input.impl.EntityToInstrumentImpl <em>Entity To Instrument</em>}' class.
+		 * The meta object literal for the '{@link edu.kit.ipd.sdq.bycounter.input.impl.InstrumentedRegionImpl <em>Instrumented Region</em>}' class.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
-		 * @see edu.kit.ipd.sdq.bycounter.input.impl.EntityToInstrumentImpl
-		 * @see edu.kit.ipd.sdq.bycounter.input.impl.InputPackageImpl#getEntityToInstrument()
+		 * @see edu.kit.ipd.sdq.bycounter.input.impl.InstrumentedRegionImpl
+		 * @see edu.kit.ipd.sdq.bycounter.input.impl.InputPackageImpl#getInstrumentedRegion()
 		 * @generated
 		 */
-		EClass ENTITY_TO_INSTRUMENT = eINSTANCE.getEntityToInstrument();
+		EClass INSTRUMENTED_REGION = eINSTANCE.getInstrumentedRegion();
 
 		/**
-		 * The meta object literal for the '<em><b>Instrumentation Profile</b></em>' container reference feature.
+		 * The meta object literal for the '<em><b>Start Line</b></em>' attribute feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		EReference ENTITY_TO_INSTRUMENT__INSTRUMENTATION_PROFILE = eINSTANCE.getEntityToInstrument_InstrumentationProfile();
+		EAttribute INSTRUMENTED_REGION__START_LINE = eINSTANCE.getInstrumentedRegion_StartLine();
 
 		/**
-		 * The meta object literal for the '{@link edu.kit.ipd.sdq.bycounter.input.AggregationType <em>Aggregation Type</em>}' enum.
+		 * The meta object literal for the '<em><b>Stop Line</b></em>' attribute feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
-		 * @see edu.kit.ipd.sdq.bycounter.input.AggregationType
-		 * @see edu.kit.ipd.sdq.bycounter.input.impl.InputPackageImpl#getAggregationType()
 		 * @generated
 		 */
-		EEnum AGGREGATION_TYPE = eINSTANCE.getAggregationType();
+		EAttribute INSTRUMENTED_REGION__STOP_LINE = eINSTANCE.getInstrumentedRegion_StopLine();
 
 		/**
-		 * The meta object literal for the '{@link edu.kit.ipd.sdq.bycounter.input.InternalResultStorageType <em>Internal Result Storage Type</em>}' enum.
+		 * The meta object literal for the '<em><b>Start Method</b></em>' reference feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
-		 * @see edu.kit.ipd.sdq.bycounter.input.InternalResultStorageType
-		 * @see edu.kit.ipd.sdq.bycounter.input.impl.InputPackageImpl#getInternalResultStorageType()
 		 * @generated
 		 */
-		EEnum INTERNAL_RESULT_STORAGE_TYPE = eINSTANCE.getInternalResultStorageType();
+		EReference INSTRUMENTED_REGION__START_METHOD = eINSTANCE.getInstrumentedRegion_StartMethod();
+
+		/**
+		 * The meta object literal for the '<em><b>Stop Method</b></em>' reference feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference INSTRUMENTED_REGION__STOP_METHOD = eINSTANCE.getInstrumentedRegion_StopMethod();
 
 	}
 

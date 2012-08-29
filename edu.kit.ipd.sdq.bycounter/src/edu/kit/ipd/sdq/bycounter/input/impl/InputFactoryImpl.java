@@ -9,7 +9,6 @@ package edu.kit.ipd.sdq.bycounter.input.impl;
 import edu.kit.ipd.sdq.bycounter.input.*;
 
 import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.EDataType;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EPackage;
 
@@ -64,44 +63,12 @@ public class InputFactoryImpl extends EFactoryImpl implements InputFactory {
 			case InputPackage.INSTRUMENTATION_PROFILE: return createInstrumentationProfile();
 			case InputPackage.LOGICAL_SET: return createLogicalSet();
 			case InputPackage.INSTRUMENTATION_PROFILE_REPOSITORY: return createInstrumentationProfileRepository();
+			case InputPackage.ENTITY_TO_INSTRUMENT: return createEntityToInstrument();
 			case InputPackage.INSTRUMENTED_CODE_AREA: return createInstrumentedCodeArea();
 			case InputPackage.INSTRUMENTED_METHOD: return createInstrumentedMethod();
+			case InputPackage.INSTRUMENTED_REGION: return createInstrumentedRegion();
 			default:
 				throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
-		}
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public Object createFromString(EDataType eDataType, String initialValue) {
-		switch (eDataType.getClassifierID()) {
-			case InputPackage.AGGREGATION_TYPE:
-				return createAggregationTypeFromString(eDataType, initialValue);
-			case InputPackage.INTERNAL_RESULT_STORAGE_TYPE:
-				return createInternalResultStorageTypeFromString(eDataType, initialValue);
-			default:
-				throw new IllegalArgumentException("The datatype '" + eDataType.getName() + "' is not a valid classifier");
-		}
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public String convertToString(EDataType eDataType, Object instanceValue) {
-		switch (eDataType.getClassifierID()) {
-			case InputPackage.AGGREGATION_TYPE:
-				return convertAggregationTypeToString(eDataType, instanceValue);
-			case InputPackage.INTERNAL_RESULT_STORAGE_TYPE:
-				return convertInternalResultStorageTypeToString(eDataType, instanceValue);
-			default:
-				throw new IllegalArgumentException("The datatype '" + eDataType.getName() + "' is not a valid classifier");
 		}
 	}
 
@@ -140,6 +107,16 @@ public class InputFactoryImpl extends EFactoryImpl implements InputFactory {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public EntityToInstrument createEntityToInstrument() {
+		EntityToInstrumentImpl entityToInstrument = new EntityToInstrumentImpl();
+		return entityToInstrument;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	public InstrumentedCodeArea createInstrumentedCodeArea() {
 		InstrumentedCodeAreaImpl instrumentedCodeArea = new InstrumentedCodeAreaImpl();
 		return instrumentedCodeArea;
@@ -160,39 +137,9 @@ public class InputFactoryImpl extends EFactoryImpl implements InputFactory {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public AggregationType createAggregationTypeFromString(EDataType eDataType, String initialValue) {
-		AggregationType result = AggregationType.get(initialValue);
-		if (result == null) throw new IllegalArgumentException("The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
-		return result;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public String convertAggregationTypeToString(EDataType eDataType, Object instanceValue) {
-		return instanceValue == null ? null : instanceValue.toString();
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public InternalResultStorageType createInternalResultStorageTypeFromString(EDataType eDataType, String initialValue) {
-		InternalResultStorageType result = InternalResultStorageType.get(initialValue);
-		if (result == null) throw new IllegalArgumentException("The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
-		return result;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public String convertInternalResultStorageTypeToString(EDataType eDataType, Object instanceValue) {
-		return instanceValue == null ? null : instanceValue.toString();
+	public InstrumentedRegion createInstrumentedRegion() {
+		InstrumentedRegionImpl instrumentedRegion = new InstrumentedRegionImpl();
+		return instrumentedRegion;
 	}
 
 	/**

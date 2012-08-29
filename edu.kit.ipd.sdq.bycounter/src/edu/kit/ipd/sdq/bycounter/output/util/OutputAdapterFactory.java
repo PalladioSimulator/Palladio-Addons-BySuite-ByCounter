@@ -78,56 +78,20 @@ public class OutputAdapterFactory extends AdapterFactoryImpl {
 				return createOutputModelRepositoryAdapter();
 			}
 			@Override
-			public Adapter caseMeasurementRun(MeasurementRun object) {
-				return createMeasurementRunAdapter();
+			public Adapter caseResultCollection(ResultCollection object) {
+				return createResultCollectionAdapter();
 			}
 			@Override
-			public Adapter caseEnvironmentDescription(EnvironmentDescription object) {
-				return createEnvironmentDescriptionAdapter();
+			public Adapter caseRequestResult(RequestResult object) {
+				return createRequestResultAdapter();
 			}
 			@Override
-			public Adapter caseRequest(Request object) {
-				return createRequestAdapter();
+			public Adapter caseCountingResult(CountingResult object) {
+				return createCountingResultAdapter();
 			}
 			@Override
-			public Adapter caseObservedEntityExecution(ObservedEntityExecution object) {
-				return createObservedEntityExecutionAdapter();
-			}
-			@Override
-			public Adapter caseResourceDemands(ResourceDemands object) {
-				return createResourceDemandsAdapter();
-			}
-			@Override
-			public Adapter caseFunctionCall(FunctionCall object) {
-				return createFunctionCallAdapter();
-			}
-			@Override
-			public Adapter caseParameterInstance(ParameterInstance object) {
-				return createParameterInstanceAdapter();
-			}
-			@Override
-			public Adapter caseParameterCharacterisation(ParameterCharacterisation object) {
-				return createParameterCharacterisationAdapter();
-			}
-			@Override
-			public Adapter caseJavaVMCall(JavaVMCall object) {
-				return createJavaVMCallAdapter();
-			}
-			@Override
-			public Adapter caseDoubleCharacterisation(DoubleCharacterisation object) {
-				return createDoubleCharacterisationAdapter();
-			}
-			@Override
-			public Adapter caseLongCharacterisation(LongCharacterisation object) {
-				return createLongCharacterisationAdapter();
-			}
-			@Override
-			public Adapter caseBooleanCharacterisation(BooleanCharacterisation object) {
-				return createBooleanCharacterisationAdapter();
-			}
-			@Override
-			public Adapter caseStringCharacterisation(StringCharacterisation object) {
-				return createStringCharacterisationAdapter();
+			public Adapter caseThreadedCountingResult(ThreadedCountingResult object) {
+				return createThreadedCountingResultAdapter();
 			}
 			@Override
 			public Adapter caseIdentifier(Identifier object) {
@@ -168,184 +132,58 @@ public class OutputAdapterFactory extends AdapterFactoryImpl {
 	}
 
 	/**
-	 * Creates a new adapter for an object of class '{@link edu.kit.ipd.sdq.bycounter.output.MeasurementRun <em>Measurement Run</em>}'.
+	 * Creates a new adapter for an object of class '{@link edu.kit.ipd.sdq.bycounter.output.ResultCollection <em>Result Collection</em>}'.
 	 * <!-- begin-user-doc -->
 	 * This default implementation returns null so that we can easily ignore cases;
 	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
 	 * <!-- end-user-doc -->
 	 * @return the new adapter.
-	 * @see edu.kit.ipd.sdq.bycounter.output.MeasurementRun
+	 * @see edu.kit.ipd.sdq.bycounter.output.ResultCollection
 	 * @generated
 	 */
-	public Adapter createMeasurementRunAdapter() {
+	public Adapter createResultCollectionAdapter() {
 		return null;
 	}
 
 	/**
-	 * Creates a new adapter for an object of class '{@link edu.kit.ipd.sdq.bycounter.output.EnvironmentDescription <em>Environment Description</em>}'.
+	 * Creates a new adapter for an object of class '{@link edu.kit.ipd.sdq.bycounter.output.RequestResult <em>Request Result</em>}'.
 	 * <!-- begin-user-doc -->
 	 * This default implementation returns null so that we can easily ignore cases;
 	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
 	 * <!-- end-user-doc -->
 	 * @return the new adapter.
-	 * @see edu.kit.ipd.sdq.bycounter.output.EnvironmentDescription
+	 * @see edu.kit.ipd.sdq.bycounter.output.RequestResult
 	 * @generated
 	 */
-	public Adapter createEnvironmentDescriptionAdapter() {
+	public Adapter createRequestResultAdapter() {
 		return null;
 	}
 
 	/**
-	 * Creates a new adapter for an object of class '{@link edu.kit.ipd.sdq.bycounter.output.Request <em>Request</em>}'.
+	 * Creates a new adapter for an object of class '{@link edu.kit.ipd.sdq.bycounter.output.CountingResult <em>Counting Result</em>}'.
 	 * <!-- begin-user-doc -->
 	 * This default implementation returns null so that we can easily ignore cases;
 	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
 	 * <!-- end-user-doc -->
 	 * @return the new adapter.
-	 * @see edu.kit.ipd.sdq.bycounter.output.Request
+	 * @see edu.kit.ipd.sdq.bycounter.output.CountingResult
 	 * @generated
 	 */
-	public Adapter createRequestAdapter() {
+	public Adapter createCountingResultAdapter() {
 		return null;
 	}
 
 	/**
-	 * Creates a new adapter for an object of class '{@link edu.kit.ipd.sdq.bycounter.output.ObservedEntityExecution <em>Observed Entity Execution</em>}'.
+	 * Creates a new adapter for an object of class '{@link edu.kit.ipd.sdq.bycounter.output.ThreadedCountingResult <em>Threaded Counting Result</em>}'.
 	 * <!-- begin-user-doc -->
 	 * This default implementation returns null so that we can easily ignore cases;
 	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
 	 * <!-- end-user-doc -->
 	 * @return the new adapter.
-	 * @see edu.kit.ipd.sdq.bycounter.output.ObservedEntityExecution
+	 * @see edu.kit.ipd.sdq.bycounter.output.ThreadedCountingResult
 	 * @generated
 	 */
-	public Adapter createObservedEntityExecutionAdapter() {
-		return null;
-	}
-
-	/**
-	 * Creates a new adapter for an object of class '{@link edu.kit.ipd.sdq.bycounter.output.ResourceDemands <em>Resource Demands</em>}'.
-	 * <!-- begin-user-doc -->
-	 * This default implementation returns null so that we can easily ignore cases;
-	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
-	 * <!-- end-user-doc -->
-	 * @return the new adapter.
-	 * @see edu.kit.ipd.sdq.bycounter.output.ResourceDemands
-	 * @generated
-	 */
-	public Adapter createResourceDemandsAdapter() {
-		return null;
-	}
-
-	/**
-	 * Creates a new adapter for an object of class '{@link edu.kit.ipd.sdq.bycounter.output.FunctionCall <em>Function Call</em>}'.
-	 * <!-- begin-user-doc -->
-	 * This default implementation returns null so that we can easily ignore cases;
-	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
-	 * <!-- end-user-doc -->
-	 * @return the new adapter.
-	 * @see edu.kit.ipd.sdq.bycounter.output.FunctionCall
-	 * @generated
-	 */
-	public Adapter createFunctionCallAdapter() {
-		return null;
-	}
-
-	/**
-	 * Creates a new adapter for an object of class '{@link edu.kit.ipd.sdq.bycounter.output.ParameterInstance <em>Parameter Instance</em>}'.
-	 * <!-- begin-user-doc -->
-	 * This default implementation returns null so that we can easily ignore cases;
-	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
-	 * <!-- end-user-doc -->
-	 * @return the new adapter.
-	 * @see edu.kit.ipd.sdq.bycounter.output.ParameterInstance
-	 * @generated
-	 */
-	public Adapter createParameterInstanceAdapter() {
-		return null;
-	}
-
-	/**
-	 * Creates a new adapter for an object of class '{@link edu.kit.ipd.sdq.bycounter.output.ParameterCharacterisation <em>Parameter Characterisation</em>}'.
-	 * <!-- begin-user-doc -->
-	 * This default implementation returns null so that we can easily ignore cases;
-	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
-	 * <!-- end-user-doc -->
-	 * @return the new adapter.
-	 * @see edu.kit.ipd.sdq.bycounter.output.ParameterCharacterisation
-	 * @generated
-	 */
-	public Adapter createParameterCharacterisationAdapter() {
-		return null;
-	}
-
-	/**
-	 * Creates a new adapter for an object of class '{@link edu.kit.ipd.sdq.bycounter.output.JavaVMCall <em>Java VM Call</em>}'.
-	 * <!-- begin-user-doc -->
-	 * This default implementation returns null so that we can easily ignore cases;
-	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
-	 * <!-- end-user-doc -->
-	 * @return the new adapter.
-	 * @see edu.kit.ipd.sdq.bycounter.output.JavaVMCall
-	 * @generated
-	 */
-	public Adapter createJavaVMCallAdapter() {
-		return null;
-	}
-
-	/**
-	 * Creates a new adapter for an object of class '{@link edu.kit.ipd.sdq.bycounter.output.DoubleCharacterisation <em>Double Characterisation</em>}'.
-	 * <!-- begin-user-doc -->
-	 * This default implementation returns null so that we can easily ignore cases;
-	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
-	 * <!-- end-user-doc -->
-	 * @return the new adapter.
-	 * @see edu.kit.ipd.sdq.bycounter.output.DoubleCharacterisation
-	 * @generated
-	 */
-	public Adapter createDoubleCharacterisationAdapter() {
-		return null;
-	}
-
-	/**
-	 * Creates a new adapter for an object of class '{@link edu.kit.ipd.sdq.bycounter.output.LongCharacterisation <em>Long Characterisation</em>}'.
-	 * <!-- begin-user-doc -->
-	 * This default implementation returns null so that we can easily ignore cases;
-	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
-	 * <!-- end-user-doc -->
-	 * @return the new adapter.
-	 * @see edu.kit.ipd.sdq.bycounter.output.LongCharacterisation
-	 * @generated
-	 */
-	public Adapter createLongCharacterisationAdapter() {
-		return null;
-	}
-
-	/**
-	 * Creates a new adapter for an object of class '{@link edu.kit.ipd.sdq.bycounter.output.BooleanCharacterisation <em>Boolean Characterisation</em>}'.
-	 * <!-- begin-user-doc -->
-	 * This default implementation returns null so that we can easily ignore cases;
-	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
-	 * <!-- end-user-doc -->
-	 * @return the new adapter.
-	 * @see edu.kit.ipd.sdq.bycounter.output.BooleanCharacterisation
-	 * @generated
-	 */
-	public Adapter createBooleanCharacterisationAdapter() {
-		return null;
-	}
-
-	/**
-	 * Creates a new adapter for an object of class '{@link edu.kit.ipd.sdq.bycounter.output.StringCharacterisation <em>String Characterisation</em>}'.
-	 * <!-- begin-user-doc -->
-	 * This default implementation returns null so that we can easily ignore cases;
-	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
-	 * <!-- end-user-doc -->
-	 * @return the new adapter.
-	 * @see edu.kit.ipd.sdq.bycounter.output.StringCharacterisation
-	 * @generated
-	 */
-	public Adapter createStringCharacterisationAdapter() {
+	public Adapter createThreadedCountingResultAdapter() {
 		return null;
 	}
 

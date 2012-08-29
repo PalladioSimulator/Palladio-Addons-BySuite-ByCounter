@@ -6,10 +6,9 @@
  */
 package edu.kit.ipd.sdq.bycounter.input;
 
+import de.fzi.gast.functions.Method;
 
 import org.eclipse.emf.common.util.EList;
-
-import de.fzi.gast.functions.Method;
 
 /**
  * <!-- begin-user-doc -->

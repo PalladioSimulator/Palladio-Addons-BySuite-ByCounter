@@ -84,737 +84,314 @@ public interface OutputPackage extends EPackage {
 	int OUTPUT_MODEL_REPOSITORY__ID = IdentifierPackage.IDENTIFIER__ID;
 
 	/**
-	 * The feature id for the '<em><b>Measurement Runs</b></em>' containment reference list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int OUTPUT_MODEL_REPOSITORY__MEASUREMENT_RUNS = IdentifierPackage.IDENTIFIER_FEATURE_COUNT + 0;
-
-	/**
-	 * The feature id for the '<em><b>Environment Characterisations</b></em>' containment reference list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int OUTPUT_MODEL_REPOSITORY__ENVIRONMENT_CHARACTERISATIONS = IdentifierPackage.IDENTIFIER_FEATURE_COUNT + 1;
-
-	/**
 	 * The number of structural features of the '<em>Model Repository</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int OUTPUT_MODEL_REPOSITORY_FEATURE_COUNT = IdentifierPackage.IDENTIFIER_FEATURE_COUNT + 2;
+	int OUTPUT_MODEL_REPOSITORY_FEATURE_COUNT = IdentifierPackage.IDENTIFIER_FEATURE_COUNT + 0;
 
 	/**
-	 * The meta object id for the '{@link edu.kit.ipd.sdq.bycounter.output.impl.MeasurementRunImpl <em>Measurement Run</em>}' class.
+	 * The meta object id for the '{@link edu.kit.ipd.sdq.bycounter.output.impl.ResultCollectionImpl <em>Result Collection</em>}' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see edu.kit.ipd.sdq.bycounter.output.impl.MeasurementRunImpl
-	 * @see edu.kit.ipd.sdq.bycounter.output.impl.OutputPackageImpl#getMeasurementRun()
+	 * @see edu.kit.ipd.sdq.bycounter.output.impl.ResultCollectionImpl
+	 * @see edu.kit.ipd.sdq.bycounter.output.impl.OutputPackageImpl#getResultCollection()
 	 * @generated
 	 */
-	int MEASUREMENT_RUN = 1;
+	int RESULT_COLLECTION = 1;
 
 	/**
-	 * The feature id for the '<em><b>Id</b></em>' attribute.
+	 * The feature id for the '<em><b>Request Results</b></em>' containment reference list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int MEASUREMENT_RUN__ID = IdentifierPackage.IDENTIFIER__ID;
+	int RESULT_COLLECTION__REQUEST_RESULTS = 0;
 
 	/**
-	 * The feature id for the '<em><b>Environment Characterisation</b></em>' reference.
+	 * The feature id for the '<em><b>Counting Results</b></em>' containment reference list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int MEASUREMENT_RUN__ENVIRONMENT_CHARACTERISATION = IdentifierPackage.IDENTIFIER_FEATURE_COUNT + 0;
+	int RESULT_COLLECTION__COUNTING_RESULTS = 1;
 
 	/**
-	 * The feature id for the '<em><b>Requests</b></em>' containment reference list.
+	 * The number of structural features of the '<em>Result Collection</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int MEASUREMENT_RUN__REQUESTS = IdentifierPackage.IDENTIFIER_FEATURE_COUNT + 1;
+	int RESULT_COLLECTION_FEATURE_COUNT = 2;
 
 	/**
-	 * The number of structural features of the '<em>Measurement Run</em>' class.
+	 * The meta object id for the '{@link edu.kit.ipd.sdq.bycounter.output.impl.RequestResultImpl <em>Request Result</em>}' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
+	 * @see edu.kit.ipd.sdq.bycounter.output.impl.RequestResultImpl
+	 * @see edu.kit.ipd.sdq.bycounter.output.impl.OutputPackageImpl#getRequestResult()
 	 * @generated
-	 * @ordered
-	 */
-	int MEASUREMENT_RUN_FEATURE_COUNT = IdentifierPackage.IDENTIFIER_FEATURE_COUNT + 2;
-
-	/**
-	 * The meta object id for the '{@link edu.kit.ipd.sdq.bycounter.output.impl.EnvironmentDescriptionImpl <em>Environment Description</em>}' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see edu.kit.ipd.sdq.bycounter.output.impl.EnvironmentDescriptionImpl
-	 * @see edu.kit.ipd.sdq.bycounter.output.impl.OutputPackageImpl#getEnvironmentDescription()
-	 * @generated
-	 */
-	int ENVIRONMENT_DESCRIPTION = 2;
-
-	/**
-	 * The feature id for the '<em><b>Id</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int ENVIRONMENT_DESCRIPTION__ID = IdentifierPackage.IDENTIFIER__ID;
-
-	/**
-	 * The number of structural features of the '<em>Environment Description</em>' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int ENVIRONMENT_DESCRIPTION_FEATURE_COUNT = IdentifierPackage.IDENTIFIER_FEATURE_COUNT + 0;
-
-	/**
-	 * The meta object id for the '{@link edu.kit.ipd.sdq.bycounter.output.impl.RequestImpl <em>Request</em>}' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see edu.kit.ipd.sdq.bycounter.output.impl.RequestImpl
-	 * @see edu.kit.ipd.sdq.bycounter.output.impl.OutputPackageImpl#getRequest()
-	 * @generated
-	 */
-	int REQUEST = 3;
-
-	/**
-	 * The feature id for the '<em><b>Id</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int REQUEST__ID = IdentifierPackage.IDENTIFIER__ID;
-
-	/**
-	 * The feature id for the '<em><b>Observed Execution Sequence</b></em>' containment reference list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int REQUEST__OBSERVED_EXECUTION_SEQUENCE = IdentifierPackage.IDENTIFIER_FEATURE_COUNT + 0;
-
-	/**
-	 * The feature id for the '<em><b>Measurement Run</b></em>' container reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int REQUEST__MEASUREMENT_RUN = IdentifierPackage.IDENTIFIER_FEATURE_COUNT + 1;
-
-	/**
-	 * The number of structural features of the '<em>Request</em>' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int REQUEST_FEATURE_COUNT = IdentifierPackage.IDENTIFIER_FEATURE_COUNT + 2;
-
-	/**
-	 * The meta object id for the '{@link edu.kit.ipd.sdq.bycounter.output.impl.ObservedEntityExecutionImpl <em>Observed Entity Execution</em>}' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see edu.kit.ipd.sdq.bycounter.output.impl.ObservedEntityExecutionImpl
-	 * @see edu.kit.ipd.sdq.bycounter.output.impl.OutputPackageImpl#getObservedEntityExecution()
-	 * @generated
-	 */
-	int OBSERVED_ENTITY_EXECUTION = 4;
-
-	/**
-	 * The feature id for the '<em><b>Id</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int OBSERVED_ENTITY_EXECUTION__ID = IdentifierPackage.IDENTIFIER__ID;
-
-	/**
-	 * The feature id for the '<em><b>Resource Demands</b></em>' containment reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int OBSERVED_ENTITY_EXECUTION__RESOURCE_DEMANDS = IdentifierPackage.IDENTIFIER_FEATURE_COUNT + 0;
-
-	/**
-	 * The feature id for the '<em><b>Observed Forked Execution Sequence</b></em>' containment reference list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int OBSERVED_ENTITY_EXECUTION__OBSERVED_FORKED_EXECUTION_SEQUENCE = IdentifierPackage.IDENTIFIER_FEATURE_COUNT + 1;
-
-	/**
-	 * The feature id for the '<em><b>Observed Execution Sequence Forked By</b></em>' container reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int OBSERVED_ENTITY_EXECUTION__OBSERVED_EXECUTION_SEQUENCE_FORKED_BY = IdentifierPackage.IDENTIFIER_FEATURE_COUNT + 2;
-
-	/**
-	 * The feature id for the '<em><b>Entity</b></em>' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int OBSERVED_ENTITY_EXECUTION__ENTITY = IdentifierPackage.IDENTIFIER_FEATURE_COUNT + 3;
-
-	/**
-	 * The feature id for the '<em><b>Request</b></em>' container reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int OBSERVED_ENTITY_EXECUTION__REQUEST = IdentifierPackage.IDENTIFIER_FEATURE_COUNT + 4;
-
-	/**
-	 * The number of structural features of the '<em>Observed Entity Execution</em>' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int OBSERVED_ENTITY_EXECUTION_FEATURE_COUNT = IdentifierPackage.IDENTIFIER_FEATURE_COUNT + 5;
-
-	/**
-	 * The meta object id for the '{@link edu.kit.ipd.sdq.bycounter.output.impl.ResourceDemandsImpl <em>Resource Demands</em>}' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see edu.kit.ipd.sdq.bycounter.output.impl.ResourceDemandsImpl
-	 * @see edu.kit.ipd.sdq.bycounter.output.impl.OutputPackageImpl#getResourceDemands()
-	 * @generated
-	 */
-	int RESOURCE_DEMANDS = 5;
-
-	/**
-	 * The feature id for the '<em><b>Id</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int RESOURCE_DEMANDS__ID = IdentifierPackage.IDENTIFIER__ID;
-
-	/**
-	 * The feature id for the '<em><b>Function Calls</b></em>' containment reference list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int RESOURCE_DEMANDS__FUNCTION_CALLS = IdentifierPackage.IDENTIFIER_FEATURE_COUNT + 0;
-
-	/**
-	 * The feature id for the '<em><b>Java VM Call</b></em>' containment reference list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int RESOURCE_DEMANDS__JAVA_VM_CALL = IdentifierPackage.IDENTIFIER_FEATURE_COUNT + 1;
-
-	/**
-	 * The feature id for the '<em><b>Observed Execution</b></em>' container reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int RESOURCE_DEMANDS__OBSERVED_EXECUTION = IdentifierPackage.IDENTIFIER_FEATURE_COUNT + 2;
-
-	/**
-	 * The number of structural features of the '<em>Resource Demands</em>' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int RESOURCE_DEMANDS_FEATURE_COUNT = IdentifierPackage.IDENTIFIER_FEATURE_COUNT + 3;
-
-	/**
-	 * The meta object id for the '{@link edu.kit.ipd.sdq.bycounter.output.impl.FunctionCallImpl <em>Function Call</em>}' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see edu.kit.ipd.sdq.bycounter.output.impl.FunctionCallImpl
-	 * @see edu.kit.ipd.sdq.bycounter.output.impl.OutputPackageImpl#getFunctionCall()
-	 * @generated
-	 */
-	int FUNCTION_CALL = 6;
-
-	/**
-	 * The feature id for the '<em><b>Id</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int FUNCTION_CALL__ID = IdentifierPackage.IDENTIFIER__ID;
-
-	/**
-	 * The feature id for the '<em><b>Parameter Instance</b></em>' containment reference list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int FUNCTION_CALL__PARAMETER_INSTANCE = IdentifierPackage.IDENTIFIER_FEATURE_COUNT + 0;
-
-	/**
-	 * The feature id for the '<em><b>Function</b></em>' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int FUNCTION_CALL__FUNCTION = IdentifierPackage.IDENTIFIER_FEATURE_COUNT + 1;
-
-	/**
-	 * The feature id for the '<em><b>Number Observations</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int FUNCTION_CALL__NUMBER_OBSERVATIONS = IdentifierPackage.IDENTIFIER_FEATURE_COUNT + 2;
-
-	/**
-	 * The feature id for the '<em><b>Native</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int FUNCTION_CALL__NATIVE = IdentifierPackage.IDENTIFIER_FEATURE_COUNT + 3;
-
-	/**
-	 * The feature id for the '<em><b>Synchronized</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int FUNCTION_CALL__SYNCHRONIZED = IdentifierPackage.IDENTIFIER_FEATURE_COUNT + 4;
-
-	/**
-	 * The feature id for the '<em><b>Resource Demands</b></em>' container reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int FUNCTION_CALL__RESOURCE_DEMANDS = IdentifierPackage.IDENTIFIER_FEATURE_COUNT + 5;
-
-	/**
-	 * The number of structural features of the '<em>Function Call</em>' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int FUNCTION_CALL_FEATURE_COUNT = IdentifierPackage.IDENTIFIER_FEATURE_COUNT + 6;
-
-	/**
-	 * The meta object id for the '{@link edu.kit.ipd.sdq.bycounter.output.impl.ParameterInstanceImpl <em>Parameter Instance</em>}' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see edu.kit.ipd.sdq.bycounter.output.impl.ParameterInstanceImpl
-	 * @see edu.kit.ipd.sdq.bycounter.output.impl.OutputPackageImpl#getParameterInstance()
-	 * @generated
-	 */
-	int PARAMETER_INSTANCE = 7;
-
-	/**
-	 * The feature id for the '<em><b>Id</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int PARAMETER_INSTANCE__ID = IdentifierPackage.IDENTIFIER__ID;
-
-	/**
-	 * The feature id for the '<em><b>Formal Parameter</b></em>' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int PARAMETER_INSTANCE__FORMAL_PARAMETER = IdentifierPackage.IDENTIFIER_FEATURE_COUNT + 0;
-
-	/**
-	 * The feature id for the '<em><b>Parameter Characterisation</b></em>' containment reference list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int PARAMETER_INSTANCE__PARAMETER_CHARACTERISATION = IdentifierPackage.IDENTIFIER_FEATURE_COUNT + 1;
-
-	/**
-	 * The feature id for the '<em><b>Function Call</b></em>' container reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int PARAMETER_INSTANCE__FUNCTION_CALL = IdentifierPackage.IDENTIFIER_FEATURE_COUNT + 2;
-
-	/**
-	 * The number of structural features of the '<em>Parameter Instance</em>' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int PARAMETER_INSTANCE_FEATURE_COUNT = IdentifierPackage.IDENTIFIER_FEATURE_COUNT + 3;
-
-	/**
-	 * The meta object id for the '{@link edu.kit.ipd.sdq.bycounter.output.impl.ParameterCharacterisationImpl <em>Parameter Characterisation</em>}' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see edu.kit.ipd.sdq.bycounter.output.impl.ParameterCharacterisationImpl
-	 * @see edu.kit.ipd.sdq.bycounter.output.impl.OutputPackageImpl#getParameterCharacterisation()
-	 * @generated
-	 */
-	int PARAMETER_CHARACTERISATION = 8;
-
-	/**
-	 * The feature id for the '<em><b>Id</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
 	 */
-	int PARAMETER_CHARACTERISATION__ID = IdentifierPackage.IDENTIFIER__ID;
+	int REQUEST_RESULT = 2;
 
 	/**
-	 * The feature id for the '<em><b>Characterisation</b></em>' attribute.
+	 * The feature id for the '<em><b>Result Collection</b></em>' containment reference list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int PARAMETER_CHARACTERISATION__CHARACTERISATION = IdentifierPackage.IDENTIFIER_FEATURE_COUNT + 0;
+	int REQUEST_RESULT__RESULT_COLLECTION = 0;
 
 	/**
-	 * The feature id for the '<em><b>Parameter Instance</b></em>' container reference.
+	 * The feature id for the '<em><b>Request Id</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int PARAMETER_CHARACTERISATION__PARAMETER_INSTANCE = IdentifierPackage.IDENTIFIER_FEATURE_COUNT + 1;
+	int REQUEST_RESULT__REQUEST_ID = 1;
 
 	/**
-	 * The number of structural features of the '<em>Parameter Characterisation</em>' class.
+	 * The feature id for the '<em><b>Counting Results</b></em>' containment reference list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
-	 */
-	int PARAMETER_CHARACTERISATION_FEATURE_COUNT = IdentifierPackage.IDENTIFIER_FEATURE_COUNT + 2;
-
-	/**
-	 * The meta object id for the '{@link edu.kit.ipd.sdq.bycounter.output.impl.JavaVMCallImpl <em>Java VM Call</em>}' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see edu.kit.ipd.sdq.bycounter.output.impl.JavaVMCallImpl
-	 * @see edu.kit.ipd.sdq.bycounter.output.impl.OutputPackageImpl#getJavaVMCall()
-	 * @generated
 	 */
-	int JAVA_VM_CALL = 9;
+	int REQUEST_RESULT__COUNTING_RESULTS = 2;
 
 	/**
-	 * The feature id for the '<em><b>Number Observations</b></em>' attribute.
+	 * The number of structural features of the '<em>Request Result</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int JAVA_VM_CALL__NUMBER_OBSERVATIONS = 0;
+	int REQUEST_RESULT_FEATURE_COUNT = 3;
 
 	/**
-	 * The feature id for the '<em><b>Id</b></em>' attribute.
+	 * The meta object id for the '{@link edu.kit.ipd.sdq.bycounter.output.impl.CountingResultImpl <em>Counting Result</em>}' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
+	 * @see edu.kit.ipd.sdq.bycounter.output.impl.CountingResultImpl
+	 * @see edu.kit.ipd.sdq.bycounter.output.impl.OutputPackageImpl#getCountingResult()
 	 * @generated
-	 * @ordered
 	 */
-	int JAVA_VM_CALL__ID = 1;
+	int COUNTING_RESULT = 3;
 
 	/**
-	 * The feature id for the '<em><b>Name</b></em>' attribute.
+	 * The feature id for the '<em><b>Array Creation Counts</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int JAVA_VM_CALL__NAME = 2;
+	int COUNTING_RESULT__ARRAY_CREATION_COUNTS = 0;
 
 	/**
-	 * The feature id for the '<em><b>Resource Demands</b></em>' container reference.
+	 * The feature id for the '<em><b>Caller Id</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int JAVA_VM_CALL__RESOURCE_DEMANDS = 3;
+	int COUNTING_RESULT__CALLER_ID = 1;
 
 	/**
-	 * The number of structural features of the '<em>Java VM Call</em>' class.
+	 * The feature id for the '<em><b>Method Call Counts</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
-	 */
-	int JAVA_VM_CALL_FEATURE_COUNT = 4;
-
-	/**
-	 * The meta object id for the '{@link edu.kit.ipd.sdq.bycounter.output.impl.DoubleCharacterisationImpl <em>Double Characterisation</em>}' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see edu.kit.ipd.sdq.bycounter.output.impl.DoubleCharacterisationImpl
-	 * @see edu.kit.ipd.sdq.bycounter.output.impl.OutputPackageImpl#getDoubleCharacterisation()
-	 * @generated
 	 */
-	int DOUBLE_CHARACTERISATION = 10;
+	int COUNTING_RESULT__METHOD_CALL_COUNTS = 2;
 
 	/**
-	 * The feature id for the '<em><b>Id</b></em>' attribute.
+	 * The feature id for the '<em><b>Method Invocation Beginning</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int DOUBLE_CHARACTERISATION__ID = PARAMETER_CHARACTERISATION__ID;
+	int COUNTING_RESULT__METHOD_INVOCATION_BEGINNING = 3;
 
 	/**
-	 * The feature id for the '<em><b>Characterisation</b></em>' attribute.
+	 * The feature id for the '<em><b>Method Reporting Time</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int DOUBLE_CHARACTERISATION__CHARACTERISATION = PARAMETER_CHARACTERISATION__CHARACTERISATION;
+	int COUNTING_RESULT__METHOD_REPORTING_TIME = 4;
 
 	/**
-	 * The feature id for the '<em><b>Parameter Instance</b></em>' container reference.
+	 * The feature id for the '<em><b>Observed Element</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int DOUBLE_CHARACTERISATION__PARAMETER_INSTANCE = PARAMETER_CHARACTERISATION__PARAMETER_INSTANCE;
+	int COUNTING_RESULT__OBSERVED_ELEMENT = 5;
 
 	/**
-	 * The feature id for the '<em><b>Value</b></em>' attribute.
+	 * The feature id for the '<em><b>Opcode Counts</b></em>' attribute list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int DOUBLE_CHARACTERISATION__VALUE = PARAMETER_CHARACTERISATION_FEATURE_COUNT + 0;
+	int COUNTING_RESULT__OPCODE_COUNTS = 6;
 
 	/**
-	 * The number of structural features of the '<em>Double Characterisation</em>' class.
+	 * The feature id for the '<em><b>Own Id</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int DOUBLE_CHARACTERISATION_FEATURE_COUNT = PARAMETER_CHARACTERISATION_FEATURE_COUNT + 1;
+	int COUNTING_RESULT__OWN_ID = 7;
 
 	/**
-	 * The meta object id for the '{@link edu.kit.ipd.sdq.bycounter.output.impl.LongCharacterisationImpl <em>Long Characterisation</em>}' class.
+	 * The feature id for the '<em><b>Qualifying Method Name</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see edu.kit.ipd.sdq.bycounter.output.impl.LongCharacterisationImpl
-	 * @see edu.kit.ipd.sdq.bycounter.output.impl.OutputPackageImpl#getLongCharacterisation()
 	 * @generated
-	 */
-	int LONG_CHARACTERISATION = 11;
-
-	/**
-	 * The feature id for the '<em><b>Id</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
 	 * @ordered
 	 */
-	int LONG_CHARACTERISATION__ID = PARAMETER_CHARACTERISATION__ID;
+	int COUNTING_RESULT__QUALIFYING_METHOD_NAME = 8;
 
 	/**
-	 * The feature id for the '<em><b>Characterisation</b></em>' attribute.
+	 * The number of structural features of the '<em>Counting Result</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int LONG_CHARACTERISATION__CHARACTERISATION = PARAMETER_CHARACTERISATION__CHARACTERISATION;
+	int COUNTING_RESULT_FEATURE_COUNT = 9;
 
 	/**
-	 * The feature id for the '<em><b>Parameter Instance</b></em>' container reference.
+	 * The meta object id for the '{@link edu.kit.ipd.sdq.bycounter.output.impl.ThreadedCountingResultImpl <em>Threaded Counting Result</em>}' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
+	 * @see edu.kit.ipd.sdq.bycounter.output.impl.ThreadedCountingResultImpl
+	 * @see edu.kit.ipd.sdq.bycounter.output.impl.OutputPackageImpl#getThreadedCountingResult()
 	 * @generated
-	 * @ordered
 	 */
-	int LONG_CHARACTERISATION__PARAMETER_INSTANCE = PARAMETER_CHARACTERISATION__PARAMETER_INSTANCE;
+	int THREADED_COUNTING_RESULT = 4;
 
 	/**
-	 * The feature id for the '<em><b>Value</b></em>' attribute.
+	 * The feature id for the '<em><b>Array Creation Counts</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int LONG_CHARACTERISATION__VALUE = PARAMETER_CHARACTERISATION_FEATURE_COUNT + 0;
+	int THREADED_COUNTING_RESULT__ARRAY_CREATION_COUNTS = COUNTING_RESULT__ARRAY_CREATION_COUNTS;
 
 	/**
-	 * The number of structural features of the '<em>Long Characterisation</em>' class.
+	 * The feature id for the '<em><b>Caller Id</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
-	 */
-	int LONG_CHARACTERISATION_FEATURE_COUNT = PARAMETER_CHARACTERISATION_FEATURE_COUNT + 1;
-
-	/**
-	 * The meta object id for the '{@link edu.kit.ipd.sdq.bycounter.output.impl.BooleanCharacterisationImpl <em>Boolean Characterisation</em>}' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see edu.kit.ipd.sdq.bycounter.output.impl.BooleanCharacterisationImpl
-	 * @see edu.kit.ipd.sdq.bycounter.output.impl.OutputPackageImpl#getBooleanCharacterisation()
-	 * @generated
 	 */
-	int BOOLEAN_CHARACTERISATION = 12;
+	int THREADED_COUNTING_RESULT__CALLER_ID = COUNTING_RESULT__CALLER_ID;
 
 	/**
-	 * The feature id for the '<em><b>Id</b></em>' attribute.
+	 * The feature id for the '<em><b>Method Call Counts</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int BOOLEAN_CHARACTERISATION__ID = PARAMETER_CHARACTERISATION__ID;
+	int THREADED_COUNTING_RESULT__METHOD_CALL_COUNTS = COUNTING_RESULT__METHOD_CALL_COUNTS;
 
 	/**
-	 * The feature id for the '<em><b>Characterisation</b></em>' attribute.
+	 * The feature id for the '<em><b>Method Invocation Beginning</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int BOOLEAN_CHARACTERISATION__CHARACTERISATION = PARAMETER_CHARACTERISATION__CHARACTERISATION;
+	int THREADED_COUNTING_RESULT__METHOD_INVOCATION_BEGINNING = COUNTING_RESULT__METHOD_INVOCATION_BEGINNING;
 
 	/**
-	 * The feature id for the '<em><b>Parameter Instance</b></em>' container reference.
+	 * The feature id for the '<em><b>Method Reporting Time</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int BOOLEAN_CHARACTERISATION__PARAMETER_INSTANCE = PARAMETER_CHARACTERISATION__PARAMETER_INSTANCE;
+	int THREADED_COUNTING_RESULT__METHOD_REPORTING_TIME = COUNTING_RESULT__METHOD_REPORTING_TIME;
 
 	/**
-	 * The feature id for the '<em><b>Value</b></em>' attribute.
+	 * The feature id for the '<em><b>Observed Element</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int BOOLEAN_CHARACTERISATION__VALUE = PARAMETER_CHARACTERISATION_FEATURE_COUNT + 0;
+	int THREADED_COUNTING_RESULT__OBSERVED_ELEMENT = COUNTING_RESULT__OBSERVED_ELEMENT;
 
 	/**
-	 * The number of structural features of the '<em>Boolean Characterisation</em>' class.
+	 * The feature id for the '<em><b>Opcode Counts</b></em>' attribute list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
-	 */
-	int BOOLEAN_CHARACTERISATION_FEATURE_COUNT = PARAMETER_CHARACTERISATION_FEATURE_COUNT + 1;
-
-	/**
-	 * The meta object id for the '{@link edu.kit.ipd.sdq.bycounter.output.impl.StringCharacterisationImpl <em>String Characterisation</em>}' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see edu.kit.ipd.sdq.bycounter.output.impl.StringCharacterisationImpl
-	 * @see edu.kit.ipd.sdq.bycounter.output.impl.OutputPackageImpl#getStringCharacterisation()
-	 * @generated
 	 */
-	int STRING_CHARACTERISATION = 13;
+	int THREADED_COUNTING_RESULT__OPCODE_COUNTS = COUNTING_RESULT__OPCODE_COUNTS;
 
 	/**
-	 * The feature id for the '<em><b>Id</b></em>' attribute.
+	 * The feature id for the '<em><b>Own Id</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int STRING_CHARACTERISATION__ID = PARAMETER_CHARACTERISATION__ID;
+	int THREADED_COUNTING_RESULT__OWN_ID = COUNTING_RESULT__OWN_ID;
 
 	/**
-	 * The feature id for the '<em><b>Characterisation</b></em>' attribute.
+	 * The feature id for the '<em><b>Qualifying Method Name</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int STRING_CHARACTERISATION__CHARACTERISATION = PARAMETER_CHARACTERISATION__CHARACTERISATION;
+	int THREADED_COUNTING_RESULT__QUALIFYING_METHOD_NAME = COUNTING_RESULT__QUALIFYING_METHOD_NAME;
 
 	/**
-	 * The feature id for the '<em><b>Parameter Instance</b></em>' container reference.
+	 * The feature id for the '<em><b>Spawned Threaded Counting Results</b></em>' containment reference list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int STRING_CHARACTERISATION__PARAMETER_INSTANCE = PARAMETER_CHARACTERISATION__PARAMETER_INSTANCE;
+	int THREADED_COUNTING_RESULT__SPAWNED_THREADED_COUNTING_RESULTS = COUNTING_RESULT_FEATURE_COUNT + 0;
 
 	/**
-	 * The feature id for the '<em><b>Value</b></em>' attribute.
+	 * The feature id for the '<em><b>Thread Id</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int STRING_CHARACTERISATION__VALUE = PARAMETER_CHARACTERISATION_FEATURE_COUNT + 0;
+	int THREADED_COUNTING_RESULT__THREAD_ID = COUNTING_RESULT_FEATURE_COUNT + 1;
 
 	/**
-	 * The number of structural features of the '<em>String Characterisation</em>' class.
+	 * The number of structural features of the '<em>Threaded Counting Result</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int STRING_CHARACTERISATION_FEATURE_COUNT = PARAMETER_CHARACTERISATION_FEATURE_COUNT + 1;
+	int THREADED_COUNTING_RESULT_FEATURE_COUNT = COUNTING_RESULT_FEATURE_COUNT + 2;
 
 
 	/**
@@ -828,497 +405,220 @@ public interface OutputPackage extends EPackage {
 	EClass getOutputModelRepository();
 
 	/**
-	 * Returns the meta object for the containment reference list '{@link edu.kit.ipd.sdq.bycounter.output.OutputModelRepository#getMeasurementRuns <em>Measurement Runs</em>}'.
+	 * Returns the meta object for class '{@link edu.kit.ipd.sdq.bycounter.output.ResultCollection <em>Result Collection</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the containment reference list '<em>Measurement Runs</em>'.
-	 * @see edu.kit.ipd.sdq.bycounter.output.OutputModelRepository#getMeasurementRuns()
-	 * @see #getOutputModelRepository()
+	 * @return the meta object for class '<em>Result Collection</em>'.
+	 * @see edu.kit.ipd.sdq.bycounter.output.ResultCollection
 	 * @generated
 	 */
-	EReference getOutputModelRepository_MeasurementRuns();
+	EClass getResultCollection();
 
 	/**
-	 * Returns the meta object for the containment reference list '{@link edu.kit.ipd.sdq.bycounter.output.OutputModelRepository#getEnvironmentCharacterisations <em>Environment Characterisations</em>}'.
+	 * Returns the meta object for the containment reference list '{@link edu.kit.ipd.sdq.bycounter.output.ResultCollection#getRequestResults <em>Request Results</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the containment reference list '<em>Environment Characterisations</em>'.
-	 * @see edu.kit.ipd.sdq.bycounter.output.OutputModelRepository#getEnvironmentCharacterisations()
-	 * @see #getOutputModelRepository()
+	 * @return the meta object for the containment reference list '<em>Request Results</em>'.
+	 * @see edu.kit.ipd.sdq.bycounter.output.ResultCollection#getRequestResults()
+	 * @see #getResultCollection()
 	 * @generated
 	 */
-	EReference getOutputModelRepository_EnvironmentCharacterisations();
+	EReference getResultCollection_RequestResults();
 
 	/**
-	 * Returns the meta object for class '{@link edu.kit.ipd.sdq.bycounter.output.MeasurementRun <em>Measurement Run</em>}'.
+	 * Returns the meta object for the containment reference list '{@link edu.kit.ipd.sdq.bycounter.output.ResultCollection#getCountingResults <em>Counting Results</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for class '<em>Measurement Run</em>'.
-	 * @see edu.kit.ipd.sdq.bycounter.output.MeasurementRun
+	 * @return the meta object for the containment reference list '<em>Counting Results</em>'.
+	 * @see edu.kit.ipd.sdq.bycounter.output.ResultCollection#getCountingResults()
+	 * @see #getResultCollection()
 	 * @generated
 	 */
-	EClass getMeasurementRun();
+	EReference getResultCollection_CountingResults();
 
 	/**
-	 * Returns the meta object for the reference '{@link edu.kit.ipd.sdq.bycounter.output.MeasurementRun#getEnvironmentCharacterisation <em>Environment Characterisation</em>}'.
+	 * Returns the meta object for class '{@link edu.kit.ipd.sdq.bycounter.output.RequestResult <em>Request Result</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the reference '<em>Environment Characterisation</em>'.
-	 * @see edu.kit.ipd.sdq.bycounter.output.MeasurementRun#getEnvironmentCharacterisation()
-	 * @see #getMeasurementRun()
+	 * @return the meta object for class '<em>Request Result</em>'.
+	 * @see edu.kit.ipd.sdq.bycounter.output.RequestResult
 	 * @generated
 	 */
-	EReference getMeasurementRun_EnvironmentCharacterisation();
+	EClass getRequestResult();
 
 	/**
-	 * Returns the meta object for the containment reference list '{@link edu.kit.ipd.sdq.bycounter.output.MeasurementRun#getRequests <em>Requests</em>}'.
+	 * Returns the meta object for the containment reference list '{@link edu.kit.ipd.sdq.bycounter.output.RequestResult#getResultCollection <em>Result Collection</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the containment reference list '<em>Requests</em>'.
-	 * @see edu.kit.ipd.sdq.bycounter.output.MeasurementRun#getRequests()
-	 * @see #getMeasurementRun()
+	 * @return the meta object for the containment reference list '<em>Result Collection</em>'.
+	 * @see edu.kit.ipd.sdq.bycounter.output.RequestResult#getResultCollection()
+	 * @see #getRequestResult()
 	 * @generated
 	 */
-	EReference getMeasurementRun_Requests();
+	EReference getRequestResult_ResultCollection();
 
 	/**
-	 * Returns the meta object for class '{@link edu.kit.ipd.sdq.bycounter.output.EnvironmentDescription <em>Environment Description</em>}'.
+	 * Returns the meta object for the attribute '{@link edu.kit.ipd.sdq.bycounter.output.RequestResult#getRequestId <em>Request Id</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for class '<em>Environment Description</em>'.
-	 * @see edu.kit.ipd.sdq.bycounter.output.EnvironmentDescription
+	 * @return the meta object for the attribute '<em>Request Id</em>'.
+	 * @see edu.kit.ipd.sdq.bycounter.output.RequestResult#getRequestId()
+	 * @see #getRequestResult()
 	 * @generated
 	 */
-	EClass getEnvironmentDescription();
+	EAttribute getRequestResult_RequestId();
 
 	/**
-	 * Returns the meta object for class '{@link edu.kit.ipd.sdq.bycounter.output.Request <em>Request</em>}'.
+	 * Returns the meta object for the containment reference list '{@link edu.kit.ipd.sdq.bycounter.output.RequestResult#getCountingResults <em>Counting Results</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for class '<em>Request</em>'.
-	 * @see edu.kit.ipd.sdq.bycounter.output.Request
+	 * @return the meta object for the containment reference list '<em>Counting Results</em>'.
+	 * @see edu.kit.ipd.sdq.bycounter.output.RequestResult#getCountingResults()
+	 * @see #getRequestResult()
 	 * @generated
 	 */
-	EClass getRequest();
+	EReference getRequestResult_CountingResults();
 
 	/**
-	 * Returns the meta object for the containment reference list '{@link edu.kit.ipd.sdq.bycounter.output.Request#getObservedExecutionSequence <em>Observed Execution Sequence</em>}'.
+	 * Returns the meta object for class '{@link edu.kit.ipd.sdq.bycounter.output.CountingResult <em>Counting Result</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the containment reference list '<em>Observed Execution Sequence</em>'.
-	 * @see edu.kit.ipd.sdq.bycounter.output.Request#getObservedExecutionSequence()
-	 * @see #getRequest()
+	 * @return the meta object for class '<em>Counting Result</em>'.
+	 * @see edu.kit.ipd.sdq.bycounter.output.CountingResult
 	 * @generated
 	 */
-	EReference getRequest_ObservedExecutionSequence();
+	EClass getCountingResult();
 
 	/**
-	 * Returns the meta object for the container reference '{@link edu.kit.ipd.sdq.bycounter.output.Request#getMeasurementRun <em>Measurement Run</em>}'.
+	 * Returns the meta object for the attribute '{@link edu.kit.ipd.sdq.bycounter.output.CountingResult#getArrayCreationCounts <em>Array Creation Counts</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the container reference '<em>Measurement Run</em>'.
-	 * @see edu.kit.ipd.sdq.bycounter.output.Request#getMeasurementRun()
-	 * @see #getRequest()
+	 * @return the meta object for the attribute '<em>Array Creation Counts</em>'.
+	 * @see edu.kit.ipd.sdq.bycounter.output.CountingResult#getArrayCreationCounts()
+	 * @see #getCountingResult()
 	 * @generated
 	 */
-	EReference getRequest_MeasurementRun();
+	EAttribute getCountingResult_ArrayCreationCounts();
 
 	/**
-	 * Returns the meta object for class '{@link edu.kit.ipd.sdq.bycounter.output.ObservedEntityExecution <em>Observed Entity Execution</em>}'.
+	 * Returns the meta object for the attribute '{@link edu.kit.ipd.sdq.bycounter.output.CountingResult#getCallerId <em>Caller Id</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for class '<em>Observed Entity Execution</em>'.
-	 * @see edu.kit.ipd.sdq.bycounter.output.ObservedEntityExecution
+	 * @return the meta object for the attribute '<em>Caller Id</em>'.
+	 * @see edu.kit.ipd.sdq.bycounter.output.CountingResult#getCallerId()
+	 * @see #getCountingResult()
 	 * @generated
 	 */
-	EClass getObservedEntityExecution();
+	EAttribute getCountingResult_CallerId();
 
 	/**
-	 * Returns the meta object for the containment reference '{@link edu.kit.ipd.sdq.bycounter.output.ObservedEntityExecution#getResourceDemands <em>Resource Demands</em>}'.
+	 * Returns the meta object for the attribute '{@link edu.kit.ipd.sdq.bycounter.output.CountingResult#getMethodCallCounts <em>Method Call Counts</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the containment reference '<em>Resource Demands</em>'.
-	 * @see edu.kit.ipd.sdq.bycounter.output.ObservedEntityExecution#getResourceDemands()
-	 * @see #getObservedEntityExecution()
+	 * @return the meta object for the attribute '<em>Method Call Counts</em>'.
+	 * @see edu.kit.ipd.sdq.bycounter.output.CountingResult#getMethodCallCounts()
+	 * @see #getCountingResult()
 	 * @generated
 	 */
-	EReference getObservedEntityExecution_ResourceDemands();
+	EAttribute getCountingResult_MethodCallCounts();
 
 	/**
-	 * Returns the meta object for the containment reference list '{@link edu.kit.ipd.sdq.bycounter.output.ObservedEntityExecution#getObservedForkedExecutionSequence <em>Observed Forked Execution Sequence</em>}'.
+	 * Returns the meta object for the attribute '{@link edu.kit.ipd.sdq.bycounter.output.CountingResult#getMethodInvocationBeginning <em>Method Invocation Beginning</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the containment reference list '<em>Observed Forked Execution Sequence</em>'.
-	 * @see edu.kit.ipd.sdq.bycounter.output.ObservedEntityExecution#getObservedForkedExecutionSequence()
-	 * @see #getObservedEntityExecution()
+	 * @return the meta object for the attribute '<em>Method Invocation Beginning</em>'.
+	 * @see edu.kit.ipd.sdq.bycounter.output.CountingResult#getMethodInvocationBeginning()
+	 * @see #getCountingResult()
 	 * @generated
 	 */
-	EReference getObservedEntityExecution_ObservedForkedExecutionSequence();
+	EAttribute getCountingResult_MethodInvocationBeginning();
 
 	/**
-	 * Returns the meta object for the container reference '{@link edu.kit.ipd.sdq.bycounter.output.ObservedEntityExecution#getObservedExecutionSequenceForkedBy <em>Observed Execution Sequence Forked By</em>}'.
+	 * Returns the meta object for the attribute '{@link edu.kit.ipd.sdq.bycounter.output.CountingResult#getMethodReportingTime <em>Method Reporting Time</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the container reference '<em>Observed Execution Sequence Forked By</em>'.
-	 * @see edu.kit.ipd.sdq.bycounter.output.ObservedEntityExecution#getObservedExecutionSequenceForkedBy()
-	 * @see #getObservedEntityExecution()
+	 * @return the meta object for the attribute '<em>Method Reporting Time</em>'.
+	 * @see edu.kit.ipd.sdq.bycounter.output.CountingResult#getMethodReportingTime()
+	 * @see #getCountingResult()
 	 * @generated
 	 */
-	EReference getObservedEntityExecution_ObservedExecutionSequenceForkedBy();
+	EAttribute getCountingResult_MethodReportingTime();
 
 	/**
-	 * Returns the meta object for the reference '{@link edu.kit.ipd.sdq.bycounter.output.ObservedEntityExecution#getEntity <em>Entity</em>}'.
+	 * Returns the meta object for the attribute '{@link edu.kit.ipd.sdq.bycounter.output.CountingResult#getObservedElement <em>Observed Element</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the reference '<em>Entity</em>'.
-	 * @see edu.kit.ipd.sdq.bycounter.output.ObservedEntityExecution#getEntity()
-	 * @see #getObservedEntityExecution()
+	 * @return the meta object for the attribute '<em>Observed Element</em>'.
+	 * @see edu.kit.ipd.sdq.bycounter.output.CountingResult#getObservedElement()
+	 * @see #getCountingResult()
 	 * @generated
 	 */
-	EReference getObservedEntityExecution_Entity();
+	EAttribute getCountingResult_ObservedElement();
 
 	/**
-	 * Returns the meta object for the container reference '{@link edu.kit.ipd.sdq.bycounter.output.ObservedEntityExecution#getRequest <em>Request</em>}'.
+	 * Returns the meta object for the attribute list '{@link edu.kit.ipd.sdq.bycounter.output.CountingResult#getOpcodeCounts <em>Opcode Counts</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the container reference '<em>Request</em>'.
-	 * @see edu.kit.ipd.sdq.bycounter.output.ObservedEntityExecution#getRequest()
-	 * @see #getObservedEntityExecution()
+	 * @return the meta object for the attribute list '<em>Opcode Counts</em>'.
+	 * @see edu.kit.ipd.sdq.bycounter.output.CountingResult#getOpcodeCounts()
+	 * @see #getCountingResult()
 	 * @generated
 	 */
-	EReference getObservedEntityExecution_Request();
+	EAttribute getCountingResult_OpcodeCounts();
 
 	/**
-	 * Returns the meta object for class '{@link edu.kit.ipd.sdq.bycounter.output.ResourceDemands <em>Resource Demands</em>}'.
+	 * Returns the meta object for the attribute '{@link edu.kit.ipd.sdq.bycounter.output.CountingResult#getOwnId <em>Own Id</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for class '<em>Resource Demands</em>'.
-	 * @see edu.kit.ipd.sdq.bycounter.output.ResourceDemands
+	 * @return the meta object for the attribute '<em>Own Id</em>'.
+	 * @see edu.kit.ipd.sdq.bycounter.output.CountingResult#getOwnId()
+	 * @see #getCountingResult()
 	 * @generated
 	 */
-	EClass getResourceDemands();
+	EAttribute getCountingResult_OwnId();
 
 	/**
-	 * Returns the meta object for the containment reference list '{@link edu.kit.ipd.sdq.bycounter.output.ResourceDemands#getFunctionCalls <em>Function Calls</em>}'.
+	 * Returns the meta object for the attribute '{@link edu.kit.ipd.sdq.bycounter.output.CountingResult#getQualifyingMethodName <em>Qualifying Method Name</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the containment reference list '<em>Function Calls</em>'.
-	 * @see edu.kit.ipd.sdq.bycounter.output.ResourceDemands#getFunctionCalls()
-	 * @see #getResourceDemands()
+	 * @return the meta object for the attribute '<em>Qualifying Method Name</em>'.
+	 * @see edu.kit.ipd.sdq.bycounter.output.CountingResult#getQualifyingMethodName()
+	 * @see #getCountingResult()
 	 * @generated
 	 */
-	EReference getResourceDemands_FunctionCalls();
+	EAttribute getCountingResult_QualifyingMethodName();
 
 	/**
-	 * Returns the meta object for the containment reference list '{@link edu.kit.ipd.sdq.bycounter.output.ResourceDemands#getJavaVMCall <em>Java VM Call</em>}'.
+	 * Returns the meta object for class '{@link edu.kit.ipd.sdq.bycounter.output.ThreadedCountingResult <em>Threaded Counting Result</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the containment reference list '<em>Java VM Call</em>'.
-	 * @see edu.kit.ipd.sdq.bycounter.output.ResourceDemands#getJavaVMCall()
-	 * @see #getResourceDemands()
+	 * @return the meta object for class '<em>Threaded Counting Result</em>'.
+	 * @see edu.kit.ipd.sdq.bycounter.output.ThreadedCountingResult
 	 * @generated
 	 */
-	EReference getResourceDemands_JavaVMCall();
+	EClass getThreadedCountingResult();
 
 	/**
-	 * Returns the meta object for the container reference '{@link edu.kit.ipd.sdq.bycounter.output.ResourceDemands#getObservedExecution <em>Observed Execution</em>}'.
+	 * Returns the meta object for the containment reference list '{@link edu.kit.ipd.sdq.bycounter.output.ThreadedCountingResult#getSpawnedThreadedCountingResults <em>Spawned Threaded Counting Results</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the container reference '<em>Observed Execution</em>'.
-	 * @see edu.kit.ipd.sdq.bycounter.output.ResourceDemands#getObservedExecution()
-	 * @see #getResourceDemands()
+	 * @return the meta object for the containment reference list '<em>Spawned Threaded Counting Results</em>'.
+	 * @see edu.kit.ipd.sdq.bycounter.output.ThreadedCountingResult#getSpawnedThreadedCountingResults()
+	 * @see #getThreadedCountingResult()
 	 * @generated
 	 */
-	EReference getResourceDemands_ObservedExecution();
+	EReference getThreadedCountingResult_SpawnedThreadedCountingResults();
 
 	/**
-	 * Returns the meta object for class '{@link edu.kit.ipd.sdq.bycounter.output.FunctionCall <em>Function Call</em>}'.
+	 * Returns the meta object for the attribute '{@link edu.kit.ipd.sdq.bycounter.output.ThreadedCountingResult#getThreadId <em>Thread Id</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for class '<em>Function Call</em>'.
-	 * @see edu.kit.ipd.sdq.bycounter.output.FunctionCall
+	 * @return the meta object for the attribute '<em>Thread Id</em>'.
+	 * @see edu.kit.ipd.sdq.bycounter.output.ThreadedCountingResult#getThreadId()
+	 * @see #getThreadedCountingResult()
 	 * @generated
 	 */
-	EClass getFunctionCall();
-
-	/**
-	 * Returns the meta object for the containment reference list '{@link edu.kit.ipd.sdq.bycounter.output.FunctionCall#getParameterInstance <em>Parameter Instance</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the containment reference list '<em>Parameter Instance</em>'.
-	 * @see edu.kit.ipd.sdq.bycounter.output.FunctionCall#getParameterInstance()
-	 * @see #getFunctionCall()
-	 * @generated
-	 */
-	EReference getFunctionCall_ParameterInstance();
-
-	/**
-	 * Returns the meta object for the reference '{@link edu.kit.ipd.sdq.bycounter.output.FunctionCall#getFunction <em>Function</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the reference '<em>Function</em>'.
-	 * @see edu.kit.ipd.sdq.bycounter.output.FunctionCall#getFunction()
-	 * @see #getFunctionCall()
-	 * @generated
-	 */
-	EReference getFunctionCall_Function();
-
-	/**
-	 * Returns the meta object for the attribute '{@link edu.kit.ipd.sdq.bycounter.output.FunctionCall#getNumberObservations <em>Number Observations</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Number Observations</em>'.
-	 * @see edu.kit.ipd.sdq.bycounter.output.FunctionCall#getNumberObservations()
-	 * @see #getFunctionCall()
-	 * @generated
-	 */
-	EAttribute getFunctionCall_NumberObservations();
-
-	/**
-	 * Returns the meta object for the attribute '{@link edu.kit.ipd.sdq.bycounter.output.FunctionCall#isNative <em>Native</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Native</em>'.
-	 * @see edu.kit.ipd.sdq.bycounter.output.FunctionCall#isNative()
-	 * @see #getFunctionCall()
-	 * @generated
-	 */
-	EAttribute getFunctionCall_Native();
-
-	/**
-	 * Returns the meta object for the attribute '{@link edu.kit.ipd.sdq.bycounter.output.FunctionCall#isSynchronized <em>Synchronized</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Synchronized</em>'.
-	 * @see edu.kit.ipd.sdq.bycounter.output.FunctionCall#isSynchronized()
-	 * @see #getFunctionCall()
-	 * @generated
-	 */
-	EAttribute getFunctionCall_Synchronized();
-
-	/**
-	 * Returns the meta object for the container reference '{@link edu.kit.ipd.sdq.bycounter.output.FunctionCall#getResourceDemands <em>Resource Demands</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the container reference '<em>Resource Demands</em>'.
-	 * @see edu.kit.ipd.sdq.bycounter.output.FunctionCall#getResourceDemands()
-	 * @see #getFunctionCall()
-	 * @generated
-	 */
-	EReference getFunctionCall_ResourceDemands();
-
-	/**
-	 * Returns the meta object for class '{@link edu.kit.ipd.sdq.bycounter.output.ParameterInstance <em>Parameter Instance</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for class '<em>Parameter Instance</em>'.
-	 * @see edu.kit.ipd.sdq.bycounter.output.ParameterInstance
-	 * @generated
-	 */
-	EClass getParameterInstance();
-
-	/**
-	 * Returns the meta object for the reference '{@link edu.kit.ipd.sdq.bycounter.output.ParameterInstance#getFormalParameter <em>Formal Parameter</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the reference '<em>Formal Parameter</em>'.
-	 * @see edu.kit.ipd.sdq.bycounter.output.ParameterInstance#getFormalParameter()
-	 * @see #getParameterInstance()
-	 * @generated
-	 */
-	EReference getParameterInstance_FormalParameter();
-
-	/**
-	 * Returns the meta object for the containment reference list '{@link edu.kit.ipd.sdq.bycounter.output.ParameterInstance#getParameterCharacterisation <em>Parameter Characterisation</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the containment reference list '<em>Parameter Characterisation</em>'.
-	 * @see edu.kit.ipd.sdq.bycounter.output.ParameterInstance#getParameterCharacterisation()
-	 * @see #getParameterInstance()
-	 * @generated
-	 */
-	EReference getParameterInstance_ParameterCharacterisation();
-
-	/**
-	 * Returns the meta object for the container reference '{@link edu.kit.ipd.sdq.bycounter.output.ParameterInstance#getFunctionCall <em>Function Call</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the container reference '<em>Function Call</em>'.
-	 * @see edu.kit.ipd.sdq.bycounter.output.ParameterInstance#getFunctionCall()
-	 * @see #getParameterInstance()
-	 * @generated
-	 */
-	EReference getParameterInstance_FunctionCall();
-
-	/**
-	 * Returns the meta object for class '{@link edu.kit.ipd.sdq.bycounter.output.ParameterCharacterisation <em>Parameter Characterisation</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for class '<em>Parameter Characterisation</em>'.
-	 * @see edu.kit.ipd.sdq.bycounter.output.ParameterCharacterisation
-	 * @generated
-	 */
-	EClass getParameterCharacterisation();
-
-	/**
-	 * Returns the meta object for the attribute '{@link edu.kit.ipd.sdq.bycounter.output.ParameterCharacterisation#getCharacterisation <em>Characterisation</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Characterisation</em>'.
-	 * @see edu.kit.ipd.sdq.bycounter.output.ParameterCharacterisation#getCharacterisation()
-	 * @see #getParameterCharacterisation()
-	 * @generated
-	 */
-	EAttribute getParameterCharacterisation_Characterisation();
-
-	/**
-	 * Returns the meta object for the container reference '{@link edu.kit.ipd.sdq.bycounter.output.ParameterCharacterisation#getParameterInstance <em>Parameter Instance</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the container reference '<em>Parameter Instance</em>'.
-	 * @see edu.kit.ipd.sdq.bycounter.output.ParameterCharacterisation#getParameterInstance()
-	 * @see #getParameterCharacterisation()
-	 * @generated
-	 */
-	EReference getParameterCharacterisation_ParameterInstance();
-
-	/**
-	 * Returns the meta object for class '{@link edu.kit.ipd.sdq.bycounter.output.JavaVMCall <em>Java VM Call</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for class '<em>Java VM Call</em>'.
-	 * @see edu.kit.ipd.sdq.bycounter.output.JavaVMCall
-	 * @generated
-	 */
-	EClass getJavaVMCall();
-
-	/**
-	 * Returns the meta object for the attribute '{@link edu.kit.ipd.sdq.bycounter.output.JavaVMCall#getNumberObservations <em>Number Observations</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Number Observations</em>'.
-	 * @see edu.kit.ipd.sdq.bycounter.output.JavaVMCall#getNumberObservations()
-	 * @see #getJavaVMCall()
-	 * @generated
-	 */
-	EAttribute getJavaVMCall_NumberObservations();
-
-	/**
-	 * Returns the meta object for the attribute '{@link edu.kit.ipd.sdq.bycounter.output.JavaVMCall#getId <em>Id</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Id</em>'.
-	 * @see edu.kit.ipd.sdq.bycounter.output.JavaVMCall#getId()
-	 * @see #getJavaVMCall()
-	 * @generated
-	 */
-	EAttribute getJavaVMCall_Id();
-
-	/**
-	 * Returns the meta object for the attribute '{@link edu.kit.ipd.sdq.bycounter.output.JavaVMCall#getName <em>Name</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Name</em>'.
-	 * @see edu.kit.ipd.sdq.bycounter.output.JavaVMCall#getName()
-	 * @see #getJavaVMCall()
-	 * @generated
-	 */
-	EAttribute getJavaVMCall_Name();
-
-	/**
-	 * Returns the meta object for the container reference '{@link edu.kit.ipd.sdq.bycounter.output.JavaVMCall#getResourceDemands <em>Resource Demands</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the container reference '<em>Resource Demands</em>'.
-	 * @see edu.kit.ipd.sdq.bycounter.output.JavaVMCall#getResourceDemands()
-	 * @see #getJavaVMCall()
-	 * @generated
-	 */
-	EReference getJavaVMCall_ResourceDemands();
-
-	/**
-	 * Returns the meta object for class '{@link edu.kit.ipd.sdq.bycounter.output.DoubleCharacterisation <em>Double Characterisation</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for class '<em>Double Characterisation</em>'.
-	 * @see edu.kit.ipd.sdq.bycounter.output.DoubleCharacterisation
-	 * @generated
-	 */
-	EClass getDoubleCharacterisation();
-
-	/**
-	 * Returns the meta object for the attribute '{@link edu.kit.ipd.sdq.bycounter.output.DoubleCharacterisation#getValue <em>Value</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Value</em>'.
-	 * @see edu.kit.ipd.sdq.bycounter.output.DoubleCharacterisation#getValue()
-	 * @see #getDoubleCharacterisation()
-	 * @generated
-	 */
-	EAttribute getDoubleCharacterisation_Value();
-
-	/**
-	 * Returns the meta object for class '{@link edu.kit.ipd.sdq.bycounter.output.LongCharacterisation <em>Long Characterisation</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for class '<em>Long Characterisation</em>'.
-	 * @see edu.kit.ipd.sdq.bycounter.output.LongCharacterisation
-	 * @generated
-	 */
-	EClass getLongCharacterisation();
-
-	/**
-	 * Returns the meta object for the attribute '{@link edu.kit.ipd.sdq.bycounter.output.LongCharacterisation#getValue <em>Value</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Value</em>'.
-	 * @see edu.kit.ipd.sdq.bycounter.output.LongCharacterisation#getValue()
-	 * @see #getLongCharacterisation()
-	 * @generated
-	 */
-	EAttribute getLongCharacterisation_Value();
-
-	/**
-	 * Returns the meta object for class '{@link edu.kit.ipd.sdq.bycounter.output.BooleanCharacterisation <em>Boolean Characterisation</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for class '<em>Boolean Characterisation</em>'.
-	 * @see edu.kit.ipd.sdq.bycounter.output.BooleanCharacterisation
-	 * @generated
-	 */
-	EClass getBooleanCharacterisation();
-
-	/**
-	 * Returns the meta object for the attribute '{@link edu.kit.ipd.sdq.bycounter.output.BooleanCharacterisation#isValue <em>Value</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Value</em>'.
-	 * @see edu.kit.ipd.sdq.bycounter.output.BooleanCharacterisation#isValue()
-	 * @see #getBooleanCharacterisation()
-	 * @generated
-	 */
-	EAttribute getBooleanCharacterisation_Value();
-
-	/**
-	 * Returns the meta object for class '{@link edu.kit.ipd.sdq.bycounter.output.StringCharacterisation <em>String Characterisation</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for class '<em>String Characterisation</em>'.
-	 * @see edu.kit.ipd.sdq.bycounter.output.StringCharacterisation
-	 * @generated
-	 */
-	EClass getStringCharacterisation();
-
-	/**
-	 * Returns the meta object for the attribute '{@link edu.kit.ipd.sdq.bycounter.output.StringCharacterisation#getValue <em>Value</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Value</em>'.
-	 * @see edu.kit.ipd.sdq.bycounter.output.StringCharacterisation#getValue()
-	 * @see #getStringCharacterisation()
-	 * @generated
-	 */
-	EAttribute getStringCharacterisation_Value();
+	EAttribute getThreadedCountingResult_ThreadId();
 
 	/**
 	 * Returns the factory that creates the instances of the model.
@@ -1353,398 +653,172 @@ public interface OutputPackage extends EPackage {
 		EClass OUTPUT_MODEL_REPOSITORY = eINSTANCE.getOutputModelRepository();
 
 		/**
-		 * The meta object literal for the '<em><b>Measurement Runs</b></em>' containment reference list feature.
+		 * The meta object literal for the '{@link edu.kit.ipd.sdq.bycounter.output.impl.ResultCollectionImpl <em>Result Collection</em>}' class.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
+		 * @see edu.kit.ipd.sdq.bycounter.output.impl.ResultCollectionImpl
+		 * @see edu.kit.ipd.sdq.bycounter.output.impl.OutputPackageImpl#getResultCollection()
 		 * @generated
 		 */
-		EReference OUTPUT_MODEL_REPOSITORY__MEASUREMENT_RUNS = eINSTANCE.getOutputModelRepository_MeasurementRuns();
+		EClass RESULT_COLLECTION = eINSTANCE.getResultCollection();
 
 		/**
-		 * The meta object literal for the '<em><b>Environment Characterisations</b></em>' containment reference list feature.
+		 * The meta object literal for the '<em><b>Request Results</b></em>' containment reference list feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		EReference OUTPUT_MODEL_REPOSITORY__ENVIRONMENT_CHARACTERISATIONS = eINSTANCE.getOutputModelRepository_EnvironmentCharacterisations();
+		EReference RESULT_COLLECTION__REQUEST_RESULTS = eINSTANCE.getResultCollection_RequestResults();
 
 		/**
-		 * The meta object literal for the '{@link edu.kit.ipd.sdq.bycounter.output.impl.MeasurementRunImpl <em>Measurement Run</em>}' class.
+		 * The meta object literal for the '<em><b>Counting Results</b></em>' containment reference list feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
-		 * @see edu.kit.ipd.sdq.bycounter.output.impl.MeasurementRunImpl
-		 * @see edu.kit.ipd.sdq.bycounter.output.impl.OutputPackageImpl#getMeasurementRun()
 		 * @generated
 		 */
-		EClass MEASUREMENT_RUN = eINSTANCE.getMeasurementRun();
+		EReference RESULT_COLLECTION__COUNTING_RESULTS = eINSTANCE.getResultCollection_CountingResults();
 
 		/**
-		 * The meta object literal for the '<em><b>Environment Characterisation</b></em>' reference feature.
+		 * The meta object literal for the '{@link edu.kit.ipd.sdq.bycounter.output.impl.RequestResultImpl <em>Request Result</em>}' class.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
+		 * @see edu.kit.ipd.sdq.bycounter.output.impl.RequestResultImpl
+		 * @see edu.kit.ipd.sdq.bycounter.output.impl.OutputPackageImpl#getRequestResult()
 		 * @generated
 		 */
-		EReference MEASUREMENT_RUN__ENVIRONMENT_CHARACTERISATION = eINSTANCE.getMeasurementRun_EnvironmentCharacterisation();
+		EClass REQUEST_RESULT = eINSTANCE.getRequestResult();
 
 		/**
-		 * The meta object literal for the '<em><b>Requests</b></em>' containment reference list feature.
+		 * The meta object literal for the '<em><b>Result Collection</b></em>' containment reference list feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		EReference MEASUREMENT_RUN__REQUESTS = eINSTANCE.getMeasurementRun_Requests();
+		EReference REQUEST_RESULT__RESULT_COLLECTION = eINSTANCE.getRequestResult_ResultCollection();
 
 		/**
-		 * The meta object literal for the '{@link edu.kit.ipd.sdq.bycounter.output.impl.EnvironmentDescriptionImpl <em>Environment Description</em>}' class.
+		 * The meta object literal for the '<em><b>Request Id</b></em>' attribute feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
-		 * @see edu.kit.ipd.sdq.bycounter.output.impl.EnvironmentDescriptionImpl
-		 * @see edu.kit.ipd.sdq.bycounter.output.impl.OutputPackageImpl#getEnvironmentDescription()
 		 * @generated
 		 */
-		EClass ENVIRONMENT_DESCRIPTION = eINSTANCE.getEnvironmentDescription();
+		EAttribute REQUEST_RESULT__REQUEST_ID = eINSTANCE.getRequestResult_RequestId();
 
 		/**
-		 * The meta object literal for the '{@link edu.kit.ipd.sdq.bycounter.output.impl.RequestImpl <em>Request</em>}' class.
+		 * The meta object literal for the '<em><b>Counting Results</b></em>' containment reference list feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
-		 * @see edu.kit.ipd.sdq.bycounter.output.impl.RequestImpl
-		 * @see edu.kit.ipd.sdq.bycounter.output.impl.OutputPackageImpl#getRequest()
 		 * @generated
 		 */
-		EClass REQUEST = eINSTANCE.getRequest();
+		EReference REQUEST_RESULT__COUNTING_RESULTS = eINSTANCE.getRequestResult_CountingResults();
 
 		/**
-		 * The meta object literal for the '<em><b>Observed Execution Sequence</b></em>' containment reference list feature.
+		 * The meta object literal for the '{@link edu.kit.ipd.sdq.bycounter.output.impl.CountingResultImpl <em>Counting Result</em>}' class.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
+		 * @see edu.kit.ipd.sdq.bycounter.output.impl.CountingResultImpl
+		 * @see edu.kit.ipd.sdq.bycounter.output.impl.OutputPackageImpl#getCountingResult()
 		 * @generated
 		 */
-		EReference REQUEST__OBSERVED_EXECUTION_SEQUENCE = eINSTANCE.getRequest_ObservedExecutionSequence();
+		EClass COUNTING_RESULT = eINSTANCE.getCountingResult();
 
 		/**
-		 * The meta object literal for the '<em><b>Measurement Run</b></em>' container reference feature.
+		 * The meta object literal for the '<em><b>Array Creation Counts</b></em>' attribute feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		EReference REQUEST__MEASUREMENT_RUN = eINSTANCE.getRequest_MeasurementRun();
+		EAttribute COUNTING_RESULT__ARRAY_CREATION_COUNTS = eINSTANCE.getCountingResult_ArrayCreationCounts();
 
 		/**
-		 * The meta object literal for the '{@link edu.kit.ipd.sdq.bycounter.output.impl.ObservedEntityExecutionImpl <em>Observed Entity Execution</em>}' class.
+		 * The meta object literal for the '<em><b>Caller Id</b></em>' attribute feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
-		 * @see edu.kit.ipd.sdq.bycounter.output.impl.ObservedEntityExecutionImpl
-		 * @see edu.kit.ipd.sdq.bycounter.output.impl.OutputPackageImpl#getObservedEntityExecution()
 		 * @generated
 		 */
-		EClass OBSERVED_ENTITY_EXECUTION = eINSTANCE.getObservedEntityExecution();
+		EAttribute COUNTING_RESULT__CALLER_ID = eINSTANCE.getCountingResult_CallerId();
 
 		/**
-		 * The meta object literal for the '<em><b>Resource Demands</b></em>' containment reference feature.
+		 * The meta object literal for the '<em><b>Method Call Counts</b></em>' attribute feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		EReference OBSERVED_ENTITY_EXECUTION__RESOURCE_DEMANDS = eINSTANCE.getObservedEntityExecution_ResourceDemands();
+		EAttribute COUNTING_RESULT__METHOD_CALL_COUNTS = eINSTANCE.getCountingResult_MethodCallCounts();
 
 		/**
-		 * The meta object literal for the '<em><b>Observed Forked Execution Sequence</b></em>' containment reference list feature.
+		 * The meta object literal for the '<em><b>Method Invocation Beginning</b></em>' attribute feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		EReference OBSERVED_ENTITY_EXECUTION__OBSERVED_FORKED_EXECUTION_SEQUENCE = eINSTANCE.getObservedEntityExecution_ObservedForkedExecutionSequence();
+		EAttribute COUNTING_RESULT__METHOD_INVOCATION_BEGINNING = eINSTANCE.getCountingResult_MethodInvocationBeginning();
 
 		/**
-		 * The meta object literal for the '<em><b>Observed Execution Sequence Forked By</b></em>' container reference feature.
+		 * The meta object literal for the '<em><b>Method Reporting Time</b></em>' attribute feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		EReference OBSERVED_ENTITY_EXECUTION__OBSERVED_EXECUTION_SEQUENCE_FORKED_BY = eINSTANCE.getObservedEntityExecution_ObservedExecutionSequenceForkedBy();
+		EAttribute COUNTING_RESULT__METHOD_REPORTING_TIME = eINSTANCE.getCountingResult_MethodReportingTime();
 
 		/**
-		 * The meta object literal for the '<em><b>Entity</b></em>' reference feature.
+		 * The meta object literal for the '<em><b>Observed Element</b></em>' attribute feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		EReference OBSERVED_ENTITY_EXECUTION__ENTITY = eINSTANCE.getObservedEntityExecution_Entity();
+		EAttribute COUNTING_RESULT__OBSERVED_ELEMENT = eINSTANCE.getCountingResult_ObservedElement();
 
 		/**
-		 * The meta object literal for the '<em><b>Request</b></em>' container reference feature.
+		 * The meta object literal for the '<em><b>Opcode Counts</b></em>' attribute list feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		EReference OBSERVED_ENTITY_EXECUTION__REQUEST = eINSTANCE.getObservedEntityExecution_Request();
+		EAttribute COUNTING_RESULT__OPCODE_COUNTS = eINSTANCE.getCountingResult_OpcodeCounts();
 
 		/**
-		 * The meta object literal for the '{@link edu.kit.ipd.sdq.bycounter.output.impl.ResourceDemandsImpl <em>Resource Demands</em>}' class.
+		 * The meta object literal for the '<em><b>Own Id</b></em>' attribute feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
-		 * @see edu.kit.ipd.sdq.bycounter.output.impl.ResourceDemandsImpl
-		 * @see edu.kit.ipd.sdq.bycounter.output.impl.OutputPackageImpl#getResourceDemands()
 		 * @generated
 		 */
-		EClass RESOURCE_DEMANDS = eINSTANCE.getResourceDemands();
+		EAttribute COUNTING_RESULT__OWN_ID = eINSTANCE.getCountingResult_OwnId();
 
 		/**
-		 * The meta object literal for the '<em><b>Function Calls</b></em>' containment reference list feature.
+		 * The meta object literal for the '<em><b>Qualifying Method Name</b></em>' attribute feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		EReference RESOURCE_DEMANDS__FUNCTION_CALLS = eINSTANCE.getResourceDemands_FunctionCalls();
+		EAttribute COUNTING_RESULT__QUALIFYING_METHOD_NAME = eINSTANCE.getCountingResult_QualifyingMethodName();
 
 		/**
-		 * The meta object literal for the '<em><b>Java VM Call</b></em>' containment reference list feature.
+		 * The meta object literal for the '{@link edu.kit.ipd.sdq.bycounter.output.impl.ThreadedCountingResultImpl <em>Threaded Counting Result</em>}' class.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
+		 * @see edu.kit.ipd.sdq.bycounter.output.impl.ThreadedCountingResultImpl
+		 * @see edu.kit.ipd.sdq.bycounter.output.impl.OutputPackageImpl#getThreadedCountingResult()
 		 * @generated
 		 */
-		EReference RESOURCE_DEMANDS__JAVA_VM_CALL = eINSTANCE.getResourceDemands_JavaVMCall();
+		EClass THREADED_COUNTING_RESULT = eINSTANCE.getThreadedCountingResult();
 
 		/**
-		 * The meta object literal for the '<em><b>Observed Execution</b></em>' container reference feature.
+		 * The meta object literal for the '<em><b>Spawned Threaded Counting Results</b></em>' containment reference list feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		EReference RESOURCE_DEMANDS__OBSERVED_EXECUTION = eINSTANCE.getResourceDemands_ObservedExecution();
+		EReference THREADED_COUNTING_RESULT__SPAWNED_THREADED_COUNTING_RESULTS = eINSTANCE.getThreadedCountingResult_SpawnedThreadedCountingResults();
 
 		/**
-		 * The meta object literal for the '{@link edu.kit.ipd.sdq.bycounter.output.impl.FunctionCallImpl <em>Function Call</em>}' class.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @see edu.kit.ipd.sdq.bycounter.output.impl.FunctionCallImpl
-		 * @see edu.kit.ipd.sdq.bycounter.output.impl.OutputPackageImpl#getFunctionCall()
-		 * @generated
-		 */
-		EClass FUNCTION_CALL = eINSTANCE.getFunctionCall();
-
-		/**
-		 * The meta object literal for the '<em><b>Parameter Instance</b></em>' containment reference list feature.
+		 * The meta object literal for the '<em><b>Thread Id</b></em>' attribute feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		EReference FUNCTION_CALL__PARAMETER_INSTANCE = eINSTANCE.getFunctionCall_ParameterInstance();
-
-		/**
-		 * The meta object literal for the '<em><b>Function</b></em>' reference feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EReference FUNCTION_CALL__FUNCTION = eINSTANCE.getFunctionCall_Function();
-
-		/**
-		 * The meta object literal for the '<em><b>Number Observations</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute FUNCTION_CALL__NUMBER_OBSERVATIONS = eINSTANCE.getFunctionCall_NumberObservations();
-
-		/**
-		 * The meta object literal for the '<em><b>Native</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute FUNCTION_CALL__NATIVE = eINSTANCE.getFunctionCall_Native();
-
-		/**
-		 * The meta object literal for the '<em><b>Synchronized</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute FUNCTION_CALL__SYNCHRONIZED = eINSTANCE.getFunctionCall_Synchronized();
-
-		/**
-		 * The meta object literal for the '<em><b>Resource Demands</b></em>' container reference feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EReference FUNCTION_CALL__RESOURCE_DEMANDS = eINSTANCE.getFunctionCall_ResourceDemands();
-
-		/**
-		 * The meta object literal for the '{@link edu.kit.ipd.sdq.bycounter.output.impl.ParameterInstanceImpl <em>Parameter Instance</em>}' class.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @see edu.kit.ipd.sdq.bycounter.output.impl.ParameterInstanceImpl
-		 * @see edu.kit.ipd.sdq.bycounter.output.impl.OutputPackageImpl#getParameterInstance()
-		 * @generated
-		 */
-		EClass PARAMETER_INSTANCE = eINSTANCE.getParameterInstance();
-
-		/**
-		 * The meta object literal for the '<em><b>Formal Parameter</b></em>' reference feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EReference PARAMETER_INSTANCE__FORMAL_PARAMETER = eINSTANCE.getParameterInstance_FormalParameter();
-
-		/**
-		 * The meta object literal for the '<em><b>Parameter Characterisation</b></em>' containment reference list feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EReference PARAMETER_INSTANCE__PARAMETER_CHARACTERISATION = eINSTANCE.getParameterInstance_ParameterCharacterisation();
-
-		/**
-		 * The meta object literal for the '<em><b>Function Call</b></em>' container reference feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EReference PARAMETER_INSTANCE__FUNCTION_CALL = eINSTANCE.getParameterInstance_FunctionCall();
-
-		/**
-		 * The meta object literal for the '{@link edu.kit.ipd.sdq.bycounter.output.impl.ParameterCharacterisationImpl <em>Parameter Characterisation</em>}' class.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @see edu.kit.ipd.sdq.bycounter.output.impl.ParameterCharacterisationImpl
-		 * @see edu.kit.ipd.sdq.bycounter.output.impl.OutputPackageImpl#getParameterCharacterisation()
-		 * @generated
-		 */
-		EClass PARAMETER_CHARACTERISATION = eINSTANCE.getParameterCharacterisation();
-
-		/**
-		 * The meta object literal for the '<em><b>Characterisation</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute PARAMETER_CHARACTERISATION__CHARACTERISATION = eINSTANCE.getParameterCharacterisation_Characterisation();
-
-		/**
-		 * The meta object literal for the '<em><b>Parameter Instance</b></em>' container reference feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EReference PARAMETER_CHARACTERISATION__PARAMETER_INSTANCE = eINSTANCE.getParameterCharacterisation_ParameterInstance();
-
-		/**
-		 * The meta object literal for the '{@link edu.kit.ipd.sdq.bycounter.output.impl.JavaVMCallImpl <em>Java VM Call</em>}' class.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @see edu.kit.ipd.sdq.bycounter.output.impl.JavaVMCallImpl
-		 * @see edu.kit.ipd.sdq.bycounter.output.impl.OutputPackageImpl#getJavaVMCall()
-		 * @generated
-		 */
-		EClass JAVA_VM_CALL = eINSTANCE.getJavaVMCall();
-
-		/**
-		 * The meta object literal for the '<em><b>Number Observations</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute JAVA_VM_CALL__NUMBER_OBSERVATIONS = eINSTANCE.getJavaVMCall_NumberObservations();
-
-		/**
-		 * The meta object literal for the '<em><b>Id</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute JAVA_VM_CALL__ID = eINSTANCE.getJavaVMCall_Id();
-
-		/**
-		 * The meta object literal for the '<em><b>Name</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute JAVA_VM_CALL__NAME = eINSTANCE.getJavaVMCall_Name();
-
-		/**
-		 * The meta object literal for the '<em><b>Resource Demands</b></em>' container reference feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EReference JAVA_VM_CALL__RESOURCE_DEMANDS = eINSTANCE.getJavaVMCall_ResourceDemands();
-
-		/**
-		 * The meta object literal for the '{@link edu.kit.ipd.sdq.bycounter.output.impl.DoubleCharacterisationImpl <em>Double Characterisation</em>}' class.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @see edu.kit.ipd.sdq.bycounter.output.impl.DoubleCharacterisationImpl
-		 * @see edu.kit.ipd.sdq.bycounter.output.impl.OutputPackageImpl#getDoubleCharacterisation()
-		 * @generated
-		 */
-		EClass DOUBLE_CHARACTERISATION = eINSTANCE.getDoubleCharacterisation();
-
-		/**
-		 * The meta object literal for the '<em><b>Value</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute DOUBLE_CHARACTERISATION__VALUE = eINSTANCE.getDoubleCharacterisation_Value();
-
-		/**
-		 * The meta object literal for the '{@link edu.kit.ipd.sdq.bycounter.output.impl.LongCharacterisationImpl <em>Long Characterisation</em>}' class.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @see edu.kit.ipd.sdq.bycounter.output.impl.LongCharacterisationImpl
-		 * @see edu.kit.ipd.sdq.bycounter.output.impl.OutputPackageImpl#getLongCharacterisation()
-		 * @generated
-		 */
-		EClass LONG_CHARACTERISATION = eINSTANCE.getLongCharacterisation();
-
-		/**
-		 * The meta object literal for the '<em><b>Value</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute LONG_CHARACTERISATION__VALUE = eINSTANCE.getLongCharacterisation_Value();
-
-		/**
-		 * The meta object literal for the '{@link edu.kit.ipd.sdq.bycounter.output.impl.BooleanCharacterisationImpl <em>Boolean Characterisation</em>}' class.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @see edu.kit.ipd.sdq.bycounter.output.impl.BooleanCharacterisationImpl
-		 * @see edu.kit.ipd.sdq.bycounter.output.impl.OutputPackageImpl#getBooleanCharacterisation()
-		 * @generated
-		 */
-		EClass BOOLEAN_CHARACTERISATION = eINSTANCE.getBooleanCharacterisation();
-
-		/**
-		 * The meta object literal for the '<em><b>Value</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute BOOLEAN_CHARACTERISATION__VALUE = eINSTANCE.getBooleanCharacterisation_Value();
-
-		/**
-		 * The meta object literal for the '{@link edu.kit.ipd.sdq.bycounter.output.impl.StringCharacterisationImpl <em>String Characterisation</em>}' class.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @see edu.kit.ipd.sdq.bycounter.output.impl.StringCharacterisationImpl
-		 * @see edu.kit.ipd.sdq.bycounter.output.impl.OutputPackageImpl#getStringCharacterisation()
-		 * @generated
-		 */
-		EClass STRING_CHARACTERISATION = eINSTANCE.getStringCharacterisation();
-
-		/**
-		 * The meta object literal for the '<em><b>Value</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute STRING_CHARACTERISATION__VALUE = eINSTANCE.getStringCharacterisation_Value();
+		EAttribute THREADED_COUNTING_RESULT__THREAD_ID = eINSTANCE.getThreadedCountingResult_ThreadId();
 
 	}
 

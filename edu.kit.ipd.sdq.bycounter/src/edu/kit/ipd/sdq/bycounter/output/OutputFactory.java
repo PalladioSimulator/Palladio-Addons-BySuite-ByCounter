@@ -35,103 +35,40 @@ public interface OutputFactory extends EFactory {
 	OutputModelRepository createOutputModelRepository();
 
 	/**
-	 * Returns a new object of class '<em>Measurement Run</em>'.
+	 * Returns a new object of class '<em>Result Collection</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Measurement Run</em>'.
+	 * @return a new object of class '<em>Result Collection</em>'.
 	 * @generated
 	 */
-	MeasurementRun createMeasurementRun();
+	ResultCollection createResultCollection();
 
 	/**
-	 * Returns a new object of class '<em>Request</em>'.
+	 * Returns a new object of class '<em>Request Result</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Request</em>'.
+	 * @return a new object of class '<em>Request Result</em>'.
 	 * @generated
 	 */
-	Request createRequest();
+	RequestResult createRequestResult();
 
 	/**
-	 * Returns a new object of class '<em>Observed Entity Execution</em>'.
+	 * Returns a new object of class '<em>Counting Result</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Observed Entity Execution</em>'.
+	 * @return a new object of class '<em>Counting Result</em>'.
 	 * @generated
 	 */
-	ObservedEntityExecution createObservedEntityExecution();
+	CountingResult createCountingResult();
 
 	/**
-	 * Returns a new object of class '<em>Resource Demands</em>'.
+	 * Returns a new object of class '<em>Threaded Counting Result</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Resource Demands</em>'.
+	 * @return a new object of class '<em>Threaded Counting Result</em>'.
 	 * @generated
 	 */
-	ResourceDemands createResourceDemands();
-
-	/**
-	 * Returns a new object of class '<em>Function Call</em>'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Function Call</em>'.
-	 * @generated
-	 */
-	FunctionCall createFunctionCall();
-
-	/**
-	 * Returns a new object of class '<em>Parameter Instance</em>'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Parameter Instance</em>'.
-	 * @generated
-	 */
-	ParameterInstance createParameterInstance();
-
-	/**
-	 * Returns a new object of class '<em>Java VM Call</em>'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Java VM Call</em>'.
-	 * @generated
-	 */
-	JavaVMCall createJavaVMCall();
-
-	/**
-	 * Returns a new object of class '<em>Double Characterisation</em>'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Double Characterisation</em>'.
-	 * @generated
-	 */
-	DoubleCharacterisation createDoubleCharacterisation();
-
-	/**
-	 * Returns a new object of class '<em>Long Characterisation</em>'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Long Characterisation</em>'.
-	 * @generated
-	 */
-	LongCharacterisation createLongCharacterisation();
-
-	/**
-	 * Returns a new object of class '<em>Boolean Characterisation</em>'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Boolean Characterisation</em>'.
-	 * @generated
-	 */
-	BooleanCharacterisation createBooleanCharacterisation();
-
-	/**
-	 * Returns a new object of class '<em>String Characterisation</em>'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>String Characterisation</em>'.
-	 * @generated
-	 */
-	StringCharacterisation createStringCharacterisation();
+	ThreadedCountingResult createThreadedCountingResult();
 
 	/**
 	 * Returns the package supported by this factory.
