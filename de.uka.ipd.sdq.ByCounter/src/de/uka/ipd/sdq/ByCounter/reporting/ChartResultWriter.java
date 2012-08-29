@@ -147,8 +147,7 @@ public class ChartResultWriter implements ICountingResultWriter{
 		int chartYsize,
 		String qualifyingMethodName,
 		String pathForChartSaving
-		)
-	{
+		) {
 		JFreeChart chart = ChartFactory.createBarChart(
 				"Bytecode and method counts for method "+qualifyingMethodName, // chart title
 				"Bytecode instructions", // domain axis label

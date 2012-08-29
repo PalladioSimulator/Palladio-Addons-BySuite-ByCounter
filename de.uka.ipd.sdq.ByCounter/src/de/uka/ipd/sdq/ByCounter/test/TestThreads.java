@@ -43,7 +43,7 @@ public class TestThreads extends AbstractByCounterTest {
 	/** Refers to {@link ThreadedTestSubject#runThreads()}. */
 	private static MethodDescriptor methodRun;
 	
-	{
+	static {
 		methodRunnableForThreadingRun = new MethodDescriptor(
 				RunnableForThreading.class.getCanonicalName(),
 				"public void run()");

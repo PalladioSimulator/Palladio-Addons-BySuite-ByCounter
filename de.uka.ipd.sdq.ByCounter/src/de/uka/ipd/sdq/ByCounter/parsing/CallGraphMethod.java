@@ -92,8 +92,7 @@ public final class CallGraphMethod {
 	 * @return A <code>String</code> representation 
 	 * of this object.
 	 */
-	public String toString()
-	{
+	public String toString() {
 	    final String TAB = "    ";
 	    
 	    String retValue = "";

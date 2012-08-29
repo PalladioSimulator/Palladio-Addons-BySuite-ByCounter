@@ -39,7 +39,7 @@ public class TestInstrumentationRegions extends AbstractByCounterTest {
 
 	private static MethodDescriptor mdParameterTest;
 	
-	{
+	static {
 		methodStart = new MethodDescriptor(
 				TestSubject.class.getCanonicalName(),
 				"public void methodCallTest()");
