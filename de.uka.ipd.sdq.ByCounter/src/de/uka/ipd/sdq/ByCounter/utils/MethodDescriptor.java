@@ -398,7 +398,7 @@ public final class MethodDescriptor implements Comparable<MethodDescriptor>, Ser
 	/** @see #getDescriptor() */
 	private String descriptor = null;
 
-	/** @see #setInlineImmediately() */
+	/** @see #setInlineImmediately(boolean) */
 	private boolean inlineImmediately = false;
 
 	/**

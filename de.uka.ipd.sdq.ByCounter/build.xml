@@ -257,14 +257,14 @@
 			version="true"
 			access="public"
 			use="true"
+			docfilessubdirs="true"
+			additionalparam="-docfilessubdirs"
 			overview="${project_root}/introduction.html" 
 			windowtitle="ByCounter API">
 			
-			<fileset dir="${src}" defaultexcludes="yes">
+			<fileset dir="${src}" defaultexcludes="no">
 				<exclude name="evaluation/**/*" />
 				<exclude name="experimental/**/*" />
-				<exclude name="**/example/BytecodeTest.java" />
-				<exclude name="**/measurement/**/*" />
 				<exclude name="**/test/**/*" />
 				<include name="**/*.java" />
 			</fileset>
@@ -281,6 +281,13 @@
 		<copy todir="${dist}/doc" filtering="off">
 			<fileset dir="${doc}">
 				<include name="manual/ByCounter_Manual.pdf" />
+			</fileset>
+		</copy>
+
+		<!-- Copy doc-files to the dist directory -->
+		<copy todir="${dist}/doc/api" filtering="off">
+			<fileset dir="${src}">
+				<include name="**/doc-files/*" />
 			</fileset>
 		</copy>
 	</target>

@@ -169,7 +169,7 @@ public final class CountingResultCollector extends Observable implements ICollec
 	/** 
 	 * @see BytecodeCounter#setExecutionSettings(ExecutionSettings)
 	 * @see CountingResultCollectorMode
-	 * @returnCurrent Counting mode.
+	 * @return Current Counting mode.
 	 */
 	public CountingResultCollectorMode getMode() {
 		return this.mode;
