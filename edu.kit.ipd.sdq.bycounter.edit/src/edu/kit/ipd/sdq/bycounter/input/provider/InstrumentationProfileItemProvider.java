@@ -73,9 +73,7 @@ public class InstrumentationProfileItemProvider
 
 			addInstrumentRecursivelyPropertyDescriptor(object);
 			addAggregateInternalCallsTransparentlyPropertyDescriptor(object);
-			addAggregationTypePropertyDescriptor(object);
 			addPersistInstrumentedClassesPropertyDescriptor(object);
-			addTemporaryResultsTypePropertyDescriptor(object);
 			addInstrumentUsingLongCountersPropertyDescriptor(object);
 			addInstrumentUsingBasicBlocksPropertyDescriptor(object);
 			addTraceAndIdentifyRequestsPropertyDescriptor(object);
@@ -128,28 +126,6 @@ public class InstrumentationProfileItemProvider
 	}
 
 	/**
-	 * This adds a property descriptor for the Aggregation Type feature.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected void addAggregationTypePropertyDescriptor(Object object) {
-		itemPropertyDescriptors.add
-			(createItemPropertyDescriptor
-				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
-				 getResourceLocator(),
-				 getString("_UI_InstrumentationProfile_aggregationType_feature"),
-				 getString("_UI_PropertyDescriptor_description", "_UI_InstrumentationProfile_aggregationType_feature", "_UI_InstrumentationProfile_type"),
-				 InputPackage.Literals.INSTRUMENTATION_PROFILE__AGGREGATION_TYPE,
-				 true,
-				 false,
-				 false,
-				 ItemPropertyDescriptor.GENERIC_VALUE_IMAGE,
-				 null,
-				 null));
-	}
-
-	/**
 	 * This adds a property descriptor for the Persist Instrumented Classes feature.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -163,28 +139,6 @@ public class InstrumentationProfileItemProvider
 				 getString("_UI_InstrumentationProfile_persistInstrumentedClasses_feature"),
 				 getString("_UI_PropertyDescriptor_description", "_UI_InstrumentationProfile_persistInstrumentedClasses_feature", "_UI_InstrumentationProfile_type"),
 				 InputPackage.Literals.INSTRUMENTATION_PROFILE__PERSIST_INSTRUMENTED_CLASSES,
-				 true,
-				 false,
-				 false,
-				 ItemPropertyDescriptor.GENERIC_VALUE_IMAGE,
-				 null,
-				 null));
-	}
-
-	/**
-	 * This adds a property descriptor for the Temporary Results Type feature.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected void addTemporaryResultsTypePropertyDescriptor(Object object) {
-		itemPropertyDescriptors.add
-			(createItemPropertyDescriptor
-				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
-				 getResourceLocator(),
-				 getString("_UI_InstrumentationProfile_temporaryResultsType_feature"),
-				 getString("_UI_PropertyDescriptor_description", "_UI_InstrumentationProfile_temporaryResultsType_feature", "_UI_InstrumentationProfile_type"),
-				 InputPackage.Literals.INSTRUMENTATION_PROFILE__TEMPORARY_RESULTS_TYPE,
 				 true,
 				 false,
 				 false,
@@ -272,8 +226,8 @@ public class InstrumentationProfileItemProvider
 		if (childrenFeatures == null) {
 			super.getChildrenFeatures(object);
 			childrenFeatures.add(InputPackage.Literals.INSTRUMENTATION_PROFILE__DEFINED_LOGICAL_SETS);
-			childrenFeatures.add(InputPackage.Literals.INSTRUMENTATION_PROFILE__ENTITIES_TO_INSTRUMENT);
 			childrenFeatures.add(InputPackage.Literals.INSTRUMENTATION_PROFILE__AGGREGATION_EXCLUDES);
+			childrenFeatures.add(InputPackage.Literals.INSTRUMENTATION_PROFILE__ENTITIES_TO_INSTRUMENT);
 		}
 		return childrenFeatures;
 	}
@@ -330,17 +284,15 @@ public class InstrumentationProfileItemProvider
 		switch (notification.getFeatureID(InstrumentationProfile.class)) {
 			case InputPackage.INSTRUMENTATION_PROFILE__INSTRUMENT_RECURSIVELY:
 			case InputPackage.INSTRUMENTATION_PROFILE__AGGREGATE_INTERNAL_CALLS_TRANSPARENTLY:
-			case InputPackage.INSTRUMENTATION_PROFILE__AGGREGATION_TYPE:
 			case InputPackage.INSTRUMENTATION_PROFILE__PERSIST_INSTRUMENTED_CLASSES:
-			case InputPackage.INSTRUMENTATION_PROFILE__TEMPORARY_RESULTS_TYPE:
 			case InputPackage.INSTRUMENTATION_PROFILE__INSTRUMENT_USING_LONG_COUNTERS:
 			case InputPackage.INSTRUMENTATION_PROFILE__INSTRUMENT_USING_BASIC_BLOCKS:
 			case InputPackage.INSTRUMENTATION_PROFILE__TRACE_AND_IDENTIFY_REQUESTS:
 				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
 				return;
 			case InputPackage.INSTRUMENTATION_PROFILE__DEFINED_LOGICAL_SETS:
-			case InputPackage.INSTRUMENTATION_PROFILE__ENTITIES_TO_INSTRUMENT:
 			case InputPackage.INSTRUMENTATION_PROFILE__AGGREGATION_EXCLUDES:
+			case InputPackage.INSTRUMENTATION_PROFILE__ENTITIES_TO_INSTRUMENT:
 				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), true, false));
 				return;
 		}
@@ -365,6 +317,21 @@ public class InstrumentationProfileItemProvider
 
 		newChildDescriptors.add
 			(createChildParameter
+				(InputPackage.Literals.INSTRUMENTATION_PROFILE__AGGREGATION_EXCLUDES,
+				 functionsFactory.eINSTANCE.createMethod()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(InputPackage.Literals.INSTRUMENTATION_PROFILE__AGGREGATION_EXCLUDES,
+				 functionsFactory.eINSTANCE.createGenericMethod()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(InputPackage.Literals.INSTRUMENTATION_PROFILE__ENTITIES_TO_INSTRUMENT,
+				 InputFactory.eINSTANCE.createEntityToInstrument()));
+
+		newChildDescriptors.add
+			(createChildParameter
 				(InputPackage.Literals.INSTRUMENTATION_PROFILE__ENTITIES_TO_INSTRUMENT,
 				 InputFactory.eINSTANCE.createInstrumentedCodeArea()));
 
@@ -375,13 +342,8 @@ public class InstrumentationProfileItemProvider
 
 		newChildDescriptors.add
 			(createChildParameter
-				(InputPackage.Literals.INSTRUMENTATION_PROFILE__AGGREGATION_EXCLUDES,
-				 functionsFactory.eINSTANCE.createMethod()));
-
-		newChildDescriptors.add
-			(createChildParameter
-				(InputPackage.Literals.INSTRUMENTATION_PROFILE__AGGREGATION_EXCLUDES,
-				 functionsFactory.eINSTANCE.createGenericMethod()));
+				(InputPackage.Literals.INSTRUMENTATION_PROFILE__ENTITIES_TO_INSTRUMENT,
+				 InputFactory.eINSTANCE.createInstrumentedRegion()));
 	}
 
 	/**

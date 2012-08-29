@@ -99,256 +99,95 @@ public class OutputItemProviderAdapterFactory extends OutputAdapterFactory imple
 	}
 
 	/**
-	 * This keeps track of the one adapter used for all {@link edu.kit.ipd.sdq.bycounter.output.MeasurementRun} instances.
+	 * This keeps track of the one adapter used for all {@link edu.kit.ipd.sdq.bycounter.output.ResultCollection} instances.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	protected MeasurementRunItemProvider measurementRunItemProvider;
+	protected ResultCollectionItemProvider resultCollectionItemProvider;
 
 	/**
-	 * This creates an adapter for a {@link edu.kit.ipd.sdq.bycounter.output.MeasurementRun}.
+	 * This creates an adapter for a {@link edu.kit.ipd.sdq.bycounter.output.ResultCollection}.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
 	@Override
-	public Adapter createMeasurementRunAdapter() {
-		if (measurementRunItemProvider == null) {
-			measurementRunItemProvider = new MeasurementRunItemProvider(this);
+	public Adapter createResultCollectionAdapter() {
+		if (resultCollectionItemProvider == null) {
+			resultCollectionItemProvider = new ResultCollectionItemProvider(this);
 		}
 
-		return measurementRunItemProvider;
+		return resultCollectionItemProvider;
 	}
 
 	/**
-	 * This keeps track of the one adapter used for all {@link edu.kit.ipd.sdq.bycounter.output.Request} instances.
+	 * This keeps track of the one adapter used for all {@link edu.kit.ipd.sdq.bycounter.output.RequestResult} instances.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	protected RequestItemProvider requestItemProvider;
+	protected RequestResultItemProvider requestResultItemProvider;
 
 	/**
-	 * This creates an adapter for a {@link edu.kit.ipd.sdq.bycounter.output.Request}.
+	 * This creates an adapter for a {@link edu.kit.ipd.sdq.bycounter.output.RequestResult}.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
 	@Override
-	public Adapter createRequestAdapter() {
-		if (requestItemProvider == null) {
-			requestItemProvider = new RequestItemProvider(this);
+	public Adapter createRequestResultAdapter() {
+		if (requestResultItemProvider == null) {
+			requestResultItemProvider = new RequestResultItemProvider(this);
 		}
 
-		return requestItemProvider;
+		return requestResultItemProvider;
 	}
 
 	/**
-	 * This keeps track of the one adapter used for all {@link edu.kit.ipd.sdq.bycounter.output.ObservedEntityExecution} instances.
+	 * This keeps track of the one adapter used for all {@link edu.kit.ipd.sdq.bycounter.output.CountingResult} instances.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	protected ObservedEntityExecutionItemProvider observedEntityExecutionItemProvider;
+	protected CountingResultItemProvider countingResultItemProvider;
 
 	/**
-	 * This creates an adapter for a {@link edu.kit.ipd.sdq.bycounter.output.ObservedEntityExecution}.
+	 * This creates an adapter for a {@link edu.kit.ipd.sdq.bycounter.output.CountingResult}.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
 	@Override
-	public Adapter createObservedEntityExecutionAdapter() {
-		if (observedEntityExecutionItemProvider == null) {
-			observedEntityExecutionItemProvider = new ObservedEntityExecutionItemProvider(this);
+	public Adapter createCountingResultAdapter() {
+		if (countingResultItemProvider == null) {
+			countingResultItemProvider = new CountingResultItemProvider(this);
 		}
 
-		return observedEntityExecutionItemProvider;
+		return countingResultItemProvider;
 	}
 
 	/**
-	 * This keeps track of the one adapter used for all {@link edu.kit.ipd.sdq.bycounter.output.ResourceDemands} instances.
+	 * This keeps track of the one adapter used for all {@link edu.kit.ipd.sdq.bycounter.output.ThreadedCountingResult} instances.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	protected ResourceDemandsItemProvider resourceDemandsItemProvider;
+	protected ThreadedCountingResultItemProvider threadedCountingResultItemProvider;
 
 	/**
-	 * This creates an adapter for a {@link edu.kit.ipd.sdq.bycounter.output.ResourceDemands}.
+	 * This creates an adapter for a {@link edu.kit.ipd.sdq.bycounter.output.ThreadedCountingResult}.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
 	@Override
-	public Adapter createResourceDemandsAdapter() {
-		if (resourceDemandsItemProvider == null) {
-			resourceDemandsItemProvider = new ResourceDemandsItemProvider(this);
+	public Adapter createThreadedCountingResultAdapter() {
+		if (threadedCountingResultItemProvider == null) {
+			threadedCountingResultItemProvider = new ThreadedCountingResultItemProvider(this);
 		}
 
-		return resourceDemandsItemProvider;
-	}
-
-	/**
-	 * This keeps track of the one adapter used for all {@link edu.kit.ipd.sdq.bycounter.output.FunctionCall} instances.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected FunctionCallItemProvider functionCallItemProvider;
-
-	/**
-	 * This creates an adapter for a {@link edu.kit.ipd.sdq.bycounter.output.FunctionCall}.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public Adapter createFunctionCallAdapter() {
-		if (functionCallItemProvider == null) {
-			functionCallItemProvider = new FunctionCallItemProvider(this);
-		}
-
-		return functionCallItemProvider;
-	}
-
-	/**
-	 * This keeps track of the one adapter used for all {@link edu.kit.ipd.sdq.bycounter.output.ParameterInstance} instances.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected ParameterInstanceItemProvider parameterInstanceItemProvider;
-
-	/**
-	 * This creates an adapter for a {@link edu.kit.ipd.sdq.bycounter.output.ParameterInstance}.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public Adapter createParameterInstanceAdapter() {
-		if (parameterInstanceItemProvider == null) {
-			parameterInstanceItemProvider = new ParameterInstanceItemProvider(this);
-		}
-
-		return parameterInstanceItemProvider;
-	}
-
-	/**
-	 * This keeps track of the one adapter used for all {@link edu.kit.ipd.sdq.bycounter.output.JavaVMCall} instances.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected JavaVMCallItemProvider javaVMCallItemProvider;
-
-	/**
-	 * This creates an adapter for a {@link edu.kit.ipd.sdq.bycounter.output.JavaVMCall}.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public Adapter createJavaVMCallAdapter() {
-		if (javaVMCallItemProvider == null) {
-			javaVMCallItemProvider = new JavaVMCallItemProvider(this);
-		}
-
-		return javaVMCallItemProvider;
-	}
-
-	/**
-	 * This keeps track of the one adapter used for all {@link edu.kit.ipd.sdq.bycounter.output.DoubleCharacterisation} instances.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected DoubleCharacterisationItemProvider doubleCharacterisationItemProvider;
-
-	/**
-	 * This creates an adapter for a {@link edu.kit.ipd.sdq.bycounter.output.DoubleCharacterisation}.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public Adapter createDoubleCharacterisationAdapter() {
-		if (doubleCharacterisationItemProvider == null) {
-			doubleCharacterisationItemProvider = new DoubleCharacterisationItemProvider(this);
-		}
-
-		return doubleCharacterisationItemProvider;
-	}
-
-	/**
-	 * This keeps track of the one adapter used for all {@link edu.kit.ipd.sdq.bycounter.output.LongCharacterisation} instances.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected LongCharacterisationItemProvider longCharacterisationItemProvider;
-
-	/**
-	 * This creates an adapter for a {@link edu.kit.ipd.sdq.bycounter.output.LongCharacterisation}.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public Adapter createLongCharacterisationAdapter() {
-		if (longCharacterisationItemProvider == null) {
-			longCharacterisationItemProvider = new LongCharacterisationItemProvider(this);
-		}
-
-		return longCharacterisationItemProvider;
-	}
-
-	/**
-	 * This keeps track of the one adapter used for all {@link edu.kit.ipd.sdq.bycounter.output.BooleanCharacterisation} instances.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected BooleanCharacterisationItemProvider booleanCharacterisationItemProvider;
-
-	/**
-	 * This creates an adapter for a {@link edu.kit.ipd.sdq.bycounter.output.BooleanCharacterisation}.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public Adapter createBooleanCharacterisationAdapter() {
-		if (booleanCharacterisationItemProvider == null) {
-			booleanCharacterisationItemProvider = new BooleanCharacterisationItemProvider(this);
-		}
-
-		return booleanCharacterisationItemProvider;
-	}
-
-	/**
-	 * This keeps track of the one adapter used for all {@link edu.kit.ipd.sdq.bycounter.output.StringCharacterisation} instances.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected StringCharacterisationItemProvider stringCharacterisationItemProvider;
-
-	/**
-	 * This creates an adapter for a {@link edu.kit.ipd.sdq.bycounter.output.StringCharacterisation}.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public Adapter createStringCharacterisationAdapter() {
-		if (stringCharacterisationItemProvider == null) {
-			stringCharacterisationItemProvider = new StringCharacterisationItemProvider(this);
-		}
-
-		return stringCharacterisationItemProvider;
+		return threadedCountingResultItemProvider;
 	}
 
 	/**
@@ -451,17 +290,10 @@ public class OutputItemProviderAdapterFactory extends OutputAdapterFactory imple
 	 */
 	public void dispose() {
 		if (outputModelRepositoryItemProvider != null) outputModelRepositoryItemProvider.dispose();
-		if (measurementRunItemProvider != null) measurementRunItemProvider.dispose();
-		if (requestItemProvider != null) requestItemProvider.dispose();
-		if (observedEntityExecutionItemProvider != null) observedEntityExecutionItemProvider.dispose();
-		if (resourceDemandsItemProvider != null) resourceDemandsItemProvider.dispose();
-		if (functionCallItemProvider != null) functionCallItemProvider.dispose();
-		if (parameterInstanceItemProvider != null) parameterInstanceItemProvider.dispose();
-		if (javaVMCallItemProvider != null) javaVMCallItemProvider.dispose();
-		if (doubleCharacterisationItemProvider != null) doubleCharacterisationItemProvider.dispose();
-		if (longCharacterisationItemProvider != null) longCharacterisationItemProvider.dispose();
-		if (booleanCharacterisationItemProvider != null) booleanCharacterisationItemProvider.dispose();
-		if (stringCharacterisationItemProvider != null) stringCharacterisationItemProvider.dispose();
+		if (resultCollectionItemProvider != null) resultCollectionItemProvider.dispose();
+		if (requestResultItemProvider != null) requestResultItemProvider.dispose();
+		if (countingResultItemProvider != null) countingResultItemProvider.dispose();
+		if (threadedCountingResultItemProvider != null) threadedCountingResultItemProvider.dispose();
 	}
 
 }

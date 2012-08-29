@@ -163,10 +163,8 @@ public class InstrumentedMethodItemProvider
 	 */
 	@Override
 	public String getText(Object object) {
-		String label = ((InstrumentedMethod)object).getId();
-		return label == null || label.length() == 0 ?
-			getString("_UI_InstrumentedMethod_type") :
-			getString("_UI_InstrumentedMethod_type") + " " + label;
+		InstrumentedMethod instrumentedMethod = (InstrumentedMethod)object;
+		return getString("_UI_InstrumentedMethod_type") + " " + instrumentedMethod.isInstrumentDerived();
 	}
 
 	/**

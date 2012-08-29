@@ -145,6 +145,29 @@ public class InputItemProviderAdapterFactory extends InputAdapterFactory impleme
 	}
 
 	/**
+	 * This keeps track of the one adapter used for all {@link edu.kit.ipd.sdq.bycounter.input.EntityToInstrument} instances.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	protected EntityToInstrumentItemProvider entityToInstrumentItemProvider;
+
+	/**
+	 * This creates an adapter for a {@link edu.kit.ipd.sdq.bycounter.input.EntityToInstrument}.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public Adapter createEntityToInstrumentAdapter() {
+		if (entityToInstrumentItemProvider == null) {
+			entityToInstrumentItemProvider = new EntityToInstrumentItemProvider(this);
+		}
+
+		return entityToInstrumentItemProvider;
+	}
+
+	/**
 	 * This keeps track of the one adapter used for all {@link edu.kit.ipd.sdq.bycounter.input.InstrumentedCodeArea} instances.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -188,6 +211,29 @@ public class InputItemProviderAdapterFactory extends InputAdapterFactory impleme
 		}
 
 		return instrumentedMethodItemProvider;
+	}
+
+	/**
+	 * This keeps track of the one adapter used for all {@link edu.kit.ipd.sdq.bycounter.input.InstrumentedRegion} instances.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	protected InstrumentedRegionItemProvider instrumentedRegionItemProvider;
+
+	/**
+	 * This creates an adapter for a {@link edu.kit.ipd.sdq.bycounter.input.InstrumentedRegion}.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public Adapter createInstrumentedRegionAdapter() {
+		if (instrumentedRegionItemProvider == null) {
+			instrumentedRegionItemProvider = new InstrumentedRegionItemProvider(this);
+		}
+
+		return instrumentedRegionItemProvider;
 	}
 
 	/**
@@ -292,8 +338,10 @@ public class InputItemProviderAdapterFactory extends InputAdapterFactory impleme
 		if (instrumentationProfileItemProvider != null) instrumentationProfileItemProvider.dispose();
 		if (logicalSetItemProvider != null) logicalSetItemProvider.dispose();
 		if (instrumentationProfileRepositoryItemProvider != null) instrumentationProfileRepositoryItemProvider.dispose();
+		if (entityToInstrumentItemProvider != null) entityToInstrumentItemProvider.dispose();
 		if (instrumentedCodeAreaItemProvider != null) instrumentedCodeAreaItemProvider.dispose();
 		if (instrumentedMethodItemProvider != null) instrumentedMethodItemProvider.dispose();
+		if (instrumentedRegionItemProvider != null) instrumentedRegionItemProvider.dispose();
 	}
 
 }

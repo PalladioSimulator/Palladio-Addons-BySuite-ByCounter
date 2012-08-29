@@ -27,6 +27,7 @@ import org.eclipse.emf.edit.provider.IItemPropertyDescriptor;
 import org.eclipse.emf.edit.provider.IItemPropertySource;
 import org.eclipse.emf.edit.provider.IStructuredItemContentProvider;
 import org.eclipse.emf.edit.provider.ITreeItemContentProvider;
+import org.eclipse.emf.edit.provider.ItemProviderAdapter;
 
 /**
  * This is the item provider adapter for a {@link edu.kit.ipd.sdq.bycounter.input.EntityToInstrument} object.
@@ -35,7 +36,7 @@ import org.eclipse.emf.edit.provider.ITreeItemContentProvider;
  * @generated
  */
 public class EntityToInstrumentItemProvider
-	extends IdentifierItemProvider
+	extends ItemProviderAdapter
 	implements
 		IEditingDomainItemProvider,
 		IStructuredItemContentProvider,
@@ -68,6 +69,17 @@ public class EntityToInstrumentItemProvider
 	}
 
 	/**
+	 * This returns EntityToInstrument.gif.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public Object getImage(Object object) {
+		return overlayImage(object, getResourceLocator().getImage("full/obj16/EntityToInstrument"));
+	}
+
+	/**
 	 * This returns the label text for the adapted class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -75,10 +87,7 @@ public class EntityToInstrumentItemProvider
 	 */
 	@Override
 	public String getText(Object object) {
-		String label = ((EntityToInstrument)object).getId();
-		return label == null || label.length() == 0 ?
-			getString("_UI_EntityToInstrument_type") :
-			getString("_UI_EntityToInstrument_type") + " " + label;
+		return getString("_UI_EntityToInstrument_type");
 	}
 
 	/**

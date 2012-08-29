@@ -128,10 +128,7 @@ public class InstrumentedCodeAreaItemProvider
 	 */
 	@Override
 	public String getText(Object object) {
-		String label = ((InstrumentedCodeArea)object).getId();
-		return label == null || label.length() == 0 ?
-			getString("_UI_InstrumentedCodeArea_type") :
-			getString("_UI_InstrumentedCodeArea_type") + " " + label;
+		return getString("_UI_InstrumentedCodeArea_type");
 	}
 
 	/**
