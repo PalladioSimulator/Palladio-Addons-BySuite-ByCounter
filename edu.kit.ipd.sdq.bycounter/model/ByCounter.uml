@@ -1,0 +1,304 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xmi:XMI xmi:version="2.1" xmlns:xmi="http://schema.omg.org/spec/XMI/2.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:Ecore="http://www.eclipse.org/uml2/schemas/Ecore/5" xmlns:Ecore_1="http://www.eclipse.org/uml2/schemas/Ecore/3" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" xmlns:uml="http://www.eclipse.org/uml2/2.1.0/UML" xsi:schemaLocation="http://www.eclipse.org/uml2/schemas/Ecore/5 pathmap://UML_PROFILES/Ecore.profile.uml#_z1OFcHjqEdy8S4Cr8Rc_NA http://www.eclipse.org/uml2/schemas/Ecore/3 pathmap://UML_PROFILES/Ecore.profile.uml#_vy-HUYinEdqtvbnfB2L_5w">
+  <uml:Package xmi:id="_RPgaGvHPEeGHe_zQ49_r8w" name="ByCounter">
+    <packageImport xmi:id="_RPgaG_HPEeGHe_zQ49_r8w">
+      <importedPackage xmi:type="uml:Model" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#_0"/>
+    </packageImport>
+    <packagedElement xmi:type="uml:Package" xmi:id="_RPgaHPHPEeGHe_zQ49_r8w" name="Output">
+      <ownedComment xmi:id="_RPgaHfHPEeGHe_zQ49_r8w" annotatedElement="_RPgaHPHPEeGHe_zQ49_r8w">
+        <body>Decorator&amp;nbsp;models&amp;nbsp;which&amp;nbsp;annotate&amp;nbsp;raw&amp;nbsp;resource&amp;nbsp;demands&amp;nbsp;to&amp;nbsp;AbstractInternalControlFlowActions.</body>
+      </ownedComment>
+      <packagedElement xmi:type="uml:Class" xmi:id="_RPgaHvHPEeGHe_zQ49_r8w" name="OutputModelRepository">
+        <generalization xmi:id="_RPgaH_HPEeGHe_zQ49_r8w">
+          <general xmi:type="uml:Class" href="identifier.uml#_RPZsAvHPEeGHe_zQ49_r8w"/>
+        </generalization>
+      </packagedElement>
+      <packagedElement xmi:type="uml:Class" xmi:id="_RPgaIPHPEeGHe_zQ49_r8w" name="ResultCollection">
+        <ownedAttribute xmi:id="_RPgaIfHPEeGHe_zQ49_r8w" name="requestResults" visibility="public" type="_RPgaM_HPEeGHe_zQ49_r8w" aggregation="composite" association="_RPgaP_HPEeGHe_zQ49_r8w">
+          <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_RPgaIvHPEeGHe_zQ49_r8w" value="*"/>
+          <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_RPgaI_HPEeGHe_zQ49_r8w"/>
+        </ownedAttribute>
+        <ownedAttribute xmi:id="_RPgaJPHPEeGHe_zQ49_r8w" name="countingResults" visibility="public" type="_RPgaJ_HPEeGHe_zQ49_r8w" aggregation="composite" association="_RPgaQ_HPEeGHe_zQ49_r8w">
+          <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_RPgaJfHPEeGHe_zQ49_r8w" value="*"/>
+          <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_RPgaJvHPEeGHe_zQ49_r8w"/>
+        </ownedAttribute>
+      </packagedElement>
+      <packagedElement xmi:type="uml:Class" xmi:id="_RPgaJ_HPEeGHe_zQ49_r8w" name="CountingResult">
+        <ownedAttribute xmi:id="_RPgaKPHPEeGHe_zQ49_r8w" name="arrayCreationCounts" visibility="public">
+          <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/EcorePrimitiveTypes.library.uml#EJavaObject"/>
+        </ownedAttribute>
+        <ownedAttribute xmi:id="_RPgaKfHPEeGHe_zQ49_r8w" name="callerId" visibility="public">
+          <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/EcorePrimitiveTypes.library.uml#EJavaObject"/>
+        </ownedAttribute>
+        <ownedAttribute xmi:id="_RPgaKvHPEeGHe_zQ49_r8w" name="methodCallCounts" visibility="public">
+          <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/EcorePrimitiveTypes.library.uml#EJavaObject"/>
+        </ownedAttribute>
+        <ownedAttribute xmi:id="_RPgaK_HPEeGHe_zQ49_r8w" name="methodInvocationBeginning" visibility="public">
+          <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/EcorePrimitiveTypes.library.uml#ELong"/>
+        </ownedAttribute>
+        <ownedAttribute xmi:id="_RPgaLPHPEeGHe_zQ49_r8w" name="methodReportingTime" visibility="public">
+          <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/EcorePrimitiveTypes.library.uml#ELong"/>
+        </ownedAttribute>
+        <ownedAttribute xmi:id="_RPgaLfHPEeGHe_zQ49_r8w" name="observedElement" visibility="public">
+          <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/EcorePrimitiveTypes.library.uml#EJavaObject"/>
+        </ownedAttribute>
+        <ownedAttribute xmi:id="_RPgaLvHPEeGHe_zQ49_r8w" name="opcodeCounts" visibility="public">
+          <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/EcorePrimitiveTypes.library.uml#ELong"/>
+          <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_RPgaL_HPEeGHe_zQ49_r8w" value="*"/>
+          <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_RPgaMPHPEeGHe_zQ49_r8w" value="1"/>
+        </ownedAttribute>
+        <ownedAttribute xmi:id="_RPgaMfHPEeGHe_zQ49_r8w" name="ownId" visibility="public">
+          <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/EcorePrimitiveTypes.library.uml#EJavaObject"/>
+        </ownedAttribute>
+        <ownedAttribute xmi:id="_RPgaMvHPEeGHe_zQ49_r8w" name="qualifyingMethodName" visibility="public">
+          <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/EcorePrimitiveTypes.library.uml#EString"/>
+        </ownedAttribute>
+      </packagedElement>
+      <packagedElement xmi:type="uml:Class" xmi:id="_RPgaM_HPEeGHe_zQ49_r8w" name="RequestResult">
+        <ownedAttribute xmi:id="_RPgaNPHPEeGHe_zQ49_r8w" name="resultCollection" visibility="private" type="_RPgaIPHPEeGHe_zQ49_r8w" aggregation="composite" association="_RPgaO_HPEeGHe_zQ49_r8w">
+          <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_RPgaNfHPEeGHe_zQ49_r8w" value="*"/>
+          <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_RPgaNvHPEeGHe_zQ49_r8w"/>
+        </ownedAttribute>
+        <ownedAttribute xmi:id="_RPgaN_HPEeGHe_zQ49_r8w" name="requestId" visibility="public">
+          <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/EcorePrimitiveTypes.library.uml#EJavaObject"/>
+        </ownedAttribute>
+        <ownedAttribute xmi:id="_RPgaOPHPEeGHe_zQ49_r8w" name="countingResults" visibility="public" type="_RPgaJ_HPEeGHe_zQ49_r8w" aggregation="composite" association="_RPgaR_HPEeGHe_zQ49_r8w">
+          <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_RPgaOfHPEeGHe_zQ49_r8w" value="*"/>
+          <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_RPgaOvHPEeGHe_zQ49_r8w"/>
+        </ownedAttribute>
+      </packagedElement>
+      <packagedElement xmi:type="uml:Association" xmi:id="_RPgaO_HPEeGHe_zQ49_r8w" memberEnd="_RPgaNPHPEeGHe_zQ49_r8w _RPgaPPHPEeGHe_zQ49_r8w">
+        <ownedEnd xmi:id="_RPgaPPHPEeGHe_zQ49_r8w" name="" visibility="private" type="_RPgaM_HPEeGHe_zQ49_r8w" association="_RPgaO_HPEeGHe_zQ49_r8w">
+          <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_RPgaPfHPEeGHe_zQ49_r8w" value="1"/>
+          <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_RPgaPvHPEeGHe_zQ49_r8w" value="1"/>
+        </ownedEnd>
+      </packagedElement>
+      <packagedElement xmi:type="uml:Association" xmi:id="_RPgaP_HPEeGHe_zQ49_r8w" memberEnd="_RPgaIfHPEeGHe_zQ49_r8w _RPgaQPHPEeGHe_zQ49_r8w">
+        <ownedEnd xmi:id="_RPgaQPHPEeGHe_zQ49_r8w" name="resultCollection" visibility="public" type="_RPgaIPHPEeGHe_zQ49_r8w" association="_RPgaP_HPEeGHe_zQ49_r8w">
+          <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_RPgaQfHPEeGHe_zQ49_r8w" value="1"/>
+          <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_RPgaQvHPEeGHe_zQ49_r8w" value="1"/>
+        </ownedEnd>
+      </packagedElement>
+      <packagedElement xmi:type="uml:Association" xmi:id="_RPgaQ_HPEeGHe_zQ49_r8w" memberEnd="_RPgaJPHPEeGHe_zQ49_r8w _RPgaRPHPEeGHe_zQ49_r8w">
+        <ownedEnd xmi:id="_RPgaRPHPEeGHe_zQ49_r8w" name="resultcollection" visibility="public" type="_RPgaIPHPEeGHe_zQ49_r8w" association="_RPgaQ_HPEeGHe_zQ49_r8w">
+          <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_RPgaRfHPEeGHe_zQ49_r8w" value="1"/>
+          <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_RPgaRvHPEeGHe_zQ49_r8w"/>
+        </ownedEnd>
+      </packagedElement>
+      <packagedElement xmi:type="uml:Association" xmi:id="_RPgaR_HPEeGHe_zQ49_r8w" memberEnd="_RPgaOPHPEeGHe_zQ49_r8w _RPgaSPHPEeGHe_zQ49_r8w">
+        <ownedEnd xmi:id="_RPgaSPHPEeGHe_zQ49_r8w" name="requestResult" visibility="public" type="_RPgaM_HPEeGHe_zQ49_r8w" association="_RPgaR_HPEeGHe_zQ49_r8w">
+          <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_RPgaSfHPEeGHe_zQ49_r8w" value="1"/>
+          <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_RPgaSvHPEeGHe_zQ49_r8w"/>
+        </ownedEnd>
+      </packagedElement>
+      <packagedElement xmi:type="uml:Class" xmi:id="_RPgaS_HPEeGHe_zQ49_r8w" name="ThreadedCountingResult">
+        <generalization xmi:id="_RPgaTPHPEeGHe_zQ49_r8w" general="_RPgaJ_HPEeGHe_zQ49_r8w"/>
+        <ownedAttribute xmi:id="_RPgaTfHPEeGHe_zQ49_r8w" name="spawnedThreadedCountingResults" visibility="public" type="_RPgaS_HPEeGHe_zQ49_r8w" aggregation="composite" association="_RPgaUfHPEeGHe_zQ49_r8w">
+          <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_RPgaTvHPEeGHe_zQ49_r8w" value="*"/>
+          <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_RPgaT_HPEeGHe_zQ49_r8w"/>
+        </ownedAttribute>
+        <ownedAttribute xmi:id="_RPgaUPHPEeGHe_zQ49_r8w" name="threadId" visibility="public">
+          <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/EcorePrimitiveTypes.library.uml#ELong"/>
+        </ownedAttribute>
+      </packagedElement>
+      <packagedElement xmi:type="uml:Association" xmi:id="_RPgaUfHPEeGHe_zQ49_r8w" name="" memberEnd="_RPgaTfHPEeGHe_zQ49_r8w _RPgaUvHPEeGHe_zQ49_r8w">
+        <ownedEnd xmi:id="_RPgaUvHPEeGHe_zQ49_r8w" name="threadedCountingResult" visibility="private" type="_RPgaS_HPEeGHe_zQ49_r8w" association="_RPgaUfHPEeGHe_zQ49_r8w">
+          <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_RPgaU_HPEeGHe_zQ49_r8w" value="1"/>
+          <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_RPgaVPHPEeGHe_zQ49_r8w"/>
+        </ownedEnd>
+      </packagedElement>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Package" xmi:id="_RPgaVfHPEeGHe_zQ49_r8w" name="Input">
+      <packagedElement xmi:type="uml:Class" xmi:id="_RPgaVvHPEeGHe_zQ49_r8w" name="InstrumentationProfile">
+        <ownedRule xmi:id="_RPgaV_HPEeGHe_zQ49_r8w" name="Summation excludes only allowed if summation is active and aggregateInternalCallsTransparently is true." constrainedElement="_RPgaVvHPEeGHe_zQ49_r8w">
+          <specification xmi:type="uml:OpaqueExpression" xmi:id="_RPgaWPHPEeGHe_zQ49_r8w">
+            <language>OCL</language>
+            <body>self.summationExcludes->size()>0 implies self.aggregateInternalCallsTransparently=true&#xD;&#xA;</body>
+          </specification>
+        </ownedRule>
+        <generalization xmi:id="_RPgaWfHPEeGHe_zQ49_r8w">
+          <general xmi:type="uml:Class" href="identifier.uml#_RPZsAvHPEeGHe_zQ49_r8w"/>
+        </generalization>
+        <ownedAttribute xmi:id="_RPgaWvHPEeGHe_zQ49_r8w" name="definedLogicalSets" visibility="public" type="_RPgaffHPEeGHe_zQ49_r8w" aggregation="composite" association="_RPgafPHPEeGHe_zQ49_r8w">
+          <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_RPgaW_HPEeGHe_zQ49_r8w" value="*"/>
+          <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_RPgaXPHPEeGHe_zQ49_r8w"/>
+        </ownedAttribute>
+        <ownedAttribute xmi:id="_RPgaXfHPEeGHe_zQ49_r8w" name="instrumentRecursively" visibility="public">
+          <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/EcorePrimitiveTypes.library.uml#EBoolean"/>
+          <defaultValue xmi:type="uml:LiteralBoolean" xmi:id="_RPgaXvHPEeGHe_zQ49_r8w" value="true">
+            <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/EcorePrimitiveTypes.library.uml#EBoolean"/>
+          </defaultValue>
+        </ownedAttribute>
+        <ownedAttribute xmi:id="_RPgaX_HPEeGHe_zQ49_r8w" name="aggregateInternalCallsTransparently" visibility="public">
+          <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/EcorePrimitiveTypes.library.uml#EBoolean"/>
+          <defaultValue xmi:type="uml:LiteralBoolean" xmi:id="_RPgaYPHPEeGHe_zQ49_r8w" value="true">
+            <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/EcorePrimitiveTypes.library.uml#EBoolean"/>
+          </defaultValue>
+        </ownedAttribute>
+        <ownedAttribute xmi:id="_RPgaYfHPEeGHe_zQ49_r8w" name="persistInstrumentedClasses" visibility="public">
+          <type xmi:type="uml:PrimitiveType" href="Ecore.uml#_RPcITfHPEeGHe_zQ49_r8w"/>
+          <defaultValue xmi:type="uml:LiteralNull" xmi:id="_RPgaYvHPEeGHe_zQ49_r8w"/>
+        </ownedAttribute>
+        <ownedAttribute xmi:id="_RPgaY_HPEeGHe_zQ49_r8w" name="intrumentationProfileRepository" visibility="public" type="_RPgacvHPEeGHe_zQ49_r8w" association="_RPgae_HPEeGHe_zQ49_r8w">
+          <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_RPgaZPHPEeGHe_zQ49_r8w" value="1"/>
+          <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_RPgaZfHPEeGHe_zQ49_r8w"/>
+        </ownedAttribute>
+        <ownedAttribute xmi:id="_RPgaZvHPEeGHe_zQ49_r8w" name="instrumentUsingLongCounters" visibility="public">
+          <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/EcorePrimitiveTypes.library.uml#EBoolean"/>
+          <defaultValue xmi:type="uml:LiteralBoolean" xmi:id="_RPgaZ_HPEeGHe_zQ49_r8w" value="true">
+            <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/EcorePrimitiveTypes.library.uml#EBoolean"/>
+          </defaultValue>
+        </ownedAttribute>
+        <ownedAttribute xmi:id="_RPgaaPHPEeGHe_zQ49_r8w" name="instrumentUsingBasicBlocks" visibility="public">
+          <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/EcorePrimitiveTypes.library.uml#EBoolean"/>
+          <defaultValue xmi:type="uml:LiteralBoolean" xmi:id="_RPgaafHPEeGHe_zQ49_r8w" value="true">
+            <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/EcorePrimitiveTypes.library.uml#EBoolean"/>
+          </defaultValue>
+        </ownedAttribute>
+        <ownedAttribute xmi:id="_RPgaavHPEeGHe_zQ49_r8w" name="traceAndIdentifyRequests" visibility="public">
+          <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/EcorePrimitiveTypes.library.uml#EBoolean"/>
+          <defaultValue xmi:type="uml:LiteralBoolean" xmi:id="_RPgaa_HPEeGHe_zQ49_r8w">
+            <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/EcorePrimitiveTypes.library.uml#EBoolean"/>
+          </defaultValue>
+        </ownedAttribute>
+        <ownedAttribute xmi:id="_RPgabPHPEeGHe_zQ49_r8w" name="aggregationExcludes" visibility="public" aggregation="composite" association="_RPgam_HPEeGHe_zQ49_r8w">
+          <type xmi:type="uml:Class" href="SissyModel.uml#_RPel5_HPEeGHe_zQ49_r8w"/>
+          <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_RPgabfHPEeGHe_zQ49_r8w" value="*"/>
+          <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_RPgabvHPEeGHe_zQ49_r8w"/>
+        </ownedAttribute>
+        <ownedAttribute xmi:id="_RPgab_HPEeGHe_zQ49_r8w" name="entitiesToInstrument" visibility="public" type="_RPgaqfHPEeGHe_zQ49_r8w" aggregation="composite" association="_RPgaqvHPEeGHe_zQ49_r8w">
+          <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_RPgacPHPEeGHe_zQ49_r8w" value="*"/>
+          <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_RPgacfHPEeGHe_zQ49_r8w"/>
+        </ownedAttribute>
+      </packagedElement>
+      <packagedElement xmi:type="uml:Class" xmi:id="_RPgacvHPEeGHe_zQ49_r8w" name="InstrumentationProfileRepository">
+        <generalization xmi:id="_RPgac_HPEeGHe_zQ49_r8w">
+          <general xmi:type="uml:Class" href="identifier.uml#_RPZsAvHPEeGHe_zQ49_r8w"/>
+        </generalization>
+        <ownedAttribute xmi:id="_RPgadPHPEeGHe_zQ49_r8w" name="instrumentationProfile" visibility="public" type="_RPgaVvHPEeGHe_zQ49_r8w" aggregation="composite" association="_RPgae_HPEeGHe_zQ49_r8w">
+          <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_RPgadfHPEeGHe_zQ49_r8w" value="*"/>
+          <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_RPgadvHPEeGHe_zQ49_r8w"/>
+        </ownedAttribute>
+      </packagedElement>
+      <packagedElement xmi:type="uml:Class" xmi:id="_RPgad_HPEeGHe_zQ49_r8w" name="InstrumentedCodeArea">
+        <generalization xmi:id="_RPgaePHPEeGHe_zQ49_r8w" general="_RPgaqfHPEeGHe_zQ49_r8w"/>
+        <ownedAttribute xmi:id="_RPgaefHPEeGHe_zQ49_r8w" name="from" visibility="public">
+          <type xmi:type="uml:Class" href="SissyModel.uml#_RPekyPHPEeGHe_zQ49_r8w"/>
+        </ownedAttribute>
+        <ownedAttribute xmi:id="_RPgaevHPEeGHe_zQ49_r8w" name="to" visibility="public">
+          <type xmi:type="uml:Class" href="SissyModel.uml#_RPekyPHPEeGHe_zQ49_r8w"/>
+        </ownedAttribute>
+      </packagedElement>
+      <packagedElement xmi:type="uml:Association" xmi:id="_RPgae_HPEeGHe_zQ49_r8w" memberEnd="_RPgadPHPEeGHe_zQ49_r8w _RPgaY_HPEeGHe_zQ49_r8w"/>
+      <packagedElement xmi:type="uml:Association" xmi:id="_RPgafPHPEeGHe_zQ49_r8w" memberEnd="_RPgaWvHPEeGHe_zQ49_r8w _RPgagvHPEeGHe_zQ49_r8w"/>
+      <packagedElement xmi:type="uml:Class" xmi:id="_RPgaffHPEeGHe_zQ49_r8w" name="LogicalSet">
+        <generalization xmi:id="_RPgafvHPEeGHe_zQ49_r8w">
+          <general xmi:type="uml:Class" href="identifier.uml#_RPZsAvHPEeGHe_zQ49_r8w"/>
+        </generalization>
+        <ownedAttribute xmi:id="_RPgaf_HPEeGHe_zQ49_r8w" name="internalClasses" visibility="public" association="_RPgahfHPEeGHe_zQ49_r8w">
+          <type xmi:type="uml:Class" href="SissyModel.uml#_RPfMHfHPEeGHe_zQ49_r8w"/>
+          <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_RPgagPHPEeGHe_zQ49_r8w" value="*"/>
+          <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_RPgagfHPEeGHe_zQ49_r8w"/>
+        </ownedAttribute>
+        <ownedAttribute xmi:id="_RPgagvHPEeGHe_zQ49_r8w" name="instrumentationProfile" visibility="public" type="_RPgaVvHPEeGHe_zQ49_r8w" association="_RPgafPHPEeGHe_zQ49_r8w">
+          <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_RPgag_HPEeGHe_zQ49_r8w" value="1"/>
+          <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_RPgahPHPEeGHe_zQ49_r8w" value="1"/>
+        </ownedAttribute>
+      </packagedElement>
+      <packagedElement xmi:type="uml:Association" xmi:id="_RPgahfHPEeGHe_zQ49_r8w" memberEnd="_RPgaf_HPEeGHe_zQ49_r8w _RPgahvHPEeGHe_zQ49_r8w">
+        <ownedEnd xmi:id="_RPgahvHPEeGHe_zQ49_r8w" name="logicalarea" visibility="public" type="_RPgaffHPEeGHe_zQ49_r8w" association="_RPgahfHPEeGHe_zQ49_r8w">
+          <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_RPgah_HPEeGHe_zQ49_r8w" value="1"/>
+          <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_RPgaiPHPEeGHe_zQ49_r8w"/>
+        </ownedEnd>
+      </packagedElement>
+      <packagedElement xmi:type="uml:Class" xmi:id="_RPgaifHPEeGHe_zQ49_r8w" name="InstrumentedMethod">
+        <generalization xmi:id="_RPgaivHPEeGHe_zQ49_r8w" general="_RPgaqfHPEeGHe_zQ49_r8w"/>
+        <ownedAttribute xmi:id="_RPgai_HPEeGHe_zQ49_r8w" name="implementationOrDerived" visibility="public" type="_RPgaifHPEeGHe_zQ49_r8w" aggregation="composite" association="_RPgalvHPEeGHe_zQ49_r8w">
+          <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_RPgajPHPEeGHe_zQ49_r8w" value="*"/>
+          <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_RPgajfHPEeGHe_zQ49_r8w"/>
+        </ownedAttribute>
+        <ownedAttribute xmi:id="_RPgajvHPEeGHe_zQ49_r8w" name="declarationOrParent" visibility="public" type="_RPgaifHPEeGHe_zQ49_r8w" association="_RPgalvHPEeGHe_zQ49_r8w">
+          <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_RPgaj_HPEeGHe_zQ49_r8w" value="1"/>
+          <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_RPgakPHPEeGHe_zQ49_r8w"/>
+        </ownedAttribute>
+        <ownedAttribute xmi:id="_RPgakfHPEeGHe_zQ49_r8w" name="instrumentDerived" visibility="public">
+          <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/EcorePrimitiveTypes.library.uml#EBoolean"/>
+          <defaultValue xmi:type="uml:LiteralBoolean" xmi:id="_RPgakvHPEeGHe_zQ49_r8w">
+            <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/EcorePrimitiveTypes.library.uml#EBoolean"/>
+          </defaultValue>
+        </ownedAttribute>
+        <ownedAttribute xmi:id="_RPgak_HPEeGHe_zQ49_r8w" name="method" visibility="public" association="_RPgal_HPEeGHe_zQ49_r8w">
+          <type xmi:type="uml:Class" href="SissyModel.uml#_RPel5_HPEeGHe_zQ49_r8w"/>
+          <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_RPgalPHPEeGHe_zQ49_r8w" value="1"/>
+          <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_RPgalfHPEeGHe_zQ49_r8w" value="1"/>
+        </ownedAttribute>
+      </packagedElement>
+      <packagedElement xmi:type="uml:Association" xmi:id="_RPgalvHPEeGHe_zQ49_r8w" memberEnd="_RPgai_HPEeGHe_zQ49_r8w _RPgajvHPEeGHe_zQ49_r8w"/>
+      <packagedElement xmi:type="uml:Association" xmi:id="_RPgal_HPEeGHe_zQ49_r8w" memberEnd="_RPgak_HPEeGHe_zQ49_r8w _RPgamPHPEeGHe_zQ49_r8w">
+        <ownedEnd xmi:id="_RPgamPHPEeGHe_zQ49_r8w" name="" visibility="private" type="_RPgaifHPEeGHe_zQ49_r8w" association="_RPgal_HPEeGHe_zQ49_r8w">
+          <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_RPgamfHPEeGHe_zQ49_r8w" value="*"/>
+          <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_RPgamvHPEeGHe_zQ49_r8w"/>
+        </ownedEnd>
+      </packagedElement>
+      <packagedElement xmi:type="uml:Association" xmi:id="_RPgam_HPEeGHe_zQ49_r8w" memberEnd="_RPgabPHPEeGHe_zQ49_r8w _RPganPHPEeGHe_zQ49_r8w">
+        <ownedEnd xmi:id="_RPganPHPEeGHe_zQ49_r8w" name="instrumentationProfile" visibility="public" type="_RPgaVvHPEeGHe_zQ49_r8w" association="_RPgam_HPEeGHe_zQ49_r8w">
+          <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_RPganfHPEeGHe_zQ49_r8w" value="1"/>
+          <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_RPganvHPEeGHe_zQ49_r8w"/>
+        </ownedEnd>
+      </packagedElement>
+      <packagedElement xmi:type="uml:Class" xmi:id="_RPgan_HPEeGHe_zQ49_r8w" name="InstrumentedRegion">
+        <generalization xmi:id="_RPgaoPHPEeGHe_zQ49_r8w" general="_RPgaqfHPEeGHe_zQ49_r8w"/>
+        <ownedAttribute xmi:id="_RPgaofHPEeGHe_zQ49_r8w" name="startLine" visibility="public">
+          <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/EcorePrimitiveTypes.library.uml#EInt"/>
+        </ownedAttribute>
+        <ownedAttribute xmi:id="_RPgaovHPEeGHe_zQ49_r8w" name="stopLine" visibility="public">
+          <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/EcorePrimitiveTypes.library.uml#EInt"/>
+        </ownedAttribute>
+        <ownedAttribute xmi:id="_RPgao_HPEeGHe_zQ49_r8w" name="startMethod" visibility="public" association="_RPgarvHPEeGHe_zQ49_r8w">
+          <type xmi:type="uml:Class" href="SissyModel.uml#_RPel5_HPEeGHe_zQ49_r8w"/>
+          <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_RPgapPHPEeGHe_zQ49_r8w" value="1"/>
+          <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_RPgapfHPEeGHe_zQ49_r8w" value="1"/>
+        </ownedAttribute>
+        <ownedAttribute xmi:id="_RPgapvHPEeGHe_zQ49_r8w" name="stopMethod" visibility="public" association="_RPgasvHPEeGHe_zQ49_r8w">
+          <type xmi:type="uml:Class" href="SissyModel.uml#_RPel5_HPEeGHe_zQ49_r8w"/>
+          <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_RPgap_HPEeGHe_zQ49_r8w" value="1"/>
+          <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_RPgaqPHPEeGHe_zQ49_r8w" value="1"/>
+        </ownedAttribute>
+      </packagedElement>
+      <packagedElement xmi:type="uml:Class" xmi:id="_RPgaqfHPEeGHe_zQ49_r8w" name="EntityToInstrument"/>
+      <packagedElement xmi:type="uml:Association" xmi:id="_RPgaqvHPEeGHe_zQ49_r8w" memberEnd="_RPgab_HPEeGHe_zQ49_r8w _RPgaq_HPEeGHe_zQ49_r8w">
+        <ownedEnd xmi:id="_RPgaq_HPEeGHe_zQ49_r8w" name="instrumentationProfile" visibility="public" type="_RPgaVvHPEeGHe_zQ49_r8w" association="_RPgaqvHPEeGHe_zQ49_r8w">
+          <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_RPgarPHPEeGHe_zQ49_r8w" value="1"/>
+          <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_RPgarfHPEeGHe_zQ49_r8w"/>
+        </ownedEnd>
+      </packagedElement>
+      <packagedElement xmi:type="uml:Association" xmi:id="_RPgarvHPEeGHe_zQ49_r8w" memberEnd="_RPgao_HPEeGHe_zQ49_r8w _RPgar_HPEeGHe_zQ49_r8w">
+        <ownedEnd xmi:id="_RPgar_HPEeGHe_zQ49_r8w" name="" visibility="private" type="_RPgan_HPEeGHe_zQ49_r8w" association="_RPgarvHPEeGHe_zQ49_r8w">
+          <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_RPgasPHPEeGHe_zQ49_r8w" value="*"/>
+          <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_RPgasfHPEeGHe_zQ49_r8w"/>
+        </ownedEnd>
+      </packagedElement>
+      <packagedElement xmi:type="uml:Association" xmi:id="_RPgasvHPEeGHe_zQ49_r8w" memberEnd="_RPgapvHPEeGHe_zQ49_r8w _RPgas_HPEeGHe_zQ49_r8w">
+        <ownedEnd xmi:id="_RPgas_HPEeGHe_zQ49_r8w" name="" visibility="private" type="_RPgan_HPEeGHe_zQ49_r8w" association="_RPgasvHPEeGHe_zQ49_r8w">
+          <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_RPgatPHPEeGHe_zQ49_r8w" value="*"/>
+          <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_RPgatfHPEeGHe_zQ49_r8w"/>
+        </ownedEnd>
+      </packagedElement>
+    </packagedElement>
+    <profileApplication xmi:id="_RPgatvHPEeGHe_zQ49_r8w">
+      <eAnnotations xmi:id="_RPgat_HPEeGHe_zQ49_r8w" source="http://www.eclipse.org/uml2/2.0.0/UML">
+        <references xmi:type="ecore:EPackage" href="pathmap://UML_PROFILES/Standard.profile.uml#_yzU58YinEdqtvbnfB2L_5w"/>
+      </eAnnotations>
+      <appliedProfile href="pathmap://UML_PROFILES/Standard.profile.uml#_0"/>
+    </profileApplication>
+    <profileApplication xmi:id="_RPgauPHPEeGHe_zQ49_r8w">
+      <eAnnotations xmi:id="_RPgaufHPEeGHe_zQ49_r8w" source="http://www.eclipse.org/uml2/2.0.0/UML">
+        <references xmi:type="ecore:EPackage" href="pathmap://UML_PROFILES/Ecore.profile.uml#_z1OFcHjqEdy8S4Cr8Rc_NA"/>
+      </eAnnotations>
+      <appliedProfile href="pathmap://UML_PROFILES/Ecore.profile.uml#_0"/>
+    </profileApplication>
+  </uml:Package>
+  <Ecore:EPackage xmi:id="_RPgauvHPEeGHe_zQ49_r8w" base_Package="_RPgaGvHPEeGHe_zQ49_r8w" packageName="bycounter" nsPrefix="ByCounter" nsURI="http://sdq.ipd.kit.edu/ByCounterModels/0.3" basePackage="edu.kit.ipd.sdq" prefix="Bycounter"/>
+  <Ecore_1:EPackage xmi:id="_RPgau_HPEeGHe_zQ49_r8w" base_Package="_RPgaVfHPEeGHe_zQ49_r8w" packageName="input" nsPrefix="ByCounter.Input" nsURI="http://sdq.ipd.kit.edu/ByCounterModels/Input/0.3" prefix="Input"/>
+  <Ecore_1:EPackage xmi:id="_RPgavPHPEeGHe_zQ49_r8w" base_Package="_RPgaHPHPEeGHe_zQ49_r8w" packageName="output" nsPrefix="ByCounter.Output" nsURI="http://sdq.ipd.kit.edu/ByCounterModels/Output/0.3" prefix="Output"/>
+</xmi:XMI>
