@@ -8,6 +8,7 @@ import java.util.UUID;
 /**
  * Holds results produced by a single request.
  * @author Martin Krogmann
+ * @see de.uka.ipd.sdq.ByCounter.results
  *
  */
 public class RequestResult implements Comparable<RequestResult> {

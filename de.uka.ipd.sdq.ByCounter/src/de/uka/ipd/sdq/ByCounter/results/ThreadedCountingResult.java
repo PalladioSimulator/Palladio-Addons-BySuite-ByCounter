@@ -11,6 +11,8 @@ import de.uka.ipd.sdq.ByCounter.execution.CountingResultBase;
 /**
  * A {@link CountingResult} emitted from a specific thread.
  * @author Martin Krogmann
+ * 
+ * @see de.uka.ipd.sdq.ByCounter.results
  *
  */
 public class ThreadedCountingResult extends CountingResult {

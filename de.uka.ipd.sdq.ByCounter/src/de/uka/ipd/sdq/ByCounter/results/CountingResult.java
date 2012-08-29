@@ -19,6 +19,7 @@ import de.uka.ipd.sdq.ByCounter.execution.CountingResultBase;
  * Refer to the documentation on the get methods of this class for details. 
  * </p> 
  * @see CountingResultBase
+ * @see de.uka.ipd.sdq.ByCounter.results
  * @author Martin Krogmann
  *
  */
