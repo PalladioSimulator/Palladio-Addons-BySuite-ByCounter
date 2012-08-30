@@ -62,7 +62,7 @@ public class CountingResultIndexing {
 	public void add(CountingResult res,
 			long reportingStart) {
 		CountingArtefactInformation artefact;//does THIS create too much overhead? it requires ALL elements to be in memory?
-		final String qualifyingMethodName = res.getQualifyingMethodName();
+		final String qualifyingMethodName = res.getQualifiedMethodName();
 		final Long executionStart = res.getMethodInvocationBeginning();
 		artefact = new CountingArtefactInformation(
 				this,

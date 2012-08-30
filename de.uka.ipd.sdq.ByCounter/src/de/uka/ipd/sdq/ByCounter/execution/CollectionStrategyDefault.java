@@ -149,12 +149,12 @@ public class CollectionStrategyDefault extends AbstractCollectionStrategy {
 				res = new ThreadedCountingResult();
 			}
 			res.setRequestID(result.requestID);
-			res.setOwnID(result.ownID);
+			res.setMethodID(result.ownID);
 			res.setCallerID(result.callerID);
 			res.setID(result.qualifyingMethodName); //TODO fix it --> Martin; vgl. javadocs zu CountingResult
-			res.setQualifyingMethodName(result.qualifyingMethodName);
+			res.setQualifiedMethodName(result.qualifyingMethodName);
 			res.setMethodInvocationBeginning(result.executionStart+ccountsNum);
-			res.setMethodReportingTime(result.reportingStart);
+			res.setReportingTime(result.reportingStart);
 			res.setOpcodeCounts(ccounts[ccountsNum].opcodeCounts);
 			res.overwriteMethodCallCounts(ccounts[ccountsNum].methodCounts);
 			res.setArrayCreationCounts(arrayCreationCounts);
@@ -350,7 +350,7 @@ public class CollectionStrategyDefault extends AbstractCollectionStrategy {
 			for(CountingResultBase cr : this.countingResults) {
 				// countingResults are ordered by callerStartTime!
 				callerStartTime = cr.getMethodInvocationBeginning();
-				callerReportTime = cr.getMethodReportingTime();
+				callerReportTime = cr.getReportingTime();
 				if(prevCallerReportTime > callerReportTime) {
 					// do not return results that have been added up into a previous result already
 					continue;
@@ -358,7 +358,7 @@ public class CollectionStrategyDefault extends AbstractCollectionStrategy {
 				CountingResult crSum = this.countingResultIndexing.retrieveCountingResultByStartTime_evaluateCallingTree(callerStartTime, true);
 				if(lastMethodExecutionDetails == null
 						|| lastMethodExecutionDetails.executionSettings.isInternalClass(
-						crSum.getQualifyingMethodName())) {
+						crSum.getQualifiedMethodName())) {
 					ret.getCountingResults().add(crSum);
 					prevCallerReportTime = callerReportTime;
 				}

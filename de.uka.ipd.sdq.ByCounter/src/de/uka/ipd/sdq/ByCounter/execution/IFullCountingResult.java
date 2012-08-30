@@ -30,7 +30,7 @@ public interface IFullCountingResult extends ISimpleCountingResult{
 	 * TODO
 	 * @return Time of result reporting for the method.
 	 */
-	public long getMethodReportingTime();
+	public long getReportingTime();
 	
 	/**
 	 * TODO
@@ -56,7 +56,7 @@ public interface IFullCountingResult extends ISimpleCountingResult{
 	 * Simple getter
 	 * @return the qualifyingMethodName
 	 */
-	public String getQualifyingMethodName();
+	public String getQualifiedMethodName();
 	
 	/**
 	 * 

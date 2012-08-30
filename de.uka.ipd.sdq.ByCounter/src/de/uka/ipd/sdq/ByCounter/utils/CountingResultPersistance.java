@@ -176,7 +176,7 @@ public class CountingResultPersistance {
 				fileName += cr.getMethodInvocationBeginning()+".";
 			}
 			if(useCountingResultMethodReportingTimestamp){
-				fileName += cr.getMethodReportingTime()+".";
+				fileName += cr.getReportingTime()+".";
 			}
 			if(useTimestampParameter){
 				fileName += timestampToUse+".";

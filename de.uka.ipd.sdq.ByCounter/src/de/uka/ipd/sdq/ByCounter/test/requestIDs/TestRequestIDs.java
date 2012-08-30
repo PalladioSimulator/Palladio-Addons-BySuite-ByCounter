@@ -137,7 +137,7 @@ public class TestRequestIDs extends AbstractByCounterTest {
 			for(CountingResult r: rq.getCountingResults()) {
 				Assert.assertEquals(rid, r.getRequestID());
 				CountingResult expectedR = iter.next();
-				Assert.assertEquals(expectedR.getQualifyingMethodName(), r.getQualifyingMethodName());
+				Assert.assertEquals(expectedR.getQualifiedMethodName(), r.getQualifiedMethodName());
 			}
 		}
 		// clear all collected results

@@ -113,7 +113,7 @@ public class CountingResultCSVWriter implements ICountingResultWriter {
 		
 		CountingResult r = new CountingResult();
 		r.setMethodInvocationBeginning(executionStart);
-		r.setMethodReportingTime(reportingStart);
+		r.setReportingTime(reportingStart);
 		r.setOpcodeCounts(filteredCounts);
 		r.overwriteMethodCallCounts(methodCounts);
 		
@@ -219,7 +219,7 @@ public class CountingResultCSVWriter implements ICountingResultWriter {
 				"file extension: "+this.pieceFileNameExtension+")");
 		
 		long time = cr.getMethodInvocationBeginning(); 
-		String qualifyingMethodName = cr.getQualifyingMethodName(); 
+		String qualifyingMethodName = cr.getQualifiedMethodName(); 
 
 		TreeMap<Integer, Long> opcodeCounts 		= new TreeMap<Integer, Long>();
 		for(int i = 0; i < cr.getOpcodeCounts().length; i++) {

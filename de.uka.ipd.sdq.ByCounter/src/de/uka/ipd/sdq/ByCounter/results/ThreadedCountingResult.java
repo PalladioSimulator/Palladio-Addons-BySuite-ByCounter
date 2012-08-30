@@ -157,9 +157,9 @@ public class ThreadedCountingResult extends CountingResult {
 		StringBuffer sb = new StringBuffer();
 		sb.append("\n"+
 				  "      "+this.getClass().getSimpleName()+" (hash code: "+this.hashCode()+")\n");
-		sb.append("      > Method name     : "+this.getQualifyingMethodName()+ " (Own UUID: " + this.getOwnID() + ", threadId: " + this.threadId + ")\n");
-		sb.append("      > Method duration : "+(this.getMethodReportingTime()-this.getMethodInvocationBeginning())+
-				"(start: "+this.getMethodInvocationBeginning()+", end: "+this.getMethodReportingTime()+")\n");
+		sb.append("      > Method name     : "+this.getQualifiedMethodName()+ " (Own UUID: " + this.getMethodID() + ", threadId: " + this.threadId + ")\n");
+		sb.append("      > Method duration : "+(this.getReportingTime()-this.getMethodInvocationBeginning())+
+				"(start: "+this.getMethodInvocationBeginning()+", end: "+this.getReportingTime()+")\n");
 		sb.append("      > Opcode counts   : "+Arrays.toString(this.getOpcodeCounts())+"\n");
 		sb.append("      > Method counts   : "+this.getMethodCallCounts()+"\n");
 		if(this.getThreadedCountingResultSource() != null) {

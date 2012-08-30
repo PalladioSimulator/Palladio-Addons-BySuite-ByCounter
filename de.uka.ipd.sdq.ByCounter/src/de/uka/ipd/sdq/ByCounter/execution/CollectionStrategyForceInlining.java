@@ -107,12 +107,12 @@ public class CollectionStrategyForceInlining extends AbstractCollectionStrategy 
 	private synchronized CountingResult createNewForcedInlinedCountingResult() {
 		CountingResult res = new CountingResult();
 		res.setRequestID(UUID.randomUUID());
-		res.setOwnID(UUID.randomUUID());
+		res.setMethodID(UUID.randomUUID());
 		res.setCallerID(UUID.randomUUID());
 		res.setID("forcedInlined");
-		res.setQualifyingMethodName("______forcedInlined______");
+		res.setQualifiedMethodName("______forcedInlined______");
 		res.setMethodInvocationBeginning(System.nanoTime/*currentTimeMillis*/());
-		res.setMethodReportingTime(0L); //reporting time TODO use a Date-like class for this...
+		res.setReportingTime(0L); //reporting time TODO use a Date-like class for this...
 		res.setOpcodeCounts(new long[CountingResultBase.MAX_OPCODE]);//opcode counts
 		res.overwriteMethodCallCounts(new TreeMap<String, Long>());
 		res.setArrayCreationCounts(new TreeMap<ArrayCreation, Long>());

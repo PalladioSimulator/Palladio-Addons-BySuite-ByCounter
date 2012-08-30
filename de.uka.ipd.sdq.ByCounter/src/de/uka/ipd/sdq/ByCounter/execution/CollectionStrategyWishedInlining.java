@@ -44,12 +44,12 @@ public class CollectionStrategyWishedInlining extends
 		super(parent);
 		this.inlined_countingResult = new CountingResult();
 		this.inlined_countingResult.setRequestID(UUID.randomUUID());
-		this.inlined_countingResult.setOwnID(UUID.randomUUID());
+		this.inlined_countingResult.setMethodID(UUID.randomUUID());
 		this.inlined_countingResult.setCallerID(UUID.randomUUID());
 		this.inlined_countingResult.setID("inlined");
-		this.inlined_countingResult.setQualifyingMethodName("______inlined______");
+		this.inlined_countingResult.setQualifiedMethodName("______inlined______");
 		this.inlined_countingResult.setMethodInvocationBeginning(System.nanoTime/*currentTimeMillis*/());
-		this.inlined_countingResult.setMethodReportingTime(0L); //reporting time TODO use a Date-like class for this...
+		this.inlined_countingResult.setReportingTime(0L); //reporting time TODO use a Date-like class for this...
 		this.inlined_countingResult.setOpcodeCounts(new long[CountingResultBase.MAX_OPCODE]);//opcode counts
 		this.inlined_countingResult.overwriteMethodCallCounts(new TreeMap<String, Long>());
 		this.inlined_countingResult.setArrayCreationCounts(new TreeMap<ArrayCreation, Long>());

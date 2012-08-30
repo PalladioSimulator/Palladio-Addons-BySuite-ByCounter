@@ -93,7 +93,7 @@ public class PdfReport implements ICountingResultWriter {
 				new Paragraph("Results", FONT_CHAPTER), chapterCounter++);
 		for(CountingResultBase r : cResults) {
 			Section s = chResults.addSection(
-					new Paragraph(r.getQualifyingMethodName(), FONT_HEADER_METHOD));
+					new Paragraph(r.getQualifiedMethodName(), FONT_HEADER_METHOD));
 			s.add(new Paragraph("Opcode execution counts"));
 			s.add(createBytecodeTable(r.getOpcodeCounts()));
 			s.add(new Paragraph("Method call counts"));

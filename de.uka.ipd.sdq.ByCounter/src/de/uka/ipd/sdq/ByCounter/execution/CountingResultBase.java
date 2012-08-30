@@ -395,7 +395,7 @@ implements Serializable, Cloneable, IFullCountingResult, Comparable<IFullCountin
 
 	/**
 	 * A {@link UUID} that is linked to the method calling the method that
-	 * calls the protocol function. Used with {@link #ownID} to construct a CCT.
+	 * calls the protocol function. Used with {@link #methodID} to construct a CCT.
 	 */
 	private UUID callerID = null;
 
@@ -452,7 +452,7 @@ implements Serializable, Cloneable, IFullCountingResult, Comparable<IFullCountin
 	 * the CountingResultCollector. In other words, this is
 	 * <b>approximately</b> the time when the method execution was finished.
 	 */
-	private long methodReportingTime;
+	private long reportingTime;
 
 	/**
 	 * This array contains the counts of elementary bytecode instructions.
@@ -464,12 +464,12 @@ implements Serializable, Cloneable, IFullCountingResult, Comparable<IFullCountin
 	 * A {@link UUID} that is linked to the method calling the protocol function.
 	 * Used with {@link #callerID} to construct a CCT.
 	 */
-	private UUID ownID;
+	private UUID methodID;
 
 	/**
 	 * The name of the method whose execution was counted.
 	 */
-	private String qualifyingMethodName;
+	private String qualifiedMethodName;
 
 	/**
 	 * A {@link UUID} that is linked to a request. This is used to keep track
@@ -517,12 +517,12 @@ implements Serializable, Cloneable, IFullCountingResult, Comparable<IFullCountin
 		}
 		
 		this.setRequestID(src.getRequestID());
-		this.setOwnID(src.getOwnID());
+		this.setMethodID(src.getMethodID());
 		this.setCallerID(src.getCallerID());
 		this.setID(src.getID());
-		this.setQualifyingMethodName(src.qualifyingMethodName);
+		this.setQualifiedMethodName(src.qualifiedMethodName);
 		this.methodInvocationBeginning = src.methodInvocationBeginning;
-		this.methodReportingTime = src.methodReportingTime;
+		this.reportingTime = src.reportingTime;
 		this.opcodeCounts = Arrays.copyOf(src.opcodeCounts, src.opcodeCounts.length);
 		this.methodCallCounts = new TreeMap<String,Long>(src.methodCallCounts);
 		this.arrayCreationCounts = copyOfArrayCreationCounts;
@@ -536,7 +536,7 @@ implements Serializable, Cloneable, IFullCountingResult, Comparable<IFullCountin
 
 	/**
 	 * If range blocks were used, this is the index of the range block in the
-	 * method ({@link #qualifyingMethodName}).
+	 * method ({@link #qualifiedMethodName}).
 	 * Otherwise this is -1;
 	 */
 	private int indexOfRangeBlock;
@@ -580,7 +580,7 @@ implements Serializable, Cloneable, IFullCountingResult, Comparable<IFullCountin
 			
 			Map<ArrayCreation, Long> arrayCreationCounts) {
 		this.setRequestID(requestID);
-		this.setOwnID(ownID);
+		this.setMethodID(ownID);
 		this.setCallerID(callerID);
 		this.setID(ID);
 		this.setThreadId(-1);
@@ -590,10 +590,10 @@ implements Serializable, Cloneable, IFullCountingResult, Comparable<IFullCountin
 		this.indexOfRangeBlock = -1;
 		this.methodCallCounts = methodCallCounts;
 		this.methodInvocationBeginning = methodInvocationBeginning;
-		this.methodReportingTime = methodReportingTime;
+		this.reportingTime = methodReportingTime;
 		assert(opcodeCounts.length==MAX_OPCODE);
 		this.opcodeCounts = opcodeCounts;
-		this.qualifyingMethodName = qualifyingMethodName; //should be a PRIVATE setter
+		this.qualifiedMethodName = qualifyingMethodName; //should be a PRIVATE setter
 		this.totalCountExclInvokes = 0L;
 		this.totalCountInclInvokes = 0L;
 
@@ -608,7 +608,7 @@ implements Serializable, Cloneable, IFullCountingResult, Comparable<IFullCountin
 	 */
 	public CountingResultBase() {
 		this.setRequestID(null);
-		this.setOwnID(null);
+		this.setMethodID(null);
 		this.setCallerID(null);
 		this.setID(null);
 		this.setThreadId(-1);
@@ -618,9 +618,9 @@ implements Serializable, Cloneable, IFullCountingResult, Comparable<IFullCountin
 		this.indexOfRangeBlock = -1;
 		this.methodCallCounts = null;
 		this.methodInvocationBeginning = 0;
-		this.methodReportingTime = 0;
+		this.reportingTime = 0;
 		this.opcodeCounts = null;
-		this.qualifyingMethodName = null; //should be a PRIVATE setter
+		this.qualifiedMethodName = null; //should be a PRIVATE setter
 		this.totalCountExclInvokes = 0L;
 		this.totalCountInclInvokes = 0L;
 
@@ -699,12 +699,12 @@ implements Serializable, Cloneable, IFullCountingResult, Comparable<IFullCountin
 		}
 		
 		copy.setRequestID(this.getRequestID());
-		copy.setOwnID(this.getOwnID());
+		copy.setMethodID(this.getMethodID());
 		copy.setCallerID(this.getCallerID());
 		copy.setID(this.getID());
-		copy.setQualifyingMethodName(this.qualifyingMethodName);
+		copy.setQualifiedMethodName(this.qualifiedMethodName);
 		copy.methodInvocationBeginning = this.methodInvocationBeginning;
-		copy.methodReportingTime = this.methodReportingTime;
+		copy.reportingTime = this.reportingTime;
 		copy.opcodeCounts = Arrays.copyOf(this.opcodeCounts, this.opcodeCounts.length);
 		copy.methodCallCounts = new TreeMap<String,Long>(this.methodCallCounts);
 		copy.arrayCreationCounts = copyOfArrayCreationCounts;
@@ -752,7 +752,8 @@ implements Serializable, Cloneable, IFullCountingResult, Comparable<IFullCountin
 	}
 	
 	/**
-	 * @return the callerID
+	 * @return A {@link UUID} that is linked to the method calling the method that
+	 * calls the protocol function. Used with {@link #getMethodID()} to construct a CCT.
 	 */
 	public UUID getCallerID() {
 		return callerID;
@@ -824,10 +825,10 @@ implements Serializable, Cloneable, IFullCountingResult, Comparable<IFullCountin
 	}
 
 	/** (non-Javadoc)
-	 * @see de.uka.ipd.sdq.ByCounter.execution.IFullCountingResult#getMethodReportingTime()
+	 * @see de.uka.ipd.sdq.ByCounter.execution.IFullCountingResult#getReportingTime()
 	 */
-	public long getMethodReportingTime() {
-		return methodReportingTime;
+	public long getReportingTime() {
+		return reportingTime;
 	}
 
 	/**
@@ -882,17 +883,17 @@ implements Serializable, Cloneable, IFullCountingResult, Comparable<IFullCountin
 	}
 
 	/**
-	 * @return the ownID
+	 * @return The ID of the method of the result.
 	 */
-	public UUID getOwnID() {
-		return ownID;
+	public UUID getMethodID() {
+		return methodID;
 	}
 
 	/** (non-Javadoc)
-	 * @see de.uka.ipd.sdq.ByCounter.execution.IFullCountingResult#getQualifyingMethodName()
+	 * @see de.uka.ipd.sdq.ByCounter.execution.IFullCountingResult#getQualifiedMethodName()
 	 */
-	public String getQualifyingMethodName() {
-		return qualifyingMethodName;
+	public String getQualifiedMethodName() {
+		return qualifiedMethodName;
 	}
 
 	/**
@@ -984,7 +985,8 @@ implements Serializable, Cloneable, IFullCountingResult, Comparable<IFullCountin
 	}
 
 	/**
-	 * @param callerID the callerID to set
+	 * @param callerID A {@link UUID} that is linked to the method calling the method that
+	 * calls the protocol function. Used with {@link #getMethodID()} to construct a CCT.
 	 * @return The previously set caller id.
 	 */
 	public UUID setCallerID(UUID callerID) {
@@ -1044,14 +1046,14 @@ implements Serializable, Cloneable, IFullCountingResult, Comparable<IFullCountin
 
 	/**
 	 * TODO consider adding a logger to CountingResult;
-	 * @param methodReportingTime
+	 * @param reportingTime
 	 */
-	public void setMethodReportingTime(long methodReportingTime) {
-		if(this.methodReportingTime==0){
-			System.err.println("Method reporting time "+this.methodReportingTime+
-					" about to be overwritten with "+methodReportingTime);
+	public void setReportingTime(long reportingTime) {
+		if(this.reportingTime==0){
+			System.err.println("Method reporting time "+this.reportingTime+
+					" about to be overwritten with "+reportingTime);
 		}
-		this.methodReportingTime = methodReportingTime;
+		this.reportingTime = reportingTime;
 	}
 	
 	/**
@@ -1079,17 +1081,17 @@ implements Serializable, Cloneable, IFullCountingResult, Comparable<IFullCountin
 	}
 
 	/**
-	 * @param ownID the ownID to set
+	 * @param methodID The ID of the method of the result.
 	 */
-	public void setOwnID(UUID ownID) {
-		this.ownID = ownID;
+	public void setMethodID(UUID methodID) {
+		this.methodID = methodID;
 	}
 	
 	/**
-	 * @param qualifyingMethodName {@link de.uka.ipd.sdq.ByCounter.execution.IFullCountingResult#getQualifyingMethodName()}
+	 * @param qualifiedMethodName {@link de.uka.ipd.sdq.ByCounter.execution.IFullCountingResult#getQualifiedMethodName()}
 	 */
-	public void setQualifyingMethodName(String qualifyingMethodName) {
-		this.qualifyingMethodName = qualifyingMethodName;
+	public void setQualifiedMethodName(String qualifiedMethodName) {
+		this.qualifiedMethodName = qualifiedMethodName;
 	}
 
 	/**
@@ -1127,8 +1129,8 @@ implements Serializable, Cloneable, IFullCountingResult, Comparable<IFullCountin
 			System.out.println("CountingResult.shallowEquals: == on invariantMethodsAreInlined: "+this.invariantMethodsAreInlined+" vs "+vr.invariantMethodsAreInlined);
 			return false;
 		}
-		if(this.qualifyingMethodName!=vr.qualifyingMethodName){
-			System.out.println("CountingResult.shallowEquals: == on qualifyingMethodName: "+this.qualifyingMethodName+" vs "+vr.qualifyingMethodName);
+		if(this.qualifiedMethodName!=vr.qualifiedMethodName){
+			System.out.println("CountingResult.shallowEquals: == on qualifyingMethodName: "+this.qualifiedMethodName+" vs "+vr.qualifiedMethodName);
 			return false;
 		}
 		if(this.totalCountExclInvokes!=vr.totalCountExclInvokes){
@@ -1194,9 +1196,9 @@ implements Serializable, Cloneable, IFullCountingResult, Comparable<IFullCountin
 		StringBuffer sb = new StringBuffer();
 		sb.append("\n"+
 				  "      "+this.getClass().getSimpleName()+" (hash code: "+this.hashCode()+")\n");
-		sb.append("      > Method name     : "+this.qualifyingMethodName+ " (Own UUID: " + this.ownID + ", threadId: " + this.threadId + ")\n");
-		sb.append("      > Method duration : "+(this.methodReportingTime-this.methodInvocationBeginning)+
-				"(start: "+this.methodInvocationBeginning+", end: "+this.methodReportingTime+")\n");
+		sb.append("      > Method name     : "+this.qualifiedMethodName+ " (Own UUID: " + this.methodID + ", threadId: " + this.threadId + ")\n");
+		sb.append("      > Method duration : "+(this.reportingTime-this.methodInvocationBeginning)+
+				"(start: "+this.methodInvocationBeginning+", end: "+this.reportingTime+")\n");
 		sb.append("      > Opcode counts   : "+Arrays.toString(this.opcodeCounts)+"\n");
 		sb.append("      > Method counts   : "+this.methodCallCounts+"\n");
 //		sb.append("      > Method input    : "+this.inputParams+"\n");
@@ -1218,7 +1220,7 @@ implements Serializable, Cloneable, IFullCountingResult, Comparable<IFullCountin
 
 	/**
 	 * @return If range blocks were used, this is the index of the range block 
-	 * in the method ({@link #getQualifyingMethodName()}).
+	 * in the method ({@link #getQualifiedMethodName()}).
 	 * Otherwise this is -1;
 	 */
 	public int getIndexOfRangeBlock() {
@@ -1282,7 +1284,7 @@ implements Serializable, Cloneable, IFullCountingResult, Comparable<IFullCountin
 		StringBuffer sb = new StringBuffer();
 		sb.append("\n==START========= Logging CountingResult ================");
 		sb.append(NEWLINE);
-		String qualifyingMethodName = getQualifyingMethodName();
+		String qualifyingMethodName = getQualifiedMethodName();
 		if(qualifyingMethodName==null || qualifyingMethodName.equals("")) {
 			log.severe("Qualifying method name is null or empty, EXITING");
 			sb.append("== END ========= Logging CountingResult ================");
@@ -1296,7 +1298,7 @@ implements Serializable, Cloneable, IFullCountingResult, Comparable<IFullCountin
 		sb.append("requestID: ");
 		sb.append(getRequestID());
 		sb.append(", ownID: ");
-		sb.append(getOwnID());
+		sb.append(getMethodID());
 		sb.append(", callerID: ");
 		sb.append(getCallerID());
 		sb.append(", threadId: ");
@@ -1555,14 +1557,14 @@ implements Serializable, Cloneable, IFullCountingResult, Comparable<IFullCountin
 				+ (int) (this.methodInvocationBeginning ^ (this.methodInvocationBeginning >>> 32));
 		result = prime
 				* result
-				+ (int) (this.methodReportingTime ^ (this.methodReportingTime >>> 32));
+				+ (int) (this.reportingTime ^ (this.reportingTime >>> 32));
 		result = prime * result + Arrays.hashCode(this.opcodeCounts);
 		result = prime * result
-				+ ((this.ownID == null) ? 0 : this.ownID.hashCode());
+				+ ((this.methodID == null) ? 0 : this.methodID.hashCode());
 		result = prime
 				* result
-				+ ((this.qualifyingMethodName == null) ? 0
-						: this.qualifyingMethodName.hashCode());
+				+ ((this.qualifiedMethodName == null) ? 0
+						: this.qualifiedMethodName.hashCode());
 		result = prime * result
 				+ ((this.requestID == null) ? 0 : this.requestID.hashCode());
 		result = prime * result
@@ -1615,20 +1617,20 @@ implements Serializable, Cloneable, IFullCountingResult, Comparable<IFullCountin
 			return false;
 		if (this.methodInvocationBeginning != other.methodInvocationBeginning)
 			return false;
-		if (this.methodReportingTime != other.methodReportingTime)
+		if (this.reportingTime != other.reportingTime)
 			return false;
 		if (!Arrays.equals(this.opcodeCounts, other.opcodeCounts))
 			return false;
-		if (this.ownID == null) {
-			if (other.ownID != null)
+		if (this.methodID == null) {
+			if (other.methodID != null)
 				return false;
-		} else if (!this.ownID.equals(other.ownID))
+		} else if (!this.methodID.equals(other.methodID))
 			return false;
-		if (this.qualifyingMethodName == null) {
-			if (other.qualifyingMethodName != null)
+		if (this.qualifiedMethodName == null) {
+			if (other.qualifiedMethodName != null)
 				return false;
-		} else if (!this.qualifyingMethodName
-				.equals(other.qualifyingMethodName))
+		} else if (!this.qualifiedMethodName
+				.equals(other.qualifiedMethodName))
 			return false;
 		if (this.requestID == null) {
 			if (other.requestID != null)
