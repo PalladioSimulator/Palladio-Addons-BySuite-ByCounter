@@ -7,15 +7,17 @@
 package edu.kit.ipd.sdq.bycounter.output.provider;
 
 
+import edu.kit.ipd.sdq.bycounter.output.ArrayCreationCount;
 import edu.kit.ipd.sdq.bycounter.output.OutputFactory;
 import edu.kit.ipd.sdq.bycounter.output.OutputPackage;
-import edu.kit.ipd.sdq.bycounter.output.ThreadedCountingResult;
 
 import java.util.Collection;
 import java.util.List;
 
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.common.notify.Notification;
+
+import org.eclipse.emf.common.util.ResourceLocator;
 
 import org.eclipse.emf.ecore.EStructuralFeature;
 
@@ -27,16 +29,17 @@ import org.eclipse.emf.edit.provider.IItemPropertySource;
 import org.eclipse.emf.edit.provider.IStructuredItemContentProvider;
 import org.eclipse.emf.edit.provider.ITreeItemContentProvider;
 import org.eclipse.emf.edit.provider.ItemPropertyDescriptor;
+import org.eclipse.emf.edit.provider.ItemProviderAdapter;
 import org.eclipse.emf.edit.provider.ViewerNotification;
 
 /**
- * This is the item provider adapter for a {@link edu.kit.ipd.sdq.bycounter.output.ThreadedCountingResult} object.
+ * This is the item provider adapter for a {@link edu.kit.ipd.sdq.bycounter.output.ArrayCreationCount} object.
  * <!-- begin-user-doc -->
  * <!-- end-user-doc -->
  * @generated
  */
-public class ThreadedCountingResultItemProvider
-	extends CountingResultItemProvider
+public class ArrayCreationCountItemProvider
+	extends ItemProviderAdapter
 	implements
 		IEditingDomainItemProvider,
 		IStructuredItemContentProvider,
@@ -49,7 +52,7 @@ public class ThreadedCountingResultItemProvider
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public ThreadedCountingResultItemProvider(AdapterFactory adapterFactory) {
+	public ArrayCreationCountItemProvider(AdapterFactory adapterFactory) {
 		super(adapterFactory);
 	}
 
@@ -64,25 +67,25 @@ public class ThreadedCountingResultItemProvider
 		if (itemPropertyDescriptors == null) {
 			super.getPropertyDescriptors(object);
 
-			addThreadIdPropertyDescriptor(object);
+			addCountPropertyDescriptor(object);
 		}
 		return itemPropertyDescriptors;
 	}
 
 	/**
-	 * This adds a property descriptor for the Thread Id feature.
+	 * This adds a property descriptor for the Count feature.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	protected void addThreadIdPropertyDescriptor(Object object) {
+	protected void addCountPropertyDescriptor(Object object) {
 		itemPropertyDescriptors.add
 			(createItemPropertyDescriptor
 				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
 				 getResourceLocator(),
-				 getString("_UI_ThreadedCountingResult_threadId_feature"),
-				 getString("_UI_PropertyDescriptor_description", "_UI_ThreadedCountingResult_threadId_feature", "_UI_ThreadedCountingResult_type"),
-				 OutputPackage.Literals.THREADED_COUNTING_RESULT__THREAD_ID,
+				 getString("_UI_ArrayCreationCount_count_feature"),
+				 getString("_UI_PropertyDescriptor_description", "_UI_ArrayCreationCount_count_feature", "_UI_ArrayCreationCount_type"),
+				 OutputPackage.Literals.ARRAY_CREATION_COUNT__COUNT,
 				 true,
 				 false,
 				 false,
@@ -103,7 +106,7 @@ public class ThreadedCountingResultItemProvider
 	public Collection<? extends EStructuralFeature> getChildrenFeatures(Object object) {
 		if (childrenFeatures == null) {
 			super.getChildrenFeatures(object);
-			childrenFeatures.add(OutputPackage.Literals.THREADED_COUNTING_RESULT__SPAWNED_THREADED_COUNTING_RESULTS);
+			childrenFeatures.add(OutputPackage.Literals.ARRAY_CREATION_COUNT__ARRAY_CREATION);
 		}
 		return childrenFeatures;
 	}
@@ -122,14 +125,14 @@ public class ThreadedCountingResultItemProvider
 	}
 
 	/**
-	 * This returns ThreadedCountingResult.gif.
+	 * This returns ArrayCreationCount.gif.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
 	@Override
 	public Object getImage(Object object) {
-		return overlayImage(object, getResourceLocator().getImage("full/obj16/ThreadedCountingResult"));
+		return overlayImage(object, getResourceLocator().getImage("full/obj16/ArrayCreationCount"));
 	}
 
 	/**
@@ -140,10 +143,8 @@ public class ThreadedCountingResultItemProvider
 	 */
 	@Override
 	public String getText(Object object) {
-		String label = ((ThreadedCountingResult)object).getQualifiedMethodName();
-		return label == null || label.length() == 0 ?
-			getString("_UI_ThreadedCountingResult_type") :
-			getString("_UI_ThreadedCountingResult_type") + " " + label;
+		ArrayCreationCount arrayCreationCount = (ArrayCreationCount)object;
+		return getString("_UI_ArrayCreationCount_type") + " " + arrayCreationCount.getCount();
 	}
 
 	/**
@@ -157,11 +158,11 @@ public class ThreadedCountingResultItemProvider
 	public void notifyChanged(Notification notification) {
 		updateChildren(notification);
 
-		switch (notification.getFeatureID(ThreadedCountingResult.class)) {
-			case OutputPackage.THREADED_COUNTING_RESULT__THREAD_ID:
+		switch (notification.getFeatureID(ArrayCreationCount.class)) {
+			case OutputPackage.ARRAY_CREATION_COUNT__COUNT:
 				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
 				return;
-			case OutputPackage.THREADED_COUNTING_RESULT__SPAWNED_THREADED_COUNTING_RESULTS:
+			case OutputPackage.ARRAY_CREATION_COUNT__ARRAY_CREATION:
 				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), true, false));
 				return;
 		}
@@ -181,8 +182,19 @@ public class ThreadedCountingResultItemProvider
 
 		newChildDescriptors.add
 			(createChildParameter
-				(OutputPackage.Literals.THREADED_COUNTING_RESULT__SPAWNED_THREADED_COUNTING_RESULTS,
-				 OutputFactory.eINSTANCE.createThreadedCountingResult()));
+				(OutputPackage.Literals.ARRAY_CREATION_COUNT__ARRAY_CREATION,
+				 OutputFactory.eINSTANCE.createArrayCreation()));
+	}
+
+	/**
+	 * Return the resource locator for this item provider's resources.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public ResourceLocator getResourceLocator() {
+		return ByCounterEditPlugin.INSTANCE;
 	}
 
 }

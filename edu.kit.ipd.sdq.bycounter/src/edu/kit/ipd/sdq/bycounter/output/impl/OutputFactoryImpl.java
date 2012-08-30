@@ -9,6 +9,7 @@ package edu.kit.ipd.sdq.bycounter.output.impl;
 import edu.kit.ipd.sdq.bycounter.output.*;
 
 import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.EDataType;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EPackage;
 
@@ -63,10 +64,44 @@ public class OutputFactoryImpl extends EFactoryImpl implements OutputFactory {
 			case OutputPackage.OUTPUT_MODEL_REPOSITORY: return createOutputModelRepository();
 			case OutputPackage.RESULT_COLLECTION: return createResultCollection();
 			case OutputPackage.REQUEST_RESULT: return createRequestResult();
+			case OutputPackage.UUID: return createUUID();
 			case OutputPackage.COUNTING_RESULT: return createCountingResult();
+			case OutputPackage.ARRAY_CREATION_COUNT: return createArrayCreationCount();
+			case OutputPackage.ARRAY_CREATION: return createArrayCreation();
+			case OutputPackage.METHOD_CALL_COUNT: return createMethodCallCount();
 			case OutputPackage.THREADED_COUNTING_RESULT: return createThreadedCountingResult();
 			default:
 				throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
+		}
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public Object createFromString(EDataType eDataType, String initialValue) {
+		switch (eDataType.getClassifierID()) {
+			case OutputPackage.ARRAY_TYPE:
+				return createArrayTypeFromString(eDataType, initialValue);
+			default:
+				throw new IllegalArgumentException("The datatype '" + eDataType.getName() + "' is not a valid classifier");
+		}
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public String convertToString(EDataType eDataType, Object instanceValue) {
+		switch (eDataType.getClassifierID()) {
+			case OutputPackage.ARRAY_TYPE:
+				return convertArrayTypeToString(eDataType, instanceValue);
+			default:
+				throw new IllegalArgumentException("The datatype '" + eDataType.getName() + "' is not a valid classifier");
 		}
 	}
 
@@ -105,6 +140,16 @@ public class OutputFactoryImpl extends EFactoryImpl implements OutputFactory {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public UUID createUUID() {
+		UUIDImpl uuid = new UUIDImpl();
+		return uuid;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	public CountingResult createCountingResult() {
 		CountingResultImpl countingResult = new CountingResultImpl();
 		return countingResult;
@@ -115,9 +160,59 @@ public class OutputFactoryImpl extends EFactoryImpl implements OutputFactory {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public ArrayCreationCount createArrayCreationCount() {
+		ArrayCreationCountImpl arrayCreationCount = new ArrayCreationCountImpl();
+		return arrayCreationCount;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public ArrayCreation createArrayCreation() {
+		ArrayCreationImpl arrayCreation = new ArrayCreationImpl();
+		return arrayCreation;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public MethodCallCount createMethodCallCount() {
+		MethodCallCountImpl methodCallCount = new MethodCallCountImpl();
+		return methodCallCount;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	public ThreadedCountingResult createThreadedCountingResult() {
 		ThreadedCountingResultImpl threadedCountingResult = new ThreadedCountingResultImpl();
 		return threadedCountingResult;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public ArrayType createArrayTypeFromString(EDataType eDataType, String initialValue) {
+		ArrayType result = ArrayType.get(initialValue);
+		if (result == null) throw new IllegalArgumentException("The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
+		return result;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public String convertArrayTypeToString(EDataType eDataType, Object instanceValue) {
+		return instanceValue == null ? null : instanceValue.toString();
 	}
 
 	/**

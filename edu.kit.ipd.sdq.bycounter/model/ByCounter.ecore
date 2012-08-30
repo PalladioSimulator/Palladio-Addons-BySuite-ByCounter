@@ -11,42 +11,111 @@
     <eClassifiers xsi:type="ecore:EClass" name="OutputModelRepository" eSuperTypes="platform:/plugin/de.uka.ipd.sdq.identifier/model/identifier.ecore#//Identifier"/>
     <eClassifiers xsi:type="ecore:EClass" name="ResultCollection">
       <eStructuralFeatures xsi:type="ecore:EReference" name="requestResults" ordered="false"
-          upperBound="-1" eType="#//output/RequestResult" containment="true"/>
+          upperBound="-1" eType="#//output/RequestResult" containment="true" eOpposite="#//output/RequestResult/resultCollection"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="countingResults" ordered="false"
-          upperBound="-1" eType="#//output/CountingResult" containment="true"/>
+          upperBound="-1" eType="#//output/CountingResult" containment="true" eOpposite="#//output/CountingResult/resultCollection"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="RequestResult">
-      <eStructuralFeatures xsi:type="ecore:EReference" name="resultCollection" ordered="false"
-          upperBound="-1" eType="#//output/ResultCollection" containment="true"/>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" name="requestId" ordered="false"
-          lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EJavaObject"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="requestId" ordered="false"
+          lowerBound="1" eType="#//output/UUID"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="countingResults" ordered="false"
-          upperBound="-1" eType="#//output/CountingResult" containment="true"/>
+          upperBound="-1" eType="#//output/CountingResult" containment="true" eOpposite="#//output/CountingResult/requestResult"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="resultCollection" ordered="false"
+          lowerBound="1" eType="#//output/ResultCollection" eOpposite="#//output/ResultCollection/requestResults"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="UUID">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="stringRepresentation"
+          ordered="false" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EJavaObject"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="CountingResult">
-      <eStructuralFeatures xsi:type="ecore:EAttribute" name="arrayCreationCounts"
-          ordered="false" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EJavaObject"/>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" name="callerId" ordered="false"
-          lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EJavaObject"/>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" name="methodCallCounts" ordered="false"
-          lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EJavaObject"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="callerId" ordered="false"
+          lowerBound="1" eType="#//output/UUID">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="The ID of the method that invoked the method of the result. Can be null if the caller was not instrumented."/>
+        </eAnnotations>
+      </eStructuralFeatures>
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="methodInvocationBeginning"
-          ordered="false" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//ELong"/>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" name="methodReportingTime"
-          ordered="false" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//ELong"/>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" name="observedElement" ordered="false"
-          lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EJavaObject"/>
+          ordered="false" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//ELong">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Time at which the method that produced this result was invoked."/>
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="reportingTime" ordered="false"
+          lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//ELong">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Time at which the result was reported."/>
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="observedElement" ordered="false"
+          lowerBound="1" eType="#//input/EntityToInstrument"/>
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="opcodeCounts" ordered="false"
-          lowerBound="1" upperBound="-1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//ELong"/>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" name="ownId" ordered="false"
-          lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EJavaObject"/>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" name="qualifyingMethodName"
+          upperBound="-1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//ELong"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="methodId" ordered="false"
+          lowerBound="1" eType="#//output/UUID">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="The ID of the method of this result."/>
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="qualifiedMethodName"
           ordered="false" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="resultCollection" ordered="false"
+          eType="#//output/ResultCollection" eOpposite="#//output/ResultCollection/countingResults"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="arrayCreationCounts"
+          ordered="false" upperBound="-1" eType="#//output/ArrayCreationCount" containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="methodCallCounts" ordered="false"
+          upperBound="-1" eType="#//output/MethodCallCount" containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="requestResult" ordered="false"
+          eType="#//output/RequestResult" eOpposite="#//output/RequestResult/countingResults"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="ArrayCreationCount">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="arrayCreation" ordered="false"
+          lowerBound="1" eType="#//output/ArrayCreation" containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="count" ordered="false"
+          lowerBound="1" eType="ecore:EDataType platform:/plugin/org.eclipse.emf.ecore/model/Ecore.ecore#//ELong"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="ArrayCreation">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="typeDescriptor" ordered="false"
+          lowerBound="1" eType="ecore:EDataType platform:/plugin/org.eclipse.emf.ecore/model/Ecore.ecore#//EString">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Descriptor of the type of the array elements."/>
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="numberOfDimensions" ordered="false"
+          lowerBound="1" eType="ecore:EDataType platform:/plugin/org.eclipse.emf.ecore/model/Ecore.ecore#//EInt"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="arrayType" ordered="false"
+          lowerBound="1" eType="#//output/ArrayType">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="The opcode of the array type."/>
+        </eAnnotations>
+      </eStructuralFeatures>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EEnum" name="ArrayType">
+      <eLiterals name="INVALID">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Unknown type or object type."/>
+        </eAnnotations>
+      </eLiterals>
+      <eLiterals name="BOOLEAN" value="1"/>
+      <eLiterals name="BYTE" value="2"/>
+      <eLiterals name="CHAR" value="3"/>
+      <eLiterals name="DOUBLE" value="4"/>
+      <eLiterals name="FLOAT" value="5"/>
+      <eLiterals name="INT" value="6"/>
+      <eLiterals name="LONG" value="7"/>
+      <eLiterals name="SHORT" value="8"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="MethodCallCount">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="qualifiedFunctionName"
+          ordered="false" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EJavaObject"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="count" ordered="false"
+          lowerBound="1" eType="ecore:EDataType platform:/plugin/org.eclipse.emf.ecore/model/Ecore.ecore#//ELong"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="ThreadedCountingResult" eSuperTypes="#//output/CountingResult">
       <eStructuralFeatures xsi:type="ecore:EReference" name="spawnedThreadedCountingResults"
           ordered="false" upperBound="-1" eType="#//output/ThreadedCountingResult"
-          containment="true"/>
+          containment="true" eOpposite="#//output/ThreadedCountingResult/threadedCountingResult"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="threadedCountingResult"
+          ordered="false" eType="#//output/ThreadedCountingResult" eOpposite="#//output/ThreadedCountingResult/spawnedThreadedCountingResults"/>
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="threadId" ordered="false"
           lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//ELong"/>
     </eClassifiers>
@@ -54,26 +123,6 @@
   <eSubpackages name="input" nsURI="http://sdq.ipd.kit.edu/ByCounterModels/Input/0.3"
       nsPrefix="ByCounter.Input">
     <eClassifiers xsi:type="ecore:EClass" name="InstrumentationProfile" eSuperTypes="platform:/plugin/de.uka.ipd.sdq.identifier/model/identifier.ecore#//Identifier">
-      <eOperations name="SummationexcludesonlyallowedifsummationisactiveandaggregateInternalCallsTransparentlyistrue"
-          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean">
-        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-          <details key="documentation" value="self.summationExcludes->size()>0 implies self.aggregateInternalCallsTransparently=true&#xD;&#xA;"/>
-        </eAnnotations>
-        <eParameters name="diagnostics" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDiagnosticChain">
-          <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-            <details key="documentation" value="The chain of diagnostics to which problems are to be appended."/>
-          </eAnnotations>
-        </eParameters>
-        <eParameters name="context">
-          <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-            <details key="documentation" value="The cache of context-specific information."/>
-          </eAnnotations>
-          <eGenericType eClassifier="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EMap">
-            <eTypeArguments eClassifier="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EJavaObject"/>
-            <eTypeArguments eClassifier="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EJavaObject"/>
-          </eGenericType>
-        </eParameters>
-      </eOperations>
       <eStructuralFeatures xsi:type="ecore:EReference" name="definedLogicalSets" ordered="false"
           upperBound="-1" eType="#//input/LogicalSet" containment="true" eOpposite="#//input/LogicalSet/instrumentationProfile"/>
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="instrumentRecursively"
@@ -82,8 +131,8 @@
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="aggregateInternalCallsTransparently"
           ordered="false" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"
           defaultValueLiteral="true"/>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" name="persistInstrumentedClasses"
-          ordered="false" lowerBound="1" eType="ecore:EDataType platform:/plugin/org.eclipse.emf.ecore/model/Ecore.ecore#//EString"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="persistInstrumentedClassesToOSPath"
+          ordered="false" eType="ecore:EDataType platform:/plugin/org.eclipse.emf.ecore/model/Ecore.ecore#//EString"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="intrumentationProfileRepository"
           ordered="false" eType="#//input/InstrumentationProfileRepository" eOpposite="#//input/InstrumentationProfileRepository/instrumentationProfile"/>
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="instrumentUsingLongCounters"
@@ -99,7 +148,8 @@
           ordered="false" upperBound="-1" eType="ecore:EClass platform:/plugin/de.fzi.gast/model/gast.ecore#//functions/Method"
           containment="true"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="entitiesToInstrument"
-          ordered="false" upperBound="-1" eType="#//input/EntityToInstrument" containment="true"/>
+          ordered="false" upperBound="-1" eType="#//input/EntityToInstrument" containment="true"
+          eOpposite="#//input/EntityToInstrument/instrumentationProfile"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="LogicalSet" eSuperTypes="platform:/plugin/de.uka.ipd.sdq.identifier/model/identifier.ecore#//Identifier">
       <eStructuralFeatures xsi:type="ecore:EReference" name="internalClasses" ordered="false"
@@ -113,7 +163,6 @@
           ordered="false" upperBound="-1" eType="#//input/InstrumentationProfile"
           containment="true" eOpposite="#//input/InstrumentationProfile/intrumentationProfileRepository"/>
     </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" name="EntityToInstrument"/>
     <eClassifiers xsi:type="ecore:EClass" name="InstrumentedCodeArea" eSuperTypes="#//input/EntityToInstrument">
       <eStructuralFeatures xsi:type="ecore:EReference" name="from" ordered="false"
           lowerBound="1" eType="ecore:EClass platform:/plugin/de.fzi.gast/model/gast.ecore#//statements/Statement"/>
@@ -133,14 +182,26 @@
           lowerBound="1" eType="ecore:EClass platform:/plugin/de.fzi.gast/model/gast.ecore#//functions/Method"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="InstrumentedRegion" eSuperTypes="#//input/EntityToInstrument">
-      <eStructuralFeatures xsi:type="ecore:EAttribute" name="startLine" ordered="false"
-          lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" name="stopLine" ordered="false"
-          lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="startMethod" ordered="false"
-          lowerBound="1" eType="ecore:EClass platform:/plugin/de.fzi.gast/model/gast.ecore#//functions/Method"/>
+          lowerBound="1" eType="ecore:EClass platform:/plugin/de.fzi.gast/model/gast.ecore#//functions/Function"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="startLine" ordered="false"
+          lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Absolute line number in the file defining startMethod."/>
+        </eAnnotations>
+      </eStructuralFeatures>
       <eStructuralFeatures xsi:type="ecore:EReference" name="stopMethod" ordered="false"
-          lowerBound="1" eType="ecore:EClass platform:/plugin/de.fzi.gast/model/gast.ecore#//functions/Method"/>
+          lowerBound="1" eType="ecore:EClass platform:/plugin/de.fzi.gast/model/gast.ecore#//functions/Function"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="stopLine" ordered="false"
+          lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Absolute line number in the file defining stopMethod."/>
+        </eAnnotations>
+      </eStructuralFeatures>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="EntityToInstrument" abstract="true">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="instrumentationProfile"
+          ordered="false" eType="#//input/InstrumentationProfile" eOpposite="#//input/InstrumentationProfile/entitiesToInstrument"/>
     </eClassifiers>
   </eSubpackages>
 </ecore:EPackage>

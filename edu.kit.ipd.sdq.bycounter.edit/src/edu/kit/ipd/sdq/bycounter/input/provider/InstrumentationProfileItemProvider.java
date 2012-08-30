@@ -73,7 +73,7 @@ public class InstrumentationProfileItemProvider
 
 			addInstrumentRecursivelyPropertyDescriptor(object);
 			addAggregateInternalCallsTransparentlyPropertyDescriptor(object);
-			addPersistInstrumentedClassesPropertyDescriptor(object);
+			addPersistInstrumentedClassesToOSPathPropertyDescriptor(object);
 			addInstrumentUsingLongCountersPropertyDescriptor(object);
 			addInstrumentUsingBasicBlocksPropertyDescriptor(object);
 			addTraceAndIdentifyRequestsPropertyDescriptor(object);
@@ -126,19 +126,19 @@ public class InstrumentationProfileItemProvider
 	}
 
 	/**
-	 * This adds a property descriptor for the Persist Instrumented Classes feature.
+	 * This adds a property descriptor for the Persist Instrumented Classes To OS Path feature.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	protected void addPersistInstrumentedClassesPropertyDescriptor(Object object) {
+	protected void addPersistInstrumentedClassesToOSPathPropertyDescriptor(Object object) {
 		itemPropertyDescriptors.add
 			(createItemPropertyDescriptor
 				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
 				 getResourceLocator(),
-				 getString("_UI_InstrumentationProfile_persistInstrumentedClasses_feature"),
-				 getString("_UI_PropertyDescriptor_description", "_UI_InstrumentationProfile_persistInstrumentedClasses_feature", "_UI_InstrumentationProfile_type"),
-				 InputPackage.Literals.INSTRUMENTATION_PROFILE__PERSIST_INSTRUMENTED_CLASSES,
+				 getString("_UI_InstrumentationProfile_persistInstrumentedClassesToOSPath_feature"),
+				 getString("_UI_PropertyDescriptor_description", "_UI_InstrumentationProfile_persistInstrumentedClassesToOSPath_feature", "_UI_InstrumentationProfile_type"),
+				 InputPackage.Literals.INSTRUMENTATION_PROFILE__PERSIST_INSTRUMENTED_CLASSES_TO_OS_PATH,
 				 true,
 				 false,
 				 false,
@@ -284,7 +284,7 @@ public class InstrumentationProfileItemProvider
 		switch (notification.getFeatureID(InstrumentationProfile.class)) {
 			case InputPackage.INSTRUMENTATION_PROFILE__INSTRUMENT_RECURSIVELY:
 			case InputPackage.INSTRUMENTATION_PROFILE__AGGREGATE_INTERNAL_CALLS_TRANSPARENTLY:
-			case InputPackage.INSTRUMENTATION_PROFILE__PERSIST_INSTRUMENTED_CLASSES:
+			case InputPackage.INSTRUMENTATION_PROFILE__PERSIST_INSTRUMENTED_CLASSES_TO_OS_PATH:
 			case InputPackage.INSTRUMENTATION_PROFILE__INSTRUMENT_USING_LONG_COUNTERS:
 			case InputPackage.INSTRUMENTATION_PROFILE__INSTRUMENT_USING_BASIC_BLOCKS:
 			case InputPackage.INSTRUMENTATION_PROFILE__TRACE_AND_IDENTIFY_REQUESTS:
@@ -324,11 +324,6 @@ public class InstrumentationProfileItemProvider
 			(createChildParameter
 				(InputPackage.Literals.INSTRUMENTATION_PROFILE__AGGREGATION_EXCLUDES,
 				 functionsFactory.eINSTANCE.createGenericMethod()));
-
-		newChildDescriptors.add
-			(createChildParameter
-				(InputPackage.Literals.INSTRUMENTATION_PROFILE__ENTITIES_TO_INSTRUMENT,
-				 InputFactory.eINSTANCE.createEntityToInstrument()));
 
 		newChildDescriptors.add
 			(createChildParameter

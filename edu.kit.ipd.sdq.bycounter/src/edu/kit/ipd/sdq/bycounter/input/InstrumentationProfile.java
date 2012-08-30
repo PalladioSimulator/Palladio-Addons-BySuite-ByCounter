@@ -26,7 +26,7 @@ import org.eclipse.emf.common.util.EList;
  *   <li>{@link edu.kit.ipd.sdq.bycounter.input.InstrumentationProfile#getDefinedLogicalSets <em>Defined Logical Sets</em>}</li>
  *   <li>{@link edu.kit.ipd.sdq.bycounter.input.InstrumentationProfile#isInstrumentRecursively <em>Instrument Recursively</em>}</li>
  *   <li>{@link edu.kit.ipd.sdq.bycounter.input.InstrumentationProfile#isAggregateInternalCallsTransparently <em>Aggregate Internal Calls Transparently</em>}</li>
- *   <li>{@link edu.kit.ipd.sdq.bycounter.input.InstrumentationProfile#getPersistInstrumentedClasses <em>Persist Instrumented Classes</em>}</li>
+ *   <li>{@link edu.kit.ipd.sdq.bycounter.input.InstrumentationProfile#getPersistInstrumentedClassesToOSPath <em>Persist Instrumented Classes To OS Path</em>}</li>
  *   <li>{@link edu.kit.ipd.sdq.bycounter.input.InstrumentationProfile#getIntrumentationProfileRepository <em>Intrumentation Profile Repository</em>}</li>
  *   <li>{@link edu.kit.ipd.sdq.bycounter.input.InstrumentationProfile#isInstrumentUsingLongCounters <em>Instrument Using Long Counters</em>}</li>
  *   <li>{@link edu.kit.ipd.sdq.bycounter.input.InstrumentationProfile#isInstrumentUsingBasicBlocks <em>Instrument Using Basic Blocks</em>}</li>
@@ -114,30 +114,30 @@ public interface InstrumentationProfile extends Identifier {
 	void setAggregateInternalCallsTransparently(boolean value);
 
 	/**
-	 * Returns the value of the '<em><b>Persist Instrumented Classes</b></em>' attribute.
+	 * Returns the value of the '<em><b>Persist Instrumented Classes To OS Path</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <p>
-	 * If the meaning of the '<em>Persist Instrumented Classes</em>' attribute isn't clear,
+	 * If the meaning of the '<em>Persist Instrumented Classes To OS Path</em>' attribute isn't clear,
 	 * there really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Persist Instrumented Classes</em>' attribute.
-	 * @see #setPersistInstrumentedClasses(String)
-	 * @see edu.kit.ipd.sdq.bycounter.input.InputPackage#getInstrumentationProfile_PersistInstrumentedClasses()
-	 * @model required="true" ordered="false"
+	 * @return the value of the '<em>Persist Instrumented Classes To OS Path</em>' attribute.
+	 * @see #setPersistInstrumentedClassesToOSPath(String)
+	 * @see edu.kit.ipd.sdq.bycounter.input.InputPackage#getInstrumentationProfile_PersistInstrumentedClassesToOSPath()
+	 * @model ordered="false"
 	 * @generated
 	 */
-	String getPersistInstrumentedClasses();
+	String getPersistInstrumentedClassesToOSPath();
 
 	/**
-	 * Sets the value of the '{@link edu.kit.ipd.sdq.bycounter.input.InstrumentationProfile#getPersistInstrumentedClasses <em>Persist Instrumented Classes</em>}' attribute.
+	 * Sets the value of the '{@link edu.kit.ipd.sdq.bycounter.input.InstrumentationProfile#getPersistInstrumentedClassesToOSPath <em>Persist Instrumented Classes To OS Path</em>}' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Persist Instrumented Classes</em>' attribute.
-	 * @see #getPersistInstrumentedClasses()
+	 * @param value the new value of the '<em>Persist Instrumented Classes To OS Path</em>' attribute.
+	 * @see #getPersistInstrumentedClassesToOSPath()
 	 * @generated
 	 */
-	void setPersistInstrumentedClasses(String value);
+	void setPersistInstrumentedClassesToOSPath(String value);
 
 	/**
 	 * Returns the value of the '<em><b>Intrumentation Profile Repository</b></em>' container reference.
@@ -267,6 +267,7 @@ public interface InstrumentationProfile extends Identifier {
 	/**
 	 * Returns the value of the '<em><b>Entities To Instrument</b></em>' containment reference list.
 	 * The list contents are of type {@link edu.kit.ipd.sdq.bycounter.input.EntityToInstrument}.
+	 * It is bidirectional and its opposite is '{@link edu.kit.ipd.sdq.bycounter.input.EntityToInstrument#getInstrumentationProfile <em>Instrumentation Profile</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <p>
 	 * If the meaning of the '<em>Entities To Instrument</em>' containment reference list isn't clear,
@@ -275,23 +276,10 @@ public interface InstrumentationProfile extends Identifier {
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Entities To Instrument</em>' containment reference list.
 	 * @see edu.kit.ipd.sdq.bycounter.input.InputPackage#getInstrumentationProfile_EntitiesToInstrument()
-	 * @model containment="true" ordered="false"
+	 * @see edu.kit.ipd.sdq.bycounter.input.EntityToInstrument#getInstrumentationProfile
+	 * @model opposite="instrumentationProfile" containment="true" ordered="false"
 	 * @generated
 	 */
 	EList<EntityToInstrument> getEntitiesToInstrument();
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * <!-- begin-model-doc -->
-	 * self.summationExcludes->size()>0 implies self.aggregateInternalCallsTransparently=true
-	 * 
-	 * @param diagnostics The chain of diagnostics to which problems are to be appended.
-	 * @param context The cache of context-specific information.
-	 * <!-- end-model-doc -->
-	 * @model
-	 * @generated
-	 */
-	boolean SummationexcludesonlyallowedifsummationisactiveandaggregateInternalCallsTransparentlyistrue(DiagnosticChain diagnostics, Map<Object, Object> context);
 
 } // InstrumentationProfile

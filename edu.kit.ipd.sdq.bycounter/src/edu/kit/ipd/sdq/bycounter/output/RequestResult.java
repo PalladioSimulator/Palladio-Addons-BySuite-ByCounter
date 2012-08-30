@@ -18,9 +18,9 @@ import org.eclipse.emf.ecore.EObject;
  * <p>
  * The following features are supported:
  * <ul>
- *   <li>{@link edu.kit.ipd.sdq.bycounter.output.RequestResult#getResultCollection <em>Result Collection</em>}</li>
  *   <li>{@link edu.kit.ipd.sdq.bycounter.output.RequestResult#getRequestId <em>Request Id</em>}</li>
  *   <li>{@link edu.kit.ipd.sdq.bycounter.output.RequestResult#getCountingResults <em>Counting Results</em>}</li>
+ *   <li>{@link edu.kit.ipd.sdq.bycounter.output.RequestResult#getResultCollection <em>Result Collection</em>}</li>
  * </ul>
  * </p>
  *
@@ -30,50 +30,63 @@ import org.eclipse.emf.ecore.EObject;
  */
 public interface RequestResult extends EObject {
 	/**
-	 * Returns the value of the '<em><b>Result Collection</b></em>' containment reference list.
-	 * The list contents are of type {@link edu.kit.ipd.sdq.bycounter.output.ResultCollection}.
+	 * Returns the value of the '<em><b>Result Collection</b></em>' container reference.
+	 * It is bidirectional and its opposite is '{@link edu.kit.ipd.sdq.bycounter.output.ResultCollection#getRequestResults <em>Request Results</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <p>
 	 * If the meaning of the '<em>Result Collection</em>' containment reference list isn't clear,
 	 * there really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Result Collection</em>' containment reference list.
+	 * @return the value of the '<em>Result Collection</em>' container reference.
+	 * @see #setResultCollection(ResultCollection)
 	 * @see edu.kit.ipd.sdq.bycounter.output.OutputPackage#getRequestResult_ResultCollection()
-	 * @model containment="true" ordered="false"
+	 * @see edu.kit.ipd.sdq.bycounter.output.ResultCollection#getRequestResults
+	 * @model opposite="requestResults" required="true" transient="false" ordered="false"
 	 * @generated
 	 */
-	EList<ResultCollection> getResultCollection();
+	ResultCollection getResultCollection();
 
 	/**
-	 * Returns the value of the '<em><b>Request Id</b></em>' attribute.
+	 * Sets the value of the '{@link edu.kit.ipd.sdq.bycounter.output.RequestResult#getResultCollection <em>Result Collection</em>}' container reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Result Collection</em>' container reference.
+	 * @see #getResultCollection()
+	 * @generated
+	 */
+	void setResultCollection(ResultCollection value);
+
+	/**
+	 * Returns the value of the '<em><b>Request Id</b></em>' reference.
 	 * <!-- begin-user-doc -->
 	 * <p>
 	 * If the meaning of the '<em>Request Id</em>' attribute isn't clear,
 	 * there really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Request Id</em>' attribute.
-	 * @see #setRequestId(Object)
+	 * @return the value of the '<em>Request Id</em>' reference.
+	 * @see #setRequestId(UUID)
 	 * @see edu.kit.ipd.sdq.bycounter.output.OutputPackage#getRequestResult_RequestId()
 	 * @model required="true" ordered="false"
 	 * @generated
 	 */
-	Object getRequestId();
+	UUID getRequestId();
 
 	/**
-	 * Sets the value of the '{@link edu.kit.ipd.sdq.bycounter.output.RequestResult#getRequestId <em>Request Id</em>}' attribute.
+	 * Sets the value of the '{@link edu.kit.ipd.sdq.bycounter.output.RequestResult#getRequestId <em>Request Id</em>}' reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Request Id</em>' attribute.
+	 * @param value the new value of the '<em>Request Id</em>' reference.
 	 * @see #getRequestId()
 	 * @generated
 	 */
-	void setRequestId(Object value);
+	void setRequestId(UUID value);
 
 	/**
 	 * Returns the value of the '<em><b>Counting Results</b></em>' containment reference list.
 	 * The list contents are of type {@link edu.kit.ipd.sdq.bycounter.output.CountingResult}.
+	 * It is bidirectional and its opposite is '{@link edu.kit.ipd.sdq.bycounter.output.CountingResult#getRequestResult <em>Request Result</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <p>
 	 * If the meaning of the '<em>Counting Results</em>' containment reference list isn't clear,
@@ -82,7 +95,8 @@ public interface RequestResult extends EObject {
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Counting Results</em>' containment reference list.
 	 * @see edu.kit.ipd.sdq.bycounter.output.OutputPackage#getRequestResult_CountingResults()
-	 * @model containment="true" ordered="false"
+	 * @see edu.kit.ipd.sdq.bycounter.output.CountingResult#getRequestResult
+	 * @model opposite="requestResult" containment="true" ordered="false"
 	 * @generated
 	 */
 	EList<CountingResult> getCountingResults();

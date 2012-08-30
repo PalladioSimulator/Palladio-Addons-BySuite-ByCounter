@@ -22,6 +22,7 @@ import org.eclipse.emf.ecore.InternalEObject;
 
 import org.eclipse.emf.ecore.impl.EObjectImpl;
 
+import org.eclipse.emf.ecore.util.EObjectContainmentWithInverseEList;
 import org.eclipse.emf.ecore.util.EObjectContainmentEList;
 import org.eclipse.emf.ecore.util.InternalEList;
 
@@ -86,7 +87,7 @@ public class ResultCollectionImpl extends EObjectImpl implements ResultCollectio
 	 */
 	public EList<RequestResult> getRequestResults() {
 		if (requestResults == null) {
-			requestResults = new EObjectContainmentEList<RequestResult>(RequestResult.class, this, OutputPackage.RESULT_COLLECTION__REQUEST_RESULTS);
+			requestResults = new EObjectContainmentWithInverseEList<RequestResult>(RequestResult.class, this, OutputPackage.RESULT_COLLECTION__REQUEST_RESULTS, OutputPackage.REQUEST_RESULT__RESULT_COLLECTION);
 		}
 		return requestResults;
 	}
@@ -98,9 +99,26 @@ public class ResultCollectionImpl extends EObjectImpl implements ResultCollectio
 	 */
 	public EList<CountingResult> getCountingResults() {
 		if (countingResults == null) {
-			countingResults = new EObjectContainmentEList<CountingResult>(CountingResult.class, this, OutputPackage.RESULT_COLLECTION__COUNTING_RESULTS);
+			countingResults = new EObjectContainmentWithInverseEList<CountingResult>(CountingResult.class, this, OutputPackage.RESULT_COLLECTION__COUNTING_RESULTS, OutputPackage.COUNTING_RESULT__RESULT_COLLECTION);
 		}
 		return countingResults;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@SuppressWarnings("unchecked")
+	@Override
+	public NotificationChain eInverseAdd(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
+		switch (featureID) {
+			case OutputPackage.RESULT_COLLECTION__REQUEST_RESULTS:
+				return ((InternalEList<InternalEObject>)(InternalEList<?>)getRequestResults()).basicAdd(otherEnd, msgs);
+			case OutputPackage.RESULT_COLLECTION__COUNTING_RESULTS:
+				return ((InternalEList<InternalEObject>)(InternalEList<?>)getCountingResults()).basicAdd(otherEnd, msgs);
+		}
+		return super.eInverseAdd(otherEnd, featureID, msgs);
 	}
 
 	/**

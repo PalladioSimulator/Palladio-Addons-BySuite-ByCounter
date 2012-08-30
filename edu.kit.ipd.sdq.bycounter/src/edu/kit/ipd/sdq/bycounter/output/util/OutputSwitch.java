@@ -91,9 +91,33 @@ public class OutputSwitch<T> extends Switch<T> {
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
+			case OutputPackage.UUID: {
+				UUID uuid = (UUID)theEObject;
+				T result = caseUUID(uuid);
+				if (result == null) result = defaultCase(theEObject);
+				return result;
+			}
 			case OutputPackage.COUNTING_RESULT: {
 				CountingResult countingResult = (CountingResult)theEObject;
 				T result = caseCountingResult(countingResult);
+				if (result == null) result = defaultCase(theEObject);
+				return result;
+			}
+			case OutputPackage.ARRAY_CREATION_COUNT: {
+				ArrayCreationCount arrayCreationCount = (ArrayCreationCount)theEObject;
+				T result = caseArrayCreationCount(arrayCreationCount);
+				if (result == null) result = defaultCase(theEObject);
+				return result;
+			}
+			case OutputPackage.ARRAY_CREATION: {
+				ArrayCreation arrayCreation = (ArrayCreation)theEObject;
+				T result = caseArrayCreation(arrayCreation);
+				if (result == null) result = defaultCase(theEObject);
+				return result;
+			}
+			case OutputPackage.METHOD_CALL_COUNT: {
+				MethodCallCount methodCallCount = (MethodCallCount)theEObject;
+				T result = caseMethodCallCount(methodCallCount);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
@@ -154,6 +178,21 @@ public class OutputSwitch<T> extends Switch<T> {
 	}
 
 	/**
+	 * Returns the result of interpreting the object as an instance of '<em>UUID</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>UUID</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseUUID(UUID object) {
+		return null;
+	}
+
+	/**
 	 * Returns the result of interpreting the object as an instance of '<em>Counting Result</em>'.
 	 * <!-- begin-user-doc -->
 	 * This implementation returns null;
@@ -165,6 +204,51 @@ public class OutputSwitch<T> extends Switch<T> {
 	 * @generated
 	 */
 	public T caseCountingResult(CountingResult object) {
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Array Creation Count</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Array Creation Count</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseArrayCreationCount(ArrayCreationCount object) {
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Array Creation</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Array Creation</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseArrayCreation(ArrayCreation object) {
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Method Call Count</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Method Call Count</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseMethodCallCount(MethodCallCount object) {
 		return null;
 	}
 

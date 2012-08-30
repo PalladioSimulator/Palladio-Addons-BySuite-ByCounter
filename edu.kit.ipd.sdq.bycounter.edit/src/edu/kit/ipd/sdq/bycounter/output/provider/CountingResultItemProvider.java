@@ -64,15 +64,15 @@ public class CountingResultItemProvider
 		if (itemPropertyDescriptors == null) {
 			super.getPropertyDescriptors(object);
 
-			addArrayCreationCountsPropertyDescriptor(object);
 			addCallerIdPropertyDescriptor(object);
-			addMethodCallCountsPropertyDescriptor(object);
 			addMethodInvocationBeginningPropertyDescriptor(object);
-			addMethodReportingTimePropertyDescriptor(object);
+			addReportingTimePropertyDescriptor(object);
 			addObservedElementPropertyDescriptor(object);
 			addOpcodeCountsPropertyDescriptor(object);
-			addOwnIdPropertyDescriptor(object);
-			addQualifyingMethodNamePropertyDescriptor(object);
+			addMethodIdPropertyDescriptor(object);
+			addQualifiedMethodNamePropertyDescriptor(object);
+			addArrayCreationCountsPropertyDescriptor(object);
+			addMethodCallCountsPropertyDescriptor(object);
 		}
 		return itemPropertyDescriptors;
 	}
@@ -94,7 +94,7 @@ public class CountingResultItemProvider
 				 true,
 				 false,
 				 false,
-				 ItemPropertyDescriptor.GENERIC_VALUE_IMAGE,
+				 null,
 				 null,
 				 null));
 	}
@@ -116,7 +116,7 @@ public class CountingResultItemProvider
 				 true,
 				 false,
 				 false,
-				 ItemPropertyDescriptor.GENERIC_VALUE_IMAGE,
+				 null,
 				 null,
 				 null));
 	}
@@ -138,7 +138,7 @@ public class CountingResultItemProvider
 				 true,
 				 false,
 				 false,
-				 ItemPropertyDescriptor.GENERIC_VALUE_IMAGE,
+				 null,
 				 null,
 				 null));
 	}
@@ -166,19 +166,19 @@ public class CountingResultItemProvider
 	}
 
 	/**
-	 * This adds a property descriptor for the Method Reporting Time feature.
+	 * This adds a property descriptor for the Reporting Time feature.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	protected void addMethodReportingTimePropertyDescriptor(Object object) {
+	protected void addReportingTimePropertyDescriptor(Object object) {
 		itemPropertyDescriptors.add
 			(createItemPropertyDescriptor
 				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
 				 getResourceLocator(),
-				 getString("_UI_CountingResult_methodReportingTime_feature"),
-				 getString("_UI_PropertyDescriptor_description", "_UI_CountingResult_methodReportingTime_feature", "_UI_CountingResult_type"),
-				 OutputPackage.Literals.COUNTING_RESULT__METHOD_REPORTING_TIME,
+				 getString("_UI_CountingResult_reportingTime_feature"),
+				 getString("_UI_PropertyDescriptor_description", "_UI_CountingResult_reportingTime_feature", "_UI_CountingResult_type"),
+				 OutputPackage.Literals.COUNTING_RESULT__REPORTING_TIME,
 				 true,
 				 false,
 				 false,
@@ -204,7 +204,7 @@ public class CountingResultItemProvider
 				 true,
 				 false,
 				 false,
-				 ItemPropertyDescriptor.GENERIC_VALUE_IMAGE,
+				 null,
 				 null,
 				 null));
 	}
@@ -232,41 +232,41 @@ public class CountingResultItemProvider
 	}
 
 	/**
-	 * This adds a property descriptor for the Own Id feature.
+	 * This adds a property descriptor for the Method Id feature.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	protected void addOwnIdPropertyDescriptor(Object object) {
+	protected void addMethodIdPropertyDescriptor(Object object) {
 		itemPropertyDescriptors.add
 			(createItemPropertyDescriptor
 				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
 				 getResourceLocator(),
-				 getString("_UI_CountingResult_ownId_feature"),
-				 getString("_UI_PropertyDescriptor_description", "_UI_CountingResult_ownId_feature", "_UI_CountingResult_type"),
-				 OutputPackage.Literals.COUNTING_RESULT__OWN_ID,
+				 getString("_UI_CountingResult_methodId_feature"),
+				 getString("_UI_PropertyDescriptor_description", "_UI_CountingResult_methodId_feature", "_UI_CountingResult_type"),
+				 OutputPackage.Literals.COUNTING_RESULT__METHOD_ID,
 				 true,
 				 false,
-				 false,
-				 ItemPropertyDescriptor.GENERIC_VALUE_IMAGE,
+				 true,
+				 null,
 				 null,
 				 null));
 	}
 
 	/**
-	 * This adds a property descriptor for the Qualifying Method Name feature.
+	 * This adds a property descriptor for the Qualified Method Name feature.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	protected void addQualifyingMethodNamePropertyDescriptor(Object object) {
+	protected void addQualifiedMethodNamePropertyDescriptor(Object object) {
 		itemPropertyDescriptors.add
 			(createItemPropertyDescriptor
 				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
 				 getResourceLocator(),
-				 getString("_UI_CountingResult_qualifyingMethodName_feature"),
-				 getString("_UI_PropertyDescriptor_description", "_UI_CountingResult_qualifyingMethodName_feature", "_UI_CountingResult_type"),
-				 OutputPackage.Literals.COUNTING_RESULT__QUALIFYING_METHOD_NAME,
+				 getString("_UI_CountingResult_qualifiedMethodName_feature"),
+				 getString("_UI_PropertyDescriptor_description", "_UI_CountingResult_qualifiedMethodName_feature", "_UI_CountingResult_type"),
+				 OutputPackage.Literals.COUNTING_RESULT__QUALIFIED_METHOD_NAME,
 				 true,
 				 false,
 				 false,
@@ -294,7 +294,7 @@ public class CountingResultItemProvider
 	 */
 	@Override
 	public String getText(Object object) {
-		String label = ((CountingResult)object).getQualifyingMethodName();
+		String label = ((CountingResult)object).getQualifiedMethodName();
 		return label == null || label.length() == 0 ?
 			getString("_UI_CountingResult_type") :
 			getString("_UI_CountingResult_type") + " " + label;
@@ -312,15 +312,14 @@ public class CountingResultItemProvider
 		updateChildren(notification);
 
 		switch (notification.getFeatureID(CountingResult.class)) {
-			case OutputPackage.COUNTING_RESULT__ARRAY_CREATION_COUNTS:
 			case OutputPackage.COUNTING_RESULT__CALLER_ID:
-			case OutputPackage.COUNTING_RESULT__METHOD_CALL_COUNTS:
 			case OutputPackage.COUNTING_RESULT__METHOD_INVOCATION_BEGINNING:
-			case OutputPackage.COUNTING_RESULT__METHOD_REPORTING_TIME:
+			case OutputPackage.COUNTING_RESULT__REPORTING_TIME:
 			case OutputPackage.COUNTING_RESULT__OBSERVED_ELEMENT:
 			case OutputPackage.COUNTING_RESULT__OPCODE_COUNTS:
-			case OutputPackage.COUNTING_RESULT__OWN_ID:
-			case OutputPackage.COUNTING_RESULT__QUALIFYING_METHOD_NAME:
+			case OutputPackage.COUNTING_RESULT__QUALIFIED_METHOD_NAME:
+			case OutputPackage.COUNTING_RESULT__ARRAY_CREATION_COUNTS:
+			case OutputPackage.COUNTING_RESULT__METHOD_CALL_COUNTS:
 				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
 				return;
 		}

@@ -27,6 +27,17 @@
       disposableProviderFactory="true" ecorePackage="ByCounter.ecore#/">
     <nestedGenPackages xsi:type="genmodel:GenPackage" prefix="Output" basePackage="edu.kit.ipd.sdq.bycounter"
         resource="XML" disposableProviderFactory="true" ecorePackage="ByCounter.ecore#//output">
+      <genEnums xsi:type="genmodel:GenEnum" typeSafeEnumCompatible="false" ecoreEnum="ByCounter.ecore#//output/ArrayType">
+        <genEnumLiterals xsi:type="genmodel:GenEnumLiteral" ecoreEnumLiteral="ByCounter.ecore#//output/ArrayType/INVALID"/>
+        <genEnumLiterals xsi:type="genmodel:GenEnumLiteral" ecoreEnumLiteral="ByCounter.ecore#//output/ArrayType/BOOLEAN"/>
+        <genEnumLiterals xsi:type="genmodel:GenEnumLiteral" ecoreEnumLiteral="ByCounter.ecore#//output/ArrayType/BYTE"/>
+        <genEnumLiterals xsi:type="genmodel:GenEnumLiteral" ecoreEnumLiteral="ByCounter.ecore#//output/ArrayType/CHAR"/>
+        <genEnumLiterals xsi:type="genmodel:GenEnumLiteral" ecoreEnumLiteral="ByCounter.ecore#//output/ArrayType/DOUBLE"/>
+        <genEnumLiterals xsi:type="genmodel:GenEnumLiteral" ecoreEnumLiteral="ByCounter.ecore#//output/ArrayType/FLOAT"/>
+        <genEnumLiterals xsi:type="genmodel:GenEnumLiteral" ecoreEnumLiteral="ByCounter.ecore#//output/ArrayType/INT"/>
+        <genEnumLiterals xsi:type="genmodel:GenEnumLiteral" ecoreEnumLiteral="ByCounter.ecore#//output/ArrayType/LONG"/>
+        <genEnumLiterals xsi:type="genmodel:GenEnumLiteral" ecoreEnumLiteral="ByCounter.ecore#//output/ArrayType/SHORT"/>
+      </genEnums>
       <genClasses xsi:type="genmodel:GenClass" ecoreClass="ByCounter.ecore#//output/OutputModelRepository"/>
       <genClasses xsi:type="genmodel:GenClass" ecoreClass="ByCounter.ecore#//output/ResultCollection">
         <genFeatures xsi:type="genmodel:GenFeature" property="None" children="true"
@@ -35,26 +46,50 @@
             createChild="true" ecoreFeature="ecore:EReference ByCounter.ecore#//output/ResultCollection/countingResults"/>
       </genClasses>
       <genClasses xsi:type="genmodel:GenClass" ecoreClass="ByCounter.ecore#//output/RequestResult">
-        <genFeatures xsi:type="genmodel:GenFeature" property="None" children="true"
-            createChild="true" ecoreFeature="ecore:EReference ByCounter.ecore#//output/RequestResult/resultCollection"/>
-        <genFeatures xsi:type="genmodel:GenFeature" createChild="false" ecoreFeature="ecore:EAttribute ByCounter.ecore#//output/RequestResult/requestId"/>
+        <genFeatures xsi:type="genmodel:GenFeature" createChild="false" ecoreFeature="ecore:EReference ByCounter.ecore#//output/RequestResult/requestId"/>
         <genFeatures xsi:type="genmodel:GenFeature" property="None" children="true"
             createChild="true" ecoreFeature="ecore:EReference ByCounter.ecore#//output/RequestResult/countingResults"/>
+        <genFeatures xsi:type="genmodel:GenFeature" property="None" children="true"
+            createChild="true" ecoreFeature="ecore:EReference ByCounter.ecore#//output/RequestResult/resultCollection"/>
+      </genClasses>
+      <genClasses xsi:type="genmodel:GenClass" ecoreClass="ByCounter.ecore#//output/UUID">
+        <genFeatures xsi:type="genmodel:GenFeature" createChild="false" ecoreFeature="ecore:EAttribute ByCounter.ecore#//output/UUID/stringRepresentation"/>
       </genClasses>
       <genClasses xsi:type="genmodel:GenClass" ecoreClass="ByCounter.ecore#//output/CountingResult">
-        <genFeatures xsi:type="genmodel:GenFeature" createChild="false" ecoreFeature="ecore:EAttribute ByCounter.ecore#//output/CountingResult/arrayCreationCounts"/>
-        <genFeatures xsi:type="genmodel:GenFeature" createChild="false" ecoreFeature="ecore:EAttribute ByCounter.ecore#//output/CountingResult/callerId"/>
-        <genFeatures xsi:type="genmodel:GenFeature" createChild="false" ecoreFeature="ecore:EAttribute ByCounter.ecore#//output/CountingResult/methodCallCounts"/>
+        <genFeatures xsi:type="genmodel:GenFeature" createChild="false" ecoreFeature="ecore:EReference ByCounter.ecore#//output/CountingResult/callerId"/>
         <genFeatures xsi:type="genmodel:GenFeature" createChild="false" ecoreFeature="ecore:EAttribute ByCounter.ecore#//output/CountingResult/methodInvocationBeginning"/>
-        <genFeatures xsi:type="genmodel:GenFeature" createChild="false" ecoreFeature="ecore:EAttribute ByCounter.ecore#//output/CountingResult/methodReportingTime"/>
-        <genFeatures xsi:type="genmodel:GenFeature" createChild="false" ecoreFeature="ecore:EAttribute ByCounter.ecore#//output/CountingResult/observedElement"/>
+        <genFeatures xsi:type="genmodel:GenFeature" createChild="false" ecoreFeature="ecore:EAttribute ByCounter.ecore#//output/CountingResult/reportingTime"/>
+        <genFeatures xsi:type="genmodel:GenFeature" createChild="false" ecoreFeature="ecore:EReference ByCounter.ecore#//output/CountingResult/observedElement"/>
         <genFeatures xsi:type="genmodel:GenFeature" createChild="false" ecoreFeature="ecore:EAttribute ByCounter.ecore#//output/CountingResult/opcodeCounts"/>
-        <genFeatures xsi:type="genmodel:GenFeature" createChild="false" ecoreFeature="ecore:EAttribute ByCounter.ecore#//output/CountingResult/ownId"/>
-        <genFeatures xsi:type="genmodel:GenFeature" createChild="false" ecoreFeature="ecore:EAttribute ByCounter.ecore#//output/CountingResult/qualifyingMethodName"/>
+        <genFeatures xsi:type="genmodel:GenFeature" notify="false" createChild="false"
+            propertySortChoices="true" ecoreFeature="ecore:EReference ByCounter.ecore#//output/CountingResult/methodId"/>
+        <genFeatures xsi:type="genmodel:GenFeature" createChild="false" ecoreFeature="ecore:EAttribute ByCounter.ecore#//output/CountingResult/qualifiedMethodName"/>
+        <genFeatures xsi:type="genmodel:GenFeature" property="None" notify="false"
+            createChild="false" ecoreFeature="ecore:EReference ByCounter.ecore#//output/CountingResult/resultCollection"/>
+        <genFeatures xsi:type="genmodel:GenFeature" createChild="false" ecoreFeature="ecore:EReference ByCounter.ecore#//output/CountingResult/arrayCreationCounts"/>
+        <genFeatures xsi:type="genmodel:GenFeature" createChild="false" ecoreFeature="ecore:EReference ByCounter.ecore#//output/CountingResult/methodCallCounts"/>
+        <genFeatures xsi:type="genmodel:GenFeature" property="None" notify="false"
+            createChild="false" ecoreFeature="ecore:EReference ByCounter.ecore#//output/CountingResult/requestResult"/>
+      </genClasses>
+      <genClasses xsi:type="genmodel:GenClass" ecoreClass="ByCounter.ecore#//output/ArrayCreationCount">
+        <genFeatures xsi:type="genmodel:GenFeature" property="None" children="true"
+            createChild="true" ecoreFeature="ecore:EReference ByCounter.ecore#//output/ArrayCreationCount/arrayCreation"/>
+        <genFeatures xsi:type="genmodel:GenFeature" createChild="false" ecoreFeature="ecore:EAttribute ByCounter.ecore#//output/ArrayCreationCount/count"/>
+      </genClasses>
+      <genClasses xsi:type="genmodel:GenClass" ecoreClass="ByCounter.ecore#//output/ArrayCreation">
+        <genFeatures xsi:type="genmodel:GenFeature" createChild="false" ecoreFeature="ecore:EAttribute ByCounter.ecore#//output/ArrayCreation/typeDescriptor"/>
+        <genFeatures xsi:type="genmodel:GenFeature" createChild="false" ecoreFeature="ecore:EAttribute ByCounter.ecore#//output/ArrayCreation/numberOfDimensions"/>
+        <genFeatures xsi:type="genmodel:GenFeature" createChild="false" ecoreFeature="ecore:EAttribute ByCounter.ecore#//output/ArrayCreation/arrayType"/>
+      </genClasses>
+      <genClasses xsi:type="genmodel:GenClass" ecoreClass="ByCounter.ecore#//output/MethodCallCount">
+        <genFeatures xsi:type="genmodel:GenFeature" createChild="false" ecoreFeature="ecore:EAttribute ByCounter.ecore#//output/MethodCallCount/qualifiedFunctionName"/>
+        <genFeatures xsi:type="genmodel:GenFeature" createChild="false" ecoreFeature="ecore:EAttribute ByCounter.ecore#//output/MethodCallCount/count"/>
       </genClasses>
       <genClasses xsi:type="genmodel:GenClass" ecoreClass="ByCounter.ecore#//output/ThreadedCountingResult">
         <genFeatures xsi:type="genmodel:GenFeature" property="None" children="true"
             createChild="true" ecoreFeature="ecore:EReference ByCounter.ecore#//output/ThreadedCountingResult/spawnedThreadedCountingResults"/>
+        <genFeatures xsi:type="genmodel:GenFeature" property="None" notify="false"
+            createChild="false" ecoreFeature="ecore:EReference ByCounter.ecore#//output/ThreadedCountingResult/threadedCountingResult"/>
         <genFeatures xsi:type="genmodel:GenFeature" createChild="false" ecoreFeature="ecore:EAttribute ByCounter.ecore#//output/ThreadedCountingResult/threadId"/>
       </genClasses>
     </nestedGenPackages>
@@ -65,7 +100,7 @@
             createChild="true" ecoreFeature="ecore:EReference ByCounter.ecore#//input/InstrumentationProfile/definedLogicalSets"/>
         <genFeatures xsi:type="genmodel:GenFeature" createChild="false" ecoreFeature="ecore:EAttribute ByCounter.ecore#//input/InstrumentationProfile/instrumentRecursively"/>
         <genFeatures xsi:type="genmodel:GenFeature" createChild="false" ecoreFeature="ecore:EAttribute ByCounter.ecore#//input/InstrumentationProfile/aggregateInternalCallsTransparently"/>
-        <genFeatures xsi:type="genmodel:GenFeature" createChild="false" ecoreFeature="ecore:EAttribute ByCounter.ecore#//input/InstrumentationProfile/persistInstrumentedClasses"/>
+        <genFeatures xsi:type="genmodel:GenFeature" createChild="false" ecoreFeature="ecore:EAttribute ByCounter.ecore#//input/InstrumentationProfile/persistInstrumentedClassesToOSPath"/>
         <genFeatures xsi:type="genmodel:GenFeature" property="None" notify="false"
             createChild="false" ecoreFeature="ecore:EReference ByCounter.ecore#//input/InstrumentationProfile/intrumentationProfileRepository"/>
         <genFeatures xsi:type="genmodel:GenFeature" createChild="false" ecoreFeature="ecore:EAttribute ByCounter.ecore#//input/InstrumentationProfile/instrumentUsingLongCounters"/>
@@ -75,10 +110,6 @@
             createChild="true" ecoreFeature="ecore:EReference ByCounter.ecore#//input/InstrumentationProfile/aggregationExcludes"/>
         <genFeatures xsi:type="genmodel:GenFeature" property="None" children="true"
             createChild="true" ecoreFeature="ecore:EReference ByCounter.ecore#//input/InstrumentationProfile/entitiesToInstrument"/>
-        <genOperations xsi:type="genmodel:GenOperation" ecoreOperation="ByCounter.ecore#//input/InstrumentationProfile/SummationexcludesonlyallowedifsummationisactiveandaggregateInternalCallsTransparentlyistrue">
-          <genParameters xsi:type="genmodel:GenParameter" ecoreParameter="ByCounter.ecore#//input/InstrumentationProfile/SummationexcludesonlyallowedifsummationisactiveandaggregateInternalCallsTransparentlyistrue/diagnostics"/>
-          <genParameters xsi:type="genmodel:GenParameter" ecoreParameter="ByCounter.ecore#//input/InstrumentationProfile/SummationexcludesonlyallowedifsummationisactiveandaggregateInternalCallsTransparentlyistrue/context"/>
-        </genOperations>
       </genClasses>
       <genClasses xsi:type="genmodel:GenClass" ecoreClass="ByCounter.ecore#//input/LogicalSet">
         <genFeatures xsi:type="genmodel:GenFeature" notify="false" createChild="false"
@@ -90,7 +121,6 @@
         <genFeatures xsi:type="genmodel:GenFeature" property="None" children="true"
             createChild="true" ecoreFeature="ecore:EReference ByCounter.ecore#//input/InstrumentationProfileRepository/instrumentationProfile"/>
       </genClasses>
-      <genClasses xsi:type="genmodel:GenClass" ecoreClass="ByCounter.ecore#//input/EntityToInstrument"/>
       <genClasses xsi:type="genmodel:GenClass" ecoreClass="ByCounter.ecore#//input/InstrumentedCodeArea">
         <genFeatures xsi:type="genmodel:GenFeature" notify="false" createChild="false"
             propertySortChoices="true" ecoreFeature="ecore:EReference ByCounter.ecore#//input/InstrumentedCodeArea/from"/>
@@ -107,12 +137,16 @@
             propertySortChoices="true" ecoreFeature="ecore:EReference ByCounter.ecore#//input/InstrumentedMethod/method"/>
       </genClasses>
       <genClasses xsi:type="genmodel:GenClass" ecoreClass="ByCounter.ecore#//input/InstrumentedRegion">
-        <genFeatures xsi:type="genmodel:GenFeature" createChild="false" ecoreFeature="ecore:EAttribute ByCounter.ecore#//input/InstrumentedRegion/startLine"/>
-        <genFeatures xsi:type="genmodel:GenFeature" createChild="false" ecoreFeature="ecore:EAttribute ByCounter.ecore#//input/InstrumentedRegion/stopLine"/>
         <genFeatures xsi:type="genmodel:GenFeature" notify="false" createChild="false"
             propertySortChoices="true" ecoreFeature="ecore:EReference ByCounter.ecore#//input/InstrumentedRegion/startMethod"/>
+        <genFeatures xsi:type="genmodel:GenFeature" createChild="false" ecoreFeature="ecore:EAttribute ByCounter.ecore#//input/InstrumentedRegion/startLine"/>
         <genFeatures xsi:type="genmodel:GenFeature" notify="false" createChild="false"
             propertySortChoices="true" ecoreFeature="ecore:EReference ByCounter.ecore#//input/InstrumentedRegion/stopMethod"/>
+        <genFeatures xsi:type="genmodel:GenFeature" createChild="false" ecoreFeature="ecore:EAttribute ByCounter.ecore#//input/InstrumentedRegion/stopLine"/>
+      </genClasses>
+      <genClasses xsi:type="genmodel:GenClass" ecoreClass="ByCounter.ecore#//input/EntityToInstrument">
+        <genFeatures xsi:type="genmodel:GenFeature" property="None" notify="false"
+            createChild="false" ecoreFeature="ecore:EReference ByCounter.ecore#//input/EntityToInstrument/instrumentationProfile"/>
       </genClasses>
     </nestedGenPackages>
   </genPackages>

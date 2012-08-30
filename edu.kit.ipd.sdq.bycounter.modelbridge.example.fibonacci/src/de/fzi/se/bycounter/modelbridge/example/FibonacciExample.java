@@ -10,7 +10,7 @@ import de.fzi.se.bycounter.modelbridge.example.impl.FibonacciAlgorithm;
 import edu.kit.ipd.sdq.bycounter.input.InstrumentationProfileRepository;
 import edu.kit.ipd.sdq.bycounter.modelbridge.ByCounterWrapper;
 import edu.kit.ipd.sdq.bycounter.modelbridge.util.ModelHandlingUtil;
-import edu.kit.ipd.sdq.bycounter.output.MeasurementRun;
+import edu.kit.ipd.sdq.bycounter.output.ResultCollection;
 
 /**Example for using the ByCounter modelbridge for measurements.
  * @author groenda
@@ -52,7 +52,7 @@ public class FibonacciExample {
 		byCounterWrapper.execute(targetMethod, instance, new Object[] {100});
 
 		// Store results
-		MeasurementRun result = byCounterWrapper.generateResult();
+		ResultCollection result = byCounterWrapper.generateResult();
 		ModelHandlingUtil.saveToFile(ModelHandlingUtil.getResourceSet(),
 				FILEPATH_OUTPUT_MODEL,
 				result);

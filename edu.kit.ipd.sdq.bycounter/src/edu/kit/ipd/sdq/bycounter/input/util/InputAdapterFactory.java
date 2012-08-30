@@ -86,10 +86,6 @@ public class InputAdapterFactory extends AdapterFactoryImpl {
 				return createInstrumentationProfileRepositoryAdapter();
 			}
 			@Override
-			public Adapter caseEntityToInstrument(EntityToInstrument object) {
-				return createEntityToInstrumentAdapter();
-			}
-			@Override
 			public Adapter caseInstrumentedCodeArea(InstrumentedCodeArea object) {
 				return createInstrumentedCodeAreaAdapter();
 			}
@@ -100,6 +96,10 @@ public class InputAdapterFactory extends AdapterFactoryImpl {
 			@Override
 			public Adapter caseInstrumentedRegion(InstrumentedRegion object) {
 				return createInstrumentedRegionAdapter();
+			}
+			@Override
+			public Adapter caseEntityToInstrument(EntityToInstrument object) {
+				return createEntityToInstrumentAdapter();
 			}
 			@Override
 			public Adapter caseIdentifier(Identifier object) {

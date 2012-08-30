@@ -3,6 +3,8 @@
  */
 package de.fzi.se.bycounter.modelbridge.tests;
 
+import org.eclipse.emf.common.notify.Notification;
+import org.eclipse.emf.ecore.util.EContentAdapter;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -14,7 +16,7 @@ import de.fzi.se.bycounter.modelbridge.example.impl.Calls;
 import edu.kit.ipd.sdq.bycounter.input.InstrumentationProfileRepository;
 import edu.kit.ipd.sdq.bycounter.modelbridge.ByCounterWrapper;
 import edu.kit.ipd.sdq.bycounter.modelbridge.util.ModelHandlingUtil;
-import edu.kit.ipd.sdq.bycounter.output.MeasurementRun;
+import edu.kit.ipd.sdq.bycounter.output.ResultCollection;
 
 /*
  * Actions required after updating the GAST
@@ -112,6 +114,38 @@ public class CallsTest {
 		Assert.fail();
 	}
 	
+	/**Test using ByCounter with online execution updates so that 
+	 * changes in the result model can be observed.
+	 */
+	@Test
+	public void testResultUpdates() {
+		Assert.fail();
+		// Instrument
+		InstrumentationProfileRepository profileRepo = (InstrumentationProfileRepository) ModelHandlingUtil
+				.loadFromFile(ModelHandlingUtil.getResourceSet(), FILEPATH_INPUT_INSTRUMENTATION_PROFILE);
+		ByCounterWrapper byCounterWrapper = new ByCounterWrapper();
+		if (profileRepo.getInstrumentationProfile().size() != 1) {
+			throw new IllegalStateException("File contains more than one instrumentation profile. This is not expected by the test case.");
+		}
+		byCounterWrapper.setInstrumentationConfiguration(profileRepo.getInstrumentationProfile().get(0));
+		
+		// Execution
+		Method targetMethod = getFibonacciMethod();
+		Object instance = byCounterWrapper.instantiate(targetMethod);
+		byCounterWrapper.execute(targetMethod, instance, new Object[] {100});
+
+		// Store results
+		ResultCollection result = byCounterWrapper.generateResult();
+		
+		result.eAdapters().add(new EContentAdapter() {
+			@Override
+			public void notifyChanged(Notification notification) {
+				super.notifyChanged(notification);
+				System.out.println("Notification received: " + notification);
+			}
+		});
+	}
+	
 	/**Test class and logical-set external calls.
 	 * Shows if external call is measured correctly.
 	 */
@@ -136,7 +170,7 @@ public class CallsTest {
 		byCounterWrapper.execute(targetMethod, instance, new Object[] {100});
 
 		// Store results
-		MeasurementRun result = byCounterWrapper.generateResult();
+		ResultCollection result = byCounterWrapper.generateResult();
 		ModelHandlingUtil.saveToFile(ModelHandlingUtil.getResourceSet(),
 				FILEPATH_OUTPUT_MODEL,
 				result);

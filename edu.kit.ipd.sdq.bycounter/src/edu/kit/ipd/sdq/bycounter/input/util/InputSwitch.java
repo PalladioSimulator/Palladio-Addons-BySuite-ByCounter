@@ -93,12 +93,6 @@ public class InputSwitch<T> extends Switch<T> {
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case InputPackage.ENTITY_TO_INSTRUMENT: {
-				EntityToInstrument entityToInstrument = (EntityToInstrument)theEObject;
-				T result = caseEntityToInstrument(entityToInstrument);
-				if (result == null) result = defaultCase(theEObject);
-				return result;
-			}
 			case InputPackage.INSTRUMENTED_CODE_AREA: {
 				InstrumentedCodeArea instrumentedCodeArea = (InstrumentedCodeArea)theEObject;
 				T result = caseInstrumentedCodeArea(instrumentedCodeArea);
@@ -117,6 +111,12 @@ public class InputSwitch<T> extends Switch<T> {
 				InstrumentedRegion instrumentedRegion = (InstrumentedRegion)theEObject;
 				T result = caseInstrumentedRegion(instrumentedRegion);
 				if (result == null) result = caseEntityToInstrument(instrumentedRegion);
+				if (result == null) result = defaultCase(theEObject);
+				return result;
+			}
+			case InputPackage.ENTITY_TO_INSTRUMENT: {
+				EntityToInstrument entityToInstrument = (EntityToInstrument)theEObject;
+				T result = caseEntityToInstrument(entityToInstrument);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}

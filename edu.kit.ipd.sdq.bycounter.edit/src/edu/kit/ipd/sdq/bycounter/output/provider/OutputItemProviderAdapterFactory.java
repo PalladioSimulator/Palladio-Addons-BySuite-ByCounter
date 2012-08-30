@@ -145,6 +145,29 @@ public class OutputItemProviderAdapterFactory extends OutputAdapterFactory imple
 	}
 
 	/**
+	 * This keeps track of the one adapter used for all {@link edu.kit.ipd.sdq.bycounter.output.UUID} instances.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	protected UUIDItemProvider uuidItemProvider;
+
+	/**
+	 * This creates an adapter for a {@link edu.kit.ipd.sdq.bycounter.output.UUID}.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public Adapter createUUIDAdapter() {
+		if (uuidItemProvider == null) {
+			uuidItemProvider = new UUIDItemProvider(this);
+		}
+
+		return uuidItemProvider;
+	}
+
+	/**
 	 * This keeps track of the one adapter used for all {@link edu.kit.ipd.sdq.bycounter.output.CountingResult} instances.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -165,6 +188,75 @@ public class OutputItemProviderAdapterFactory extends OutputAdapterFactory imple
 		}
 
 		return countingResultItemProvider;
+	}
+
+	/**
+	 * This keeps track of the one adapter used for all {@link edu.kit.ipd.sdq.bycounter.output.ArrayCreationCount} instances.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	protected ArrayCreationCountItemProvider arrayCreationCountItemProvider;
+
+	/**
+	 * This creates an adapter for a {@link edu.kit.ipd.sdq.bycounter.output.ArrayCreationCount}.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public Adapter createArrayCreationCountAdapter() {
+		if (arrayCreationCountItemProvider == null) {
+			arrayCreationCountItemProvider = new ArrayCreationCountItemProvider(this);
+		}
+
+		return arrayCreationCountItemProvider;
+	}
+
+	/**
+	 * This keeps track of the one adapter used for all {@link edu.kit.ipd.sdq.bycounter.output.ArrayCreation} instances.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	protected ArrayCreationItemProvider arrayCreationItemProvider;
+
+	/**
+	 * This creates an adapter for a {@link edu.kit.ipd.sdq.bycounter.output.ArrayCreation}.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public Adapter createArrayCreationAdapter() {
+		if (arrayCreationItemProvider == null) {
+			arrayCreationItemProvider = new ArrayCreationItemProvider(this);
+		}
+
+		return arrayCreationItemProvider;
+	}
+
+	/**
+	 * This keeps track of the one adapter used for all {@link edu.kit.ipd.sdq.bycounter.output.MethodCallCount} instances.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	protected MethodCallCountItemProvider methodCallCountItemProvider;
+
+	/**
+	 * This creates an adapter for a {@link edu.kit.ipd.sdq.bycounter.output.MethodCallCount}.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public Adapter createMethodCallCountAdapter() {
+		if (methodCallCountItemProvider == null) {
+			methodCallCountItemProvider = new MethodCallCountItemProvider(this);
+		}
+
+		return methodCallCountItemProvider;
 	}
 
 	/**
@@ -292,7 +384,11 @@ public class OutputItemProviderAdapterFactory extends OutputAdapterFactory imple
 		if (outputModelRepositoryItemProvider != null) outputModelRepositoryItemProvider.dispose();
 		if (resultCollectionItemProvider != null) resultCollectionItemProvider.dispose();
 		if (requestResultItemProvider != null) requestResultItemProvider.dispose();
+		if (uuidItemProvider != null) uuidItemProvider.dispose();
 		if (countingResultItemProvider != null) countingResultItemProvider.dispose();
+		if (arrayCreationCountItemProvider != null) arrayCreationCountItemProvider.dispose();
+		if (arrayCreationItemProvider != null) arrayCreationItemProvider.dispose();
+		if (methodCallCountItemProvider != null) methodCallCountItemProvider.dispose();
 		if (threadedCountingResultItemProvider != null) threadedCountingResultItemProvider.dispose();
 	}
 

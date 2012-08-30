@@ -16,17 +16,11 @@ import edu.kit.ipd.sdq.bycounter.input.InstrumentationProfile;
 import edu.kit.ipd.sdq.bycounter.input.InstrumentationProfileRepository;
 import edu.kit.ipd.sdq.bycounter.input.LogicalSet;
 
-import edu.kit.ipd.sdq.bycounter.input.util.InputValidator;
-
 import java.util.Collection;
-import java.util.Map;
 
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
 
-import org.eclipse.emf.common.util.BasicDiagnostic;
-import org.eclipse.emf.common.util.Diagnostic;
-import org.eclipse.emf.common.util.DiagnosticChain;
 import org.eclipse.emf.common.util.EList;
 
 import org.eclipse.emf.ecore.EClass;
@@ -34,11 +28,8 @@ import org.eclipse.emf.ecore.InternalEObject;
 
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 
-import org.eclipse.emf.ecore.plugin.EcorePlugin;
-
 import org.eclipse.emf.ecore.util.EObjectContainmentEList;
 import org.eclipse.emf.ecore.util.EObjectContainmentWithInverseEList;
-import org.eclipse.emf.ecore.util.EObjectValidator;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.ecore.util.InternalEList;
 
@@ -52,7 +43,7 @@ import org.eclipse.emf.ecore.util.InternalEList;
  *   <li>{@link edu.kit.ipd.sdq.bycounter.input.impl.InstrumentationProfileImpl#getDefinedLogicalSets <em>Defined Logical Sets</em>}</li>
  *   <li>{@link edu.kit.ipd.sdq.bycounter.input.impl.InstrumentationProfileImpl#isInstrumentRecursively <em>Instrument Recursively</em>}</li>
  *   <li>{@link edu.kit.ipd.sdq.bycounter.input.impl.InstrumentationProfileImpl#isAggregateInternalCallsTransparently <em>Aggregate Internal Calls Transparently</em>}</li>
- *   <li>{@link edu.kit.ipd.sdq.bycounter.input.impl.InstrumentationProfileImpl#getPersistInstrumentedClasses <em>Persist Instrumented Classes</em>}</li>
+ *   <li>{@link edu.kit.ipd.sdq.bycounter.input.impl.InstrumentationProfileImpl#getPersistInstrumentedClassesToOSPath <em>Persist Instrumented Classes To OS Path</em>}</li>
  *   <li>{@link edu.kit.ipd.sdq.bycounter.input.impl.InstrumentationProfileImpl#getIntrumentationProfileRepository <em>Intrumentation Profile Repository</em>}</li>
  *   <li>{@link edu.kit.ipd.sdq.bycounter.input.impl.InstrumentationProfileImpl#isInstrumentUsingLongCounters <em>Instrument Using Long Counters</em>}</li>
  *   <li>{@link edu.kit.ipd.sdq.bycounter.input.impl.InstrumentationProfileImpl#isInstrumentUsingBasicBlocks <em>Instrument Using Basic Blocks</em>}</li>
@@ -116,24 +107,24 @@ public class InstrumentationProfileImpl extends IdentifierImpl implements Instru
 	protected boolean aggregateInternalCallsTransparently = AGGREGATE_INTERNAL_CALLS_TRANSPARENTLY_EDEFAULT;
 
 	/**
-	 * The default value of the '{@link #getPersistInstrumentedClasses() <em>Persist Instrumented Classes</em>}' attribute.
+	 * The default value of the '{@link #getPersistInstrumentedClassesToOSPath() <em>Persist Instrumented Classes To OS Path</em>}' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see #getPersistInstrumentedClasses()
+	 * @see #getPersistInstrumentedClassesToOSPath()
 	 * @generated
 	 * @ordered
 	 */
-	protected static final String PERSIST_INSTRUMENTED_CLASSES_EDEFAULT = null;
+	protected static final String PERSIST_INSTRUMENTED_CLASSES_TO_OS_PATH_EDEFAULT = null;
 
 	/**
-	 * The cached value of the '{@link #getPersistInstrumentedClasses() <em>Persist Instrumented Classes</em>}' attribute.
+	 * The cached value of the '{@link #getPersistInstrumentedClassesToOSPath() <em>Persist Instrumented Classes To OS Path</em>}' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see #getPersistInstrumentedClasses()
+	 * @see #getPersistInstrumentedClassesToOSPath()
 	 * @generated
 	 * @ordered
 	 */
-	protected String persistInstrumentedClasses = PERSIST_INSTRUMENTED_CLASSES_EDEFAULT;
+	protected String persistInstrumentedClassesToOSPath = PERSIST_INSTRUMENTED_CLASSES_TO_OS_PATH_EDEFAULT;
 
 	/**
 	 * The default value of the '{@link #isInstrumentUsingLongCounters() <em>Instrument Using Long Counters</em>}' attribute.
@@ -293,8 +284,8 @@ public class InstrumentationProfileImpl extends IdentifierImpl implements Instru
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public String getPersistInstrumentedClasses() {
-		return persistInstrumentedClasses;
+	public String getPersistInstrumentedClassesToOSPath() {
+		return persistInstrumentedClassesToOSPath;
 	}
 
 	/**
@@ -302,11 +293,11 @@ public class InstrumentationProfileImpl extends IdentifierImpl implements Instru
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setPersistInstrumentedClasses(String newPersistInstrumentedClasses) {
-		String oldPersistInstrumentedClasses = persistInstrumentedClasses;
-		persistInstrumentedClasses = newPersistInstrumentedClasses;
+	public void setPersistInstrumentedClassesToOSPath(String newPersistInstrumentedClassesToOSPath) {
+		String oldPersistInstrumentedClassesToOSPath = persistInstrumentedClassesToOSPath;
+		persistInstrumentedClassesToOSPath = newPersistInstrumentedClassesToOSPath;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, InputPackage.INSTRUMENTATION_PROFILE__PERSIST_INSTRUMENTED_CLASSES, oldPersistInstrumentedClasses, persistInstrumentedClasses));
+			eNotify(new ENotificationImpl(this, Notification.SET, InputPackage.INSTRUMENTATION_PROFILE__PERSIST_INSTRUMENTED_CLASSES_TO_OS_PATH, oldPersistInstrumentedClassesToOSPath, persistInstrumentedClassesToOSPath));
 	}
 
 	/**
@@ -432,34 +423,9 @@ public class InstrumentationProfileImpl extends IdentifierImpl implements Instru
 	 */
 	public EList<EntityToInstrument> getEntitiesToInstrument() {
 		if (entitiesToInstrument == null) {
-			entitiesToInstrument = new EObjectContainmentEList<EntityToInstrument>(EntityToInstrument.class, this, InputPackage.INSTRUMENTATION_PROFILE__ENTITIES_TO_INSTRUMENT);
+			entitiesToInstrument = new EObjectContainmentWithInverseEList<EntityToInstrument>(EntityToInstrument.class, this, InputPackage.INSTRUMENTATION_PROFILE__ENTITIES_TO_INSTRUMENT, InputPackage.ENTITY_TO_INSTRUMENT__INSTRUMENTATION_PROFILE);
 		}
 		return entitiesToInstrument;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public boolean SummationexcludesonlyallowedifsummationisactiveandaggregateInternalCallsTransparentlyistrue(DiagnosticChain diagnostics, Map<Object, Object> context) {
-		// TODO: implement this method
-		// -> specify the condition that violates the invariant
-		// -> verify the details of the diagnostic, including severity and message
-		// Ensure that you remove @generated or mark it @generated NOT
-		if (false) {
-			if (diagnostics != null) {
-				diagnostics.add
-					(new BasicDiagnostic
-						(Diagnostic.ERROR,
-						 InputValidator.DIAGNOSTIC_SOURCE,
-						 InputValidator.INSTRUMENTATION_PROFILE__SUMMATIONEXCLUDESONLYALLOWEDIFSUMMATIONISACTIVEANDAGGREGATE_INTERNAL_CALLS_TRANSPARENTLYISTRUE,
-						 EcorePlugin.INSTANCE.getString("_UI_GenericInvariant_diagnostic", new Object[] { "SummationexcludesonlyallowedifsummationisactiveandaggregateInternalCallsTransparentlyistrue", EObjectValidator.getObjectLabel(this, context) }),
-						 new Object [] { this }));
-			}
-			return false;
-		}
-		return true;
 	}
 
 	/**
@@ -477,6 +443,8 @@ public class InstrumentationProfileImpl extends IdentifierImpl implements Instru
 				if (eInternalContainer() != null)
 					msgs = eBasicRemoveFromContainer(msgs);
 				return basicSetIntrumentationProfileRepository((InstrumentationProfileRepository)otherEnd, msgs);
+			case InputPackage.INSTRUMENTATION_PROFILE__ENTITIES_TO_INSTRUMENT:
+				return ((InternalEList<InternalEObject>)(InternalEList<?>)getEntitiesToInstrument()).basicAdd(otherEnd, msgs);
 		}
 		return super.eInverseAdd(otherEnd, featureID, msgs);
 	}
@@ -529,8 +497,8 @@ public class InstrumentationProfileImpl extends IdentifierImpl implements Instru
 				return isInstrumentRecursively();
 			case InputPackage.INSTRUMENTATION_PROFILE__AGGREGATE_INTERNAL_CALLS_TRANSPARENTLY:
 				return isAggregateInternalCallsTransparently();
-			case InputPackage.INSTRUMENTATION_PROFILE__PERSIST_INSTRUMENTED_CLASSES:
-				return getPersistInstrumentedClasses();
+			case InputPackage.INSTRUMENTATION_PROFILE__PERSIST_INSTRUMENTED_CLASSES_TO_OS_PATH:
+				return getPersistInstrumentedClassesToOSPath();
 			case InputPackage.INSTRUMENTATION_PROFILE__INTRUMENTATION_PROFILE_REPOSITORY:
 				return getIntrumentationProfileRepository();
 			case InputPackage.INSTRUMENTATION_PROFILE__INSTRUMENT_USING_LONG_COUNTERS:
@@ -566,8 +534,8 @@ public class InstrumentationProfileImpl extends IdentifierImpl implements Instru
 			case InputPackage.INSTRUMENTATION_PROFILE__AGGREGATE_INTERNAL_CALLS_TRANSPARENTLY:
 				setAggregateInternalCallsTransparently((Boolean)newValue);
 				return;
-			case InputPackage.INSTRUMENTATION_PROFILE__PERSIST_INSTRUMENTED_CLASSES:
-				setPersistInstrumentedClasses((String)newValue);
+			case InputPackage.INSTRUMENTATION_PROFILE__PERSIST_INSTRUMENTED_CLASSES_TO_OS_PATH:
+				setPersistInstrumentedClassesToOSPath((String)newValue);
 				return;
 			case InputPackage.INSTRUMENTATION_PROFILE__INTRUMENTATION_PROFILE_REPOSITORY:
 				setIntrumentationProfileRepository((InstrumentationProfileRepository)newValue);
@@ -610,8 +578,8 @@ public class InstrumentationProfileImpl extends IdentifierImpl implements Instru
 			case InputPackage.INSTRUMENTATION_PROFILE__AGGREGATE_INTERNAL_CALLS_TRANSPARENTLY:
 				setAggregateInternalCallsTransparently(AGGREGATE_INTERNAL_CALLS_TRANSPARENTLY_EDEFAULT);
 				return;
-			case InputPackage.INSTRUMENTATION_PROFILE__PERSIST_INSTRUMENTED_CLASSES:
-				setPersistInstrumentedClasses(PERSIST_INSTRUMENTED_CLASSES_EDEFAULT);
+			case InputPackage.INSTRUMENTATION_PROFILE__PERSIST_INSTRUMENTED_CLASSES_TO_OS_PATH:
+				setPersistInstrumentedClassesToOSPath(PERSIST_INSTRUMENTED_CLASSES_TO_OS_PATH_EDEFAULT);
 				return;
 			case InputPackage.INSTRUMENTATION_PROFILE__INTRUMENTATION_PROFILE_REPOSITORY:
 				setIntrumentationProfileRepository((InstrumentationProfileRepository)null);
@@ -649,8 +617,8 @@ public class InstrumentationProfileImpl extends IdentifierImpl implements Instru
 				return instrumentRecursively != INSTRUMENT_RECURSIVELY_EDEFAULT;
 			case InputPackage.INSTRUMENTATION_PROFILE__AGGREGATE_INTERNAL_CALLS_TRANSPARENTLY:
 				return aggregateInternalCallsTransparently != AGGREGATE_INTERNAL_CALLS_TRANSPARENTLY_EDEFAULT;
-			case InputPackage.INSTRUMENTATION_PROFILE__PERSIST_INSTRUMENTED_CLASSES:
-				return PERSIST_INSTRUMENTED_CLASSES_EDEFAULT == null ? persistInstrumentedClasses != null : !PERSIST_INSTRUMENTED_CLASSES_EDEFAULT.equals(persistInstrumentedClasses);
+			case InputPackage.INSTRUMENTATION_PROFILE__PERSIST_INSTRUMENTED_CLASSES_TO_OS_PATH:
+				return PERSIST_INSTRUMENTED_CLASSES_TO_OS_PATH_EDEFAULT == null ? persistInstrumentedClassesToOSPath != null : !PERSIST_INSTRUMENTED_CLASSES_TO_OS_PATH_EDEFAULT.equals(persistInstrumentedClassesToOSPath);
 			case InputPackage.INSTRUMENTATION_PROFILE__INTRUMENTATION_PROFILE_REPOSITORY:
 				return getIntrumentationProfileRepository() != null;
 			case InputPackage.INSTRUMENTATION_PROFILE__INSTRUMENT_USING_LONG_COUNTERS:
@@ -681,8 +649,8 @@ public class InstrumentationProfileImpl extends IdentifierImpl implements Instru
 		result.append(instrumentRecursively);
 		result.append(", aggregateInternalCallsTransparently: ");
 		result.append(aggregateInternalCallsTransparently);
-		result.append(", persistInstrumentedClasses: ");
-		result.append(persistInstrumentedClasses);
+		result.append(", persistInstrumentedClassesToOSPath: ");
+		result.append(persistInstrumentedClassesToOSPath);
 		result.append(", instrumentUsingLongCounters: ");
 		result.append(instrumentUsingLongCounters);
 		result.append(", instrumentUsingBasicBlocks: ");

@@ -2,11 +2,16 @@ package edu.kit.ipd.sdq.bycounter.modelbridge;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Observable;
+import java.util.Observer;
+import java.util.SortedMap;
 import java.util.SortedSet;
 import java.util.logging.Logger;
 
@@ -15,8 +20,11 @@ import de.fzi.gast.functions.Method;
 import de.fzi.gast.variables.FormalParameter;
 import de.uka.ipd.sdq.ByCounter.execution.BytecodeCounter;
 import de.uka.ipd.sdq.ByCounter.execution.CountingResultCollector;
+import de.uka.ipd.sdq.ByCounter.execution.CountingResultCompleteMethodExecutionUpdate;
+import de.uka.ipd.sdq.ByCounter.execution.CountingResultSectionExecutionUpdate;
 import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentationCounterPrecision;
 import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentationParameters;
+import de.uka.ipd.sdq.ByCounter.parsing.ArrayCreation;
 import de.uka.ipd.sdq.ByCounter.parsing.LineNumberRange;
 import de.uka.ipd.sdq.ByCounter.results.CountingResult;
 import de.uka.ipd.sdq.ByCounter.results.RequestResult;
@@ -27,8 +35,12 @@ import edu.kit.ipd.sdq.bycounter.input.EntityToInstrument;
 import edu.kit.ipd.sdq.bycounter.input.InstrumentationProfile;
 import edu.kit.ipd.sdq.bycounter.input.InstrumentedCodeArea;
 import edu.kit.ipd.sdq.bycounter.input.InstrumentedMethod;
+import edu.kit.ipd.sdq.bycounter.output.ArrayCreationCount;
+import edu.kit.ipd.sdq.bycounter.output.ArrayType;
+import edu.kit.ipd.sdq.bycounter.output.MethodCallCount;
 import edu.kit.ipd.sdq.bycounter.output.OutputFactory;
 import edu.kit.ipd.sdq.bycounter.output.ResultCollection;
+import edu.kit.ipd.sdq.bycounter.output.UUID;
 
 /**
  * Control ByCounter using EMF models.
@@ -38,6 +50,32 @@ import edu.kit.ipd.sdq.bycounter.output.ResultCollection;
  *
  */
 public class ByCounterWrapper {
+	/**
+	 * Class used to handle online updates by ByCounter.
+	 * @author Martin Krogmann
+	 *
+	 */
+	private final class UpdateObserver implements Observer {
+
+		/**
+		 * Receive an update
+		 * @param crc {@link CountingResultCollector} that send the update.
+		 * @param updateData Update data provided by crc.
+		 */
+		public void update(Observable crc, Object updateData) {
+			// TODO
+			if(updateData instanceof CountingResultSectionExecutionUpdate) {
+				log.info("Notification received: " + updateData);
+				// compare the observation with the expectation
+				CountingResult observation = ((CountingResultSectionExecutionUpdate)updateData).sectionResult;
+			} else if(updateData instanceof CountingResultCompleteMethodExecutionUpdate) {
+				// skip complete result
+			}else {
+				throw new IllegalArgumentException("Incorrect updateData type.");
+			}
+		}
+	}
+
 	/** Logger of this class. */
 	private static final Logger log = Logger.getLogger(ByCounterWrapper.class.getCanonicalName());
 	/** EMF Factory for the Output package. */
@@ -48,10 +86,15 @@ public class ByCounterWrapper {
 	/** Current instrumentation configuration. */
 	private InstrumentationProfile inputModel;
 	/** List of available GAST Root Nodes. */
-	private final LinkedList<Root> availableGastRootNodes = new LinkedList<Root>();
+	private final LinkedList<Root> availableGastRootNodes;
 	/** A map that maps the string representation of simple java 
 	 * types in the GAST to the JavaTypeEnum. */
 	private static Map<String, JavaTypeEnum> gastTypeJavaTypeMap;
+	/** Object used to handle online updates by ByCounter. */
+	private UpdateObserver updateObserver;
+	/** {@link ResultCollection} for the current ByCounter run. Is set in 
+	 * {@link #execute(Method, Object, Object[])}.*/
+	private ResultCollection currentRun;
 	
 	static {
 		// initialise the gastTypeJavaTypeMap
@@ -69,6 +112,10 @@ public class ByCounterWrapper {
 
 	public ByCounterWrapper() {
 		this.bycounter = new BytecodeCounter();
+		this.currentRun = outputFactory.createResultCollection();
+		this.updateObserver = new UpdateObserver();
+		this.inputModel = null;
+		this.availableGastRootNodes = new LinkedList<Root>();
 	}
 
 	/**Gets the current configuration for the instrumentation.
@@ -89,20 +136,31 @@ public class ByCounterWrapper {
 		}
 		// create ByCounter instrumentation parameters
 		InstrumentationParameters instrumentationParams = new InstrumentationParameters();
-		handlePersistInstrumentedClasses(instrumentationParams, input);
+		this.handlePersistInstrumentedClasses(instrumentationParams, input);
 		input.isAggregateInternalCallsTransparently(); // TODO: implement aggregateInterncalCallsTransparently
 		input.getDefinedLogicalSets(); // TODO: implement handling definedLogicalSets
 		instrumentationParams.setInstrumentRecursively(input.isInstrumentRecursively()); 
-		handleBasicBlocks(instrumentationParams, input);
+		this.handleBasicBlocks(instrumentationParams, input);
 		final Map<LineNumberRange, InstrumentedCodeArea> rangeCodeAreaMap = new HashMap<LineNumberRange, InstrumentedCodeArea>();
 		final Map<String, InstrumentedMethod> methodNameInstrumentedMethodMap = new HashMap<String, InstrumentedMethod>();
 		handleEntitiesToInstrument(instrumentationParams, rangeCodeAreaMap,
 				methodNameInstrumentedMethodMap, input);
+		this.configureOnlineUpdates(instrumentationParams);
 
 		// update instrumentation parameters and instrument
 		this.inputModel = input;
 		this.bycounter.setInstrumentationParams(instrumentationParams);
 		this.bycounter.instrument();
+	}
+
+	/**
+	 * Changes the {@link InstrumentationParameters} to enable online updates
+	 * and registers an observer with the {@link CountingResultCollector}.
+	 * @param instrumentationParams {@link InstrumentationParameters} to change.
+	 */
+	private void configureOnlineUpdates(InstrumentationParameters instrumentationParams) {
+		instrumentationParams.setProvideOnlineSectionExecutionUpdates(true);
+		CountingResultCollector.getInstance().addObserver(this.updateObserver);
 	}
 
 	/**Handles updates of the input model regarding all {@link EntityToInstrument}.
@@ -151,7 +209,7 @@ public class ByCounterWrapper {
 	 * @param instrumentationProfile The instrumentation profile with the new parameters.
 	 */
 	private void handlePersistInstrumentedClasses(InstrumentationParameters instrumentationParams, final InstrumentationProfile instrumentationProfile) {
-		String outputClassDirectory = instrumentationProfile.getPersistInstrumentedClasses();
+		String outputClassDirectory = instrumentationProfile.getPersistInstrumentedClassesToOSPath();
 		if(outputClassDirectory != null && outputClassDirectory.length() != 0) {
 			instrumentationParams.setWriteClassesToDisk(true);
 			instrumentationParams.setWriteClassesToDiskDirectory(new File(outputClassDirectory));
@@ -193,6 +251,7 @@ public class ByCounterWrapper {
 		MethodDescriptor methodToExecute = new MethodDescriptor(
 				m.getSurroundingClass().getQualifiedName(),
 				ByCounterWrapper.constructSignature(m));
+		this.currentRun = outputFactory.createResultCollection();
 
 		this.bycounter.getExecutionSettings().setAddUpResultsRecursively(this.inputModel.isInstrumentRecursively());
 		return this.bycounter.execute(methodToExecute, target, params).returnValue;
@@ -219,7 +278,6 @@ public class ByCounterWrapper {
 	 * since the last call to this method.
 	 */
 	public ResultCollection generateResult() {
-		ResultCollection run = outputFactory.createResultCollection();
 		final de.uka.ipd.sdq.ByCounter.results.ResultCollection resultCollection = 
 				CountingResultCollector.getInstance().retrieveAllCountingResults();
 
@@ -228,7 +286,7 @@ public class ByCounterWrapper {
 		requestResults = resultCollection.getRequestResults();
 		for(RequestResult rr : requestResults) {
 			edu.kit.ipd.sdq.bycounter.output.RequestResult req = mapRequestResult(rr);
-			run.getRequestResults().add(req);
+			currentRun.getRequestResults().add(req);
 		}
 		
 		/* create a lookup map to find the LineNumberRange arrays of methods. 
@@ -250,13 +308,13 @@ public class ByCounterWrapper {
 		edu.kit.ipd.sdq.bycounter.output.CountingResult cr;
 		for(CountingResult result : results)  { 
 			cr = mapCountingResult(result);
-			run.getCountingResults().add(cr);
+			currentRun.getCountingResults().add(cr);
 		}
 		
 		// results have been stored in the EMF model and are now removed from ByCounter
 		CountingResultCollector.getInstance().clearResults();
 		
-		return run;
+		return currentRun;
 	}
 
 	/**
@@ -270,11 +328,21 @@ public class ByCounterWrapper {
 			RequestResult rr) {
 		edu.kit.ipd.sdq.bycounter.output.RequestResult req = 
 				outputFactory.createRequestResult();
-		req.setRequestId(rr.getRequestId());
+		req.setRequestId(mapUUID(rr.getRequestId()));
 		for(CountingResult cr : rr.getCountingResults()) {
 			req.getCountingResults().add(mapCountingResult(cr));
 		}
 		return req;
+	}
+	
+	/**
+	 * @param uuid Java {@link UUID}.
+	 * @return EMF {@link UUID}.
+	 */
+	private static UUID mapUUID(java.util.UUID uuid) {
+		UUID result = outputFactory.createUUID();
+		result.setStringRepresentation(uuid.toString());
+		return result;
 	}
 
 	/**
@@ -303,15 +371,114 @@ public class ByCounterWrapper {
 			result = outputFactory.createCountingResult();
 		}
 		// map the properies of the base class
-		result.setArrayCreationCounts(cr.getArrayCreationCounts());
-		result.setCallerId(cr.getCallerID());
-		result.setMethodCallCounts(cr.getMethodCallCounts());
+		result.getArrayCreationCounts().addAll(mapArrayCreationCounts(cr.getArrayCreationCounts()));
+		result.setCallerId(mapUUID(cr.getCallerID()));
+		result.getMethodCallCounts().addAll(mapMethodCallCounts(cr.getMethodCallCounts()));
 		result.setMethodInvocationBeginning(cr.getMethodInvocationBeginning());
-		result.setMethodReportingTime(cr.getMethodReportingTime());
-		result.setObservedElement(cr.getObservedElement());
-		result.setOwnId(cr.getOwnID());
-		result.setQualifyingMethodName(cr.getQualifyingMethodName());
+		result.setReportingTime(cr.getReportingTime());
+		result.setObservedElement(mapObservedElement(cr.getObservedElement()));
+		result.setMethodId(mapUUID(cr.getMethodID()));
+		result.setQualifiedMethodName(cr.getQualifiedMethodName());
 	
 		return result;
+	}
+
+	private static EntityToInstrument mapObservedElement(Object observedElement) {
+		EntityToInstrument result;
+		throw new RuntimeException("Not implemented!");
+		// TODO Auto-generated method stub
+//		return result;
+	}
+
+	/**
+	 * @param methodCallCounts Map from a qualified method name to a count.
+	 * @return List of {@link MethodCallCount}s.
+	 */
+	private static Collection<? extends MethodCallCount> mapMethodCallCounts(
+			SortedMap<String, Long> methodCallCounts) {
+		List<MethodCallCount> result = new LinkedList<MethodCallCount>();
+		// TODO Auto-generated method stub
+		return result;
+	}
+
+	/**
+	 * @param arrayCreationCounts ByCounter {@link ArrayCreation}s mapped to a 
+	 * count.
+	 * @return List of {@link ArrayCreationCount}s.
+	 */
+	private static Collection<? extends ArrayCreationCount> mapArrayCreationCounts(
+			Map<ArrayCreation, Long> arrayCreationCounts) {
+		List<ArrayCreationCount> result = new LinkedList<ArrayCreationCount>();
+		for(Entry<ArrayCreation, Long> e : arrayCreationCounts.entrySet()) {
+			ArrayCreationCount r = outputFactory.createArrayCreationCount();
+			r.setArrayCreation(mapArrayCreation(e.getKey()));
+			r.setCount(e.getValue());
+		}
+		return result;
+	}
+
+	/**
+	 * @param arrayCreation ByCounter {@link ArrayCreation}.
+	 * @return EMF {@link edu.kit.ipd.sdq.bycounter.output.ArrayCreation}.
+	 */
+	private static edu.kit.ipd.sdq.bycounter.output.ArrayCreation mapArrayCreation(
+			ArrayCreation arrayCreation) {
+		edu.kit.ipd.sdq.bycounter.output.ArrayCreation result = 
+				outputFactory.createArrayCreation();
+		result.setArrayType(mapArrayType(arrayCreation.getTypeOpcode()));
+		result.setNumberOfDimensions(arrayCreation.getNumberOfDimensions());
+		result.setTypeDescriptor(arrayCreation.getTypeDesc());
+		return result;
+	}
+
+	// Field descriptor #263 I
+	private static final int T_BOOLEAN = 4;
+	  
+	// Field descriptor #263 I
+	private static final int T_CHAR = 5;
+	  
+	// Field descriptor #263 I
+	private static final int T_FLOAT = 6;
+	 
+	// Field descriptor #263 I
+	private static final int T_DOUBLE = 7;
+	 
+	// Field descriptor #263 I
+	private static final int T_BYTE = 8;
+	  
+	// Field descriptor #263 I
+	private static final int T_SHORT = 9;
+	  
+	// Field descriptor #263 I
+	private static final int T_INT = 10;
+	  
+	// Field descriptor #263 I
+	private static final int T_LONG = 11;
+
+	/**
+	 * @param typeOpcode Array type opcode.
+	 * @return Type in the {@link ArrayType} enum.
+	 */
+	private static ArrayType mapArrayType(int typeOpcode) {
+		switch(typeOpcode) {
+		case(T_BOOLEAN):
+			return ArrayType.BOOLEAN;
+		case(T_BYTE):
+			return ArrayType.BYTE;
+		case(T_CHAR):
+			return ArrayType.CHAR;
+		case(T_FLOAT):
+			return ArrayType.FLOAT;
+		case(T_DOUBLE):
+			return ArrayType.DOUBLE;
+		case(T_SHORT):
+			return ArrayType.SHORT;
+		case(T_INT):
+			return ArrayType.INT;
+		case(T_LONG):
+			return ArrayType.LONG;
+		default:
+			return ArrayType.INVALID;
+		}
 	}
 }

@@ -108,13 +108,13 @@ public interface InputPackage extends EPackage {
 	int INSTRUMENTATION_PROFILE__AGGREGATE_INTERNAL_CALLS_TRANSPARENTLY = IdentifierPackage.IDENTIFIER_FEATURE_COUNT + 2;
 
 	/**
-	 * The feature id for the '<em><b>Persist Instrumented Classes</b></em>' attribute.
+	 * The feature id for the '<em><b>Persist Instrumented Classes To OS Path</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int INSTRUMENTATION_PROFILE__PERSIST_INSTRUMENTED_CLASSES = IdentifierPackage.IDENTIFIER_FEATURE_COUNT + 3;
+	int INSTRUMENTATION_PROFILE__PERSIST_INSTRUMENTED_CLASSES_TO_OS_PATH = IdentifierPackage.IDENTIFIER_FEATURE_COUNT + 3;
 
 	/**
 	 * The feature id for the '<em><b>Intrumentation Profile Repository</b></em>' container reference.
@@ -270,7 +270,16 @@ public interface InputPackage extends EPackage {
 	 * @see edu.kit.ipd.sdq.bycounter.input.impl.InputPackageImpl#getEntityToInstrument()
 	 * @generated
 	 */
-	int ENTITY_TO_INSTRUMENT = 3;
+	int ENTITY_TO_INSTRUMENT = 6;
+
+	/**
+	 * The feature id for the '<em><b>Instrumentation Profile</b></em>' container reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int ENTITY_TO_INSTRUMENT__INSTRUMENTATION_PROFILE = 0;
 
 	/**
 	 * The number of structural features of the '<em>Entity To Instrument</em>' class.
@@ -279,7 +288,7 @@ public interface InputPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int ENTITY_TO_INSTRUMENT_FEATURE_COUNT = 0;
+	int ENTITY_TO_INSTRUMENT_FEATURE_COUNT = 1;
 
 	/**
 	 * The meta object id for the '{@link edu.kit.ipd.sdq.bycounter.input.impl.InstrumentedCodeAreaImpl <em>Instrumented Code Area</em>}' class.
@@ -289,7 +298,16 @@ public interface InputPackage extends EPackage {
 	 * @see edu.kit.ipd.sdq.bycounter.input.impl.InputPackageImpl#getInstrumentedCodeArea()
 	 * @generated
 	 */
-	int INSTRUMENTED_CODE_AREA = 4;
+	int INSTRUMENTED_CODE_AREA = 3;
+
+	/**
+	 * The feature id for the '<em><b>Instrumentation Profile</b></em>' container reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int INSTRUMENTED_CODE_AREA__INSTRUMENTATION_PROFILE = ENTITY_TO_INSTRUMENT__INSTRUMENTATION_PROFILE;
 
 	/**
 	 * The feature id for the '<em><b>From</b></em>' reference.
@@ -326,7 +344,16 @@ public interface InputPackage extends EPackage {
 	 * @see edu.kit.ipd.sdq.bycounter.input.impl.InputPackageImpl#getInstrumentedMethod()
 	 * @generated
 	 */
-	int INSTRUMENTED_METHOD = 5;
+	int INSTRUMENTED_METHOD = 4;
+
+	/**
+	 * The feature id for the '<em><b>Instrumentation Profile</b></em>' container reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int INSTRUMENTED_METHOD__INSTRUMENTATION_PROFILE = ENTITY_TO_INSTRUMENT__INSTRUMENTATION_PROFILE;
 
 	/**
 	 * The feature id for the '<em><b>Implementation Or Derived</b></em>' containment reference list.
@@ -381,25 +408,16 @@ public interface InputPackage extends EPackage {
 	 * @see edu.kit.ipd.sdq.bycounter.input.impl.InputPackageImpl#getInstrumentedRegion()
 	 * @generated
 	 */
-	int INSTRUMENTED_REGION = 6;
+	int INSTRUMENTED_REGION = 5;
 
 	/**
-	 * The feature id for the '<em><b>Start Line</b></em>' attribute.
+	 * The feature id for the '<em><b>Instrumentation Profile</b></em>' container reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int INSTRUMENTED_REGION__START_LINE = ENTITY_TO_INSTRUMENT_FEATURE_COUNT + 0;
-
-	/**
-	 * The feature id for the '<em><b>Stop Line</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int INSTRUMENTED_REGION__STOP_LINE = ENTITY_TO_INSTRUMENT_FEATURE_COUNT + 1;
+	int INSTRUMENTED_REGION__INSTRUMENTATION_PROFILE = ENTITY_TO_INSTRUMENT__INSTRUMENTATION_PROFILE;
 
 	/**
 	 * The feature id for the '<em><b>Start Method</b></em>' reference.
@@ -408,7 +426,16 @@ public interface InputPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int INSTRUMENTED_REGION__START_METHOD = ENTITY_TO_INSTRUMENT_FEATURE_COUNT + 2;
+	int INSTRUMENTED_REGION__START_METHOD = ENTITY_TO_INSTRUMENT_FEATURE_COUNT + 0;
+
+	/**
+	 * The feature id for the '<em><b>Start Line</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int INSTRUMENTED_REGION__START_LINE = ENTITY_TO_INSTRUMENT_FEATURE_COUNT + 1;
 
 	/**
 	 * The feature id for the '<em><b>Stop Method</b></em>' reference.
@@ -417,7 +444,16 @@ public interface InputPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int INSTRUMENTED_REGION__STOP_METHOD = ENTITY_TO_INSTRUMENT_FEATURE_COUNT + 3;
+	int INSTRUMENTED_REGION__STOP_METHOD = ENTITY_TO_INSTRUMENT_FEATURE_COUNT + 2;
+
+	/**
+	 * The feature id for the '<em><b>Stop Line</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int INSTRUMENTED_REGION__STOP_LINE = ENTITY_TO_INSTRUMENT_FEATURE_COUNT + 3;
 
 	/**
 	 * The number of structural features of the '<em>Instrumented Region</em>' class.
@@ -473,15 +509,15 @@ public interface InputPackage extends EPackage {
 	EAttribute getInstrumentationProfile_AggregateInternalCallsTransparently();
 
 	/**
-	 * Returns the meta object for the attribute '{@link edu.kit.ipd.sdq.bycounter.input.InstrumentationProfile#getPersistInstrumentedClasses <em>Persist Instrumented Classes</em>}'.
+	 * Returns the meta object for the attribute '{@link edu.kit.ipd.sdq.bycounter.input.InstrumentationProfile#getPersistInstrumentedClassesToOSPath <em>Persist Instrumented Classes To OS Path</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Persist Instrumented Classes</em>'.
-	 * @see edu.kit.ipd.sdq.bycounter.input.InstrumentationProfile#getPersistInstrumentedClasses()
+	 * @return the meta object for the attribute '<em>Persist Instrumented Classes To OS Path</em>'.
+	 * @see edu.kit.ipd.sdq.bycounter.input.InstrumentationProfile#getPersistInstrumentedClassesToOSPath()
 	 * @see #getInstrumentationProfile()
 	 * @generated
 	 */
-	EAttribute getInstrumentationProfile_PersistInstrumentedClasses();
+	EAttribute getInstrumentationProfile_PersistInstrumentedClassesToOSPath();
 
 	/**
 	 * Returns the meta object for the container reference '{@link edu.kit.ipd.sdq.bycounter.input.InstrumentationProfile#getIntrumentationProfileRepository <em>Intrumentation Profile Repository</em>}'.
@@ -611,6 +647,17 @@ public interface InputPackage extends EPackage {
 	 * @generated
 	 */
 	EClass getEntityToInstrument();
+
+	/**
+	 * Returns the meta object for the container reference '{@link edu.kit.ipd.sdq.bycounter.input.EntityToInstrument#getInstrumentationProfile <em>Instrumentation Profile</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the container reference '<em>Instrumentation Profile</em>'.
+	 * @see edu.kit.ipd.sdq.bycounter.input.EntityToInstrument#getInstrumentationProfile()
+	 * @see #getEntityToInstrument()
+	 * @generated
+	 */
+	EReference getEntityToInstrument_InstrumentationProfile();
 
 	/**
 	 * Returns the meta object for class '{@link edu.kit.ipd.sdq.bycounter.input.InstrumentedCodeArea <em>Instrumented Code Area</em>}'.
@@ -809,12 +856,12 @@ public interface InputPackage extends EPackage {
 		EAttribute INSTRUMENTATION_PROFILE__AGGREGATE_INTERNAL_CALLS_TRANSPARENTLY = eINSTANCE.getInstrumentationProfile_AggregateInternalCallsTransparently();
 
 		/**
-		 * The meta object literal for the '<em><b>Persist Instrumented Classes</b></em>' attribute feature.
+		 * The meta object literal for the '<em><b>Persist Instrumented Classes To OS Path</b></em>' attribute feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		EAttribute INSTRUMENTATION_PROFILE__PERSIST_INSTRUMENTED_CLASSES = eINSTANCE.getInstrumentationProfile_PersistInstrumentedClasses();
+		EAttribute INSTRUMENTATION_PROFILE__PERSIST_INSTRUMENTED_CLASSES_TO_OS_PATH = eINSTANCE.getInstrumentationProfile_PersistInstrumentedClassesToOSPath();
 
 		/**
 		 * The meta object literal for the '<em><b>Intrumentation Profile Repository</b></em>' container reference feature.
@@ -917,6 +964,14 @@ public interface InputPackage extends EPackage {
 		 * @generated
 		 */
 		EClass ENTITY_TO_INSTRUMENT = eINSTANCE.getEntityToInstrument();
+
+		/**
+		 * The meta object literal for the '<em><b>Instrumentation Profile</b></em>' container reference feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference ENTITY_TO_INSTRUMENT__INSTRUMENTATION_PROFILE = eINSTANCE.getEntityToInstrument_InstrumentationProfile();
 
 		/**
 		 * The meta object literal for the '{@link edu.kit.ipd.sdq.bycounter.input.impl.InstrumentedCodeAreaImpl <em>Instrumented Code Area</em>}' class.

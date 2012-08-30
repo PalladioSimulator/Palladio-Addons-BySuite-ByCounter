@@ -53,15 +53,6 @@ public interface InputFactory extends EFactory {
 	InstrumentationProfileRepository createInstrumentationProfileRepository();
 
 	/**
-	 * Returns a new object of class '<em>Entity To Instrument</em>'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Entity To Instrument</em>'.
-	 * @generated
-	 */
-	EntityToInstrument createEntityToInstrument();
-
-	/**
 	 * Returns a new object of class '<em>Instrumented Code Area</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->

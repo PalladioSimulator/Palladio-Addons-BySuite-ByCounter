@@ -6,6 +6,7 @@
  */
 package edu.kit.ipd.sdq.bycounter.input;
 
+import de.fzi.gast.functions.Function;
 import de.fzi.gast.functions.Method;
 
 /**
@@ -16,10 +17,10 @@ import de.fzi.gast.functions.Method;
  * <p>
  * The following features are supported:
  * <ul>
- *   <li>{@link edu.kit.ipd.sdq.bycounter.input.InstrumentedRegion#getStartLine <em>Start Line</em>}</li>
- *   <li>{@link edu.kit.ipd.sdq.bycounter.input.InstrumentedRegion#getStopLine <em>Stop Line</em>}</li>
  *   <li>{@link edu.kit.ipd.sdq.bycounter.input.InstrumentedRegion#getStartMethod <em>Start Method</em>}</li>
+ *   <li>{@link edu.kit.ipd.sdq.bycounter.input.InstrumentedRegion#getStartLine <em>Start Line</em>}</li>
  *   <li>{@link edu.kit.ipd.sdq.bycounter.input.InstrumentedRegion#getStopMethod <em>Stop Method</em>}</li>
+ *   <li>{@link edu.kit.ipd.sdq.bycounter.input.InstrumentedRegion#getStopLine <em>Stop Line</em>}</li>
  * </ul>
  * </p>
  *
@@ -36,6 +37,9 @@ public interface InstrumentedRegion extends EntityToInstrument {
 	 * there really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
+	 * <!-- begin-model-doc -->
+	 * Absolute line number in the file defining startMethod.
+	 * <!-- end-model-doc -->
 	 * @return the value of the '<em>Start Line</em>' attribute.
 	 * @see #setStartLine(int)
 	 * @see edu.kit.ipd.sdq.bycounter.input.InputPackage#getInstrumentedRegion_StartLine()
@@ -62,6 +66,9 @@ public interface InstrumentedRegion extends EntityToInstrument {
 	 * there really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
+	 * <!-- begin-model-doc -->
+	 * Absolute line number in the file defining stopMethod.
+	 * <!-- end-model-doc -->
 	 * @return the value of the '<em>Stop Line</em>' attribute.
 	 * @see #setStopLine(int)
 	 * @see edu.kit.ipd.sdq.bycounter.input.InputPackage#getInstrumentedRegion_StopLine()
@@ -89,12 +96,12 @@ public interface InstrumentedRegion extends EntityToInstrument {
 	 * </p>
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Start Method</em>' reference.
-	 * @see #setStartMethod(Method)
+	 * @see #setStartMethod(Function)
 	 * @see edu.kit.ipd.sdq.bycounter.input.InputPackage#getInstrumentedRegion_StartMethod()
 	 * @model required="true" ordered="false"
 	 * @generated
 	 */
-	Method getStartMethod();
+	Function getStartMethod();
 
 	/**
 	 * Sets the value of the '{@link edu.kit.ipd.sdq.bycounter.input.InstrumentedRegion#getStartMethod <em>Start Method</em>}' reference.
@@ -104,7 +111,7 @@ public interface InstrumentedRegion extends EntityToInstrument {
 	 * @see #getStartMethod()
 	 * @generated
 	 */
-	void setStartMethod(Method value);
+	void setStartMethod(Function value);
 
 	/**
 	 * Returns the value of the '<em><b>Stop Method</b></em>' reference.
@@ -115,12 +122,12 @@ public interface InstrumentedRegion extends EntityToInstrument {
 	 * </p>
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Stop Method</em>' reference.
-	 * @see #setStopMethod(Method)
+	 * @see #setStopMethod(Function)
 	 * @see edu.kit.ipd.sdq.bycounter.input.InputPackage#getInstrumentedRegion_StopMethod()
 	 * @model required="true" ordered="false"
 	 * @generated
 	 */
-	Method getStopMethod();
+	Function getStopMethod();
 
 	/**
 	 * Sets the value of the '{@link edu.kit.ipd.sdq.bycounter.input.InstrumentedRegion#getStopMethod <em>Stop Method</em>}' reference.
@@ -130,6 +137,6 @@ public interface InstrumentedRegion extends EntityToInstrument {
 	 * @see #getStopMethod()
 	 * @generated
 	 */
-	void setStopMethod(Method value);
+	void setStopMethod(Function value);
 
 } // InstrumentedRegion

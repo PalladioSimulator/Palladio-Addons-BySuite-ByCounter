@@ -6,6 +6,7 @@
  */
 package edu.kit.ipd.sdq.bycounter.input.impl;
 
+import de.fzi.gast.functions.Function;
 import de.fzi.gast.functions.Method;
 
 import edu.kit.ipd.sdq.bycounter.input.InputPackage;
@@ -25,16 +26,26 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
  * <p>
  * The following features are implemented:
  * <ul>
- *   <li>{@link edu.kit.ipd.sdq.bycounter.input.impl.InstrumentedRegionImpl#getStartLine <em>Start Line</em>}</li>
- *   <li>{@link edu.kit.ipd.sdq.bycounter.input.impl.InstrumentedRegionImpl#getStopLine <em>Stop Line</em>}</li>
  *   <li>{@link edu.kit.ipd.sdq.bycounter.input.impl.InstrumentedRegionImpl#getStartMethod <em>Start Method</em>}</li>
+ *   <li>{@link edu.kit.ipd.sdq.bycounter.input.impl.InstrumentedRegionImpl#getStartLine <em>Start Line</em>}</li>
  *   <li>{@link edu.kit.ipd.sdq.bycounter.input.impl.InstrumentedRegionImpl#getStopMethod <em>Stop Method</em>}</li>
+ *   <li>{@link edu.kit.ipd.sdq.bycounter.input.impl.InstrumentedRegionImpl#getStopLine <em>Stop Line</em>}</li>
  * </ul>
  * </p>
  *
  * @generated
  */
 public class InstrumentedRegionImpl extends EntityToInstrumentImpl implements InstrumentedRegion {
+	/**
+	 * The cached value of the '{@link #getStartMethod() <em>Start Method</em>}' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getStartMethod()
+	 * @generated
+	 * @ordered
+	 */
+	protected Function startMethod;
+
 	/**
 	 * The default value of the '{@link #getStartLine() <em>Start Line</em>}' attribute.
 	 * <!-- begin-user-doc -->
@@ -56,6 +67,16 @@ public class InstrumentedRegionImpl extends EntityToInstrumentImpl implements In
 	protected int startLine = START_LINE_EDEFAULT;
 
 	/**
+	 * The cached value of the '{@link #getStopMethod() <em>Stop Method</em>}' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getStopMethod()
+	 * @generated
+	 * @ordered
+	 */
+	protected Function stopMethod;
+
+	/**
 	 * The default value of the '{@link #getStopLine() <em>Stop Line</em>}' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -74,26 +95,6 @@ public class InstrumentedRegionImpl extends EntityToInstrumentImpl implements In
 	 * @ordered
 	 */
 	protected int stopLine = STOP_LINE_EDEFAULT;
-
-	/**
-	 * The cached value of the '{@link #getStartMethod() <em>Start Method</em>}' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getStartMethod()
-	 * @generated
-	 * @ordered
-	 */
-	protected Method startMethod;
-
-	/**
-	 * The cached value of the '{@link #getStopMethod() <em>Stop Method</em>}' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getStopMethod()
-	 * @generated
-	 * @ordered
-	 */
-	protected Method stopMethod;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -161,10 +162,10 @@ public class InstrumentedRegionImpl extends EntityToInstrumentImpl implements In
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public Method getStartMethod() {
+	public Function getStartMethod() {
 		if (startMethod != null && startMethod.eIsProxy()) {
 			InternalEObject oldStartMethod = (InternalEObject)startMethod;
-			startMethod = (Method)eResolveProxy(oldStartMethod);
+			startMethod = (Function)eResolveProxy(oldStartMethod);
 			if (startMethod != oldStartMethod) {
 				if (eNotificationRequired())
 					eNotify(new ENotificationImpl(this, Notification.RESOLVE, InputPackage.INSTRUMENTED_REGION__START_METHOD, oldStartMethod, startMethod));
@@ -178,7 +179,7 @@ public class InstrumentedRegionImpl extends EntityToInstrumentImpl implements In
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public Method basicGetStartMethod() {
+	public Function basicGetStartMethod() {
 		return startMethod;
 	}
 
@@ -187,8 +188,8 @@ public class InstrumentedRegionImpl extends EntityToInstrumentImpl implements In
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setStartMethod(Method newStartMethod) {
-		Method oldStartMethod = startMethod;
+	public void setStartMethod(Function newStartMethod) {
+		Function oldStartMethod = startMethod;
 		startMethod = newStartMethod;
 		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, InputPackage.INSTRUMENTED_REGION__START_METHOD, oldStartMethod, startMethod));
@@ -199,10 +200,10 @@ public class InstrumentedRegionImpl extends EntityToInstrumentImpl implements In
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public Method getStopMethod() {
+	public Function getStopMethod() {
 		if (stopMethod != null && stopMethod.eIsProxy()) {
 			InternalEObject oldStopMethod = (InternalEObject)stopMethod;
-			stopMethod = (Method)eResolveProxy(oldStopMethod);
+			stopMethod = (Function)eResolveProxy(oldStopMethod);
 			if (stopMethod != oldStopMethod) {
 				if (eNotificationRequired())
 					eNotify(new ENotificationImpl(this, Notification.RESOLVE, InputPackage.INSTRUMENTED_REGION__STOP_METHOD, oldStopMethod, stopMethod));
@@ -216,7 +217,7 @@ public class InstrumentedRegionImpl extends EntityToInstrumentImpl implements In
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public Method basicGetStopMethod() {
+	public Function basicGetStopMethod() {
 		return stopMethod;
 	}
 
@@ -225,8 +226,8 @@ public class InstrumentedRegionImpl extends EntityToInstrumentImpl implements In
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setStopMethod(Method newStopMethod) {
-		Method oldStopMethod = stopMethod;
+	public void setStopMethod(Function newStopMethod) {
+		Function oldStopMethod = stopMethod;
 		stopMethod = newStopMethod;
 		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, InputPackage.INSTRUMENTED_REGION__STOP_METHOD, oldStopMethod, stopMethod));
@@ -240,16 +241,16 @@ public class InstrumentedRegionImpl extends EntityToInstrumentImpl implements In
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
-			case InputPackage.INSTRUMENTED_REGION__START_LINE:
-				return getStartLine();
-			case InputPackage.INSTRUMENTED_REGION__STOP_LINE:
-				return getStopLine();
 			case InputPackage.INSTRUMENTED_REGION__START_METHOD:
 				if (resolve) return getStartMethod();
 				return basicGetStartMethod();
+			case InputPackage.INSTRUMENTED_REGION__START_LINE:
+				return getStartLine();
 			case InputPackage.INSTRUMENTED_REGION__STOP_METHOD:
 				if (resolve) return getStopMethod();
 				return basicGetStopMethod();
+			case InputPackage.INSTRUMENTED_REGION__STOP_LINE:
+				return getStopLine();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -262,17 +263,17 @@ public class InstrumentedRegionImpl extends EntityToInstrumentImpl implements In
 	@Override
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
+			case InputPackage.INSTRUMENTED_REGION__START_METHOD:
+				setStartMethod((Function)newValue);
+				return;
 			case InputPackage.INSTRUMENTED_REGION__START_LINE:
 				setStartLine((Integer)newValue);
 				return;
+			case InputPackage.INSTRUMENTED_REGION__STOP_METHOD:
+				setStopMethod((Function)newValue);
+				return;
 			case InputPackage.INSTRUMENTED_REGION__STOP_LINE:
 				setStopLine((Integer)newValue);
-				return;
-			case InputPackage.INSTRUMENTED_REGION__START_METHOD:
-				setStartMethod((Method)newValue);
-				return;
-			case InputPackage.INSTRUMENTED_REGION__STOP_METHOD:
-				setStopMethod((Method)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -286,17 +287,17 @@ public class InstrumentedRegionImpl extends EntityToInstrumentImpl implements In
 	@Override
 	public void eUnset(int featureID) {
 		switch (featureID) {
+			case InputPackage.INSTRUMENTED_REGION__START_METHOD:
+				setStartMethod((Function)null);
+				return;
 			case InputPackage.INSTRUMENTED_REGION__START_LINE:
 				setStartLine(START_LINE_EDEFAULT);
 				return;
+			case InputPackage.INSTRUMENTED_REGION__STOP_METHOD:
+				setStopMethod((Function)null);
+				return;
 			case InputPackage.INSTRUMENTED_REGION__STOP_LINE:
 				setStopLine(STOP_LINE_EDEFAULT);
-				return;
-			case InputPackage.INSTRUMENTED_REGION__START_METHOD:
-				setStartMethod((Method)null);
-				return;
-			case InputPackage.INSTRUMENTED_REGION__STOP_METHOD:
-				setStopMethod((Method)null);
 				return;
 		}
 		super.eUnset(featureID);
@@ -310,14 +311,14 @@ public class InstrumentedRegionImpl extends EntityToInstrumentImpl implements In
 	@Override
 	public boolean eIsSet(int featureID) {
 		switch (featureID) {
-			case InputPackage.INSTRUMENTED_REGION__START_LINE:
-				return startLine != START_LINE_EDEFAULT;
-			case InputPackage.INSTRUMENTED_REGION__STOP_LINE:
-				return stopLine != STOP_LINE_EDEFAULT;
 			case InputPackage.INSTRUMENTED_REGION__START_METHOD:
 				return startMethod != null;
+			case InputPackage.INSTRUMENTED_REGION__START_LINE:
+				return startLine != START_LINE_EDEFAULT;
 			case InputPackage.INSTRUMENTED_REGION__STOP_METHOD:
 				return stopMethod != null;
+			case InputPackage.INSTRUMENTED_REGION__STOP_LINE:
+				return stopLine != STOP_LINE_EDEFAULT;
 		}
 		return super.eIsSet(featureID);
 	}

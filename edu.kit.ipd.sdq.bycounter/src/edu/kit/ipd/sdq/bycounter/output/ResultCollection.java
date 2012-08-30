@@ -31,6 +31,7 @@ public interface ResultCollection extends EObject {
 	/**
 	 * Returns the value of the '<em><b>Request Results</b></em>' containment reference list.
 	 * The list contents are of type {@link edu.kit.ipd.sdq.bycounter.output.RequestResult}.
+	 * It is bidirectional and its opposite is '{@link edu.kit.ipd.sdq.bycounter.output.RequestResult#getResultCollection <em>Result Collection</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <p>
 	 * If the meaning of the '<em>Request Results</em>' containment reference list isn't clear,
@@ -39,7 +40,8 @@ public interface ResultCollection extends EObject {
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Request Results</em>' containment reference list.
 	 * @see edu.kit.ipd.sdq.bycounter.output.OutputPackage#getResultCollection_RequestResults()
-	 * @model containment="true" ordered="false"
+	 * @see edu.kit.ipd.sdq.bycounter.output.RequestResult#getResultCollection
+	 * @model opposite="resultCollection" containment="true" ordered="false"
 	 * @generated
 	 */
 	EList<RequestResult> getRequestResults();
@@ -47,6 +49,7 @@ public interface ResultCollection extends EObject {
 	/**
 	 * Returns the value of the '<em><b>Counting Results</b></em>' containment reference list.
 	 * The list contents are of type {@link edu.kit.ipd.sdq.bycounter.output.CountingResult}.
+	 * It is bidirectional and its opposite is '{@link edu.kit.ipd.sdq.bycounter.output.CountingResult#getResultCollection <em>Result Collection</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <p>
 	 * If the meaning of the '<em>Counting Results</em>' containment reference list isn't clear,
@@ -55,7 +58,8 @@ public interface ResultCollection extends EObject {
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Counting Results</em>' containment reference list.
 	 * @see edu.kit.ipd.sdq.bycounter.output.OutputPackage#getResultCollection_CountingResults()
-	 * @model containment="true" ordered="false"
+	 * @see edu.kit.ipd.sdq.bycounter.output.CountingResult#getResultCollection
+	 * @model opposite="resultCollection" containment="true" ordered="false"
 	 * @generated
 	 */
 	EList<CountingResult> getCountingResults();

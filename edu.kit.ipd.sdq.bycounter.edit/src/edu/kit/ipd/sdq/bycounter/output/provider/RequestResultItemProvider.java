@@ -89,7 +89,7 @@ public class RequestResultItemProvider
 				 true,
 				 false,
 				 false,
-				 ItemPropertyDescriptor.GENERIC_VALUE_IMAGE,
+				 null,
 				 null,
 				 null));
 	}
@@ -106,8 +106,8 @@ public class RequestResultItemProvider
 	public Collection<? extends EStructuralFeature> getChildrenFeatures(Object object) {
 		if (childrenFeatures == null) {
 			super.getChildrenFeatures(object);
-			childrenFeatures.add(OutputPackage.Literals.REQUEST_RESULT__RESULT_COLLECTION);
 			childrenFeatures.add(OutputPackage.Literals.REQUEST_RESULT__COUNTING_RESULTS);
+			childrenFeatures.add(OutputPackage.Literals.REQUEST_RESULT__RESULT_COLLECTION);
 		}
 		return childrenFeatures;
 	}
@@ -144,11 +144,7 @@ public class RequestResultItemProvider
 	 */
 	@Override
 	public String getText(Object object) {
-		Object labelValue = ((RequestResult)object).getRequestId();
-		String label = labelValue == null ? null : labelValue.toString();
-		return label == null || label.length() == 0 ?
-			getString("_UI_RequestResult_type") :
-			getString("_UI_RequestResult_type") + " " + label;
+		return getString("_UI_RequestResult_type");
 	}
 
 	/**
@@ -166,8 +162,8 @@ public class RequestResultItemProvider
 			case OutputPackage.REQUEST_RESULT__REQUEST_ID:
 				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
 				return;
-			case OutputPackage.REQUEST_RESULT__RESULT_COLLECTION:
 			case OutputPackage.REQUEST_RESULT__COUNTING_RESULTS:
+			case OutputPackage.REQUEST_RESULT__RESULT_COLLECTION:
 				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), true, false));
 				return;
 		}
@@ -187,11 +183,6 @@ public class RequestResultItemProvider
 
 		newChildDescriptors.add
 			(createChildParameter
-				(OutputPackage.Literals.REQUEST_RESULT__RESULT_COLLECTION,
-				 OutputFactory.eINSTANCE.createResultCollection()));
-
-		newChildDescriptors.add
-			(createChildParameter
 				(OutputPackage.Literals.REQUEST_RESULT__COUNTING_RESULTS,
 				 OutputFactory.eINSTANCE.createCountingResult()));
 
@@ -199,6 +190,11 @@ public class RequestResultItemProvider
 			(createChildParameter
 				(OutputPackage.Literals.REQUEST_RESULT__COUNTING_RESULTS,
 				 OutputFactory.eINSTANCE.createThreadedCountingResult()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(OutputPackage.Literals.REQUEST_RESULT__RESULT_COLLECTION,
+				 OutputFactory.eINSTANCE.createResultCollection()));
 	}
 
 	/**

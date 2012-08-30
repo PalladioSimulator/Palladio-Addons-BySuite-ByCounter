@@ -86,8 +86,24 @@ public class OutputAdapterFactory extends AdapterFactoryImpl {
 				return createRequestResultAdapter();
 			}
 			@Override
+			public Adapter caseUUID(UUID object) {
+				return createUUIDAdapter();
+			}
+			@Override
 			public Adapter caseCountingResult(CountingResult object) {
 				return createCountingResultAdapter();
+			}
+			@Override
+			public Adapter caseArrayCreationCount(ArrayCreationCount object) {
+				return createArrayCreationCountAdapter();
+			}
+			@Override
+			public Adapter caseArrayCreation(ArrayCreation object) {
+				return createArrayCreationAdapter();
+			}
+			@Override
+			public Adapter caseMethodCallCount(MethodCallCount object) {
+				return createMethodCallCountAdapter();
 			}
 			@Override
 			public Adapter caseThreadedCountingResult(ThreadedCountingResult object) {
@@ -160,6 +176,20 @@ public class OutputAdapterFactory extends AdapterFactoryImpl {
 	}
 
 	/**
+	 * Creates a new adapter for an object of class '{@link edu.kit.ipd.sdq.bycounter.output.UUID <em>UUID</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see edu.kit.ipd.sdq.bycounter.output.UUID
+	 * @generated
+	 */
+	public Adapter createUUIDAdapter() {
+		return null;
+	}
+
+	/**
 	 * Creates a new adapter for an object of class '{@link edu.kit.ipd.sdq.bycounter.output.CountingResult <em>Counting Result</em>}'.
 	 * <!-- begin-user-doc -->
 	 * This default implementation returns null so that we can easily ignore cases;
@@ -170,6 +200,48 @@ public class OutputAdapterFactory extends AdapterFactoryImpl {
 	 * @generated
 	 */
 	public Adapter createCountingResultAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link edu.kit.ipd.sdq.bycounter.output.ArrayCreationCount <em>Array Creation Count</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see edu.kit.ipd.sdq.bycounter.output.ArrayCreationCount
+	 * @generated
+	 */
+	public Adapter createArrayCreationCountAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link edu.kit.ipd.sdq.bycounter.output.ArrayCreation <em>Array Creation</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see edu.kit.ipd.sdq.bycounter.output.ArrayCreation
+	 * @generated
+	 */
+	public Adapter createArrayCreationAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link edu.kit.ipd.sdq.bycounter.output.MethodCallCount <em>Method Call Count</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see edu.kit.ipd.sdq.bycounter.output.MethodCallCount
+	 * @generated
+	 */
+	public Adapter createMethodCallCountAdapter() {
 		return null;
 	}
 

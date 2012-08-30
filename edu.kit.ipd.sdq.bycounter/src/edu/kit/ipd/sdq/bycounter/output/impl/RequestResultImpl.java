@@ -11,6 +11,7 @@ import edu.kit.ipd.sdq.bycounter.output.OutputPackage;
 import edu.kit.ipd.sdq.bycounter.output.RequestResult;
 import edu.kit.ipd.sdq.bycounter.output.ResultCollection;
 
+import edu.kit.ipd.sdq.bycounter.output.UUID;
 import java.util.Collection;
 
 import org.eclipse.emf.common.notify.Notification;
@@ -24,6 +25,8 @@ import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.EObjectImpl;
 
+import org.eclipse.emf.ecore.util.EObjectContainmentWithInverseEList;
+import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.ecore.util.EObjectContainmentEList;
 import org.eclipse.emf.ecore.util.InternalEList;
 
@@ -34,9 +37,9 @@ import org.eclipse.emf.ecore.util.InternalEList;
  * <p>
  * The following features are implemented:
  * <ul>
- *   <li>{@link edu.kit.ipd.sdq.bycounter.output.impl.RequestResultImpl#getResultCollection <em>Result Collection</em>}</li>
  *   <li>{@link edu.kit.ipd.sdq.bycounter.output.impl.RequestResultImpl#getRequestId <em>Request Id</em>}</li>
  *   <li>{@link edu.kit.ipd.sdq.bycounter.output.impl.RequestResultImpl#getCountingResults <em>Counting Results</em>}</li>
+ *   <li>{@link edu.kit.ipd.sdq.bycounter.output.impl.RequestResultImpl#getResultCollection <em>Result Collection</em>}</li>
  * </ul>
  * </p>
  *
@@ -44,34 +47,14 @@ import org.eclipse.emf.ecore.util.InternalEList;
  */
 public class RequestResultImpl extends EObjectImpl implements RequestResult {
 	/**
-	 * The cached value of the '{@link #getResultCollection() <em>Result Collection</em>}' containment reference list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getResultCollection()
-	 * @generated
-	 * @ordered
-	 */
-	protected EList<ResultCollection> resultCollection;
-
-	/**
-	 * The default value of the '{@link #getRequestId() <em>Request Id</em>}' attribute.
+	 * The cached value of the '{@link #getRequestId() <em>Request Id</em>}' reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @see #getRequestId()
 	 * @generated
 	 * @ordered
 	 */
-	protected static final Object REQUEST_ID_EDEFAULT = null;
-
-	/**
-	 * The cached value of the '{@link #getRequestId() <em>Request Id</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getRequestId()
-	 * @generated
-	 * @ordered
-	 */
-	protected Object requestId = REQUEST_ID_EDEFAULT;
+	protected UUID requestId;
 
 	/**
 	 * The cached value of the '{@link #getCountingResults() <em>Counting Results</em>}' containment reference list.
@@ -107,11 +90,9 @@ public class RequestResultImpl extends EObjectImpl implements RequestResult {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EList<ResultCollection> getResultCollection() {
-		if (resultCollection == null) {
-			resultCollection = new EObjectContainmentEList<ResultCollection>(ResultCollection.class, this, OutputPackage.REQUEST_RESULT__RESULT_COLLECTION);
-		}
-		return resultCollection;
+	public ResultCollection getResultCollection() {
+		if (eContainerFeatureID() != OutputPackage.REQUEST_RESULT__RESULT_COLLECTION) return null;
+		return (ResultCollection)eContainer();
 	}
 
 	/**
@@ -119,7 +100,65 @@ public class RequestResultImpl extends EObjectImpl implements RequestResult {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public Object getRequestId() {
+	public NotificationChain basicSetResultCollection(ResultCollection newResultCollection, NotificationChain msgs) {
+		msgs = eBasicSetContainer((InternalEObject)newResultCollection, OutputPackage.REQUEST_RESULT__RESULT_COLLECTION, msgs);
+		return msgs;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setResultCollection(ResultCollection newResultCollection) {
+		if (newResultCollection != eInternalContainer() || (eContainerFeatureID() != OutputPackage.REQUEST_RESULT__RESULT_COLLECTION && newResultCollection != null)) {
+			if (EcoreUtil.isAncestor(this, newResultCollection))
+				throw new IllegalArgumentException("Recursive containment not allowed for " + toString());
+			NotificationChain msgs = null;
+			if (eInternalContainer() != null)
+				msgs = eBasicRemoveFromContainer(msgs);
+			if (newResultCollection != null)
+				msgs = ((InternalEObject)newResultCollection).eInverseAdd(this, OutputPackage.RESULT_COLLECTION__REQUEST_RESULTS, ResultCollection.class, msgs);
+			msgs = basicSetResultCollection(newResultCollection, msgs);
+			if (msgs != null) msgs.dispatch();
+		}
+		else if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, OutputPackage.REQUEST_RESULT__RESULT_COLLECTION, newResultCollection, newResultCollection));
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@SuppressWarnings("unchecked")
+	@Override
+	public NotificationChain eInverseAdd(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
+		switch (featureID) {
+			case OutputPackage.REQUEST_RESULT__COUNTING_RESULTS:
+				return ((InternalEList<InternalEObject>)(InternalEList<?>)getCountingResults()).basicAdd(otherEnd, msgs);
+			case OutputPackage.REQUEST_RESULT__RESULT_COLLECTION:
+				if (eInternalContainer() != null)
+					msgs = eBasicRemoveFromContainer(msgs);
+				return basicSetResultCollection((ResultCollection)otherEnd, msgs);
+		}
+		return super.eInverseAdd(otherEnd, featureID, msgs);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public UUID getRequestId() {
+		if (requestId != null && requestId.eIsProxy()) {
+			InternalEObject oldRequestId = (InternalEObject)requestId;
+			requestId = (UUID)eResolveProxy(oldRequestId);
+			if (requestId != oldRequestId) {
+				if (eNotificationRequired())
+					eNotify(new ENotificationImpl(this, Notification.RESOLVE, OutputPackage.REQUEST_RESULT__REQUEST_ID, oldRequestId, requestId));
+			}
+		}
 		return requestId;
 	}
 
@@ -128,8 +167,17 @@ public class RequestResultImpl extends EObjectImpl implements RequestResult {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setRequestId(Object newRequestId) {
-		Object oldRequestId = requestId;
+	public UUID basicGetRequestId() {
+		return requestId;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setRequestId(UUID newRequestId) {
+		UUID oldRequestId = requestId;
 		requestId = newRequestId;
 		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, OutputPackage.REQUEST_RESULT__REQUEST_ID, oldRequestId, requestId));
@@ -142,7 +190,7 @@ public class RequestResultImpl extends EObjectImpl implements RequestResult {
 	 */
 	public EList<CountingResult> getCountingResults() {
 		if (countingResults == null) {
-			countingResults = new EObjectContainmentEList<CountingResult>(CountingResult.class, this, OutputPackage.REQUEST_RESULT__COUNTING_RESULTS);
+			countingResults = new EObjectContainmentWithInverseEList<CountingResult>(CountingResult.class, this, OutputPackage.REQUEST_RESULT__COUNTING_RESULTS, OutputPackage.COUNTING_RESULT__REQUEST_RESULT);
 		}
 		return countingResults;
 	}
@@ -155,10 +203,10 @@ public class RequestResultImpl extends EObjectImpl implements RequestResult {
 	@Override
 	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
 		switch (featureID) {
-			case OutputPackage.REQUEST_RESULT__RESULT_COLLECTION:
-				return ((InternalEList<?>)getResultCollection()).basicRemove(otherEnd, msgs);
 			case OutputPackage.REQUEST_RESULT__COUNTING_RESULTS:
 				return ((InternalEList<?>)getCountingResults()).basicRemove(otherEnd, msgs);
+			case OutputPackage.REQUEST_RESULT__RESULT_COLLECTION:
+				return basicSetResultCollection(null, msgs);
 		}
 		return super.eInverseRemove(otherEnd, featureID, msgs);
 	}
@@ -169,14 +217,29 @@ public class RequestResultImpl extends EObjectImpl implements RequestResult {
 	 * @generated
 	 */
 	@Override
+	public NotificationChain eBasicRemoveFromContainerFeature(NotificationChain msgs) {
+		switch (eContainerFeatureID()) {
+			case OutputPackage.REQUEST_RESULT__RESULT_COLLECTION:
+				return eInternalContainer().eInverseRemove(this, OutputPackage.RESULT_COLLECTION__REQUEST_RESULTS, ResultCollection.class, msgs);
+		}
+		return super.eBasicRemoveFromContainerFeature(msgs);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
-			case OutputPackage.REQUEST_RESULT__RESULT_COLLECTION:
-				return getResultCollection();
 			case OutputPackage.REQUEST_RESULT__REQUEST_ID:
-				return getRequestId();
+				if (resolve) return getRequestId();
+				return basicGetRequestId();
 			case OutputPackage.REQUEST_RESULT__COUNTING_RESULTS:
 				return getCountingResults();
+			case OutputPackage.REQUEST_RESULT__RESULT_COLLECTION:
+				return getResultCollection();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -190,16 +253,15 @@ public class RequestResultImpl extends EObjectImpl implements RequestResult {
 	@Override
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
-			case OutputPackage.REQUEST_RESULT__RESULT_COLLECTION:
-				getResultCollection().clear();
-				getResultCollection().addAll((Collection<? extends ResultCollection>)newValue);
-				return;
 			case OutputPackage.REQUEST_RESULT__REQUEST_ID:
-				setRequestId(newValue);
+				setRequestId((UUID)newValue);
 				return;
 			case OutputPackage.REQUEST_RESULT__COUNTING_RESULTS:
 				getCountingResults().clear();
 				getCountingResults().addAll((Collection<? extends CountingResult>)newValue);
+				return;
+			case OutputPackage.REQUEST_RESULT__RESULT_COLLECTION:
+				setResultCollection((ResultCollection)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -213,14 +275,14 @@ public class RequestResultImpl extends EObjectImpl implements RequestResult {
 	@Override
 	public void eUnset(int featureID) {
 		switch (featureID) {
-			case OutputPackage.REQUEST_RESULT__RESULT_COLLECTION:
-				getResultCollection().clear();
-				return;
 			case OutputPackage.REQUEST_RESULT__REQUEST_ID:
-				setRequestId(REQUEST_ID_EDEFAULT);
+				setRequestId((UUID)null);
 				return;
 			case OutputPackage.REQUEST_RESULT__COUNTING_RESULTS:
 				getCountingResults().clear();
+				return;
+			case OutputPackage.REQUEST_RESULT__RESULT_COLLECTION:
+				setResultCollection((ResultCollection)null);
 				return;
 		}
 		super.eUnset(featureID);
@@ -234,30 +296,14 @@ public class RequestResultImpl extends EObjectImpl implements RequestResult {
 	@Override
 	public boolean eIsSet(int featureID) {
 		switch (featureID) {
-			case OutputPackage.REQUEST_RESULT__RESULT_COLLECTION:
-				return resultCollection != null && !resultCollection.isEmpty();
 			case OutputPackage.REQUEST_RESULT__REQUEST_ID:
-				return REQUEST_ID_EDEFAULT == null ? requestId != null : !REQUEST_ID_EDEFAULT.equals(requestId);
+				return requestId != null;
 			case OutputPackage.REQUEST_RESULT__COUNTING_RESULTS:
 				return countingResults != null && !countingResults.isEmpty();
+			case OutputPackage.REQUEST_RESULT__RESULT_COLLECTION:
+				return getResultCollection() != null;
 		}
 		return super.eIsSet(featureID);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public String toString() {
-		if (eIsProxy()) return super.toString();
-
-		StringBuffer result = new StringBuffer(super.toString());
-		result.append(" (requestId: ");
-		result.append(requestId);
-		result.append(')');
-		return result.toString();
 	}
 
 } //RequestResultImpl

@@ -4,17 +4,19 @@
  *
  * $Id$
  */
-package edu.kit.ipd.sdq.bycounter.input.provider;
+package edu.kit.ipd.sdq.bycounter.output.provider;
 
 
-import edu.kit.ipd.sdq.bycounter.input.InputPackage;
-import edu.kit.ipd.sdq.bycounter.input.InstrumentedRegion;
+import edu.kit.ipd.sdq.bycounter.output.ArrayCreation;
+import edu.kit.ipd.sdq.bycounter.output.OutputPackage;
 
 import java.util.Collection;
 import java.util.List;
 
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.common.notify.Notification;
+
+import org.eclipse.emf.common.util.ResourceLocator;
 
 import org.eclipse.emf.edit.provider.ComposeableAdapterFactory;
 import org.eclipse.emf.edit.provider.IEditingDomainItemProvider;
@@ -24,16 +26,17 @@ import org.eclipse.emf.edit.provider.IItemPropertySource;
 import org.eclipse.emf.edit.provider.IStructuredItemContentProvider;
 import org.eclipse.emf.edit.provider.ITreeItemContentProvider;
 import org.eclipse.emf.edit.provider.ItemPropertyDescriptor;
+import org.eclipse.emf.edit.provider.ItemProviderAdapter;
 import org.eclipse.emf.edit.provider.ViewerNotification;
 
 /**
- * This is the item provider adapter for a {@link edu.kit.ipd.sdq.bycounter.input.InstrumentedRegion} object.
+ * This is the item provider adapter for a {@link edu.kit.ipd.sdq.bycounter.output.ArrayCreation} object.
  * <!-- begin-user-doc -->
  * <!-- end-user-doc -->
  * @generated
  */
-public class InstrumentedRegionItemProvider
-	extends EntityToInstrumentItemProvider
+public class ArrayCreationItemProvider
+	extends ItemProviderAdapter
 	implements
 		IEditingDomainItemProvider,
 		IStructuredItemContentProvider,
@@ -46,7 +49,7 @@ public class InstrumentedRegionItemProvider
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public InstrumentedRegionItemProvider(AdapterFactory adapterFactory) {
+	public ArrayCreationItemProvider(AdapterFactory adapterFactory) {
 		super(adapterFactory);
 	}
 
@@ -61,28 +64,49 @@ public class InstrumentedRegionItemProvider
 		if (itemPropertyDescriptors == null) {
 			super.getPropertyDescriptors(object);
 
-			addStartMethodPropertyDescriptor(object);
-			addStartLinePropertyDescriptor(object);
-			addStopMethodPropertyDescriptor(object);
-			addStopLinePropertyDescriptor(object);
+			addTypeDescriptorPropertyDescriptor(object);
+			addNumberOfDimensionsPropertyDescriptor(object);
+			addArrayTypePropertyDescriptor(object);
 		}
 		return itemPropertyDescriptors;
 	}
 
 	/**
-	 * This adds a property descriptor for the Start Line feature.
+	 * This adds a property descriptor for the Type Descriptor feature.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	protected void addStartLinePropertyDescriptor(Object object) {
+	protected void addTypeDescriptorPropertyDescriptor(Object object) {
 		itemPropertyDescriptors.add
 			(createItemPropertyDescriptor
 				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
 				 getResourceLocator(),
-				 getString("_UI_InstrumentedRegion_startLine_feature"),
-				 getString("_UI_PropertyDescriptor_description", "_UI_InstrumentedRegion_startLine_feature", "_UI_InstrumentedRegion_type"),
-				 InputPackage.Literals.INSTRUMENTED_REGION__START_LINE,
+				 getString("_UI_ArrayCreation_typeDescriptor_feature"),
+				 getString("_UI_PropertyDescriptor_description", "_UI_ArrayCreation_typeDescriptor_feature", "_UI_ArrayCreation_type"),
+				 OutputPackage.Literals.ARRAY_CREATION__TYPE_DESCRIPTOR,
+				 true,
+				 false,
+				 false,
+				 ItemPropertyDescriptor.GENERIC_VALUE_IMAGE,
+				 null,
+				 null));
+	}
+
+	/**
+	 * This adds a property descriptor for the Number Of Dimensions feature.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	protected void addNumberOfDimensionsPropertyDescriptor(Object object) {
+		itemPropertyDescriptors.add
+			(createItemPropertyDescriptor
+				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
+				 getResourceLocator(),
+				 getString("_UI_ArrayCreation_numberOfDimensions_feature"),
+				 getString("_UI_PropertyDescriptor_description", "_UI_ArrayCreation_numberOfDimensions_feature", "_UI_ArrayCreation_type"),
+				 OutputPackage.Literals.ARRAY_CREATION__NUMBER_OF_DIMENSIONS,
 				 true,
 				 false,
 				 false,
@@ -92,80 +116,36 @@ public class InstrumentedRegionItemProvider
 	}
 
 	/**
-	 * This adds a property descriptor for the Stop Line feature.
+	 * This adds a property descriptor for the Array Type feature.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	protected void addStopLinePropertyDescriptor(Object object) {
+	protected void addArrayTypePropertyDescriptor(Object object) {
 		itemPropertyDescriptors.add
 			(createItemPropertyDescriptor
 				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
 				 getResourceLocator(),
-				 getString("_UI_InstrumentedRegion_stopLine_feature"),
-				 getString("_UI_PropertyDescriptor_description", "_UI_InstrumentedRegion_stopLine_feature", "_UI_InstrumentedRegion_type"),
-				 InputPackage.Literals.INSTRUMENTED_REGION__STOP_LINE,
+				 getString("_UI_ArrayCreation_arrayType_feature"),
+				 getString("_UI_PropertyDescriptor_description", "_UI_ArrayCreation_arrayType_feature", "_UI_ArrayCreation_type"),
+				 OutputPackage.Literals.ARRAY_CREATION__ARRAY_TYPE,
 				 true,
 				 false,
 				 false,
-				 ItemPropertyDescriptor.INTEGRAL_VALUE_IMAGE,
+				 ItemPropertyDescriptor.GENERIC_VALUE_IMAGE,
 				 null,
 				 null));
 	}
 
 	/**
-	 * This adds a property descriptor for the Start Method feature.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected void addStartMethodPropertyDescriptor(Object object) {
-		itemPropertyDescriptors.add
-			(createItemPropertyDescriptor
-				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
-				 getResourceLocator(),
-				 getString("_UI_InstrumentedRegion_startMethod_feature"),
-				 getString("_UI_PropertyDescriptor_description", "_UI_InstrumentedRegion_startMethod_feature", "_UI_InstrumentedRegion_type"),
-				 InputPackage.Literals.INSTRUMENTED_REGION__START_METHOD,
-				 true,
-				 false,
-				 true,
-				 null,
-				 null,
-				 null));
-	}
-
-	/**
-	 * This adds a property descriptor for the Stop Method feature.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected void addStopMethodPropertyDescriptor(Object object) {
-		itemPropertyDescriptors.add
-			(createItemPropertyDescriptor
-				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
-				 getResourceLocator(),
-				 getString("_UI_InstrumentedRegion_stopMethod_feature"),
-				 getString("_UI_PropertyDescriptor_description", "_UI_InstrumentedRegion_stopMethod_feature", "_UI_InstrumentedRegion_type"),
-				 InputPackage.Literals.INSTRUMENTED_REGION__STOP_METHOD,
-				 true,
-				 false,
-				 true,
-				 null,
-				 null,
-				 null));
-	}
-
-	/**
-	 * This returns InstrumentedRegion.gif.
+	 * This returns ArrayCreation.gif.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
 	@Override
 	public Object getImage(Object object) {
-		return overlayImage(object, getResourceLocator().getImage("full/obj16/InstrumentedRegion"));
+		return overlayImage(object, getResourceLocator().getImage("full/obj16/ArrayCreation"));
 	}
 
 	/**
@@ -176,8 +156,10 @@ public class InstrumentedRegionItemProvider
 	 */
 	@Override
 	public String getText(Object object) {
-		InstrumentedRegion instrumentedRegion = (InstrumentedRegion)object;
-		return getString("_UI_InstrumentedRegion_type") + " " + instrumentedRegion.getStartLine();
+		String label = ((ArrayCreation)object).getTypeDescriptor();
+		return label == null || label.length() == 0 ?
+			getString("_UI_ArrayCreation_type") :
+			getString("_UI_ArrayCreation_type") + " " + label;
 	}
 
 	/**
@@ -191,9 +173,10 @@ public class InstrumentedRegionItemProvider
 	public void notifyChanged(Notification notification) {
 		updateChildren(notification);
 
-		switch (notification.getFeatureID(InstrumentedRegion.class)) {
-			case InputPackage.INSTRUMENTED_REGION__START_LINE:
-			case InputPackage.INSTRUMENTED_REGION__STOP_LINE:
+		switch (notification.getFeatureID(ArrayCreation.class)) {
+			case OutputPackage.ARRAY_CREATION__TYPE_DESCRIPTOR:
+			case OutputPackage.ARRAY_CREATION__NUMBER_OF_DIMENSIONS:
+			case OutputPackage.ARRAY_CREATION__ARRAY_TYPE:
 				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
 				return;
 		}
@@ -210,6 +193,17 @@ public class InstrumentedRegionItemProvider
 	@Override
 	protected void collectNewChildDescriptors(Collection<Object> newChildDescriptors, Object object) {
 		super.collectNewChildDescriptors(newChildDescriptors, object);
+	}
+
+	/**
+	 * Return the resource locator for this item provider's resources.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public ResourceLocator getResourceLocator() {
+		return ByCounterEditPlugin.INSTANCE;
 	}
 
 }

@@ -4,17 +4,19 @@
  *
  * $Id$
  */
-package edu.kit.ipd.sdq.bycounter.input.provider;
+package edu.kit.ipd.sdq.bycounter.output.provider;
 
 
-import edu.kit.ipd.sdq.bycounter.input.InputPackage;
-import edu.kit.ipd.sdq.bycounter.input.InstrumentedRegion;
+import edu.kit.ipd.sdq.bycounter.output.MethodCallCount;
+import edu.kit.ipd.sdq.bycounter.output.OutputPackage;
 
 import java.util.Collection;
 import java.util.List;
 
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.common.notify.Notification;
+
+import org.eclipse.emf.common.util.ResourceLocator;
 
 import org.eclipse.emf.edit.provider.ComposeableAdapterFactory;
 import org.eclipse.emf.edit.provider.IEditingDomainItemProvider;
@@ -24,16 +26,17 @@ import org.eclipse.emf.edit.provider.IItemPropertySource;
 import org.eclipse.emf.edit.provider.IStructuredItemContentProvider;
 import org.eclipse.emf.edit.provider.ITreeItemContentProvider;
 import org.eclipse.emf.edit.provider.ItemPropertyDescriptor;
+import org.eclipse.emf.edit.provider.ItemProviderAdapter;
 import org.eclipse.emf.edit.provider.ViewerNotification;
 
 /**
- * This is the item provider adapter for a {@link edu.kit.ipd.sdq.bycounter.input.InstrumentedRegion} object.
+ * This is the item provider adapter for a {@link edu.kit.ipd.sdq.bycounter.output.MethodCallCount} object.
  * <!-- begin-user-doc -->
  * <!-- end-user-doc -->
  * @generated
  */
-public class InstrumentedRegionItemProvider
-	extends EntityToInstrumentItemProvider
+public class MethodCallCountItemProvider
+	extends ItemProviderAdapter
 	implements
 		IEditingDomainItemProvider,
 		IStructuredItemContentProvider,
@@ -46,7 +49,7 @@ public class InstrumentedRegionItemProvider
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public InstrumentedRegionItemProvider(AdapterFactory adapterFactory) {
+	public MethodCallCountItemProvider(AdapterFactory adapterFactory) {
 		super(adapterFactory);
 	}
 
@@ -61,28 +64,48 @@ public class InstrumentedRegionItemProvider
 		if (itemPropertyDescriptors == null) {
 			super.getPropertyDescriptors(object);
 
-			addStartMethodPropertyDescriptor(object);
-			addStartLinePropertyDescriptor(object);
-			addStopMethodPropertyDescriptor(object);
-			addStopLinePropertyDescriptor(object);
+			addQualifiedFunctionNamePropertyDescriptor(object);
+			addCountPropertyDescriptor(object);
 		}
 		return itemPropertyDescriptors;
 	}
 
 	/**
-	 * This adds a property descriptor for the Start Line feature.
+	 * This adds a property descriptor for the Qualified Function Name feature.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	protected void addStartLinePropertyDescriptor(Object object) {
+	protected void addQualifiedFunctionNamePropertyDescriptor(Object object) {
 		itemPropertyDescriptors.add
 			(createItemPropertyDescriptor
 				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
 				 getResourceLocator(),
-				 getString("_UI_InstrumentedRegion_startLine_feature"),
-				 getString("_UI_PropertyDescriptor_description", "_UI_InstrumentedRegion_startLine_feature", "_UI_InstrumentedRegion_type"),
-				 InputPackage.Literals.INSTRUMENTED_REGION__START_LINE,
+				 getString("_UI_MethodCallCount_qualifiedFunctionName_feature"),
+				 getString("_UI_PropertyDescriptor_description", "_UI_MethodCallCount_qualifiedFunctionName_feature", "_UI_MethodCallCount_type"),
+				 OutputPackage.Literals.METHOD_CALL_COUNT__QUALIFIED_FUNCTION_NAME,
+				 true,
+				 false,
+				 false,
+				 ItemPropertyDescriptor.GENERIC_VALUE_IMAGE,
+				 null,
+				 null));
+	}
+
+	/**
+	 * This adds a property descriptor for the Count feature.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	protected void addCountPropertyDescriptor(Object object) {
+		itemPropertyDescriptors.add
+			(createItemPropertyDescriptor
+				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
+				 getResourceLocator(),
+				 getString("_UI_MethodCallCount_count_feature"),
+				 getString("_UI_PropertyDescriptor_description", "_UI_MethodCallCount_count_feature", "_UI_MethodCallCount_type"),
+				 OutputPackage.Literals.METHOD_CALL_COUNT__COUNT,
 				 true,
 				 false,
 				 false,
@@ -92,80 +115,14 @@ public class InstrumentedRegionItemProvider
 	}
 
 	/**
-	 * This adds a property descriptor for the Stop Line feature.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected void addStopLinePropertyDescriptor(Object object) {
-		itemPropertyDescriptors.add
-			(createItemPropertyDescriptor
-				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
-				 getResourceLocator(),
-				 getString("_UI_InstrumentedRegion_stopLine_feature"),
-				 getString("_UI_PropertyDescriptor_description", "_UI_InstrumentedRegion_stopLine_feature", "_UI_InstrumentedRegion_type"),
-				 InputPackage.Literals.INSTRUMENTED_REGION__STOP_LINE,
-				 true,
-				 false,
-				 false,
-				 ItemPropertyDescriptor.INTEGRAL_VALUE_IMAGE,
-				 null,
-				 null));
-	}
-
-	/**
-	 * This adds a property descriptor for the Start Method feature.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected void addStartMethodPropertyDescriptor(Object object) {
-		itemPropertyDescriptors.add
-			(createItemPropertyDescriptor
-				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
-				 getResourceLocator(),
-				 getString("_UI_InstrumentedRegion_startMethod_feature"),
-				 getString("_UI_PropertyDescriptor_description", "_UI_InstrumentedRegion_startMethod_feature", "_UI_InstrumentedRegion_type"),
-				 InputPackage.Literals.INSTRUMENTED_REGION__START_METHOD,
-				 true,
-				 false,
-				 true,
-				 null,
-				 null,
-				 null));
-	}
-
-	/**
-	 * This adds a property descriptor for the Stop Method feature.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected void addStopMethodPropertyDescriptor(Object object) {
-		itemPropertyDescriptors.add
-			(createItemPropertyDescriptor
-				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
-				 getResourceLocator(),
-				 getString("_UI_InstrumentedRegion_stopMethod_feature"),
-				 getString("_UI_PropertyDescriptor_description", "_UI_InstrumentedRegion_stopMethod_feature", "_UI_InstrumentedRegion_type"),
-				 InputPackage.Literals.INSTRUMENTED_REGION__STOP_METHOD,
-				 true,
-				 false,
-				 true,
-				 null,
-				 null,
-				 null));
-	}
-
-	/**
-	 * This returns InstrumentedRegion.gif.
+	 * This returns MethodCallCount.gif.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
 	@Override
 	public Object getImage(Object object) {
-		return overlayImage(object, getResourceLocator().getImage("full/obj16/InstrumentedRegion"));
+		return overlayImage(object, getResourceLocator().getImage("full/obj16/MethodCallCount"));
 	}
 
 	/**
@@ -176,8 +133,11 @@ public class InstrumentedRegionItemProvider
 	 */
 	@Override
 	public String getText(Object object) {
-		InstrumentedRegion instrumentedRegion = (InstrumentedRegion)object;
-		return getString("_UI_InstrumentedRegion_type") + " " + instrumentedRegion.getStartLine();
+		Object labelValue = ((MethodCallCount)object).getQualifiedFunctionName();
+		String label = labelValue == null ? null : labelValue.toString();
+		return label == null || label.length() == 0 ?
+			getString("_UI_MethodCallCount_type") :
+			getString("_UI_MethodCallCount_type") + " " + label;
 	}
 
 	/**
@@ -191,9 +151,9 @@ public class InstrumentedRegionItemProvider
 	public void notifyChanged(Notification notification) {
 		updateChildren(notification);
 
-		switch (notification.getFeatureID(InstrumentedRegion.class)) {
-			case InputPackage.INSTRUMENTED_REGION__START_LINE:
-			case InputPackage.INSTRUMENTED_REGION__STOP_LINE:
+		switch (notification.getFeatureID(MethodCallCount.class)) {
+			case OutputPackage.METHOD_CALL_COUNT__QUALIFIED_FUNCTION_NAME:
+			case OutputPackage.METHOD_CALL_COUNT__COUNT:
 				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
 				return;
 		}
@@ -210,6 +170,17 @@ public class InstrumentedRegionItemProvider
 	@Override
 	protected void collectNewChildDescriptors(Collection<Object> newChildDescriptors, Object object) {
 		super.collectNewChildDescriptors(newChildDescriptors, object);
+	}
+
+	/**
+	 * Return the resource locator for this item provider's resources.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public ResourceLocator getResourceLocator() {
+		return ByCounterEditPlugin.INSTANCE;
 	}
 
 }
