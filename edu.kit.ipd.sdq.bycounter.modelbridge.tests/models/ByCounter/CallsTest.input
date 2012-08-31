@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ASCII"?>
-<ByCounter.Input:InstrumentationProfileRepository xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ByCounter.Input="http://sdq.ipd.kit.edu/ByCounterModels/Input/0.3" xmlns:statements="http://www.fzi.de/gast/statements" id="_jqvgpPu3Ed-BhIizDfZifw">
-  <instrumentationProfile id="_jqJqwPu3Ed-BhIizDfZifw" persistInstrumentedClasses="">
-    <entitiesToInstrument xsi:type="ByCounter.Input:InstrumentedCodeArea" id="_jqvgoPu3Ed-BhIizDfZifw" from="statements:BlockStatement ../GAST/Fibonacci(merged).gast#_oD7g3_ybEd-93MTxWiOuvg" to="statements:BlockStatement ../GAST/Fibonacci(merged).gast#_oD7g3_ybEd-93MTxWiOuvg"/>
+<ByCounter.Input:InstrumentationProfileRepository xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ByCounter.Input="http://sdq.ipd.kit.edu/ByCounterModels/Input/0.3" xmlns:statements="http://www.fzi.de/gast/statements" identifier:id="_jqvgpPu3Ed-BhIizDfZifw">
+  <instrumentationProfile identifier:id="_jqJqwPu3Ed-BhIizDfZifw" persistInstrumentedClassesToOSPath="">
+    <entitiesToInstrument xsi:type="ByCounter.Input:InstrumentedCodeArea" from="statements:BlockStatement ../GAST/Fibonacci(merged).gast#_oD7g3_ybEd-93MTxWiOuvg" to="statements:BlockStatement ../GAST/Fibonacci(merged).gast#_oD7g3_ybEd-93MTxWiOuvg"/>
   </instrumentationProfile>
 </ByCounter.Input:InstrumentationProfileRepository>
