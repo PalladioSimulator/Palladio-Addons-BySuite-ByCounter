@@ -7,6 +7,7 @@ import java.util.logging.Logger;
 import de.uka.ipd.sdq.ByCounter.execution.BytecodeCounter;
 import de.uka.ipd.sdq.ByCounter.execution.CountingResultBase;
 import de.uka.ipd.sdq.ByCounter.execution.CountingResultCollector;
+import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentedMethod;
 import de.uka.ipd.sdq.ByCounter.parsing.LineNumberRange;
 import de.uka.ipd.sdq.ByCounter.results.CountingResult;
 import de.uka.ipd.sdq.ByCounter.utils.MethodDescriptor;
@@ -33,7 +34,7 @@ public class RunExample {
 		MethodDescriptor fibonacciAlgorithmMD = new MethodDescriptor(
 				className,
 				"public long fibonacci(long rounds)"); //$NON-NLS-1$
-		counter.instrument(fibonacciAlgorithmMD);
+		counter.instrument(new InstrumentedMethod(fibonacciAlgorithmMD));
 
 		// execute method
 		// executing the test method supports setting initialization parameters
@@ -66,7 +67,7 @@ public class RunExample {
 		MethodDescriptor fibonacciAlgorithmMD = new MethodDescriptor(
 				className,
 				"public long fibonacci(long rounds)"); //$NON-NLS-1$
-		counter.instrument(fibonacciAlgorithmMD);
+		counter.instrument(new InstrumentedMethod(fibonacciAlgorithmMD));
 
 		// execute method
 		// executing the test method supports setting initialization parameters
@@ -102,7 +103,7 @@ public class RunExample {
 		LineNumberRange[] codeAreasToInstrument = new LineNumberRange[]{new LineNumberRange(20,	32)};
 		fibonacciAlgorithmMD.setCodeAreasToInstrument(codeAreasToInstrument);
 		counter.getInstrumentationParams().setUseBasicBlocks(true);
-		counter.instrument(fibonacciAlgorithmMD);
+		counter.instrument(new InstrumentedMethod(fibonacciAlgorithmMD));
 
 		// execute method
 		// executing the test method supports setting initialization parameters

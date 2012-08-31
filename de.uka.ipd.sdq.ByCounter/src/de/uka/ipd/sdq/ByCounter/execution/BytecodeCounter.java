@@ -6,7 +6,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -19,9 +18,12 @@ import java.util.logging.Logger;
 
 import org.objectweb.asm.ClassReader;
 
+import de.uka.ipd.sdq.ByCounter.instrumentation.EntityToInstrument;
 import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentationContext;
 import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentationParameters;
-import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentationRegion;
+import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentedClass;
+import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentedMethod;
+import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentedRegion;
 import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentationScopeModeEnum;
 import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentationState;
 import de.uka.ipd.sdq.ByCounter.instrumentation.Instrumenter;
@@ -296,65 +298,42 @@ public final class BytecodeCounter {
 	 * @return True, if the instrumentation was successful, false otherwise.
 	 */
 	public synchronized boolean instrument() {
-		List<MethodDescriptor> methodsToInstrument = this.instrumentationParameters.getMethodsToInstrument();
-		if(methodsToInstrument == null) {
-			log.severe("Trying to instrument but no method(s) to instrument were specified.");
+		List<EntityToInstrument> entitiesToInstrument = 
+				new LinkedList<EntityToInstrument>(
+						this.instrumentationParameters.getEntitiesToInstrument());
+		if(entitiesToInstrument == null || entitiesToInstrument.isEmpty()) {
+			log.severe("Trying to instrument but no entities to instrument were specified.");
 		}
-		return this.instrument(methodsToInstrument);
-	}
-	
-	public synchronized boolean instrumentAllInClass(String className, 
-			String[] listOfExceptions) {
-		return instrumentAllInClass(className, listOfExceptions, true);
+		return this.instrument(entitiesToInstrument);
 	}
 	
 	/**
-	 * Instrument all methods.
-	 * @param className Canonical class name
-	 * @param listOfExceptions A list of packages prefixes or classes that will 
-	 * not be instrumented TODO this is not working right now...
-	 * @return True, if the instrumentation process succeeds.
+	 * Convenience method for calling {@link #instrument(EntityToInstrument)}
+	 * with a {@link InstrumentedMethod}.
+	 * @param fullMethod Method to fully instrument.
 	 */
-	public synchronized boolean instrumentAllInClass(String className, 
-			String[] listOfExceptions, boolean printInstrumentationSummary) {
-		if(listOfExceptions!=null && listOfExceptions.length!=0){
-			log.severe("The following methods should not be instrumented, " +
-					"but this wish is currently ignored: "+Arrays.toString(listOfExceptions));
-			//TODO consider throwing an exception here...
-		}
-		this.instrumentationParameters.setInstrumentationScopeOverrideClassLevel(
-				InstrumentationScopeModeEnum.InstrumentEverything);
-		boolean ret = instrumentSingleClass(null, className);
-		if(printInstrumentationSummary) this.printInstrumentationSummary();
-		return ret;
-	}
-
-	/**
-	 * Instrument all methods of a class, without exceptions.
-	 * @param className Canonical class name
-	 * @return True, if the instrumentation process succeeds.
-	 */
-	public synchronized boolean instrumentAllInClassWithoutExceptions(String className) {
-		return instrumentAllInClass(className, new String[]{});
+	public void instrument(MethodDescriptor fullMethod) {
+		this.instrument(new InstrumentedMethod(fullMethod));
 	}
 
 	/**
 	 * Instrument the specified methods with ByCounter instructions for 
 	 * counting, reporting etc.
-	 * @param methodsToInstrument A {@link List} of {@link MethodDescriptor}s 
-	 * where each MethodDescriptor represent a method that will be 
-	 * instrumented.
+	 * @param entitiesToInstrument A {@link List} of {@link EntityToInstrument} 
+	 * that will be instrumented.
 	 * @return True, if the instrumentation was successful, false otherwise.
 	 */
-	public synchronized boolean instrument(List<MethodDescriptor> methodsToInstrument) {
-
+	public synchronized boolean instrument(List<EntityToInstrument> entitiesToInstrument) {
+		// reset instrumentation state
+		this.instrumentationState = new InstrumentationState();
+		
 		// check the supplied list
-		if(methodsToInstrument == null) {
-			log.severe("passed methodsToInstrument list is null; no methods to instrument");
+		if(entitiesToInstrument == null) {
+			log.severe("passed entitiesToInstrument list is null; nothing to instrument");
 			return false;
 		}
-		if(methodsToInstrument.isEmpty()) {
-			log.warning("Empty list of methods to instrument. Nothing to do.");
+		if(entitiesToInstrument.isEmpty()) {
+			log.warning("Empty list of entities to instrument. Nothing to do.");
 			return true;
 		}
 
@@ -363,22 +342,38 @@ public final class BytecodeCounter {
 		
 		// set the instrumentationParameters to match
 		//TODO make clear this is non-additive!
-		List<MethodDescriptor> methodsCurrent = this.instrumentationParameters.getMethodsToInstrument();
-		if(methodsCurrent!=null && methodsCurrent.size()>0){
-			log.severe("Overwriting methodsToInstrument in instrumentationParameters: "+
-					"was "+methodsCurrent+", will be "+methodsToInstrument);
+		List<EntityToInstrument> entitiesCurrent = this.instrumentationParameters.getEntitiesToInstrument();
+		if(entitiesCurrent!=null && entitiesCurrent.size()>0){
+			log.severe("Overwriting entitiesToInstrument in instrumentationParameters: "+
+					"was "+entitiesCurrent+", will be "+entitiesToInstrument);
 		}
-		this.instrumentationParameters.setMethodsToInstrument(methodsToInstrument);
+		this.instrumentationParameters.getEntitiesToInstrument().clear();
+		this.instrumentationParameters.getEntitiesToInstrument().addAll(entitiesToInstrument);
 
 		// a map that holds the set of all method definitions for each class
 		Map<String, ClassMethodImplementations> classMethodDefinitions = 
 			new HashMap<String, ClassMethodImplementations>();
 		
 		// create a set of class names to instrument
+		// create an initial set of methods to instrument
 		Set<String> classesToInstrument = new HashSet<String>();
-		for(MethodDescriptor m : instrumentationParameters.getMethodsToInstrument()) {
-			success = findClassesToInstrument(classesToInstrument, classMethodDefinitions, m)
-						&& success;
+		Set<String> classesInstrumentEverything = new HashSet<String>();
+		for(EntityToInstrument e : instrumentationParameters.getEntitiesToInstrument()) {
+			if(e instanceof InstrumentedClass) {
+				String canonicalClassName = ((InstrumentedClass) e).getCanonicalClassName();
+				classesToInstrument.add(canonicalClassName);
+				classesInstrumentEverything.add(canonicalClassName);
+			} else {
+				for(MethodDescriptor m : e.getMethodsToInstrument()) {
+					// add method
+					if(!this.instrumentationState.getMethodsToInstrumentCalculated().contains(m)) {
+						this.instrumentationState.getMethodsToInstrumentCalculated().add(m);
+					}
+					// add class name
+					success = findClassesToInstrument(classesToInstrument, classMethodDefinitions, m)
+								&& success;
+				}
+			}
 		}
 
 		// for recursive instrumentation we need to preparse the classes
@@ -403,25 +398,27 @@ public final class BytecodeCounter {
 				}
 			}
 			this.instrumentationState.setMethodsToInstrumentCalculated(
-					this.selectMethodsFromCallGraph());
+					this.selectMethodsFromCallGraph(
+							this.instrumentationState.getMethodsToInstrumentCalculated()));
 			// since we created the call graph, we may now have to instrument
 			// additional classes, so add them to the list here
 			for(MethodDescriptor m : instrumentationState.getMethodsToInstrumentCalculated()) {
 				success = findClassesToInstrument(classesToInstrument, classMethodDefinitions, m)
 				 		&& success;
 			}
-		} else {
-			this.instrumentationState.setMethodsToInstrumentCalculated(this.instrumentationParameters.getMethodsToInstrument());
 		}
 		// select methods if instrumentation regions have been specified
 		{
 			List<MethodDescriptor> mtiCalc = instrumentationState.getMethodsToInstrumentCalculated();
-			for(InstrumentationRegion ir: this.instrumentationParameters.getInstrumentationRegions()) {
-				if(!mtiCalc.contains(ir.getStartMethod())) {
-					mtiCalc.add(ir.getStartMethod());
-				}
-				if(!mtiCalc.contains(ir.getStopMethod())) {
-					mtiCalc.add(ir.getStopMethod());
+			for(EntityToInstrument e : this.instrumentationParameters.getEntitiesToInstrument()) {
+				if(e instanceof InstrumentedRegion) {
+					final InstrumentedRegion ir = (InstrumentedRegion) e;
+					if(!mtiCalc.contains(ir.getStartMethod())) {
+						mtiCalc.add(ir.getStartMethod());
+					}
+					if(!mtiCalc.contains(ir.getStopMethod())) {
+						mtiCalc.add(ir.getStopMethod());
+					}
 				}
 			}
 		}
@@ -436,9 +433,14 @@ public final class BytecodeCounter {
     	}
 		// iterate through all selected classes
 		for(String className : classesToInstrument) {
+			InstrumentationScopeModeEnum oldV = instrumentationParameters.getInstrumentationScopeOverrideClassLevel();
+			if(classesInstrumentEverything.contains(classesToInstrument)) {
+				instrumentationParameters.setInstrumentationScopeOverrideClassLevel(InstrumentationScopeModeEnum.InstrumentEverything);
+			}
 			success = instrumentSingleClass(
 					instrumentationState.getMethodsToInstrumentCalculated(), 
 					className) && success;
+			instrumentationParameters.setInstrumentationScopeOverrideClassLevel(oldV);
 		}
 		this.printInstrumentationSummary();
 
@@ -489,7 +491,7 @@ public final class BytecodeCounter {
 					String superCanonicalClassName = methods.getSuperClass().replace('/', '.');
 					// if there already is a methoddescriptor for the superclasses method, skip it
 					if(MethodDescriptor.findMethodInList(
-							instrumentationParameters.getMethodsToInstrument(), 
+							instrumentationState.getMethodsToInstrumentCalculated(), 
 							superCanonicalClassName, 
 							currentM.getSimpleClassName(), 
 							currentM.getDescriptor()) != -1) {
@@ -520,18 +522,19 @@ public final class BytecodeCounter {
 	 * If instrumentRecursivly is set in the instrumentation parameters,
 	 * we need to instrument methods called from the methods to instrument.
 	 * This method uses the {@link #callGraph} to select these methods.
-	 * @return Calculated {@link List} of methods to instrument. 
+	 * @param rootMethods Descriptors of the methods that start the search in 
+	 * the call graph. 
+	 * @return Calculated {@link Set} of methods to instrument. 
 	 */
-	private List<MethodDescriptor> selectMethodsFromCallGraph() {
+	private List<MethodDescriptor> selectMethodsFromCallGraph(List<MethodDescriptor> rootMethods) {
 		// copy all methods specified in instrumentation parameters
-		Collection<MethodDescriptor> results = 
-				new LinkedList<MethodDescriptor>(
-						this.instrumentationParameters.getMethodsToInstrument());//initial copy
+		List<MethodDescriptor> results = 
+				new ArrayList<MethodDescriptor>(rootMethods);//initial copy
 
 		log.info("Selecting methods from the call graph.");
 		//TODO add duplicate check here (or earlier)
 		// now traverse the callgraph to add the recursive methods
-		for(MethodDescriptor md : this.instrumentationParameters.getMethodsToInstrument()) {
+		for(MethodDescriptor md : rootMethods) {
 			// find the appropriate node in the callgraph
 			final CallGraphMethod m = this.callGraph.findMethod(md);
 			if(m == null) {
@@ -542,7 +545,7 @@ public final class BytecodeCounter {
 					results,
 					m);
 		}
-		return new LinkedList<MethodDescriptor>(results);
+		return new ArrayList<MethodDescriptor>(results);
 	}
 	
 	/**
@@ -605,13 +608,12 @@ public final class BytecodeCounter {
 	/**
 	 * Instrument the specified method with ByCounter instructions for 
 	 * counting, reporting etc.
-	 * @param methodToInstrument A {@link MethodDescriptor} representing 
-	 * the method to instrument.
+	 * @param entityToInstrument An {@link EntityToInstrument}.
 	 */
-	public synchronized void instrument(MethodDescriptor methodToInstrument) {
-		ArrayList<MethodDescriptor> methodDescriptors = new ArrayList<MethodDescriptor>(1);
-		methodDescriptors.add(methodToInstrument);
-		this.instrument(methodDescriptors);
+	public synchronized void instrument(EntityToInstrument entityToInstrument) {
+		List<EntityToInstrument> entities = new ArrayList<EntityToInstrument>(1);
+		entities.add(entityToInstrument);
+		this.instrument(entities);
 	}
 
 	/**
@@ -744,7 +746,7 @@ public final class BytecodeCounter {
 					loaded.printInstructionBlocks(log);
 					// print all range blocks
 					if(this.instrumentationParameters.hasMethodsWithCodeAreas()
-							|| !this.instrumentationParameters.getInstrumentationRegions().isEmpty()) {
+							|| this.instrumentationParameters.hasInstrumentationRegions()) {
 						loaded = iContext.getRangeBlocks();
 						if(loaded != null) {
 							log.info("Range blocks:");

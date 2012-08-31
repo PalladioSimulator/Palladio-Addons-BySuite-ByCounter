@@ -6,14 +6,16 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Logger;
 
-import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 import org.objectweb.asm.Opcodes;
 
 import de.uka.ipd.sdq.ByCounter.execution.BytecodeCounter;
 import de.uka.ipd.sdq.ByCounter.execution.CountingResultCollector;
 import de.uka.ipd.sdq.ByCounter.execution.ExecutionSettings;
+import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentationParameters;
 import de.uka.ipd.sdq.ByCounter.results.CountingResult;
 import de.uka.ipd.sdq.ByCounter.test.framework.expectations.Expectation;
 import de.uka.ipd.sdq.ByCounter.test.helpers.ClassZ;
@@ -28,23 +30,18 @@ import de.uka.ipd.sdq.ByCounter.utils.MethodDescriptor;
  * @author Florian Schreier
  * @see <a href="https://sdqweb.ipd.kit.edu/bugzilla/show_bug.cgi?id=726">Bugzilla Bug 726</a>
  */
-public class TestInternalClassDefinition {
+@RunWith(Parameterized.class)
+public class TestInternalClassDefinition extends AbstractByCounterTest {
 	
+	public TestInternalClassDefinition(InstrumentationParameters params) {
+		super(params);
+	}
+
 	private static final String SIGNATURE_METHOD = "public void methodA1()";
 	
 	/** This logger is used to log all kinds of messages of this test suite. */
 	private static final Logger LOG = Logger.getLogger(TestInternalClassDefinition.class.getCanonicalName());
 
-
-  /**
-   * Cleans up after every test.
-   */
-  @After
-  public void cleanResults() {
-      // clear all collected results
-      CountingResultCollector.getInstance().clearResults();
-  }
-	
 	/**
 	 * Tests if pattern matching on internal classes works correctly.
 	 */
@@ -111,7 +108,7 @@ public class TestInternalClassDefinition {
 			   .add(PrintStream.class.getCanonicalName(), "public void println(java.lang.String x)", 2); // 1x ClassY.methodX1(), 1x ClassZ.methodX1()
 		
 		//1. Set up a BytecodeCounter instance to use ByCounter, using a parameterless constructor. 
-		BytecodeCounter counter = new BytecodeCounter();
+		BytecodeCounter counter = setupByCounter();
 
 		//2. Specify the method to be instrumented (several methods are supported as well)
 		MethodDescriptor myMethod = new MethodDescriptor(TestSubjectInterfaceMethods.class.getCanonicalName(), SIGNATURE_METHOD);

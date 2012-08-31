@@ -9,6 +9,7 @@ import junit.framework.Assert;
 import de.uka.ipd.sdq.ByCounter.execution.BytecodeCounter;
 import de.uka.ipd.sdq.ByCounter.execution.CountingResultCollector;
 import de.uka.ipd.sdq.ByCounter.execution.IFullCountingResult;
+import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentedMethod;
 import de.uka.ipd.sdq.ByCounter.results.CountingResult;
 import de.uka.ipd.sdq.ByCounter.utils.MethodDescriptor;
 
@@ -55,7 +56,7 @@ public class Utils {
 	public static CountingResult getCountingResultForTest(BytecodeCounter c, 
 			MethodDescriptor methodToInstrument,
 			MethodDescriptor methodToExecute) {
-		c.instrument(methodToInstrument);
+		c.instrument(new InstrumentedMethod(methodToInstrument));
 		c.execute(methodToExecute, new Object[0]);
 	
 		CountingResult r = getAssertedResult();

@@ -22,9 +22,10 @@ import org.objectweb.asm.tree.TryCatchBlockNode;
 import org.objectweb.asm.tree.TypeInsnNode;
 
 import de.uka.ipd.sdq.ByCounter.instrumentation.BlockCountingMode;
+import de.uka.ipd.sdq.ByCounter.instrumentation.EntityToInstrument;
 import de.uka.ipd.sdq.ByCounter.instrumentation.IInstructionAnalyser;
 import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentationParameters;
-import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentationRegion;
+import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentedRegion;
 import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentationState;
 import de.uka.ipd.sdq.ByCounter.instrumentation.MethodCountMethodAdapter;
 import de.uka.ipd.sdq.ByCounter.utils.MethodDescriptor;
@@ -126,17 +127,27 @@ public final class MethodPreInstrumentationParser extends MethodAdapter {
 				this.instrumentationState.getInstrumentationContext().setBlockCountingMode(method.getCanonicalMethodName(), BlockCountingMode.RangeBlocks);
 			}
 			// are code areas specified for the method?
-			List<InstrumentationRegion> regions = this.instrumentationParameters.getInstrumentationRegions();
-			if(useRegions) {
-				log.info("Analysing method for label blocks.");
-				this.labelAfterInvokeAnalyser = new LabelAfterInvokeAnalyser();
-				this.regionAnalyser = new RegionAnalyser(
-						this.instrumentationState,
-						method, 
-						regions,
-						this.lineNumberAnalyser);
-				this.instructionAnalysers.add(regionAnalyser);
-				this.instrumentationState.getInstrumentationContext().setBlockCountingMode(method.getCanonicalMethodName(), BlockCountingMode.LabelBlocks);
+			if(this.instrumentationParameters.hasInstrumentationRegionForMethod(this.method)) {
+				List<InstrumentedRegion> regions = new LinkedList<InstrumentedRegion>();
+				if(useRegions) {
+					// calculate regions
+					for(EntityToInstrument e : this.instrumentationParameters.getEntitiesToInstrument()) {
+						if (e instanceof InstrumentedRegion) {
+							InstrumentedRegion r = (InstrumentedRegion) e;
+							regions.add(r);
+						}
+					}
+					// analyse
+					log.info("Analysing method for label blocks.");
+					this.labelAfterInvokeAnalyser = new LabelAfterInvokeAnalyser();
+					this.regionAnalyser = new RegionAnalyser(
+							this.instrumentationState,
+							method, 
+							regions,
+							this.lineNumberAnalyser);
+					this.instructionAnalysers.add(regionAnalyser);
+					this.instrumentationState.getInstrumentationContext().setBlockCountingMode(method.getCanonicalMethodName(), BlockCountingMode.LabelBlocks);
+				}
 			}
 		}
 	}

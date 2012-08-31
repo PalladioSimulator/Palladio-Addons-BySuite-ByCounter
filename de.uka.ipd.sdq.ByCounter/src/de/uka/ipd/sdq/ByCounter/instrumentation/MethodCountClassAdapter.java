@@ -204,7 +204,7 @@ public final class MethodCountClassAdapter extends ClassAdapter {
 	/**
 	 * An array of boolean where an entry is true, if the method with the same 
 	 * index in the method list of instrumParams was instrumented. 
-	 * Used for error checking by Instrumenter.
+	 * Used for error checking by {@link Instrumenter}.
 	 */
 	protected boolean[] methodInstrumentationStatus;
 

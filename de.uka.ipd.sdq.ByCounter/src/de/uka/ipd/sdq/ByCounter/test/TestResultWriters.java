@@ -42,11 +42,11 @@ public class TestResultWriters extends AbstractByCounterTest {
 	
 	private static final String TEST_CSV_DIRECTORY = "outputCsv";
 
-	private static String testClassName = TestSubject.class.getCanonicalName();
+	private static final String CLASS_TEST_SUBJECT = TestSubject.class.getCanonicalName();
 
-	private static final String testMethod = "public void methodCallTest()";
+	private static final String METHOD_METHOD_CALL_TEST = "public void methodCallTest()";
 
-	private static final String testMethod2 = "public boolean parameterTest(int i, float f, java.lang.String s)";
+	private static final String METHOD_PARAMETER_TEST = "public boolean parameterTest(int i, float f, java.lang.String s)";
 
 	/**
 	 * This constructor is used by the Parametrized runner
@@ -78,7 +78,7 @@ public class TestResultWriters extends AbstractByCounterTest {
 
 		// test with void method
 		MethodDescriptor methodDescriptor = new MethodDescriptor(
-				testClassName, testMethod);
+				CLASS_TEST_SUBJECT, METHOD_METHOD_CALL_TEST);
 		counter.instrument(methodDescriptor);
 		counter.execute(methodDescriptor, new Object[]{});
 
@@ -141,7 +141,7 @@ public class TestResultWriters extends AbstractByCounterTest {
 
 		// test with void method
 		MethodDescriptor methodDescriptor = new MethodDescriptor(
-				testClassName, testMethod);
+				CLASS_TEST_SUBJECT, METHOD_METHOD_CALL_TEST);
 		counter.instrument(methodDescriptor);
 		counter.execute(methodDescriptor, new Object[]{});
 
@@ -217,7 +217,7 @@ public class TestResultWriters extends AbstractByCounterTest {
 
 		// test with void method
 		MethodDescriptor methodDescriptor = new MethodDescriptor(
-				testClassName, testMethod);
+				CLASS_TEST_SUBJECT, METHOD_METHOD_CALL_TEST);
 		counter.instrument(methodDescriptor);
 		counter.execute(methodDescriptor, new Object[]{});
 
@@ -268,7 +268,7 @@ public class TestResultWriters extends AbstractByCounterTest {
 
 		// test with void method
 		MethodDescriptor methodDescriptor = new MethodDescriptor(
-				testClassName, testMethod);
+				CLASS_TEST_SUBJECT, METHOD_METHOD_CALL_TEST);
 		counter.instrument(methodDescriptor);
 		counter.execute(methodDescriptor, new Object[]{});
 
@@ -277,11 +277,11 @@ public class TestResultWriters extends AbstractByCounterTest {
 		cleanResults();
 
 		// test with boolean method
-		methodDescriptor = new MethodDescriptor(testClassName,
-			testMethod2);
+		methodDescriptor = new MethodDescriptor(CLASS_TEST_SUBJECT,
+			METHOD_PARAMETER_TEST);
 		counter.instrument(methodDescriptor);
 		counter.execute(methodDescriptor,
-			new Object[]{2, 2, testClassName});
+			new Object[]{2, 2, CLASS_TEST_SUBJECT});
 
 		// check whether a file was written
 		checkAndDeleteFile(resultLogFileName);
@@ -290,11 +290,11 @@ public class TestResultWriters extends AbstractByCounterTest {
 		counter.getInstrumentationParams().setUseResultCollector(true);
 
 		// test with boolean method
-		methodDescriptor = new MethodDescriptor(testClassName,
-			testMethod2);
+		methodDescriptor = new MethodDescriptor(CLASS_TEST_SUBJECT,
+			METHOD_PARAMETER_TEST);
 		counter.instrument(methodDescriptor);
 		counter.execute(methodDescriptor,
-			new Object[]{2, 2, testClassName});
+			new Object[]{2, 2, CLASS_TEST_SUBJECT});
 
 		// check whether a file was written
 		checkAndDeleteFile(resultLogFileName);
@@ -318,7 +318,7 @@ public class TestResultWriters extends AbstractByCounterTest {
 
 		// test with void method
 		MethodDescriptor methodDescriptor = new MethodDescriptor(
-				testClassName, testMethod);
+				CLASS_TEST_SUBJECT, METHOD_METHOD_CALL_TEST);
 		counter.instrument(methodDescriptor);
 		counter.execute(methodDescriptor, new Object[]{});
 

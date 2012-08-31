@@ -13,7 +13,7 @@ import java.util.TreeSet;
 import java.util.UUID;
 
 import de.uka.ipd.sdq.ByCounter.instrumentation.BlockCountingMode;
-import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentationRegion;
+import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentedRegion;
 import de.uka.ipd.sdq.ByCounter.parsing.ArrayCreation;
 import de.uka.ipd.sdq.ByCounter.parsing.LineNumberRange;
 import de.uka.ipd.sdq.ByCounter.results.CountingResult;
@@ -55,13 +55,13 @@ public class CollectionStrategyDefault extends AbstractCollectionStrategy {
 
 	/** Region that is currently counted. Is null when no region is 
 	 * active. */
-	private InstrumentationRegion currentRegion;
+	private InstrumentedRegion currentRegion;
 
 	/**
 	 * When the instrumentation region ends, the last block needs 
 	 * to be added still.
 	 */
-	private InstrumentationRegion regionEnd;
+	private InstrumentedRegion regionEnd;
 	
 	/**
 	 * Construct the strategy object.
@@ -172,7 +172,7 @@ public class CollectionStrategyDefault extends AbstractCollectionStrategy {
 				res.setObservedElement(observedRange);
 			} else if(result.blockCountingMode == BlockCountingMode.LabelBlocks) {
 				final int labelBlockIndex = result.blockExecutionSequence.get(result.blockExecutionSequence.size()-1);
-				for(InstrumentationRegion ir : parentResultCollector.instrumentationContext.getInstrumentationRegions()) {
+				for(InstrumentedRegion ir : parentResultCollector.instrumentationContext.getInstrumentationRegions()) {
 					if(ir != null) {
 						if(ir.getStartLabelIds().contains(labelBlockIndex)
 								&& result.qualifyingMethodName.equals(ir.getStartMethod().getQualifyingMethodName())) {

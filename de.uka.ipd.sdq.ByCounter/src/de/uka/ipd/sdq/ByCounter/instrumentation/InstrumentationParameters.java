@@ -19,7 +19,7 @@ import de.uka.ipd.sdq.ByCounter.utils.MethodDescriptor;
  * <li>{@link #setWriteClassesToDiskDirectory(File)} only applies if {@link #getWriteClassesToDisk()} == true</li>
  * <li>{@link #setRecordBlockExecutionOrder(boolean)} only applies if either range blocks or basic blocks are used, i.e. if {@link #getUseBasicBlocks()} == true</li>
  * <li>{@link #setUseArrayParameterRecording(boolean)} is currently only supported when not using basic/range blocks.</li>
- * <li>Instrumentation regions ({@link #getInstrumentationRegions()}) only work with {@link #getUseBasicBlocks()} == true and {@link #getProvideOnlineSectionExecutionUpdates()} == true</li>
+ * <li>Instrumentation regions ({@link InstrumentedRegion}) only work with {@link #getUseBasicBlocks()} == true and {@link #getProvideOnlineSectionExecutionUpdates()} == true</li>
  * </ul>
  * </p>
  * 
@@ -52,6 +52,9 @@ public final class InstrumentationParameters implements Cloneable {
 	 */
 	public static final boolean RECORD_BLOCK_EXECUTION_ORDER_DEFAULT = true;
 
+	/** Default value for {@link #getEntitiesToInstrument()}. */
+	private static final LinkedList<EntityToInstrument> ENTITIES_TO_INSTRUMENT_DEFAULT = new LinkedList<EntityToInstrument>();
+
 	/** Default value for {@link #getInstrumentationScopeOverrideClassLevel()}. */
 	public static final InstrumentationScopeModeEnum INSTRUMENTATION_SCOPE_OVERRIDE_CLASS_LEVEL_DEFAULT = InstrumentationScopeModeEnum.InstrumentAsSpecified;
 	
@@ -69,9 +72,6 @@ public final class InstrumentationParameters implements Cloneable {
 
 	/** Default value for {@link #getInstrumentRecursively()}. */
 	public static final boolean INSTRUMENT_RECURSIVELY_DEFAULT = false;
-
-	/** Default value for {@link #getMethodsToInstrument()}. */
-	public static final List<MethodDescriptor> METHODS_TO_INSTRUMENT_DEFAULT = null;
 
 	/** Default value for {@link #getUseHighRegistersForCounting()}. */
 	public static final boolean USE_HIGH_REGISTERS_FOR_COUNTING_DEFAULT = true;
@@ -113,9 +113,6 @@ public final class InstrumentationParameters implements Cloneable {
 		RESULT_LOG_DEFAULT_DIRECTORY + 
 		File.separatorChar;
 
-	/** Default value of {@link #getInstrumentationRegions()}.*/
-	private static final List<InstrumentationRegion> INSTRUMENTATION_REGIONS_DEFAULT = new LinkedList<InstrumentationRegion>();
-
 	/**
 	 * A list of strings that cause a class to be ignored in the parsing 
 	 * when found at the start of a package name.
@@ -133,12 +130,14 @@ public final class InstrumentationParameters implements Cloneable {
 	private boolean countStatically;
 	
 	/**
+	 * The entities to instrument in the instrumentation run.
+	 */
+	private List<EntityToInstrument> entitiesToInstrument;
+	
+	/**
 	 * @see #setInstrumentRecursivly(boolean, int)
 	 */
 	private boolean instrumentRecursively;
-	
-	/** Descriptions of the methods that shall be instrumented. */
-	private List<MethodDescriptor> methodsToInstrument;
 	
 	/** The filename of the log containing the results, that is used if useResultCollector == false. */
 	private String resultLogFileName;
@@ -221,11 +220,6 @@ public final class InstrumentationParameters implements Cloneable {
 	private InstrumentationScopeModeEnum instrumentationScopeOverrideMethodLevel;
 	
 	/**
-	 * {@link InstrumentationRegion}s to instrument.
-	 */
-	private List<InstrumentationRegion> instrumentationRegions;
-
-	/**
 	 * This is intended only for construction in multiple steps.
 	 * Methods to instrument are NOT set - you must do so manually! 
 	 * Assumes dynamic analysis and usage of the CountingResultCollector.
@@ -234,7 +228,7 @@ public final class InstrumentationParameters implements Cloneable {
 	 */
 	@SuppressWarnings("dep-ann")
 	public InstrumentationParameters() {
-		this(	METHODS_TO_INSTRUMENT_DEFAULT,
+		this(	ENTITIES_TO_INSTRUMENT_DEFAULT,
 				USE_HIGH_REGISTERS_FOR_COUNTING_DEFAULT,
 				USE_RESULT_COLLECTOR_DEFAULT,	// use CountingResultCollector instead of result log
 				USE_ARRAY_PARAMETER_RECORDING,
@@ -247,12 +241,11 @@ public final class InstrumentationParameters implements Cloneable {
 	 * Assumes dynamic analysis and usage of the CountingResultCollector. Array 
 	 * construction parameters will not be recorded.
 	 * Uses high registers for counting.
-	 * @param pMethodsToInstrument Name of the methods that shall be instrumented.
-	 * When false, results are written to disk directly. 
+	 * @param pEntitesToInstrument Entities that shall be instrumented. 
 	 */
 	@SuppressWarnings("dep-ann")
-	public InstrumentationParameters(List<MethodDescriptor> pMethodsToInstrument) {
-		this(pMethodsToInstrument, 
+	public InstrumentationParameters(final List<EntityToInstrument> pEntitesToInstrument) {
+		this(pEntitesToInstrument, 
 				USE_HIGH_REGISTERS_FOR_COUNTING_DEFAULT,
 				USE_RESULT_COLLECTOR_DEFAULT,	// use CountingResultCollector instead of result log
 				USE_ARRAY_PARAMETER_RECORDING,
@@ -262,7 +255,7 @@ public final class InstrumentationParameters implements Cloneable {
 	}
 	
 	/**
-	 * @param pMethodsToInstrument Name of the methods that shall be instrumented.
+	 * @param pEntitesToInstrument Entities that shall be instrumented.
 	 * @param pUseHighRegistersForCounting Decides whether to preallocate registers near max_locals instead of using LocalVariablesSorter.
 	 * @param pUseResultCollector Decides whether to use the CountingResultCollector framework.
 	 * @param pUseArrayParameterRecording Decides whether instrumentation for the recording of parameters of array construction takes place. Causes some additional overhead.
@@ -271,13 +264,12 @@ public final class InstrumentationParameters implements Cloneable {
 	 * for counting. See the COUNTER_PRECISION_ constants. 
 	 */
 	public InstrumentationParameters(
-			List<MethodDescriptor> pMethodsToInstrument,
+			final List<EntityToInstrument> pEntitesToInstrument,
 			boolean pUseHighRegistersForCounting, 
 			boolean pUseResultCollector,
 			boolean pUseArrayParameterRecording,
 			boolean countStatically,
 			InstrumentationCounterPrecision counterPrecision) {
-		this.setMethodsToInstrument(pMethodsToInstrument);
 		this.setUseBasicBlocks(USE_BASIC_BLOCKS_DEFAULT);
 		this.setUseHighRegistersForCounting(pUseHighRegistersForCounting);
 		this.setUseResultCollector(pUseResultCollector);
@@ -295,7 +287,7 @@ public final class InstrumentationParameters implements Cloneable {
 		this.instrumentRecursively = INSTRUMENT_RECURSIVELY_DEFAULT;
 		this.provideOnlineSectionExecutionUpdates = PROVIDE_ONLINE_SECTION_EXECUTION_UPDATES_DEFAULT;
 		this.provideJoinThreadsAbility = PROVIDE_JOIN_THREADS_ABILITY_DEFAULT;
-		this.instrumentationRegions = INSTRUMENTATION_REGIONS_DEFAULT;
+		this.entitiesToInstrument = pEntitesToInstrument;
 	}
 	
 	/* (non-Javadoc)
@@ -318,7 +310,6 @@ public final class InstrumentationParameters implements Cloneable {
 		copy.instrumentationScopeOverrideClassLevel = this.instrumentationScopeOverrideClassLevel;
 		copy.instrumentationScopeOverrideMethodLevel = this.instrumentationScopeOverrideMethodLevel;
 		copy.instrumentRecursively = this.instrumentRecursively;
-		copy.methodsToInstrument = this.methodsToInstrument == null ? null : new LinkedList<MethodDescriptor>(this.methodsToInstrument);
 		copy.provideJoinThreadsAbility = this.provideJoinThreadsAbility;
 		copy.provideOnlineSectionActiveUpdates = this.provideOnlineSectionActiveUpdates;
 		copy.provideOnlineSectionExecutionUpdates = this.provideOnlineSectionExecutionUpdates;
@@ -333,7 +324,7 @@ public final class InstrumentationParameters implements Cloneable {
 		copy.useResultLogWriter = this.useResultLogWriter;
 		copy.writeClassesToDisk = this.writeClassesToDisk;
 		copy.writeClassesToDiskDirectory = this.writeClassesToDiskDirectory;
-		copy.instrumentationRegions = this.instrumentationRegions == null ? null : new LinkedList<InstrumentationRegion>(this.instrumentationRegions);
+		copy.entitiesToInstrument = new LinkedList<EntityToInstrument>(this.entitiesToInstrument);
 		
 		return copy;
 	}
@@ -349,10 +340,10 @@ public final class InstrumentationParameters implements Cloneable {
 	}
 	
 	/**
-	 * @return {@link InstrumentationRegion}s to instrument.
+	 * @return The entities to instrument in the instrumentation run.
 	 */
-	public List<InstrumentationRegion> getInstrumentationRegions() {
-		return this.instrumentationRegions;
+	public List<EntityToInstrument> getEntitiesToInstrument() {
+		return this.entitiesToInstrument;
 	}
 	
 	/**
@@ -360,13 +351,6 @@ public final class InstrumentationParameters implements Cloneable {
 	 */
 	public boolean getInstrumentRecursively() {
 		return this.instrumentRecursively;
-	}
-	
-	/**
-	 * @return The methods to instrument described as <code>MethodDescriptor</code>.
-	 */
-	public List<MethodDescriptor> getMethodsToInstrument() {
-		return this.methodsToInstrument;
 	}
 
 	/**
@@ -431,15 +415,6 @@ public final class InstrumentationParameters implements Cloneable {
 	public void setCountStatically(boolean countStatically) {
 		this.countStatically = countStatically;
 	}
-
-	/**
-	 * @param methodsToInstrument Sets the methods to instrument described as <code>MethodDescriptor</code>.
-	 */
-	public void setMethodsToInstrument(
-			List<MethodDescriptor> methodsToInstrument) {
-		this.methodsToInstrument = methodsToInstrument;
-	}
-
 
 	/**
 	 * Enable writing of result logs and
@@ -519,8 +494,7 @@ public final class InstrumentationParameters implements Cloneable {
 		b.append("counterPrecision:             	  " + this.counterPrecision + ", \n");
 		b.append("countStatically:                    " + this.countStatically + ", \n");
 		b.append("instrumentRecursively:              " + this.instrumentRecursively + ", \n");
-		b.append("methodsToInstrument:                " + this.methodsToInstrument + ", \n");
-		b.append("instrumentationRegions:             " + this.instrumentationRegions + ", \n");
+		b.append("entitesToInstrument:                " + this.entitiesToInstrument + ", \n");
 		b.append("provideJoinThreadsAbility:          " + this.provideJoinThreadsAbility + ", \n");
 		b.append("provideOnlineSectionActiveUpdates:  " + this.provideOnlineSectionActiveUpdates + ", \n");
 		b.append("provideOnlineSectionExecutionUpdates:" + this.provideOnlineSectionExecutionUpdates + ", \n");
@@ -660,21 +634,13 @@ public final class InstrumentationParameters implements Cloneable {
 	public void setCounterPrecision(InstrumentationCounterPrecision counterPrecision) {
 		this.counterPrecision = counterPrecision;
 	}
-	
-	/**
-	 * @param instrumentationRegions {@link InstrumentationRegion}s to instrument.
-	 */
-	public void setInstrumentationRegions(
-			List<InstrumentationRegion> instrumentationRegions) {
-		this.instrumentationRegions = instrumentationRegions;
-	}
 
 	/**
-	 * When set, instruments methods called from the {@link #setMethodsToInstrument(List)} that 
+	 * When set, instruments methods called from the methods specified in 
+	 * {@link #getEntitiesToInstrument()} that 
 	 * are not Java API methods (packages java.*, javax.* sun.*) and not 
 	 * native methods.
-	 * @param instrumentRecursively When true, the above aplies.
-	 * specified for instrumentation (@see {@link #setMethodsToInstrument}).
+	 * @param instrumentRecursively When true, the above applies.
 	 */
 	public void setInstrumentRecursively(boolean instrumentRecursively) {
 		this.instrumentRecursively = instrumentRecursively;
@@ -781,14 +747,30 @@ public final class InstrumentationParameters implements Cloneable {
 	}
 	
 	/**
-	 * @see #getInstrumentationRegions()
-	 * @param md A method that will be searched for {@link InstrumentationRegion}s.
-	 * @return True if an {@link InstrumentationRegion} exists that either has 
+	 * @see #getEntitiesToInstrument()
+	 * @param md A method that will be searched for {@link InstrumentedRegion}s.
+	 * @return True if an {@link InstrumentedRegion} exists that either has 
 	 * a start or a stop for the given method.
 	 */
 	public boolean hasInstrumentationRegionForMethod(MethodDescriptor md) {
-		for(InstrumentationRegion r : this.instrumentationRegions) {
-			if(r.getStartMethod().equals(md) || r.getStopMethod().equals(md)) {
+		for(EntityToInstrument e : this.entitiesToInstrument) {
+			if (e instanceof InstrumentedRegion) {
+				InstrumentedRegion r = (InstrumentedRegion) e;
+				if(r.getStartMethod().equals(md) || r.getStopMethod().equals(md)) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * @see #getEntitiesToInstrument()
+	 * @return True if an {@link InstrumentedRegion} exists in {@link #getEntitiesToInstrument()}.
+	 */
+	public boolean hasInstrumentationRegions() {
+		for(EntityToInstrument e : this.entitiesToInstrument) {
+			if(e instanceof InstrumentedRegion) {
 				return true;
 			}
 		}
@@ -796,34 +778,40 @@ public final class InstrumentationParameters implements Cloneable {
 	}
 
 	/**
-	 * @see #getInstrumentationRegions()
-	 * @param md A method that will be searched for {@link InstrumentationRegion}s 
+	 * @see #getEntitiesToInstrument()
+	 * @see #hasInstrumentationRegionForMethod(MethodDescriptor)
+	 * @param md A method that will be searched for {@link InstrumentedRegion}s 
 	 * that end here.
-	 * @return True if an {@link InstrumentationRegion} exists that has 
+	 * @return True if an {@link InstrumentedRegion} exists that has 
 	 * stop for the given method.
 	 */
 	public boolean hasInstrumentationRegionEndForMethod(MethodDescriptor md) {
-		for(InstrumentationRegion r : this.instrumentationRegions) {
-			if(r.getStopMethod().equals(md)) {
-				return true;
+		for(EntityToInstrument e : this.entitiesToInstrument) {
+			if (e instanceof InstrumentedRegion) {
+				InstrumentedRegion r = (InstrumentedRegion) e;
+				if(r.getStopMethod().equals(md)) {
+					return true;
+				}
 			}
 		}
 		return false;
 	}
 
 	/**
-	 * @return True, if there is a method that has codeareas defined using 
+	 * @return True, if there is a method that has code areas defined using 
 	 * the {@link MethodDescriptor#setCodeAreasToInstrument(LineNumberRange[])}
 	 * method.
 	 */
 	public boolean hasMethodsWithCodeAreas() {
-		if(getMethodsToInstrument() == null) {
+		if(getEntitiesToInstrument() == null) {
 			return false;
 		}
-		for(MethodDescriptor method : getMethodsToInstrument()) {
-			if(method.getCodeAreasToInstrument() != null
-							&& method.getCodeAreasToInstrument().length != 0) {
-				return true;
+		for(EntityToInstrument e : getEntitiesToInstrument()) {
+			for(MethodDescriptor method : e.getMethodsToInstrument()) {
+				if(method.getCodeAreasToInstrument() != null
+								&& method.getCodeAreasToInstrument().length != 0) {
+					return true;
+				}
 			}
 		}
 		return false;
@@ -850,8 +838,7 @@ public final class InstrumentationParameters implements Cloneable {
 	 * conflicting.
 	 */
 	public void verify() throws IllegalArgumentException {
-		if(this.instrumentationRegions != null
-				&& !this.instrumentationRegions.isEmpty()) {
+		if(this.hasInstrumentationRegions()) {
 			// dealing with instrumentation regions
 			if(this.useBasicBlocks == false) {
 				throw new IllegalArgumentException("useBasicBlocks must be true when specifying instrumentation regions.");

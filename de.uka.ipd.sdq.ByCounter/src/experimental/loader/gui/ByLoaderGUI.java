@@ -38,8 +38,10 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeModel;
 
+import de.uka.ipd.sdq.ByCounter.instrumentation.EntityToInstrument;
 import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentationCounterPrecision;
 import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentationParameters;
+import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentedMethod;
 import de.uka.ipd.sdq.ByCounter.utils.Barrier;
 import de.uka.ipd.sdq.ByCounter.utils.MethodDescriptor;
 
@@ -441,10 +443,10 @@ public class ByLoaderGUI extends JFrame {
 		}
 
 		InstrumentationParameters params;
-		ArrayList<MethodDescriptor> methods =
-			new ArrayList<MethodDescriptor>(methodListModel.getSize());
+		ArrayList<EntityToInstrument> methods =
+			new ArrayList<EntityToInstrument>(methodListModel.getSize());
 		for(int i = 0; i < methodListModel.getSize(); i++) {
-			methods.add((MethodDescriptor)methodListModel.elementAt(i));
+			methods.add(new InstrumentedMethod((MethodDescriptor)methodListModel.elementAt(i)));
 		}
 		params = new InstrumentationParameters(methods, true, true, false, false, InstrumentationCounterPrecision.Long);
 		log.fine("Instrumentation params after adding methods, before setting conf: "+params);

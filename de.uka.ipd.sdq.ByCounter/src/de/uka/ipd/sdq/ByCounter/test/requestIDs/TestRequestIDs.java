@@ -15,7 +15,9 @@ import org.junit.runners.Parameterized;
 
 import de.uka.ipd.sdq.ByCounter.execution.BytecodeCounter;
 import de.uka.ipd.sdq.ByCounter.execution.CountingResultCollector;
+import de.uka.ipd.sdq.ByCounter.instrumentation.EntityToInstrument;
 import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentationParameters;
+import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentedMethod;
 import de.uka.ipd.sdq.ByCounter.results.CountingResult;
 import de.uka.ipd.sdq.ByCounter.results.RequestResult;
 import de.uka.ipd.sdq.ByCounter.results.ResultCollection;
@@ -90,16 +92,16 @@ public class TestRequestIDs extends AbstractByCounterTest {
 		
 		long start = System.nanoTime();
 		log.fine("(NOT INITIALISED)" + this.counter.getInstrumentationParams().toString());
-		List<MethodDescriptor> methDescs = new ArrayList<MethodDescriptor>();
+		List<EntityToInstrument> methDescs = new ArrayList<EntityToInstrument>();
 		// the order of adding the methods is used further down for checking the results
-		methDescs.add(methDescMethodA);
-		methDescs.add(methDescMethodB);
-		methDescs.add(methDescDoSth);
-		methDescs.add(methDescDoSthElse);
-		methDescs.add(methDescDoSthDifferent);
-		methDescs.add(methDescDoSthStatic);
-		methDescs.add(methDesc7);
-		methDescs.add(methDesc8);
+		methDescs.add(new InstrumentedMethod(methDescMethodA));
+		methDescs.add(new InstrumentedMethod(methDescMethodB));
+		methDescs.add(new InstrumentedMethod(methDescDoSth));
+		methDescs.add(new InstrumentedMethod(methDescDoSthElse));
+		methDescs.add(new InstrumentedMethod(methDescDoSthDifferent));
+		methDescs.add(new InstrumentedMethod(methDescDoSthStatic));
+		methDescs.add(new InstrumentedMethod(methDesc7));
+		methDescs.add(new InstrumentedMethod(methDesc8));
 		this.counter.instrument(methDescs);
 		this.counter.execute(this.methodToExecute, 
 				this.executionParameters);

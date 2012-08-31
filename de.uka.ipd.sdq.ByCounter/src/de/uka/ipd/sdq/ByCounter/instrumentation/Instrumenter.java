@@ -415,11 +415,12 @@ public final class Instrumenter {
 					}
 					javax.swing.JOptionPane.showMessageDialog(null, message);
 					retValue = false;
+					throw new RuntimeException(message);
 				}else{
 					String message = "SUCCESS with instrumenting \n"+
 					this.instrumentationState.getMethodsToInstrumentCalculated().get(i).toString_Linebreaks();
 					// set properties for the instrumentation context
-					if(this.instrumentationParameters.getInstrumentationRegions().isEmpty()) {
+					if(!this.instrumentationParameters.hasInstrumentationRegions()) {
 						this.instrumentationState.getInstrumentationContext().setCountingMode(CountingMode.Default);
 					} else {
 						this.instrumentationState.getInstrumentationContext().setCountingMode(CountingMode.Regions);

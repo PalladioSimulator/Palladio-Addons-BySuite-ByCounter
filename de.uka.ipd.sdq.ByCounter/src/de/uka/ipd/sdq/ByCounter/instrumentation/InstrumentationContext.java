@@ -69,7 +69,7 @@ public class InstrumentationContext implements Serializable {
 	/**
 	 * Instrumentation region definitions.
 	 */
-	private Set<InstrumentationRegion> instrumentationRegions;
+	private Set<InstrumentedRegion> instrumentationRegions;
 	
 	/**
 	 * The mode of counting when using block based counting by method.
@@ -100,7 +100,7 @@ public class InstrumentationContext implements Serializable {
 		this.basicBlocks = new InstructionBlockSerialisation();
 		this.rangeBlocks = new InstructionBlockSerialisation();
 		this.labelBlocks = new InstructionBlockSerialisation();
-		this.instrumentationRegions = new HashSet<InstrumentationRegion>();
+		this.instrumentationRegions = new HashSet<InstrumentedRegion>();
 		this.arrayCreations = new HashMap<String, List<ArrayCreation>>();
 		this.blockCountingMode = new HashMap<String, BlockCountingMode>();
 		this.countingMode = CountingMode.Default;
@@ -188,7 +188,7 @@ public class InstrumentationContext implements Serializable {
 	/**
 	 * @return Instrumentation region definitions.
 	 */
-	public Set<InstrumentationRegion> getInstrumentationRegions() {
+	public Set<InstrumentedRegion> getInstrumentationRegions() {
 		return this.instrumentationRegions;
 	}
 	

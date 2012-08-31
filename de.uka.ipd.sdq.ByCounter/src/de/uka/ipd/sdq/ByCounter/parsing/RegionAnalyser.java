@@ -5,14 +5,14 @@ import java.util.List;
 
 import org.objectweb.asm.tree.InsnList;
 
-import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentationRegion;
+import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentedRegion;
 import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentationState;
 import de.uka.ipd.sdq.ByCounter.utils.MethodDescriptor;
 
 public class RegionAnalyser extends LabelBlockAnalyser {
 	
-	/** User-specified {@link InstrumentationRegion}s. */
-	private List<InstrumentationRegion> regions;
+	/** User-specified {@link InstrumentedRegion}s. */
+	private List<InstrumentedRegion> regions;
 	/** Current method. */
 	private MethodDescriptor method;
 	/**
@@ -24,12 +24,12 @@ public class RegionAnalyser extends LabelBlockAnalyser {
 	/**
 	 * @param instrumentationState {@link InstrumentationState}.
 	 * @param method current method
-	 * @param regions User-specified {@link InstrumentationRegion}s.
+	 * @param regions User-specified {@link InstrumentedRegion}s.
 	 * @param lineNumberAnalyser {@link LineNumberAnalyser}.
 	 */
 	public RegionAnalyser(InstrumentationState instrumentationState,
 			MethodDescriptor method,
-			List<InstrumentationRegion> regions,
+			List<InstrumentedRegion> regions,
 			LineNumberAnalyser lineNumberAnalyser) {
 		super(method.getCanonicalMethodName(), instrumentationState);
 		this.regions = regions;
@@ -51,7 +51,7 @@ public class RegionAnalyser extends LabelBlockAnalyser {
 	 */
 	private void saveLabelIdsForRegions() {
 		// calculate current regions
-		for(InstrumentationRegion reg : regions) {
+		for(InstrumentedRegion reg : regions) {
 			if(reg.getStartMethod().getCanonicalMethodName().equals(this.method.getCanonicalMethodName())) {
 				List<InstructionBlockLocation> startLabels = this.lineNumberAnalyser.findLabelBlockByLine(reg.getStartLine());
 				List<Integer> labelIds = new LinkedList<Integer>();

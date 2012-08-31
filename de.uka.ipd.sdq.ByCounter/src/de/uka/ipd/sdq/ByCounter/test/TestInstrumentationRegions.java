@@ -14,7 +14,7 @@ import org.objectweb.asm.Opcodes;
 import de.uka.ipd.sdq.ByCounter.execution.BytecodeCounter;
 import de.uka.ipd.sdq.ByCounter.execution.CountingResultCollector;
 import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentationParameters;
-import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentationRegion;
+import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentedRegion;
 import de.uka.ipd.sdq.ByCounter.parsing.LineNumberRange;
 import de.uka.ipd.sdq.ByCounter.results.CountingResult;
 import de.uka.ipd.sdq.ByCounter.test.framework.expectations.Expectation;
@@ -24,7 +24,7 @@ import de.uka.ipd.sdq.ByCounter.utils.MethodDescriptor;
 
 /**
  * This test suite tests ByCounter when instrumenting using 
- * {@link InstrumentationRegion}s.
+ * {@link InstrumentedRegion}s.
  *
  * @since 0.1
  * @version 2.0
@@ -87,10 +87,10 @@ public class TestInstrumentationRegions extends AbstractByCounterTest {
 			
 		});
 		
-		InstrumentationRegion r1 = new InstrumentationRegion(
+		InstrumentedRegion r1 = new InstrumentedRegion(
 				methodStart, 112, 
 				methodStop, 99);
-		counter.getInstrumentationParams().getInstrumentationRegions().add(r1);
+		counter.getInstrumentationParams().getEntitiesToInstrument().add(r1);
 
 		// expectations is the sum of the opcodes in the different methods.
 		Expectation expectation = new Expectation();
@@ -114,7 +114,7 @@ public class TestInstrumentationRegions extends AbstractByCounterTest {
 						 .add(mdParameterTest.getCanonicalMethodName(), 1)
 						 .add(methodStop.getCanonicalMethodName(), 1);
 		
-		counter.instrument(methodStart);
+		counter.instrument();
 		
 		Object[] executionParameters = new Object[0];
 		counter.execute(methodStart, executionParameters);
@@ -143,14 +143,14 @@ public class TestInstrumentationRegions extends AbstractByCounterTest {
 		String canonicalClassName = ExecutionOrder.class.getCanonicalName();
 		String methodSignature = "void process()";
         MethodDescriptor methodRanged = new MethodDescriptor(canonicalClassName, methodSignature);
-		InstrumentationRegion region = new InstrumentationRegion(methodRanged, 15, methodRanged, 15);
+		InstrumentedRegion region = new InstrumentedRegion(methodRanged, 15, methodRanged, 15);
 
 		// initialise
         BytecodeCounter counter = setupByCounter();
-        List<InstrumentationRegion> instrumentationRegions = new LinkedList<InstrumentationRegion>();
+        List<InstrumentedRegion> instrumentationRegions = new LinkedList<InstrumentedRegion>();
         instrumentationRegions.add(region);
-		counter.getInstrumentationParams().setInstrumentationRegions(instrumentationRegions);
-        counter.instrument(methodRanged);
+		counter.getInstrumentationParams().getEntitiesToInstrument().addAll(instrumentationRegions);
+        counter.instrument();
         counter.execute(methodRanged, new Object[0]);
 
         CountingResult[] results = CountingResultCollector.getInstance().retrieveAllCountingResults().getCountingResults().toArray(new CountingResult[0]);
@@ -172,7 +172,7 @@ public class TestInstrumentationRegions extends AbstractByCounterTest {
 		String canonicalClassName = ExecutionOrder.class.getCanonicalName();
 		String methodSignature = "void process()";
         MethodDescriptor methodRanged = new MethodDescriptor(canonicalClassName, methodSignature);
-		InstrumentationRegion region = new InstrumentationRegion(methodRanged, 15, methodRanged, 15);
+		InstrumentedRegion region = new InstrumentedRegion(methodRanged, 15, methodRanged, 15);
 
 		// initialise
         BytecodeCounter counter = setupByCounter();
@@ -180,9 +180,9 @@ public class TestInstrumentationRegions extends AbstractByCounterTest {
         
         // try no basic blocks
         counter.getInstrumentationParams().setUseBasicBlocks(false);
-        List<InstrumentationRegion> instrumentationRegions = new LinkedList<InstrumentationRegion>();
+        List<InstrumentedRegion> instrumentationRegions = new LinkedList<InstrumentedRegion>();
         instrumentationRegions.add(region);
-		counter.getInstrumentationParams().setInstrumentationRegions(instrumentationRegions);
+		counter.getInstrumentationParams().getEntitiesToInstrument().addAll(instrumentationRegions);
 		// try to instrument
 		boolean exceptionThrown = false;
 		try {
@@ -204,7 +204,7 @@ public class TestInstrumentationRegions extends AbstractByCounterTest {
 		String canonicalClassName = ExecutionOrder.class.getCanonicalName();
 		String methodSignature = "void process()";
         MethodDescriptor methodRanged = new MethodDescriptor(canonicalClassName, methodSignature);
-        InstrumentationRegion region = new InstrumentationRegion(methodRanged, 15, methodRanged, 15);
+        InstrumentedRegion region = new InstrumentedRegion(methodRanged, 15, methodRanged, 15);
 
 		// initialise
         BytecodeCounter counter = setupByCounter();
@@ -212,12 +212,12 @@ public class TestInstrumentationRegions extends AbstractByCounterTest {
         
 		// try no online updates
 		counter.getInstrumentationParams().setProvideOnlineSectionExecutionUpdates(false);
-		List<InstrumentationRegion> instrumentationRegions = new LinkedList<InstrumentationRegion>();
+		List<InstrumentedRegion> instrumentationRegions = new LinkedList<InstrumentedRegion>();
         instrumentationRegions.add(region);
-		counter.getInstrumentationParams().setInstrumentationRegions(instrumentationRegions);
+		counter.getInstrumentationParams().getEntitiesToInstrument().addAll(instrumentationRegions);
 		boolean exceptionThrown = false;
 		try {
-			counter.instrument(methodRanged);
+			counter.instrument();
 		} catch(IllegalArgumentException iae) {
 			exceptionThrown = true;
 		}
@@ -234,7 +234,7 @@ public class TestInstrumentationRegions extends AbstractByCounterTest {
 		String canonicalClassName = ExecutionOrder.class.getCanonicalName();
 		String methodSignature = "void process()";
         MethodDescriptor methodRanged = new MethodDescriptor(canonicalClassName, methodSignature);
-        InstrumentationRegion region = new InstrumentationRegion(methodRanged, 15, methodRanged, 15);
+        InstrumentedRegion region = new InstrumentedRegion(methodRanged, 15, methodRanged, 15);
         // specify a code area
         methodRanged.setCodeAreasToInstrument(new LineNumberRange[] {
         		new LineNumberRange(16, 17)
@@ -245,13 +245,13 @@ public class TestInstrumentationRegions extends AbstractByCounterTest {
         // set up illegal parameters
         
 		// set regions
-		List<InstrumentationRegion> instrumentationRegions = new LinkedList<InstrumentationRegion>();
+		List<InstrumentedRegion> instrumentationRegions = new LinkedList<InstrumentedRegion>();
         instrumentationRegions.add(region);
-		counter.getInstrumentationParams().setInstrumentationRegions(instrumentationRegions);
+		counter.getInstrumentationParams().getEntitiesToInstrument().addAll(instrumentationRegions);
 		
 		boolean exceptionThrown = false;
 		try {
-			counter.instrument(methodRanged);
+			counter.instrument();
 		} catch(IllegalArgumentException iae) {
 			exceptionThrown = true;
 		}

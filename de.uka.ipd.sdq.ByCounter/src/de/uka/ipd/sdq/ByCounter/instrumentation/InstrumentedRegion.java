@@ -15,22 +15,16 @@ import de.uka.ipd.sdq.ByCounter.utils.MethodDescriptor;
  * <p>
  * Instrumentation regions must not overlap.
  * </p>
+ * @see InstrumentedCodeArea
+ * @see InstrumentedMethod
  * @author Martin Krogmann
  *
  */
-public class InstrumentationRegion implements Serializable {
+public class InstrumentedRegion extends EntityToInstrument implements Serializable {
 	/**
 	 * Serialisation version.
 	 */
 	private static final long serialVersionUID = 1L;
-	/**
-	 * Method referenced by {@link #startLine}.
-	 */
-	private MethodDescriptor startMethod;
-	/**
-	 * First line in {@link #startMethod} included in the region.
-	 */
-	private int startLine;
 	/**
 	 * The ids of the {@link Label}s in 
 	 * {@link #getStartMethod()} that start
@@ -38,19 +32,27 @@ public class InstrumentationRegion implements Serializable {
 	 */
 	private List<Integer> startLabelIds;
 	/**
-	 * Method referenced by {@link #stopLine}.
+	 * First line in {@link #startMethod} included in the region.
 	 */
-	private MethodDescriptor stopMethod;
+	private int startLine;
 	/**
-	 * Last line in {@link #stopMethod} included in the region.
+	 * Method referenced by {@link #startLine}.
 	 */
-	private int stopLine;
+	private MethodDescriptor startMethod;
 	/**
 	 * The ids of the {@link Label}s in 
 	 * {@link #getStopMethod()} that stop
 	 * in line {@link #getStopLine()}.
 	 */
 	private List<Integer> stopLabelIds;
+	/**
+	 * Last line in {@link #stopMethod} included in the region.
+	 */
+	private int stopLine;
+	/**
+	 * Method referenced by {@link #stopLine}.
+	 */
+	private MethodDescriptor stopMethod;
 	
 	/**
 	 * Construct the region.
@@ -59,7 +61,7 @@ public class InstrumentationRegion implements Serializable {
 	 * @param stopMethod Method referenced by lastLineNumber.
 	 * @param lastLineNumber Last line in stopMethod included in the instrumentation.
 	 */
-	public InstrumentationRegion(final MethodDescriptor startMethod, final int firstLineNumber,
+	public InstrumentedRegion(final MethodDescriptor startMethod, final int firstLineNumber,
 			final MethodDescriptor stopMethod, final int lastLineNumber) {
 		setStart(startMethod, firstLineNumber);
 		setStop(stopMethod, lastLineNumber);
@@ -67,52 +69,10 @@ public class InstrumentationRegion implements Serializable {
 		this.stopLabelIds = new LinkedList<Integer>();
 	}
 	
-	/**
-	 * Specify the start of the region.
-	 * @param startMethod Method referenced by firstLineNumber.
-	 * @param firstLineNumber First line in startMethod included in the instrumentation.
-	 */
-	public void setStart(final MethodDescriptor startMethod, final int firstLineNumber) {
-		this.startMethod = startMethod;
-		this.startLine = firstLineNumber;
-	}
-
-	/**
-	 * Specify the stop of the region.
-	 * @param stopMethod Method referenced by lastLineNumber.
-	 * @param lastLineNumber Last line in stopMethod included in the instrumentation.
-	 */
-	public void setStop(final MethodDescriptor stopMethod, final int lastLineNumber) {
-		this.stopMethod = stopMethod;
-		this.stopLine = lastLineNumber;
-	}
-
-	/**
-	 * @return Method referenced by {@link #getStartLine()}.
-	 */
-	public MethodDescriptor getStartMethod() {
-		return this.startMethod;
-	}
-	
-	/**
-	 * @return First line in {@link #getStartMethod()} included in the region.
-	 */
-	public int getStartLine() {
-		return this.startLine;
-	}
-	
-	/**
-	 * @return Method referenced by {@link #getStopLine()}.
-	 */
-	public MethodDescriptor getStopMethod() {
-		return this.stopMethod;
-	}
-	
-	/**
-	 * @return Last line in {@link #getStopMethod()} included in the region.
-	 */
-	public int getStopLine() {
-		return this.stopLine;
+	/** {@inheritDoc} */
+	@Override
+	public MethodDescriptor[] getMethodsToInstrument() {
+		return new MethodDescriptor[] {this.startMethod, this.stopMethod};
 	}
 
 	/**
@@ -125,6 +85,53 @@ public class InstrumentationRegion implements Serializable {
 	}
 
 	/**
+	 * @return First line in {@link #getStartMethod()} included in the region.
+	 */
+	public int getStartLine() {
+		return this.startLine;
+	}
+	
+	/**
+	 * @return Method referenced by {@link #getStartLine()}.
+	 */
+	public MethodDescriptor getStartMethod() {
+		return this.startMethod;
+	}
+	
+	/**
+	 * @return The ids of the {@link Label}s in 
+	 * {@link #getStopMethod()} that stop
+	 * in line {@link #getStopLine()}.
+	 */
+	public List<Integer> getStopLabelIds() {
+		return stopLabelIds;
+	}
+	
+	/**
+	 * @return Last line in {@link #getStopMethod()} included in the region.
+	 */
+	public int getStopLine() {
+		return this.stopLine;
+	}
+
+	/**
+	 * @return Method referenced by {@link #getStopLine()}.
+	 */
+	public MethodDescriptor getStopMethod() {
+		return this.stopMethod;
+	}
+
+	/**
+	 * Specify the start of the region.
+	 * @param startMethod Method referenced by firstLineNumber.
+	 * @param firstLineNumber First line in startMethod included in the instrumentation.
+	 */
+	public void setStart(final MethodDescriptor startMethod, final int firstLineNumber) {
+		this.startMethod = startMethod;
+		this.startLine = firstLineNumber;
+	}
+
+	/**
 	 * @param labelIds The ids of the {@link Label}s in 
 	 * {@link #getStartMethod()} that start
 	 * in line {@link #getStartLine()}.
@@ -134,12 +141,13 @@ public class InstrumentationRegion implements Serializable {
 	}
 
 	/**
-	 * @return The ids of the {@link Label}s in 
-	 * {@link #getStopMethod()} that stop
-	 * in line {@link #getStopLine()}.
+	 * Specify the stop of the region.
+	 * @param stopMethod Method referenced by lastLineNumber.
+	 * @param lastLineNumber Last line in stopMethod included in the instrumentation.
 	 */
-	public List<Integer> getStopLabelIds() {
-		return stopLabelIds;
+	public void setStop(final MethodDescriptor stopMethod, final int lastLineNumber) {
+		this.stopMethod = stopMethod;
+		this.stopLine = lastLineNumber;
 	}
 
 	/**

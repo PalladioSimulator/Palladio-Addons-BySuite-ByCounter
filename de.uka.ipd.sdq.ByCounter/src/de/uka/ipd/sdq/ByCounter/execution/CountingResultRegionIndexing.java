@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentationRegion;
+import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentedRegion;
 import de.uka.ipd.sdq.ByCounter.results.CountingResult;
 import de.uka.ipd.sdq.ByCounter.results.ResultCollection;
 
@@ -17,17 +17,17 @@ import de.uka.ipd.sdq.ByCounter.results.ResultCollection;
  */
 public class CountingResultRegionIndexing implements ICollectionStrategy {
 	
-	Map<InstrumentationRegion, List<CountingResult>> results;
+	Map<InstrumentedRegion, List<CountingResult>> results;
 	
 	public CountingResultRegionIndexing() {
-		this.results = new HashMap<InstrumentationRegion, List<CountingResult>>();
+		this.results = new HashMap<InstrumentedRegion, List<CountingResult>>();
 	}
 
 	/**
 	 * @param res Partial counting result.
 	 * @param currentRegion Region to which the result belongs.
 	 */
-	public void add(CountingResult res, InstrumentationRegion currentRegion) {
+	public void add(CountingResult res, InstrumentedRegion currentRegion) {
 		List<CountingResult> rs = this.results.get(currentRegion);
 		if(rs == null) {
 			// no entry for this region id yet
@@ -51,9 +51,9 @@ public class CountingResultRegionIndexing implements ICollectionStrategy {
 	public final ResultCollection retrieveAllCountingResults() {
 		ResultCollection res = new ResultCollection();
 		// for each region
-		for(Entry<InstrumentationRegion, List<CountingResult>> e : this.results.entrySet()) {
+		for(Entry<InstrumentedRegion, List<CountingResult>> e : this.results.entrySet()) {
 			// add up the counting results
-			InstrumentationRegion ir = e.getKey();
+			InstrumentedRegion ir = e.getKey();
 			Iterator<CountingResult> iter = e.getValue().iterator();
 			CountingResult irResult = (CountingResult) iter.next().clone();
 			while(iter.hasNext()) {

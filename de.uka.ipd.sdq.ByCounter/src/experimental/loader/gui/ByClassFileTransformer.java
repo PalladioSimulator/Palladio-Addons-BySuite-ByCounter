@@ -9,10 +9,10 @@ import java.lang.instrument.IllegalClassFormatException;
 import java.lang.instrument.Instrumentation;
 import java.security.ProtectionDomain;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.logging.Logger;
 
 import de.uka.ipd.sdq.ByCounter.execution.BytecodeCounter;
+import de.uka.ipd.sdq.ByCounter.instrumentation.EntityToInstrument;
 import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentationParameters;
 import de.uka.ipd.sdq.ByCounter.utils.Barrier;
 import de.uka.ipd.sdq.ByCounter.utils.MethodDescriptor;
@@ -82,11 +82,13 @@ public class ByClassFileTransformer implements ClassFileTransformer {
 				for(String s : ByClassFileTransformer.this.instrumentedClasses) {
 					log.fine(s.replace("/", "."));
 				}
-				for(MethodDescriptor m : ByClassFileTransformer.this.instrumentationParameters.getMethodsToInstrument()) {
-					if(!ByClassFileTransformer.this.instrumentedClasses.contains(
-							m.getCanonicalClassName())) {
-						log.severe("The class '" + m.getCanonicalClassName() + "'"
-								+ " is not used or unknown and has not been instrumented!");
+				for(EntityToInstrument e : ByClassFileTransformer.this.instrumentationParameters.getEntitiesToInstrument()) {
+					for(MethodDescriptor m : e.getMethodsToInstrument()) {
+						if(!ByClassFileTransformer.this.instrumentedClasses.contains(
+								m.getCanonicalClassName())) {
+							log.severe("The class '" + m.getCanonicalClassName() + "'"
+									+ " is not used or unknown and has not been instrumented!");
+						}	
 					}
 				}
 		    }
@@ -227,13 +229,14 @@ public class ByClassFileTransformer implements ClassFileTransformer {
 	 */
 	private boolean isClassToInstrument(String className,
 			InstrumentationParameters params) {
-		List<MethodDescriptor> methods = params.getMethodsToInstrument();
-		for(int i = 0; i < methods.size(); i++) {
-			// invariant: all methods that have been checked are not in the 
-			// class with name className
-			if(className.equals(
-					methods.get(i).getCanonicalClassName().replace('.', '/'))) {
-				return true;
+		for(EntityToInstrument e : ByClassFileTransformer.this.instrumentationParameters.getEntitiesToInstrument()) {
+			for(MethodDescriptor m : e.getMethodsToInstrument()) {
+				// invariant: all methods that have been checked are not in the 
+				// class with name className
+				if(className.equals(
+						m.getCanonicalClassName().replace('.', '/'))) {
+					return true;
+				}
 			}
 		}
 

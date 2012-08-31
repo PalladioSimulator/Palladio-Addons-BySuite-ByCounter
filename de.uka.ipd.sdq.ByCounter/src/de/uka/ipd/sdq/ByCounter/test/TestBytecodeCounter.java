@@ -19,6 +19,9 @@ import de.uka.ipd.sdq.ByCounter.execution.BytecodeCounter;
 import de.uka.ipd.sdq.ByCounter.execution.CountingResultCollector;
 import de.uka.ipd.sdq.ByCounter.instrumentation.AlreadyInstrumentedException;
 import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentationParameters;
+import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentationScopeModeEnum;
+import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentedClass;
+import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentedMethod;
 import de.uka.ipd.sdq.ByCounter.instrumentation.Instrumenter;
 import de.uka.ipd.sdq.ByCounter.results.CountingResult;
 import de.uka.ipd.sdq.ByCounter.test.helpers.ASMBytecodeOccurences;
@@ -130,7 +133,7 @@ public class TestBytecodeCounter extends AbstractByCounterTest {
 		// do the de.uka.ipd.sdq.ByCount
 		// let the counter do its work on a method
 		MethodDescriptor methodToInstrument = new MethodDescriptor(ASMBytecodeOccurences.class.getCanonicalName(), METHOD_SIGNATURE);
-		counter.instrument(methodToInstrument);
+		counter.instrument(new InstrumentedMethod(methodToInstrument));
 
 		counter.execute(methodToInstrument, new Object[0]);
 		
@@ -164,13 +167,12 @@ public class TestBytecodeCounter extends AbstractByCounterTest {
 			new MethodDescriptor(TestSubject.class.getCanonicalName(), 
 			"public void printTest()");
 		
-		ArrayList<MethodDescriptor> methodsToInstrument = new ArrayList<MethodDescriptor>();
-		methodsToInstrument.add(methodDescriptorMCT);
-		methodsToInstrument.add(methodDescriptorLT);
-		methodsToInstrument.add(methodDescriptorPT);
-		this.instrumentationParameters.setMethodsToInstrument(methodsToInstrument);
-		counter.instrument(methodDescriptorMCT);
-		counter.instrument(methodDescriptorLT);
+		ArrayList<InstrumentedMethod> methodsToInstrument = new ArrayList<InstrumentedMethod>();
+		methodsToInstrument.add(new InstrumentedMethod(methodDescriptorMCT));
+		methodsToInstrument.add(new InstrumentedMethod(methodDescriptorLT));
+		methodsToInstrument.add(new InstrumentedMethod(methodDescriptorPT));
+		this.instrumentationParameters.getEntitiesToInstrument().addAll(methodsToInstrument);
+		counter.setInstrumentationParams(this.instrumentationParameters);
 		counter.instrument();
 		counter.execute(methodDescriptorMCT, new Object[0]);
 
@@ -211,7 +213,7 @@ public class TestBytecodeCounter extends AbstractByCounterTest {
 		// test with void method
 		MethodDescriptor methodDescriptor = new MethodDescriptor(
 				testClass.getCanonicalName(), "public void methodCallTest()");
-		counter.instrument(methodDescriptor);
+		counter.instrument(new InstrumentedMethod(methodDescriptor));
 		counter.execute(methodDescriptor, new Object[]{});
 		
 		// The log file name is dynamic and cannot be checked
@@ -220,7 +222,7 @@ public class TestBytecodeCounter extends AbstractByCounterTest {
 		// test with boolean method
 		methodDescriptor = new MethodDescriptor(testClass.getCanonicalName(), 
 			"public boolean parameterTest(int i, float f, java.lang.String s)");
-		counter.instrument(methodDescriptor);
+		counter.instrument(new InstrumentedMethod(methodDescriptor));
 		counter.execute(methodDescriptor, 
 			new Object[]{2, 2, TestSubject.class.getCanonicalName()});
 	}
@@ -265,7 +267,8 @@ public class TestBytecodeCounter extends AbstractByCounterTest {
 		BytecodeCounter counter = setupByCounter();
 		
 		//2. now tell ByCounter to instrument all methods
-		counter.instrumentAllInClass(TestSubject.class.getCanonicalName(), new String[0], true);
+		counter.getInstrumentationParams().setInstrumentationScopeOverrideClassLevel(InstrumentationScopeModeEnum.InstrumentEverything);
+		counter.instrument(new InstrumentedClass(TestSubject.class.getCanonicalName()));
 
 		//3. Specify the method to be executed
 		MethodDescriptor myMethod = new MethodDescriptor(
@@ -345,8 +348,7 @@ public class TestBytecodeCounter extends AbstractByCounterTest {
 	 */
 	@Test
 	public void testNestedClassInstrumentation() {
-		BytecodeCounter counter = new BytecodeCounter();
-		counter.setInstrumentationParams(this.instrumentationParameters);
+		BytecodeCounter counter = setupByCounter();
 
 		String classNameInnerClassLevel2 = TestSubject.class.getCanonicalName() 
 			+"$" + TestSubject.InnerClass.class.getSimpleName() 
@@ -384,7 +386,7 @@ public class TestBytecodeCounter extends AbstractByCounterTest {
 	@Test
 	public void testInterfaceMethodRecursiveInstrumentation() {
 		//1. Set up a BytecodeCounter instance to use ByCounter, using a parameterless constructor. 
-		BytecodeCounter counter = new BytecodeCounter();
+		BytecodeCounter counter = setupByCounter();
 
 		//2. Specify the method to be instrumented (several methods are supported as well)
 		MethodDescriptor myMethod = new MethodDescriptor(
@@ -418,7 +420,7 @@ public class TestBytecodeCounter extends AbstractByCounterTest {
 	@Test
 	public void testInstrumentationNoPackageName() {
 		//1. Set up a BytecodeCounter instance to use ByCounter, using a parameterless constructor. 
-		BytecodeCounter counter = new BytecodeCounter();
+		BytecodeCounter counter = setupByCounter();
 
 		//2. Specify the method to be instrumented (several methods are supported as well)
 		MethodDescriptor myMethod = new MethodDescriptor(
@@ -445,7 +447,7 @@ public class TestBytecodeCounter extends AbstractByCounterTest {
 	@Test
 	public void testWriteClass() throws IOException {
 		//1. Set up a BytecodeCounter instance to use ByCounter, using a parameterless constructor. 
-		BytecodeCounter counter = new BytecodeCounter();
+		BytecodeCounter counter = setupByCounter();
 
 		//2. Specify the method to be instrumented (several methods are supported as well)
 		String className = TestSubject.class.getCanonicalName();

@@ -28,14 +28,14 @@ public class InstrumentationState {
 	private InstrumentationContext instrumentationContext;
 	
 	/**
-	 * This list also contains methods selected for recursive instrumentation.
+	 * This {@link List} also contains methods selected for recursive instrumentation.
 	 * @see {@link #methodsToInstrument}, {@link #instrumentRecursively}
 	 * <b>This is for ByCounter internal use only!</b> 
 	 */
 	private List<MethodDescriptor> methodsToInstrumentCalculated;
 	
 	/**
-	 * List of methods that have been instrumented successfully.
+	 * Set of methods that have been instrumented successfully.
 	 */
 	private List<MethodDescriptor> successFullyInstrumentedMethods;
 
@@ -63,6 +63,7 @@ public class InstrumentationState {
     	this.rangeBlockContainsLabels = new HashMap<Label, Integer>();
     	this.basicBlockLabels = new Label[0];
     	this.methodInvocations = new HashMap<String, List<String>>();
+    	this.methodsToInstrumentCalculated = new ArrayList<MethodDescriptor>();
 	}
 
 	/**
