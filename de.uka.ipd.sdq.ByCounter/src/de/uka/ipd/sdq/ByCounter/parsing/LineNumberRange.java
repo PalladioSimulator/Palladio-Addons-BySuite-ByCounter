@@ -2,8 +2,10 @@ package de.uka.ipd.sdq.ByCounter.parsing;
 
 import java.io.Serializable;
 import java.util.Comparator;
+import java.util.List;
 
 import de.uka.ipd.sdq.ByCounter.execution.BytecodeCounter;
+import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentedCodeArea;
 
 /**Denotes a range of source code line numbers which should be measured with {@link BytecodeCounter}.
  * Source code line numbers may have another order in the source code file than in the compiled Bytecode.
@@ -65,17 +67,17 @@ public final class LineNumberRange implements Comparable<LineNumberRange>, Seria
 
 
 	/**Searches an array for a {@link LineNumberRange} starting at a given line.
-	 * @param codeAreasToInstrument List of {@link LineNumberRange}s to search.
+	 * @param areasForMethod List of {@link InstrumentedCodeArea}s to search.
 	 * @param l Line to analyse.
 	 * @return When l is in the range of specified code areas: A code area that 
 	 * includes line l. Null otherwise.
 	 */
-	public static LineNumberRange findLineInRanges(
-			LineNumberRange[] codeAreasToInstrument, int l) {
-		for(LineNumberRange currentCodeArea : codeAreasToInstrument) {
-			if(l >= currentCodeArea.firstLine
-					&& l <= currentCodeArea.lastLine) {
-				return currentCodeArea;
+	public static LineNumberRange findLineInAreas(
+			List<InstrumentedCodeArea> areasForMethod, int l) {
+		for(InstrumentedCodeArea currentCodeArea : areasForMethod) {
+			if(l >= currentCodeArea.getArea().firstLine
+					&& l <= currentCodeArea.getArea().lastLine) {
+				return currentCodeArea.getArea();
 			}
 		}
 		return null;

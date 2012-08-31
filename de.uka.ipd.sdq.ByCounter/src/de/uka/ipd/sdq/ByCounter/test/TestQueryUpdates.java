@@ -1,6 +1,7 @@
 package de.uka.ipd.sdq.ByCounter.test;
 
 import java.util.LinkedList;
+import java.util.List;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -16,7 +17,9 @@ import de.uka.ipd.sdq.ByCounter.execution.ActiveSection;
 import de.uka.ipd.sdq.ByCounter.execution.BytecodeCounter;
 import de.uka.ipd.sdq.ByCounter.execution.CountingResultCollector;
 import de.uka.ipd.sdq.ByCounter.execution.InvalidQueryException;
+import de.uka.ipd.sdq.ByCounter.instrumentation.EntityToInstrument;
 import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentationParameters;
+import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentedCodeArea;
 import de.uka.ipd.sdq.ByCounter.parsing.LineNumberRange;
 import de.uka.ipd.sdq.ByCounter.test.helpers.StatefulRunnable;
 import de.uka.ipd.sdq.ByCounter.test.helpers.SynchronizedTestSubject;
@@ -38,12 +41,12 @@ public class TestQueryUpdates extends AbstractByCounterTest {
 	 * @author Martin Krogmann
 	 *
 	 */
-	private final class InstrumentAndExecuteMethod implements Runnable {
+	private final class InstrumentAndExecuteEntity implements Runnable {
 		
-		private MethodDescriptor method;
+		private List<EntityToInstrument> entities;
 		/**
 		 * Instance of the class containing the method specified with
-		 * {@link InstrumentAndExecuteMethod#InstrumentAndExecuteMethod(MethodDescriptor)}.
+		 * {@link InstrumentAndExecuteEntity#InstrumentAndExecuteEntity(List)}.
 		 */
 		public Object classInstance;
 		
@@ -55,8 +58,8 @@ public class TestQueryUpdates extends AbstractByCounterTest {
 		public Condition classInstanceAvailable;
 		private boolean bClassInstanceAvailable;
 
-		public InstrumentAndExecuteMethod(final MethodDescriptor method) {
-			this.method = method;
+		public InstrumentAndExecuteEntity(final List<EntityToInstrument> entitiesToInstrument) {
+			this.entities = entitiesToInstrument;
 			this.classInstance = null;
 			this.lock = new ReentrantLock();
 			this.bClassInstanceAvailable = false;
@@ -69,13 +72,14 @@ public class TestQueryUpdates extends AbstractByCounterTest {
 			this.lock.lock();
 			BytecodeCounter counter;
 	        counter = setupQueryByCounter();
-	        counter.instrument(this.method);
-	        this.classInstance = counter.instantiate(this.method);
+	        counter.instrument(this.entities);
+	        MethodDescriptor methodToExecute = this.entities.get(0).getMethodsToInstrument()[0];
+			this.classInstance = counter.instantiate(methodToExecute);
 	        this.bClassInstanceAvailable = true;
 	        this.classInstanceAvailable.signalAll();
 	        this.lock.unlock();
 	        Object[] executionParameters = new Object[] {};
-	        counter.execute(method, this.classInstance, executionParameters);
+	        counter.execute(methodToExecute, this.classInstance, executionParameters);
 		}
 		
 		public boolean isClassInstanceAvailable() {
@@ -131,9 +135,12 @@ public class TestQueryUpdates extends AbstractByCounterTest {
         MethodDescriptor methodRun = new MethodDescriptor(
         		SynchronizedTestSubject.class.getCanonicalName(), 
         		"public void run()");
-        methodRun.setCodeAreasToInstrument(ranges.toArray(new LineNumberRange[0]));
-
-        InstrumentAndExecuteMethod iaem = new InstrumentAndExecuteMethod(methodRun);
+        List<EntityToInstrument> entitiesToInstrument = new LinkedList<EntityToInstrument>();
+        for(LineNumberRange r : ranges) {
+        	entitiesToInstrument.add(new InstrumentedCodeArea(methodRun, r));
+        }
+        
+        InstrumentAndExecuteEntity iaem = new InstrumentAndExecuteEntity(entitiesToInstrument);
         final Thread executeThread = new Thread(iaem);
         executeThread.start();
         System.out.println("exec started");

@@ -15,7 +15,10 @@ import org.objectweb.asm.Opcodes;
 
 import de.uka.ipd.sdq.ByCounter.execution.BytecodeCounter;
 import de.uka.ipd.sdq.ByCounter.execution.CountingResultCollector;
+import de.uka.ipd.sdq.ByCounter.instrumentation.EntityToInstrument;
 import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentationParameters;
+import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentedCodeArea;
+import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentedMethod;
 import de.uka.ipd.sdq.ByCounter.parsing.LineNumberRange;
 import de.uka.ipd.sdq.ByCounter.results.CountingResult;
 import de.uka.ipd.sdq.ByCounter.results.ThreadedCountingResult;
@@ -353,13 +356,11 @@ public class TestThreads extends AbstractByCounterTest {
 		
 		// specify the part "sequential" part of the runThreads method
 		MethodDescriptor myMethodRun = new MethodDescriptor(methodRun);
-		myMethodRun.setCodeAreasToInstrument(new LineNumberRange[] {
-				new LineNumberRange(53, 58)
-		});
-		
-		counter.instrument(myMethodRun);
-		counter.instrument(methodRunnableForThreadingRun);
-		counter.instrument(methodRunnableIincRun);
+        List<EntityToInstrument> entitiesToInstrument = new LinkedList<EntityToInstrument>();
+        entitiesToInstrument.add(new InstrumentedCodeArea(myMethodRun, new LineNumberRange(53, 58)));
+        entitiesToInstrument.add(new InstrumentedMethod(methodRunnableForThreadingRun));
+        entitiesToInstrument.add(new InstrumentedMethod(methodRunnableIincRun));
+		counter.instrument(entitiesToInstrument);
 		
 		Object[] executionParameters = new Object[0];
 		counter.execute(myMethodRun, executionParameters);

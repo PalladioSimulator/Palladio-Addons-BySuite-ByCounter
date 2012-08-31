@@ -1,6 +1,7 @@
 package de.uka.ipd.sdq.ByCounter.test;
 
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.logging.Logger;
@@ -17,7 +18,9 @@ import de.uka.ipd.sdq.ByCounter.execution.BytecodeCounter;
 import de.uka.ipd.sdq.ByCounter.execution.CountingResultCollector;
 import de.uka.ipd.sdq.ByCounter.execution.CountingResultCompleteMethodExecutionUpdate;
 import de.uka.ipd.sdq.ByCounter.execution.CountingResultSectionExecutionUpdate;
+import de.uka.ipd.sdq.ByCounter.instrumentation.EntityToInstrument;
 import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentationParameters;
+import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentedCodeArea;
 import de.uka.ipd.sdq.ByCounter.parsing.LineNumberRange;
 import de.uka.ipd.sdq.ByCounter.results.CountingResult;
 import de.uka.ipd.sdq.ByCounter.results.RequestResult;
@@ -165,8 +168,11 @@ public class TestResultObservation extends AbstractByCounterTest {
         ranges.add(eIntLnr);
         ranges.add(eDoubleLnr);
 
-        method1.setCodeAreasToInstrument(ranges.toArray(new LineNumberRange[0]));
-        counter.instrument(method1);
+        List<EntityToInstrument> entitiesToInstrument = new LinkedList<EntityToInstrument>();
+        for(LineNumberRange r : ranges) {
+        	entitiesToInstrument.add(new InstrumentedCodeArea(method1, r));
+        }
+        counter.instrument(entitiesToInstrument);
 
         // setup the observer
         CountingResultCollector.getInstance().addObserver(new Observer() {
@@ -211,8 +217,12 @@ public class TestResultObservation extends AbstractByCounterTest {
         MethodDescriptor methodRanged = new MethodDescriptor(
         		TestSubjectLineNumbers.class.getCanonicalName(),
         		SIGNATURE_METHOD_CALLS);
-        methodRanged.setCodeAreasToInstrument(codeAreasToInstrument);
-        counter.instrument(methodRanged);
+        List<EntityToInstrument> entitiesToInstrument = new LinkedList<EntityToInstrument>();
+        for(LineNumberRange r : codeAreasToInstrument) {
+        	entitiesToInstrument.add(new InstrumentedCodeArea(methodRanged, r));
+        }
+
+        counter.instrument(entitiesToInstrument);
         // execute with (10)
         Object[] executionParameters = new Object[] { 10 };
         counter.execute(methodRanged, executionParameters);

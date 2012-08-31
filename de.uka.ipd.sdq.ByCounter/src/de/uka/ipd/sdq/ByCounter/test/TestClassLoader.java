@@ -14,8 +14,9 @@ import org.junit.Test;
 
 import de.uka.ipd.sdq.ByCounter.execution.BytecodeCounter;
 import de.uka.ipd.sdq.ByCounter.execution.CountingResultCollector;
+import de.uka.ipd.sdq.ByCounter.instrumentation.EntityToInstrument;
 import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentationParameters;
-import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentedMethod;
+import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentedCodeArea;
 import de.uka.ipd.sdq.ByCounter.parsing.LineNumberRange;
 import de.uka.ipd.sdq.ByCounter.results.CountingResult;
 import de.uka.ipd.sdq.ByCounter.test.helpers.ClassLoadTime2;
@@ -75,18 +76,17 @@ public class TestClassLoader {
 		
 		String methodSignature = "void process()";
 		MethodDescriptor descriptor = new MethodDescriptor(LoopExternalAction.class.getCanonicalName(), methodSignature);
-		ArrayList<LineNumberRange> lnrs = new ArrayList<LineNumberRange>();
-		lnrs.add(new LineNumberRange(28, 30)); // loop
-		lnrs.add(new LineNumberRange(31, 31)); // external call within loop
 		
 		// instrument
 		InstrumentationParameters instrumentationParams = new InstrumentationParameters();
 		instrumentationParams.setInstrumentRecursively(true);
 		instrumentationParams.setUseBasicBlocks(true);
-		List<InstrumentedMethod> methodsToInstrument = new ArrayList<InstrumentedMethod>();
-		descriptor.setCodeAreasToInstrument(lnrs.toArray(new LineNumberRange[0]));
-		methodsToInstrument.add(new InstrumentedMethod(descriptor));
-		instrumentationParams.getEntitiesToInstrument().addAll(methodsToInstrument);
+		List<EntityToInstrument> entitiesToInstrument = new ArrayList<EntityToInstrument>();
+		entitiesToInstrument.add(
+				new InstrumentedCodeArea(descriptor, new LineNumberRange(28, 30))); // loop
+		entitiesToInstrument.add(
+				new InstrumentedCodeArea(descriptor, new LineNumberRange(31, 31))); // external call within loop
+		instrumentationParams.getEntitiesToInstrument().addAll(entitiesToInstrument);
 		instrumentationParams.setWriteClassesToDisk(false);
 		counter.setInstrumentationParams(instrumentationParams);
 		counter.instrument();

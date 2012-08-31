@@ -1081,11 +1081,7 @@ public final class MethodCountMethodAdapter extends MethodAdapter {
 			this.useBlockCounters = false;
 		} else if(this.instrumentationParameters.getUseBasicBlocks()) {
 			this.useBlockCounters = true;
-			if(this.methodDescriptor.getCodeAreasToInstrument() != null
-					&& this.methodDescriptor.getCodeAreasToInstrument().length != 0
-					) {
-				this.useRangeBlocks = true;
-			}
+			this.useRangeBlocks = this.instrumentationParameters.findCodeAreasForMethod(this.methodDescriptor).size() > 0;
 			if(this.instrumentationParameters.getUseArrayParameterRecording()) {
 				throw new RuntimeException("Array parameter recording is not currently supported in block counting modes.");
 			}

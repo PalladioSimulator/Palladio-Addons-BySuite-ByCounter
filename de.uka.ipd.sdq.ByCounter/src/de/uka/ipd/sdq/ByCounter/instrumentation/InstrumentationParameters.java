@@ -798,23 +798,37 @@ public final class InstrumentationParameters implements Cloneable {
 	}
 
 	/**
-	 * @return True, if there is a method that has code areas defined using 
-	 * the {@link MethodDescriptor#setCodeAreasToInstrument(LineNumberRange[])}
-	 * method.
+	 * @return True, if there is an {@link EntityToInstrument} that is 
+	 * an {@link InstrumentedCodeArea}.
 	 */
 	public boolean hasMethodsWithCodeAreas() {
 		if(getEntitiesToInstrument() == null) {
 			return false;
 		}
 		for(EntityToInstrument e : getEntitiesToInstrument()) {
-			for(MethodDescriptor method : e.getMethodsToInstrument()) {
-				if(method.getCodeAreasToInstrument() != null
-								&& method.getCodeAreasToInstrument().length != 0) {
-					return true;
-				}
+			if(e instanceof InstrumentedCodeArea) {
+				return true;
 			}
 		}
 		return false;
+	}
+	/**
+	 * @param m Method to look for.
+	 * @return True, if there is an {@link EntityToInstrument} that is 
+	 * an {@link InstrumentedCodeArea} defined for the given method.
+	 */
+	public List<InstrumentedCodeArea> findCodeAreasForMethod(MethodDescriptor m) {
+		List<InstrumentedCodeArea> result = new LinkedList<InstrumentedCodeArea>();
+		for(EntityToInstrument e : getEntitiesToInstrument()) {
+			if(e instanceof InstrumentedCodeArea) {
+				InstrumentedCodeArea instrumentedCodeArea = (InstrumentedCodeArea) e;
+				if(e instanceof InstrumentedCodeArea
+						&& instrumentedCodeArea.getMethod().equals(m)) {
+					result.add(instrumentedCodeArea);
+				}
+			}
+		}
+		return result;
 	}
 
 	/**

@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Stack;
 import java.util.UUID;
@@ -13,7 +12,6 @@ import java.util.logging.Logger;
 import org.objectweb.asm.Type;
 
 import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentationParameters;
-import de.uka.ipd.sdq.ByCounter.parsing.LineNumberRange;
 
 /**
  * Unambiguous description for a method in bytecode compatible format. Such a signature can be constructed through the
@@ -389,9 +387,6 @@ public final class MethodDescriptor implements Comparable<MethodDescriptor>, Ser
 	 */
 	private String className = null;
 
-	/** @see #getCodeAreasToInstrument() */
-	private LineNumberRange[] codeAreasToInstrument;
-
 	/** @see #getContext() */
 	private UUID context = null;
 
@@ -436,11 +431,6 @@ public final class MethodDescriptor implements Comparable<MethodDescriptor>, Ser
 	 */
 	public MethodDescriptor(final MethodDescriptor template) {
 		this.className = template.className;
-		if(template.codeAreasToInstrument != null) {
-			this.codeAreasToInstrument = Arrays.copyOf(
-					template.codeAreasToInstrument, 
-					template.codeAreasToInstrument.length);
-		}
 		this.context = template.context;
 		this.descriptor = template.descriptor;
 		this.inlineImmediately = template.inlineImmediately;
@@ -643,18 +633,6 @@ public final class MethodDescriptor implements Comparable<MethodDescriptor>, Ser
 		if (comparisonResult != 0) {
 			return comparisonResult;
 		}
-		// compare codeAreasToInstrument; length
-		comparisonResult = new Integer(this.codeAreasToInstrument.length).compareTo(o.codeAreasToInstrument.length);
-		if (comparisonResult != 0) {
-			return comparisonResult;
-		}
-		// compare individual code areas
-		for (int i = 0; i < this.codeAreasToInstrument.length; i++) {
-			comparisonResult = this.codeAreasToInstrument[i].compareTo(o.codeAreasToInstrument[i]);
-			if (comparisonResult != 0) {
-				return comparisonResult;
-			}
-		}
 		// consider the MethodDescriptors the same
 		return 0;
 	}
@@ -743,16 +721,6 @@ public final class MethodDescriptor implements Comparable<MethodDescriptor>, Ser
 	 */
 	public String getClassName() {
 		return this.className;
-	}
-
-	/**
-	 * When the specified areas are not null and not empty, only these areas of the method will be instrumented.
-	 * 
-	 * @see InstrumentationParameters#getUseBasicBlocks()
-	 * @return Line numbers that define the instruction blocks that are to be considered as range blocks.
-	 */
-	public LineNumberRange[] getCodeAreasToInstrument() {
-		return codeAreasToInstrument;
 	}
 
 	/**
@@ -846,17 +814,6 @@ public final class MethodDescriptor implements Comparable<MethodDescriptor>, Ser
 	/** @see #setInvariant(boolean) */
 	public boolean isInvariant() {
 		return isInvariant;
-	}
-
-	/**
-	 * When the specified areas are not null and not empty, only these areas of the method will be instrumented.
-	 * 
-	 * @see InstrumentationParameters#getUseBasicBlocks()
-	 * @param codeAreasToInstrument
-	 *            Line numbers that define the instruction blocks that are to be considered as range blocks.
-	 */
-	public void setCodeAreasToInstrument(LineNumberRange[] codeAreasToInstrument) {
-		this.codeAreasToInstrument = codeAreasToInstrument;
 	}
 
 	/**

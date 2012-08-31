@@ -4,6 +4,8 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 
 import junit.framework.Assert;
 
@@ -14,7 +16,9 @@ import org.objectweb.asm.Opcodes;
 
 import de.uka.ipd.sdq.ByCounter.execution.BytecodeCounter;
 import de.uka.ipd.sdq.ByCounter.execution.CountingResultCollector;
+import de.uka.ipd.sdq.ByCounter.instrumentation.EntityToInstrument;
 import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentationParameters;
+import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentedCodeArea;
 import de.uka.ipd.sdq.ByCounter.parsing.LineNumberRange;
 import de.uka.ipd.sdq.ByCounter.results.CountingResult;
 import de.uka.ipd.sdq.ByCounter.test.framework.expectations.Expectation;
@@ -287,8 +291,11 @@ public class TestLineNumbers extends AbstractByCounterTest {
         counter.getInstrumentationParams().setUseBasicBlocks(true);
         counter.getInstrumentationParams().setRecordBlockExecutionOrder(false);
         MethodDescriptor methodRanged = new MethodDescriptor(DEFAULT_SUBJECT_CANONICAL, SIGNATURE_RANGE_BLOCK);
-        methodRanged.setCodeAreasToInstrument(e.getRanges());
-        counter.instrument(methodRanged);
+        List<EntityToInstrument> entitiesToInstrument = new LinkedList<EntityToInstrument>();
+        for(LineNumberRange r : e.getRanges()) {
+        	entitiesToInstrument.add(new InstrumentedCodeArea(methodRanged, r));
+        }
+        counter.instrument(entitiesToInstrument);
         // execute with (10)
         Object[] executionParameters = new Object[] { 10 };
         counter.execute(methodRanged, executionParameters);
@@ -381,8 +388,11 @@ public class TestLineNumbers extends AbstractByCounterTest {
         counter.setInstrumentationParams(this.instrumentationParameters);
         counter.getInstrumentationParams().setUseBasicBlocks(true);
         MethodDescriptor methodForeach = new MethodDescriptor(DEFAULT_SUBJECT_CANONICAL, SIGNATURE_FOREACH);
-        methodForeach.setCodeAreasToInstrument(e.getRanges());
-        counter.instrument(methodForeach);
+        List<EntityToInstrument> entitiesToInstrument = new LinkedList<EntityToInstrument>();
+        for(LineNumberRange r : e.getRanges()) {
+        	entitiesToInstrument.add(new InstrumentedCodeArea(methodForeach, r));
+        }
+        counter.instrument(entitiesToInstrument);
         // execute
         Object[] executionParameters = new Object[] {};
         counter.execute(methodForeach, executionParameters);
@@ -452,8 +462,11 @@ public class TestLineNumbers extends AbstractByCounterTest {
         counter.getInstrumentationParams().setUseBasicBlocks(true);
         counter.getInstrumentationParams().setRecordBlockExecutionOrder(true);
         MethodDescriptor methodRanged = new MethodDescriptor(UncommonFormatting.class.getCanonicalName(), "public void process()");
-        methodRanged.setCodeAreasToInstrument(e.getRanges());
-        counter.instrument(methodRanged);
+        List<EntityToInstrument> entitiesToInstrument = new LinkedList<EntityToInstrument>();
+        for(LineNumberRange r : e.getRanges()) {
+        	entitiesToInstrument.add(new InstrumentedCodeArea(methodRanged, r));
+        }
+        counter.instrument(entitiesToInstrument);
         // execute with ()
         Object[] executionParameters = new Object[] {  };
         counter.execute(methodRanged, executionParameters);
@@ -549,8 +562,11 @@ public class TestLineNumbers extends AbstractByCounterTest {
         counter.getInstrumentationParams().setUseBasicBlocks(true);
         counter.getInstrumentationParams().setRecordBlockExecutionOrder(true);
         MethodDescriptor methodRanged = new MethodDescriptor(canonicalClassName, methodSignature);
-        methodRanged.setCodeAreasToInstrument(codeAreasToInstrument);
-        counter.instrument(methodRanged);
+        List<EntityToInstrument> entitiesToInstrument = new LinkedList<EntityToInstrument>();
+        for(LineNumberRange r : codeAreasToInstrument) {
+        	entitiesToInstrument.add(new InstrumentedCodeArea(methodRanged, r));
+        }
+        counter.instrument(entitiesToInstrument);
         counter.execute(methodRanged, executionParameters);
 
         return CountingResultCollector.getInstance().retrieveAllCountingResults().getCountingResults().toArray(new CountingResult[0]);
@@ -573,8 +589,11 @@ public class TestLineNumbers extends AbstractByCounterTest {
 		counter.getInstrumentationParams().setInstrumentRecursively(true);
 		counter.getInstrumentationParams().setUseBasicBlocks(true);
 		MethodDescriptor methodRanged = new MethodDescriptor(Branch.class.getCanonicalName(), "public int process(int input)");
-		methodRanged.setCodeAreasToInstrument(lnrs.toArray(new LineNumberRange[0]));
-		counter.instrument(methodRanged);
+        List<EntityToInstrument> entitiesToInstrument = new LinkedList<EntityToInstrument>();
+        for(LineNumberRange r : lnrs.toArray(new LineNumberRange[0])) {
+        	entitiesToInstrument.add(new InstrumentedCodeArea(methodRanged, r));
+        }
+		counter.instrument(entitiesToInstrument);
 		// execute
 		Object[] executionParameters = new Object[1];
 		executionParameters[0] = new Integer(inputValue);

@@ -2,6 +2,7 @@ package de.uka.ipd.sdq.ByCounter.instrumentation;
 
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 
 import org.objectweb.asm.MethodAdapter;
 import org.objectweb.asm.MethodVisitor;
@@ -24,7 +25,6 @@ import de.uka.ipd.sdq.ByCounter.utils.MethodDescriptor;
 @Deprecated // Static is counting not supported
 public final class MethodSectionCountMethodAdapter extends MethodAdapter {
 	
-	@SuppressWarnings("unused")
 	private InstrumentationParameters instrumentationParameters;
 	
 	private MethodVisitor nextVisitor;
@@ -77,7 +77,9 @@ public final class MethodSectionCountMethodAdapter extends MethodAdapter {
 			AbstractInsnNode insn = iterator.next();
 			if(insn instanceof LineNumberNode) {
 				int l = ((LineNumberNode)insn).line;
-				if(LineNumberRange.findLineInRanges(this.methodDescriptor.getCodeAreasToInstrument(), l) != null) {
+				List<InstrumentedCodeArea> areasForMethod = this.instrumentationParameters.findCodeAreasForMethod(methodDescriptor);
+				if(!areasForMethod.isEmpty() 
+						&& LineNumberRange.findLineInAreas(areasForMethod, l) != null) {
 					//log.info("Line " + l)
 					inCountSection = true;
 				} else {;

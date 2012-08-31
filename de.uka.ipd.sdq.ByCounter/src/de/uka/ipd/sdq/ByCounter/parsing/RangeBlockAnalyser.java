@@ -1,6 +1,5 @@
 package de.uka.ipd.sdq.ByCounter.parsing;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -15,6 +14,7 @@ import org.objectweb.asm.tree.InsnList;
 import de.uka.ipd.sdq.ByCounter.instrumentation.IInstructionAnalyser;
 import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentationContext;
 import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentationState;
+import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentedCodeArea;
 import de.uka.ipd.sdq.ByCounter.parsing.RangeBlockDescriptor.BasicBlockOffset;
 import de.uka.ipd.sdq.ByCounter.utils.MethodDescriptor;
 
@@ -59,16 +59,17 @@ public final class RangeBlockAnalyser extends LabelBlockAnalyser {
 	 * @param instrumentationState State information used for the 
 	 * instrumentation.
 	 * @param lineNumberAnalyser {@link LineNumberAnalyser} reference.
+	 * @param codeAreasForMethod The code areas defined for this method.
 	 */
 	public RangeBlockAnalyser(
 			MethodDescriptor currentMethod, 
 			InstrumentationState instrumentationState,
-			LineNumberAnalyser lineNumberAnalyser) {
+			LineNumberAnalyser lineNumberAnalyser, List<InstrumentedCodeArea> codeAreasForMethod) {
 		super(currentMethod.getCanonicalMethodName(), instrumentationState);
 		this.ranges = new LinkedList<LineNumberRange>();
 		this.lineNumberAnalyser = lineNumberAnalyser;
-		if(currentMethod.getCodeAreasToInstrument() != null) {
-			this.ranges.addAll(Arrays.asList(currentMethod.getCodeAreasToInstrument()));
+		for(InstrumentedCodeArea area : codeAreasForMethod) {
+			this.ranges.add(area.getArea());
 		}
 		this.rangeBlockContainsLabels = new HashMap<Label, Integer>();
 		

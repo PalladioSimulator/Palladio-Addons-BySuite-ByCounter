@@ -25,6 +25,7 @@ import de.uka.ipd.sdq.ByCounter.instrumentation.BlockCountingMode;
 import de.uka.ipd.sdq.ByCounter.instrumentation.EntityToInstrument;
 import de.uka.ipd.sdq.ByCounter.instrumentation.IInstructionAnalyser;
 import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentationParameters;
+import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentedCodeArea;
 import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentedRegion;
 import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentationState;
 import de.uka.ipd.sdq.ByCounter.instrumentation.MethodCountMethodAdapter;
@@ -101,10 +102,9 @@ public final class MethodPreInstrumentationParser extends MethodAdapter {
 		this.instrumentationParameters = parameters;
 		this.instrumentationState = state;
 		this.method = method;
-		this.hasRangeBlocks = (method.getCodeAreasToInstrument() != null
-						&& method.getCodeAreasToInstrument().length != 0);
-		
-		this.useRegions = instrumentationParameters.hasInstrumentationRegionForMethod(method);
+		List<InstrumentedCodeArea> codeAreasForMethod = this.instrumentationParameters.findCodeAreasForMethod(method);
+		this.hasRangeBlocks = codeAreasForMethod.size() > 0;
+		this.useRegions = this.instrumentationParameters.hasInstrumentationRegionForMethod(method);
 		
 		this.instructionAnalysers = new ArrayList<IInstructionAnalyser>();
 		this.lineNumberAnalyser = new LineNumberAnalyser(method);
@@ -122,7 +122,8 @@ public final class MethodPreInstrumentationParser extends MethodAdapter {
 				this.rangeBlockAnalyser = new RangeBlockAnalyser(
 						method, 
 						this.instrumentationState,
-						this.lineNumberAnalyser);
+						this.lineNumberAnalyser,
+						codeAreasForMethod);
 				this.instructionAnalysers.add(rangeBlockAnalyser);
 				this.instrumentationState.getInstrumentationContext().setBlockCountingMode(method.getCanonicalMethodName(), BlockCountingMode.RangeBlocks);
 			}

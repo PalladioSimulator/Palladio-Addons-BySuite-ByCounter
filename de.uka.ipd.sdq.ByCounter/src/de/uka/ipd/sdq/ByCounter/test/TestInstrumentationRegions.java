@@ -13,7 +13,9 @@ import org.objectweb.asm.Opcodes;
 
 import de.uka.ipd.sdq.ByCounter.execution.BytecodeCounter;
 import de.uka.ipd.sdq.ByCounter.execution.CountingResultCollector;
+import de.uka.ipd.sdq.ByCounter.instrumentation.EntityToInstrument;
 import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentationParameters;
+import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentedCodeArea;
 import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentedRegion;
 import de.uka.ipd.sdq.ByCounter.parsing.LineNumberRange;
 import de.uka.ipd.sdq.ByCounter.results.CountingResult;
@@ -236,18 +238,18 @@ public class TestInstrumentationRegions extends AbstractByCounterTest {
         MethodDescriptor methodRanged = new MethodDescriptor(canonicalClassName, methodSignature);
         InstrumentedRegion region = new InstrumentedRegion(methodRanged, 15, methodRanged, 15);
         // specify a code area
-        methodRanged.setCodeAreasToInstrument(new LineNumberRange[] {
-        		new LineNumberRange(16, 17)
-        });
+        InstrumentedCodeArea codeArea = new InstrumentedCodeArea(
+        		methodRanged, new LineNumberRange(16, 17));
 
 		// initialise
         BytecodeCounter counter = setupByCounter();
         // set up illegal parameters
         
 		// set regions
-		List<InstrumentedRegion> instrumentationRegions = new LinkedList<InstrumentedRegion>();
-        instrumentationRegions.add(region);
-		counter.getInstrumentationParams().getEntitiesToInstrument().addAll(instrumentationRegions);
+		List<EntityToInstrument> entities = new LinkedList<EntityToInstrument>();
+        entities.add(region);
+        entities.add(codeArea);
+		counter.getInstrumentationParams().getEntitiesToInstrument().addAll(entities);
 		
 		boolean exceptionThrown = false;
 		try {
