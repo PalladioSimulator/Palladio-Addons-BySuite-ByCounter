@@ -17,6 +17,7 @@ import de.uka.ipd.sdq.ByCounter.utils.MethodDescriptor;
  * </p>
  * @see InstrumentedCodeArea
  * @see InstrumentedMethod
+ * @see InstrumentedClass
  * @author Martin Krogmann
  *
  */

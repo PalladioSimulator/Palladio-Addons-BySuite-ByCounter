@@ -3,6 +3,8 @@
  */
 package de.uka.ipd.sdq.ByCounter.instrumentation;
 
+import java.io.Serializable;
+
 import de.uka.ipd.sdq.ByCounter.parsing.LineNumberRange;
 import de.uka.ipd.sdq.ByCounter.utils.MethodDescriptor;
 
@@ -11,10 +13,16 @@ import de.uka.ipd.sdq.ByCounter.utils.MethodDescriptor;
  * The code area is specified in absolute line numbers.
  * @see InstrumentedMethod
  * @see InstrumentedRegion
+ * @see InstrumentedClass
  * @author Martin Krogmann
  */
-public class InstrumentedCodeArea extends EntityToInstrument {
+public class InstrumentedCodeArea extends EntityToInstrument implements Serializable {
 	
+	/**
+	 * Serialisation version.
+	 */
+	private static final long serialVersionUID = 1L;
+
 	/** Descriptor for the method that the code area is a part of. */
 	private MethodDescriptor method;
 	

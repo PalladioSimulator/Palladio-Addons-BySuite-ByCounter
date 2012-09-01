@@ -363,12 +363,15 @@ public final class BytecodeCounter {
 				String canonicalClassName = ((InstrumentedClass) e).getCanonicalClassName();
 				classesToInstrument.add(canonicalClassName);
 				classesInstrumentEverything.add(canonicalClassName);
+				instrumentationState.getFullyInstrumentedClasses().put(canonicalClassName, e);
 			} else {
 				for(MethodDescriptor m : e.getMethodsToInstrument()) {
 					// add method
 					if(!this.instrumentationState.getMethodsToInstrumentCalculated().contains(m)) {
 						this.instrumentationState.getMethodsToInstrumentCalculated().add(m);
 					}
+					// add entity
+					addEntityToInstrumentationState(m, e);
 					// add class name
 					success = findClassesToInstrument(classesToInstrument, classMethodDefinitions, m)
 								&& success;
@@ -445,6 +448,20 @@ public final class BytecodeCounter {
 		this.printInstrumentationSummary();
 
 		return success;
+	}
+
+	/**
+	 * Adds to {@link InstrumentationContext#getEntitiesToInstrument()}.
+	 * @param m Method the entity is relevant to.
+	 * @param e {@link EntityToInstrument} for the method.
+	 */
+	private void addEntityToInstrumentationState(MethodDescriptor m, EntityToInstrument e) {
+		List<EntityToInstrument> entityListForMethod = this.instrumentationState.getEntitiesToInstrumentByMethod().get(m);
+		if(entityListForMethod == null) {
+			entityListForMethod = new LinkedList<EntityToInstrument>();
+			this.instrumentationState.getEntitiesToInstrumentByMethod().put(m.getCanonicalMethodName(), entityListForMethod);
+		}
+		entityListForMethod.add(e);
 	}
 	
 	/**
@@ -537,6 +554,7 @@ public final class BytecodeCounter {
 		for(MethodDescriptor md : rootMethods) {
 			// find the appropriate node in the callgraph
 			final CallGraphMethod m = this.callGraph.findMethod(md);
+			EntityToInstrument e = this.instrumentationState.getEntitiesToInstrumentByMethod().get(md.getCanonicalMethodName()).get(0);
 			if(m == null) {
 				continue;
 			}
@@ -592,6 +610,11 @@ public final class BytecodeCounter {
 									child.getOwner(), child.getName(), child.getDesc());
 						// add the method to the list
 						methodsList.add(descriptor);
+						Map<String, List<EntityToInstrument>> entitiesToInstrumentByMethod = this.instrumentationState.getEntitiesToInstrumentByMethod();
+						List<EntityToInstrument> list = entitiesToInstrumentByMethod.get(m.getMethodDescriptor().getCanonicalMethodName());
+						EntityToInstrument e = list.get(0);
+						addEntityToInstrumentationState(descriptor, e);
+						
 					}
 					// Now select from all childs.
 					// This is necessary even with if this method was not added, 
@@ -667,6 +690,11 @@ public final class BytecodeCounter {
 			this.successFullyInstrumentedMethods.addAll(instr.getInstrumentationState().getSuccessFullyInstrumentedMethods());
 			log.fine("Getting instrumented bytes");
 			byte[] b = instr.getInstrumentedBytes();
+			// save entitiesToInstrument
+			for(EntityToInstrument eti : this.instrumentationParameters.getEntitiesToInstrument()) {
+				this.instrumentationState.getInstrumentationContext().getEntitiesToInstrument().put(
+						eti.getId(), eti);
+			}
 //			long instrBytesize = b.length;
 			
 			this.instrumentedClassBytes = b;

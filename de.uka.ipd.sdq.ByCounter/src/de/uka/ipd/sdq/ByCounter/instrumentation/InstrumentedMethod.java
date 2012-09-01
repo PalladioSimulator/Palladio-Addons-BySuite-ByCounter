@@ -8,6 +8,7 @@ import de.uka.ipd.sdq.ByCounter.utils.MethodDescriptor;
  * Entity for instrumentation of a complete method.
  * @see InstrumentedCodeArea
  * @see InstrumentedRegion
+ * @see InstrumentedClass
  * @author Martin Krogmann
  */
 public class InstrumentedMethod extends EntityToInstrument implements Serializable {

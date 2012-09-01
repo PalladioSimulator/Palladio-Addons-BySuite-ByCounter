@@ -13,13 +13,13 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 import de.uka.ipd.sdq.ByCounter.execution.BytecodeCounter;
 import de.uka.ipd.sdq.ByCounter.execution.CountingMode;
 import de.uka.ipd.sdq.ByCounter.execution.CountingResultCollector;
 import de.uka.ipd.sdq.ByCounter.parsing.ArrayCreation;
 import de.uka.ipd.sdq.ByCounter.parsing.InstructionBlockSerialisation;
-import de.uka.ipd.sdq.ByCounter.parsing.LineNumberRange;
 
 /**
  * This class serialises all information produced by {@link BytecodeCounter} 
@@ -62,9 +62,9 @@ public class InstrumentationContext implements Serializable {
 	private InstructionBlockSerialisation rangeBlocks;
 	
 	/**
-	 * {@link LineNumberRange}s defined for each method.
+	 * {@link InstrumentedCodeArea}s defined for each method.
 	 */
-	private Map<String, LineNumberRange[]> rangesByMethod;
+	private Map<String, InstrumentedCodeArea[]> rangesByMethod;
 	
 	/**
 	 * Instrumentation region definitions.
@@ -91,6 +91,11 @@ public class InstrumentationContext implements Serializable {
 	 * Array creation types by method.
 	 */
 	private Map<String, List<ArrayCreation>> arrayCreations;
+
+	/**
+	 * Entities specified for instrumentation by id.
+	 */
+	private Map<UUID, EntityToInstrument> entitiesToInstrument;
 	
 	/**
 	 * Construct the instrumentation context.
@@ -104,8 +109,9 @@ public class InstrumentationContext implements Serializable {
 		this.arrayCreations = new HashMap<String, List<ArrayCreation>>();
 		this.blockCountingMode = new HashMap<String, BlockCountingMode>();
 		this.countingMode = CountingMode.Default;
-		this.rangesByMethod = new HashMap<String, LineNumberRange[]>();
+		this.rangesByMethod = new HashMap<String, InstrumentedCodeArea[]>();
 		this.queryActiveSectionSupported = false;
+		this.entitiesToInstrument = new HashMap<UUID, EntityToInstrument>();
 	}
 	
 	private static void checkVersion(final long version) {
@@ -268,9 +274,9 @@ public class InstrumentationContext implements Serializable {
 	}
 
 	/**
-	 * @return {@link LineNumberRange}s defined by each method.
+	 * @return {@link InstrumentedCodeArea}s defined by each method.
 	 */
-	public Map<String, LineNumberRange[]> getRangesByMethod() {
+	public Map<String, InstrumentedCodeArea[]> getRangesByMethod() {
 		return this.rangesByMethod;
 	}
 
@@ -295,5 +301,12 @@ public class InstrumentationContext implements Serializable {
 	 */
 	public Map<String, List<ArrayCreation>> getArrayCreations() {
 		return this.arrayCreations;
+	}
+
+	/** 
+	 * @return Entities specified for instrumentation by id.
+	 */
+	public Map<UUID, EntityToInstrument> getEntitiesToInstrument() {
+		return this.entitiesToInstrument;
 	}
 }

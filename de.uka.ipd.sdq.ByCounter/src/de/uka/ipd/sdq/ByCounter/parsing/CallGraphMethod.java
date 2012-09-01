@@ -147,4 +147,11 @@ public final class CallGraphMethod {
 			method.getCanonicalClassName().equals(this.owner.replace('/', '.')) &&
 			method.getSimpleMethodName().equals(this.name);
 	}
+
+	/**
+	 * @return {@link MethodDescriptor} for this method.
+	 */
+	public MethodDescriptor getMethodDescriptor() {
+		return MethodDescriptor._constructMethodDescriptorFromASM(owner, name, desc);
+	}
 }

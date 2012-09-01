@@ -2,7 +2,6 @@ package de.uka.ipd.sdq.ByCounter.parsing;
 
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -32,10 +31,10 @@ public final class RangeBlockAnalyser extends LabelBlockAnalyser {
 	 * The ranges as specified by the user as well as those computed 
 	 * from regions.
 	 */
-	private List<LineNumberRange> ranges;
+	private List<InstrumentedCodeArea> codeAreas;
 	
 	/**
-	 * This is a list of linenumbers used in the specification of line number 
+	 * This is a list of line numbers used in the specification of line number 
 	 * ranges but not yet found in the visited method.
 	 * Used for error finding.
 	 */
@@ -66,18 +65,15 @@ public final class RangeBlockAnalyser extends LabelBlockAnalyser {
 			InstrumentationState instrumentationState,
 			LineNumberAnalyser lineNumberAnalyser, List<InstrumentedCodeArea> codeAreasForMethod) {
 		super(currentMethod.getCanonicalMethodName(), instrumentationState);
-		this.ranges = new LinkedList<LineNumberRange>();
+		this.codeAreas = codeAreasForMethod;
 		this.lineNumberAnalyser = lineNumberAnalyser;
-		for(InstrumentedCodeArea area : codeAreasForMethod) {
-			this.ranges.add(area.getArea());
-		}
 		this.rangeBlockContainsLabels = new HashMap<Label, Integer>();
 		
 		this.lineNumbersNotYetFound = new HashSet<Integer>();
 		// construct the set of all specified line numbers for error checking
-		for(LineNumberRange r : ranges) {
-			lineNumbersNotYetFound.add(r.firstLine);
-			lineNumbersNotYetFound.add(r.lastLine);
+		for(InstrumentedCodeArea r : codeAreas) {
+			lineNumbersNotYetFound.add(r.getArea().firstLine);
+			lineNumbersNotYetFound.add(r.getArea().lastLine);
 		}
 	}
 	
@@ -87,7 +83,7 @@ public final class RangeBlockAnalyser extends LabelBlockAnalyser {
 	 * @param labelBlocks Instruction blocks for each label.
 	 */
 	private RangeBlockDescriptor[] constructRangeBlocks(List<InstructionBlockLocation> labelBlocks) {
-		RangeBlockDescriptor[] rangeBlocks = new RangeBlockDescriptor[this.ranges.size()];
+		RangeBlockDescriptor[] rangeBlocks = new RangeBlockDescriptor[this.codeAreas.size()];
 		boolean[] rangeWasEnteredSinceBasicBlockStarted = new boolean[rangeBlocks.length];
 		boolean[] rangeWasLeftSinceBasicBlockStarted = new boolean[rangeBlocks.length];
 		for(int i = 0; i < rangeBlocks.length; i++) {
@@ -115,7 +111,7 @@ public final class RangeBlockAnalyser extends LabelBlockAnalyser {
 		InstructionBlockDescriptor partialBB = new InstructionBlockDescriptor();
 		
 		// initialise range blocks
-		for(int i = 0; i < this.ranges.size(); i++) {
+		for(int i = 0; i < this.codeAreas.size(); i++) {
 			rangeBlocks[i] = new RangeBlockDescriptor(
 					instrumentationState.getBasicBlockLabels().length);
 			rangeBlocks[i].setBlockIndex(i);
@@ -156,9 +152,9 @@ public final class RangeBlockAnalyser extends LabelBlockAnalyser {
 			// calculate current ranges
 			{
 				int r = 0;
-				for(final LineNumberRange currentRange : this.ranges) {
-					if(currentLine >= currentRange.firstLine
-							&& currentLine <= currentRange.lastLine) {
+				for(final InstrumentedCodeArea currentRange : this.codeAreas) {
+					if(currentLine >= currentRange.getArea().firstLine
+							&& currentLine <= currentRange.getArea().lastLine) {
 	
 						// add the basic block to all current ranges
 						RangeBlockDescriptor.setUsesBasicBlock(
@@ -266,7 +262,7 @@ public final class RangeBlockAnalyser extends LabelBlockAnalyser {
 				rangeBlocks);
 		instrumentationState.getInstrumentationContext().getRangesByMethod().put(
 				methodDescriptorString, 
-				this.ranges.toArray(new LineNumberRange[this.ranges.size()]));
+				this.codeAreas.toArray(new InstrumentedCodeArea[this.codeAreas.size()]));
 		
 		this.instrumentationState.setRangeBlockContainsLabels(this.rangeBlockContainsLabels);
 	}

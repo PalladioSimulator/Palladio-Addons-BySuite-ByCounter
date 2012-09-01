@@ -13,9 +13,9 @@ import java.util.TreeSet;
 import java.util.UUID;
 
 import de.uka.ipd.sdq.ByCounter.instrumentation.BlockCountingMode;
+import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentedCodeArea;
 import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentedRegion;
 import de.uka.ipd.sdq.ByCounter.parsing.ArrayCreation;
-import de.uka.ipd.sdq.ByCounter.parsing.LineNumberRange;
 import de.uka.ipd.sdq.ByCounter.results.CountingResult;
 import de.uka.ipd.sdq.ByCounter.results.RequestResult;
 import de.uka.ipd.sdq.ByCounter.results.ResultCollection;
@@ -159,6 +159,7 @@ public class CollectionStrategyDefault extends AbstractCollectionStrategy {
 			res.overwriteMethodCallCounts(ccounts[ccountsNum].methodCounts);
 			res.setArrayCreationCounts(arrayCreationCounts);
 			res.setThreadId(Thread.currentThread().getId());
+			res.setObservedElement(this.parentResultCollector.instrumentationContext.getEntitiesToInstrument().get(result.observedEntityID));
 			if(result.blockCountingMode == BlockCountingMode.RangeBlocks) {
 				// set the index of the range block, i.e. the number of the section as
 				// defined by the user in the instrumentation settings. This 
@@ -166,7 +167,7 @@ public class CollectionStrategyDefault extends AbstractCollectionStrategy {
 				final int indexOfRangeBlock = ccounts[ccountsNum].indexOfRangeBlock;
 				res.setIndexOfRangeBlock(indexOfRangeBlock);
 				
-				LineNumberRange observedRange = 
+				InstrumentedCodeArea observedRange = 
 						this.parentResultCollector.instrumentationContext.getRangesByMethod().get(
 								result.qualifyingMethodName)[indexOfRangeBlock];
 				res.setObservedElement(observedRange);

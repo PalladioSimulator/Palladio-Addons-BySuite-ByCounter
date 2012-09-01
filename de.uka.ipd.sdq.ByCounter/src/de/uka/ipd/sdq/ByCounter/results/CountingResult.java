@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 import de.uka.ipd.sdq.ByCounter.execution.BytecodeCounter;
 import de.uka.ipd.sdq.ByCounter.execution.CountingResultBase;
+import de.uka.ipd.sdq.ByCounter.instrumentation.EntityToInstrument;
 
 /**
  * This class is a container for a result obtained by executing bytecode 
@@ -45,7 +46,7 @@ public class CountingResult extends CountingResultBase implements Cloneable {
 	 * The specification of instrumentation that lead to the observation of 
 	 * this result.
 	 */
-	private Object observedElement;
+	private EntityToInstrument observedElement;
 
 	/**
 	 * Set fields to null.
@@ -135,7 +136,7 @@ public class CountingResult extends CountingResultBase implements Cloneable {
 	 * @return The specification of instrumentation that lead to the observation of 
 	 * this result.
 	 */
-	public Object getObservedElement() {
+	public EntityToInstrument getObservedElement() {
 		return observedElement;
 	}
 
@@ -143,7 +144,7 @@ public class CountingResult extends CountingResultBase implements Cloneable {
 	 * @param observedElement The specification of instrumentation that lead to the observation of 
 	 * this result.
 	 */
-	public void setObservedElement(Object observedElement) {
+	public void setObservedElement(EntityToInstrument observedElement) {
 		this.observedElement = observedElement;
 	}
 

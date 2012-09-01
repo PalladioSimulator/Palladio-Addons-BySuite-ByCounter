@@ -35,6 +35,12 @@ public class InstrumentationState {
 	private List<MethodDescriptor> methodsToInstrumentCalculated;
 	
 	/**
+	 * This {@link Map} contains for each method to instrument the 
+	 * instances of {@link EntityToInstrument} that are specified for that method.
+	 */
+	private Map<String, List<EntityToInstrument>> entitiesToInstrumentByMethod;
+	
+	/**
 	 * Set of methods that have been instrumented successfully.
 	 */
 	private List<MethodDescriptor> successFullyInstrumentedMethods;
@@ -55,6 +61,12 @@ public class InstrumentationState {
 	private Map<String, List<String>> methodInvocations;
 
 	/**
+	 * Classes that have been marked to be completely instrumented using
+	 * {@link InstrumentedClass}.
+	 */
+	private Map<String, EntityToInstrument> fullyInstrumentedClasses;
+
+	/**
 	 * Initialises all fields.
 	 */
 	public InstrumentationState() {
@@ -64,6 +76,8 @@ public class InstrumentationState {
     	this.basicBlockLabels = new Label[0];
     	this.methodInvocations = new HashMap<String, List<String>>();
     	this.methodsToInstrumentCalculated = new ArrayList<MethodDescriptor>();
+    	this.entitiesToInstrumentByMethod = new HashMap<String, List<EntityToInstrument>>();
+    	this.fullyInstrumentedClasses = new HashMap<String, EntityToInstrument>();
 	}
 
 	/**
@@ -87,6 +101,14 @@ public class InstrumentationState {
 	 */
 	public List<MethodDescriptor> getMethodsToInstrumentCalculated() {
 		return methodsToInstrumentCalculated;
+	}
+
+	/**
+	 * @return This {@link Map} contains for each method to instrument the 
+	 * instances of {@link EntityToInstrument} that are specified for that method.
+	 */
+	public Map<String, List<EntityToInstrument>> getEntitiesToInstrumentByMethod() {
+		return this.entitiesToInstrumentByMethod;
 	}
 
 	/**
@@ -141,5 +163,13 @@ public class InstrumentationState {
 	 */
 	public Map<String, List<String>> getMethodInvocations() {
 		return this.methodInvocations;
+	}
+
+	/**
+	 * @return Classes that have been marked to be completely instrumented using
+	 * {@link InstrumentedClass}.
+	 */
+	public Map<String, EntityToInstrument> getFullyInstrumentedClasses() {
+		return this.fullyInstrumentedClasses;
 	}
 }

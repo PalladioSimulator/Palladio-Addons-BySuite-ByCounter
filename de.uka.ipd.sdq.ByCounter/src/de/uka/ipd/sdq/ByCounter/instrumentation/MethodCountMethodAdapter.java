@@ -4,6 +4,7 @@ package de.uka.ipd.sdq.ByCounter.instrumentation;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -234,6 +235,17 @@ public final class MethodCountMethodAdapter extends MethodAdapter {
 	 */
 	private int tmpThreadVar;
 
+	/** The code areas defined for the current method. 
+	 * The range block index of range blocks maps correctly to the 
+	 * correlating {@link InstrumentedCodeArea}.
+	 */
+	private List<InstrumentedCodeArea> codeAreasForMethod;
+
+	/** List of {@link EntityToInstrument} that are relevant for the current
+	 * method.
+	 */
+	private List<EntityToInstrument> instrumentationEntities;
+
 	
 	/**
 	 * Creates the method adapter.
@@ -273,6 +285,8 @@ public final class MethodCountMethodAdapter extends MethodAdapter {
 		this.useBlockCounters = false;
 		this.useRangeBlocks = false;
 		this.useRegions = false;
+		this.codeAreasForMethod = null;
+		this.instrumentationEntities = null;
 	}
 	
 	/**
@@ -619,26 +633,34 @@ public final class MethodCountMethodAdapter extends MethodAdapter {
 
 	/**
 	 * Calls the result collector after the method has been completed.
+	 * @param observedElement {@link EntityToInstrument} that produced the result.
 	 * @see #insertResultCollectorCall(String)
 	 */
-	protected void insertResultCollectorCompleteCall() {
-		this.insertResultCollectorCall(ProtocolCountStructure.class.getCanonicalName().replace('.', '/'));
+	protected void insertResultCollectorCompleteCall(EntityToInstrument observedElement) {
+		this.insertResultCollectorCall(
+				ProtocolCountStructure.class.getCanonicalName().replace('.', '/'),
+				observedElement);
 	}
 	
 	/**
 	 * Calls the result collector after a part of the method has been completed.
+	 * @param observedElement {@link EntityToInstrument} that produced the result.
 	 * @see #insertResultCollectorCall(String)
 	 */
-	protected void insertResultCollectorUpdateCall() {
-		this.insertResultCollectorCall(ProtocolCountUpdateStructure.class.getCanonicalName().replace('.', '/'));
+	protected void insertResultCollectorUpdateCall(EntityToInstrument observedElement) {
+		this.insertResultCollectorCall(
+				ProtocolCountUpdateStructure.class.getCanonicalName().replace('.', '/'),
+				observedElement);
 	}
 
 	/**
 	 * This is being called at the end of the method to report the resulting counts.
 	 * @param protocolCountStructClassName Canonical class name of the result structure.
+	 * @param observedElement {@link EntityToInstrument} that produced the result.
 	 */
 	@SuppressWarnings("boxing")
-	protected void insertResultCollectorCall(final String protocolCountStructClassName) {
+	protected void insertResultCollectorCall(final String protocolCountStructClassName, 
+			EntityToInstrument observedElement) {
 //		boolean skip = true;
 //		if(skip) {
 //			return;
@@ -649,6 +671,7 @@ public final class MethodCountMethodAdapter extends MethodAdapter {
 			return;
 		}
 		
+		// create arrays to save the counts in
 		int opcodeOrBasicBlockListVar = -1;
 		int methodListVar = -1;
 		if(this.useBlockCounters) {
@@ -714,6 +737,7 @@ public final class MethodCountMethodAdapter extends MethodAdapter {
 		mv.visitTypeInsn(Opcodes.NEW, protocolCountStructClassName);
 		mv.visitInsn(Opcodes.DUP);
 		
+		// push parameter values onto the stack
 		this.mv.visitVarInsn(Opcodes.LLOAD, this.timeVar); //converted to long --> taking two bytes!
 		this.mv.visitLdcInsn(qualifyingMethodNameAndDesc);
 		
@@ -775,9 +799,10 @@ public final class MethodCountMethodAdapter extends MethodAdapter {
 			this.mv.visitIntInsn(Opcodes.BIPUSH, BlockCountingMode.NoBlocks.ordinal());
 		}
 		
-		// construct the new result object
+		// call constructor on the new result object
 		mv.visitMethodInsn(Opcodes.INVOKESPECIAL, protocolCountStructClassName, "<init>", protocolStructConstructorSignature);
 
+		// set some values of fields on the result object
 		if(this.useBlockCounters && this.instrumentationParameters.getRecordBlockExecutionOrder()) {
 			// set value of order arraylist
 			mv.visitInsn(Opcodes.DUP);
@@ -805,7 +830,15 @@ public final class MethodCountMethodAdapter extends MethodAdapter {
 		mv.visitMethodInsn(Opcodes.INVOKESPECIAL, TYPE_ARRAYLIST, "<init>", "()V");
 		mv.visitVarInsn(Opcodes.ASTORE, this.threadSpawnArrayListVar);
 		
+		// set the observed entity
+		mv.visitInsn(Opcodes.DUP);
+		mv.visitLdcInsn(observedElement.getId().toString());
+		mv.visitMethodInsn(Opcodes.INVOKESTATIC, "java/util/UUID", "fromString", "(Ljava/lang/String;)Ljava/util/UUID;");
+		mv.visitFieldInsn(Opcodes.PUTFIELD, "de/uka/ipd/sdq/ByCounter/execution/ProtocolCountStructure", 
+				"observedEntityID", "Ljava/util/UUID;");
+		
 
+		// call the result collector or the result log writer
 		if(instrumentationParameters.getUseResultLogWriter()) {
 			if(instrumentationParameters.getUseResultCollector()) {
 				// we need to dup the result object for the result collector
@@ -1067,9 +1100,11 @@ public final class MethodCountMethodAdapter extends MethodAdapter {
 	 * <li>{@link #useRegions}</li>
 	 * <li>{@link #useBlockCounters}</li>
 	 * <li>{@link #useRangeBlocks}</li>
+	 * <li>{@link #codeAreasForMethod}</li>
 	 * </ul>
 	 */
 	protected void readSettings() {
+		this.instrumentationEntities = new LinkedList<EntityToInstrument>();
 		if(this.instrumentationParameters.hasInstrumentationRegionForMethod(methodDescriptor)) {
 			this.useRegions = true;
 		}
@@ -1082,10 +1117,23 @@ public final class MethodCountMethodAdapter extends MethodAdapter {
 		} else if(this.instrumentationParameters.getUseBasicBlocks()) {
 			this.useBlockCounters = true;
 			this.useRangeBlocks = this.instrumentationParameters.findCodeAreasForMethod(this.methodDescriptor).size() > 0;
+			if(this.useRangeBlocks) {
+				this.codeAreasForMethod = this.instrumentationParameters.findCodeAreasForMethod(methodDescriptor);
+			}
 			if(this.instrumentationParameters.getUseArrayParameterRecording()) {
 				throw new RuntimeException("Array parameter recording is not currently supported in block counting modes.");
 			}
 		}
+		// find relevant entities to instrument
+		List<EntityToInstrument> methodEntities = this.instrumentationState.getEntitiesToInstrumentByMethod().get(this.methodDescriptor.getCanonicalMethodName());
+		if(methodEntities != null) {
+			this.instrumentationEntities.addAll(methodEntities);
+		}
+		EntityToInstrument classEntities = this.instrumentationState.getFullyInstrumentedClasses().get(this.methodDescriptor.getCanonicalClassName());
+		if(classEntities != null) {
+			this.instrumentationEntities.add(classEntities);
+		}
+		
 	}
 	
 	@Override
@@ -1167,7 +1215,7 @@ public final class MethodCountMethodAdapter extends MethodAdapter {
 					hook.methodReturnHook(this, instrumentationParameters);
 				}
 				// method ends, so report the results
-				insertResultCollectorCompleteCall();
+				insertResultCollectorCompleteCall(this.instrumentationEntities.get(0));
 			}
 		}
 		// visit statement
@@ -1235,7 +1283,8 @@ public final class MethodCountMethodAdapter extends MethodAdapter {
 								this.rangeBlockExecutionOrderArrayListVar, 
 								rangeBlockIndex);
 						if(this.instrumentationParameters.getProvideOnlineSectionExecutionUpdates()) {
-							this.insertResultCollectorUpdateCall();
+							InstrumentedCodeArea codeArea = this.codeAreasForMethod.get(rangeBlockIndex);
+							this.insertResultCollectorUpdateCall(codeArea);
 							callUpdate = false; // update already done
 						}
 					} else {
@@ -1246,7 +1295,7 @@ public final class MethodCountMethodAdapter extends MethodAdapter {
 					insertProtocolActiveSection(rangeBlockIndex);
 				}
 				if(callUpdate) {
-					this.insertResultCollectorUpdateCall();
+					this.insertResultCollectorUpdateCall(this.instrumentationEntities.get(0));
 				}
 			}
 		}

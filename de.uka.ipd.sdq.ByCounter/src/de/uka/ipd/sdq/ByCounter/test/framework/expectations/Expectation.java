@@ -9,6 +9,8 @@ import java.util.TreeMap;
 
 import org.junit.Assert;
 
+import de.uka.ipd.sdq.ByCounter.instrumentation.EntityToInstrument;
+import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentedCodeArea;
 import de.uka.ipd.sdq.ByCounter.parsing.LineNumberRange;
 import de.uka.ipd.sdq.ByCounter.results.CountingResult;
 
@@ -206,7 +208,9 @@ public class Expectation {
 				message = sectExpt.toString() + " not expected. Maybe wrong order.";
 				Assert.assertEquals(message, sectExpt.getSectionNumber(), observation[i].getIndexOfRangeBlock());
 				if(sectExpt.getRange() != null) {
-					Assert.assertEquals(message, sectExpt.getRange(), observation[i].getObservedElement());
+					EntityToInstrument observedElement = observation[i].getObservedElement();
+					Assert.assertTrue(observedElement instanceof InstrumentedCodeArea);
+					Assert.assertEquals(message, sectExpt.getRange(), ((InstrumentedCodeArea) observedElement).getArea());
 				}
 			} else {
 				sectExpt = this.unorderedSections.get(observation[i].getIndexOfRangeBlock());

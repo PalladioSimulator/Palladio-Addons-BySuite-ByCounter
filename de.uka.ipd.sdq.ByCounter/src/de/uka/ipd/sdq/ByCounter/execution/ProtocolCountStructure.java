@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.UUID;
 
 import de.uka.ipd.sdq.ByCounter.instrumentation.BlockCountingMode;
+import de.uka.ipd.sdq.ByCounter.instrumentation.EntityToInstrument;
 import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentationParameters;
 
 /**
@@ -88,6 +89,9 @@ public class ProtocolCountStructure {
 	public UUID ownID;
 	/** This ID is a reference to the calling method. */
 	public UUID callerID;
+	/** This ID is the ID of the {@link EntityToInstrument} that produced this 
+	 * result. */
+	public UUID observedEntityID;
 	/** When execution order recording is enabled, this is a list of integers
 	 * in which each item represents the execution of a block with the index of 
 	 * that number. */
@@ -124,6 +128,7 @@ public class ProtocolCountStructure {
 		this.requestID = null;
 		this.ownID = null;
 		this.callerID = null;
+		this.observedEntityID = null;
 		this.blockCountingMode = null;
 		this.counterPrecisionLong = false;
 		this.inliningSpecified = false;
@@ -289,6 +294,8 @@ public class ProtocolCountStructure {
 		builder.append(this.rangeBlockExecutionSequence);
 		builder.append(", spawnedThreads=");
 		builder.append(this.spawnedThreads);
+		builder.append(", observedEntityID=");
+		builder.append(this.observedEntityID);
 		builder.append("]");
 		return builder.toString();
 	}
