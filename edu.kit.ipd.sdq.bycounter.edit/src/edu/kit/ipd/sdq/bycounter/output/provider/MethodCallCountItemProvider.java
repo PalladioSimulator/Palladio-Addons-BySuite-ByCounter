@@ -133,8 +133,7 @@ public class MethodCallCountItemProvider
 	 */
 	@Override
 	public String getText(Object object) {
-		Object labelValue = ((MethodCallCount)object).getQualifiedFunctionName();
-		String label = labelValue == null ? null : labelValue.toString();
+		String label = ((MethodCallCount)object).getQualifiedFunctionName();
 		return label == null || label.length() == 0 ?
 			getString("_UI_MethodCallCount_type") :
 			getString("_UI_MethodCallCount_type") + " " + label;

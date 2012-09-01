@@ -685,7 +685,7 @@ public class OutputPackageImpl extends EPackageImpl implements OutputPackage {
 		initEAttribute(getArrayCreation_ArrayType(), this.getArrayType(), "arrayType", null, 1, 1, ArrayCreation.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
 
 		initEClass(methodCallCountEClass, MethodCallCount.class, "MethodCallCount", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEAttribute(getMethodCallCount_QualifiedFunctionName(), ecorePackage.getEJavaObject(), "qualifiedFunctionName", null, 1, 1, MethodCallCount.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+		initEAttribute(getMethodCallCount_QualifiedFunctionName(), theEcorePackage.getEString(), "qualifiedFunctionName", null, 1, 1, MethodCallCount.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
 		initEAttribute(getMethodCallCount_Count(), theEcorePackage.getELong(), "count", null, 1, 1, MethodCallCount.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
 
 		initEClass(threadedCountingResultEClass, ThreadedCountingResult.class, "ThreadedCountingResult", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);

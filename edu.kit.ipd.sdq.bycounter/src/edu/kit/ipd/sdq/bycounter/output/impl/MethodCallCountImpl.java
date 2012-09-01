@@ -39,7 +39,7 @@ public class MethodCallCountImpl extends EObjectImpl implements MethodCallCount 
 	 * @generated
 	 * @ordered
 	 */
-	protected static final Object QUALIFIED_FUNCTION_NAME_EDEFAULT = null;
+	protected static final String QUALIFIED_FUNCTION_NAME_EDEFAULT = null;
 
 	/**
 	 * The cached value of the '{@link #getQualifiedFunctionName() <em>Qualified Function Name</em>}' attribute.
@@ -49,7 +49,7 @@ public class MethodCallCountImpl extends EObjectImpl implements MethodCallCount 
 	 * @generated
 	 * @ordered
 	 */
-	protected Object qualifiedFunctionName = QUALIFIED_FUNCTION_NAME_EDEFAULT;
+	protected String qualifiedFunctionName = QUALIFIED_FUNCTION_NAME_EDEFAULT;
 
 	/**
 	 * The default value of the '{@link #getCount() <em>Count</em>}' attribute.
@@ -95,7 +95,7 @@ public class MethodCallCountImpl extends EObjectImpl implements MethodCallCount 
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public Object getQualifiedFunctionName() {
+	public String getQualifiedFunctionName() {
 		return qualifiedFunctionName;
 	}
 
@@ -104,8 +104,8 @@ public class MethodCallCountImpl extends EObjectImpl implements MethodCallCount 
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setQualifiedFunctionName(Object newQualifiedFunctionName) {
-		Object oldQualifiedFunctionName = qualifiedFunctionName;
+	public void setQualifiedFunctionName(String newQualifiedFunctionName) {
+		String oldQualifiedFunctionName = qualifiedFunctionName;
 		qualifiedFunctionName = newQualifiedFunctionName;
 		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, OutputPackage.METHOD_CALL_COUNT__QUALIFIED_FUNCTION_NAME, oldQualifiedFunctionName, qualifiedFunctionName));
@@ -157,7 +157,7 @@ public class MethodCallCountImpl extends EObjectImpl implements MethodCallCount 
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
 			case OutputPackage.METHOD_CALL_COUNT__QUALIFIED_FUNCTION_NAME:
-				setQualifiedFunctionName(newValue);
+				setQualifiedFunctionName((String)newValue);
 				return;
 			case OutputPackage.METHOD_CALL_COUNT__COUNT:
 				setCount((Long)newValue);

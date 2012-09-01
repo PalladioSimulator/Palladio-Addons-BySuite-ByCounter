@@ -35,12 +35,12 @@ public interface MethodCallCount extends EObject {
 	 * </p>
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Qualified Function Name</em>' attribute.
-	 * @see #setQualifiedFunctionName(Object)
+	 * @see #setQualifiedFunctionName(String)
 	 * @see edu.kit.ipd.sdq.bycounter.output.OutputPackage#getMethodCallCount_QualifiedFunctionName()
 	 * @model required="true" ordered="false"
 	 * @generated
 	 */
-	Object getQualifiedFunctionName();
+	String getQualifiedFunctionName();
 
 	/**
 	 * Sets the value of the '{@link edu.kit.ipd.sdq.bycounter.output.MethodCallCount#getQualifiedFunctionName <em>Qualified Function Name</em>}' attribute.
@@ -50,7 +50,7 @@ public interface MethodCallCount extends EObject {
 	 * @see #getQualifiedFunctionName()
 	 * @generated
 	 */
-	void setQualifiedFunctionName(Object value);
+	void setQualifiedFunctionName(String value);
 
 	/**
 	 * Returns the value of the '<em><b>Count</b></em>' attribute.
