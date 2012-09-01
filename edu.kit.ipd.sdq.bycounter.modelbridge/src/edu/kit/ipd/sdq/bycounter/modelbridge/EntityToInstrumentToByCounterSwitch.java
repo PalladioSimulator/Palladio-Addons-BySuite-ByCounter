@@ -3,10 +3,10 @@
  */
 package edu.kit.ipd.sdq.bycounter.modelbridge;
 
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.logging.Logger;
 
 import org.eclipse.emf.ecore.EObject;
@@ -33,9 +33,7 @@ public class EntityToInstrumentToByCounterSwitch extends InputSwitch<Boolean> {
 	private static final Logger logger = Logger.getLogger(EntityToInstrumentToByCounterSwitch.class.getCanonicalName());
 	
 	/** List of methods to instrument. */
-	private final List<MethodDescriptor> methodsToInstrument;
-	/** Mapping of ByCounter ranges to code areas in the model. */
-	private final Map<LineNumberRange, InstrumentedCodeArea> rangeCodeAreaMap;
+	private final List<de.uka.ipd.sdq.ByCounter.instrumentation.EntityToInstrument> entitiesToInstrument;
 	/** Mapping of the fully qualified method name to a {@link InstrumentedMethod}. */
 	private final Map<String, InstrumentedMethod> methodNameInstrumentedMethodMap;
 	/** Provides the LineNumberRanges corresponding to a given statement. */
@@ -44,24 +42,30 @@ public class EntityToInstrumentToByCounterSwitch extends InputSwitch<Boolean> {
 	private final LinkedList<Root> availableGastRootNodes;
 
 	/**
+	 * Maps from {@link de.uka.ipd.sdq.ByCounter.instrumentation.EntityToInstrument#getId()}
+	 * to the {@link EntityToInstrument} it was mapped to.
+	 */
+	private Map<UUID, EntityToInstrument> entitiesToInstrumentMap;
+
+	/**
 	 * Constructs the entity switch and specifies the data structures that are 
 	 * filled by this class.
-	 * @param methodsToInstrument Initialized {@link List} of 
-	 * {@link MethodDescriptor}s that is filled by this class.
-	 * @param rangeCodeAreaMap The mapping of ByCounter ranges to code areas 
-	 * in the model is constructed by this class.
+	 * @param entitiesToInstrument Initialized {@link List} of 
+	 * {@link de.uka.ipd.sdq.ByCounter.instrumentation.EntityToInstrument}s that is filled by this class.
+	 * @param entityToInstrumentMap Initialized map from {@link de.uka.ipd.sdq.ByCounter.instrumentation.EntityToInstrument#getId()}
+	 * to the {@link EntityToInstrument} it was mapped to. Created by this class.
 	 * @param methodNameInstrumentedMethodMap Mapping of the fully qualified 
 	 * method name to a {@link InstrumentedMethod}. Created by this class.
 	 * @param availableGastRootNodes List of available GAST root nodes that 
 	 * will be extended by this class if new GAST root nodes are encountered.
 	 */
 	public EntityToInstrumentToByCounterSwitch(
-			final List<MethodDescriptor> methodsToInstrument,
-			final Map<LineNumberRange, InstrumentedCodeArea> rangeCodeAreaMap,
+			final List<de.uka.ipd.sdq.ByCounter.instrumentation.EntityToInstrument> entitiesToInstrument,
+			final Map<UUID, EntityToInstrument> entityToInstrumentMap,
 			final Map<String, InstrumentedMethod> methodNameInstrumentedMethodMap,
 			final LinkedList<Root> availableGastRootNodes) {
-		this.methodsToInstrument = methodsToInstrument;
-		this.rangeCodeAreaMap = rangeCodeAreaMap;
+		this.entitiesToInstrument = entitiesToInstrument;
+		this.entitiesToInstrumentMap = entityToInstrumentMap;
 		this.methodNameInstrumentedMethodMap = methodNameInstrumentedMethodMap;
 		this.availableGastRootNodes = availableGastRootNodes;
 	}
@@ -73,16 +77,26 @@ public class EntityToInstrumentToByCounterSwitch extends InputSwitch<Boolean> {
 		MethodDescriptor methodDesc = new MethodDescriptor(
 				method.getSurroundingClass().getQualifiedName(),
 				ByCounterWrapper.constructSignature(method));
-		methodsToInstrument.add(methodDesc);
+		de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentedMethod bcInstrumentedMethod =
+				new de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentedMethod(methodDesc);
+		entitiesToInstrument.add(bcInstrumentedMethod);
 		methodNameInstrumentedMethodMap.put(
 				methodDesc.getCanonicalMethodName(), instrumentedMethod);
+		this.entitiesToInstrumentMap.put(bcInstrumentedMethod.getId(), instrumentedMethod);
 		return true;
 	}
 	
 	@Override
-	public Boolean caseInstrumentedRegion(InstrumentedRegion object) {
+	public Boolean caseInstrumentedRegion(InstrumentedRegion instrumentedRegion) {
+		MethodDescriptor startMethod;
+		MethodDescriptor stopMethod;
+		de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentedRegion bcInstrumentedRegion = 
+				new de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentedRegion(
+						startMethod, instrumentedRegion.getStartLine(), 
+						stopMethod, instrumentedRegion.getStopLine());
+		this.entitiesToInstrument.add(bcInstrumentedRegion);
 		// TODO Auto-generated method stub
-		return super.caseInstrumentedRegion(object);
+		return super.caseInstrumentedRegion(instrumentedRegion);
 	}
 	
 	@Override
@@ -112,28 +126,18 @@ public class EntityToInstrumentToByCounterSwitch extends InputSwitch<Boolean> {
 				surroundingMethod.getSurroundingClass()
 						.getQualifiedName(),
 				ByCounterWrapper.constructSignature(surroundingMethod));
-		// ensure that surrounding method is instrumented
+		// construct a method descriptor
 		MethodDescriptor methodDesc = new MethodDescriptor(
 				mid.fqMethodName,
 				mid.signature);
-		if (!methodsToInstrument.contains(methodDesc)) {
-			methodsToInstrument.add(methodDesc);
-		} else {
-			methodDesc = methodsToInstrument.get(methodsToInstrument.indexOf(methodDesc));
-		}
-		// check for existing ranges within this method
-		List<LineNumberRange> ranges;
-		if (methodDesc.getCodeAreasToInstrument() == null) {
-			ranges = new LinkedList<LineNumberRange>();
-		} else {
-			ranges = new LinkedList<LineNumberRange>(Arrays.asList(methodDesc.getCodeAreasToInstrument()));
-		}
 		// add a new range for the instrumented code area
 		LineNumberRange newRange = instrumentedCodeAreaToLineNumberRange(area); 
-		ranges.add(newRange);
 		logger.info("Range from " + newRange.firstLine + " to " + newRange.lastLine + " added for method " + methodDesc.getCanonicalMethodName() + ".");
-		methodDesc.setCodeAreasToInstrument(ranges.toArray(new LineNumberRange[0]));
-		rangeCodeAreaMap.put(newRange, area);
+		// 
+		de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentedCodeArea bcCodeArea = 
+				new de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentedCodeArea(methodDesc, newRange);
+		this.entitiesToInstrument.add(bcCodeArea);
+		this.entitiesToInstrumentMap.put(bcCodeArea.getId(), area);
 		return true;
 	}
 

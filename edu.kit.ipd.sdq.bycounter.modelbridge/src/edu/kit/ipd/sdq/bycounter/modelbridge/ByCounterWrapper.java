@@ -4,7 +4,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -33,7 +32,6 @@ import de.uka.ipd.sdq.ByCounter.utils.JavaTypeEnum;
 import de.uka.ipd.sdq.ByCounter.utils.MethodDescriptor;
 import edu.kit.ipd.sdq.bycounter.input.EntityToInstrument;
 import edu.kit.ipd.sdq.bycounter.input.InstrumentationProfile;
-import edu.kit.ipd.sdq.bycounter.input.InstrumentedCodeArea;
 import edu.kit.ipd.sdq.bycounter.input.InstrumentedMethod;
 import edu.kit.ipd.sdq.bycounter.output.ArrayCreationCount;
 import edu.kit.ipd.sdq.bycounter.output.ArrayType;
@@ -90,6 +88,11 @@ public class ByCounterWrapper {
 	/** A map that maps the string representation of simple java 
 	 * types in the GAST to the JavaTypeEnum. */
 	private static Map<String, JavaTypeEnum> gastTypeJavaTypeMap;
+	/**
+	 * Maps from {@link de.uka.ipd.sdq.ByCounter.instrumentation.EntityToInstrument#getId()}
+	 * to the {@link EntityToInstrument} it was mapped to.
+	 */
+	private Map<java.util.UUID, EntityToInstrument> entitiesToInstrumentIdMap;
 	/** Object used to handle online updates by ByCounter. */
 	private UpdateObserver updateObserver;
 	/** {@link ResultCollection} for the current ByCounter run. Is set in 
@@ -141,9 +144,10 @@ public class ByCounterWrapper {
 		input.getDefinedLogicalSets(); // TODO: implement handling definedLogicalSets
 		instrumentationParams.setInstrumentRecursively(input.isInstrumentRecursively()); 
 		this.handleBasicBlocks(instrumentationParams, input);
-		final Map<LineNumberRange, InstrumentedCodeArea> rangeCodeAreaMap = new HashMap<LineNumberRange, InstrumentedCodeArea>();
 		final Map<String, InstrumentedMethod> methodNameInstrumentedMethodMap = new HashMap<String, InstrumentedMethod>();
-		handleEntitiesToInstrument(instrumentationParams, rangeCodeAreaMap,
+		this.entitiesToInstrumentIdMap = new HashMap<java.util.UUID, EntityToInstrument>();
+		handleEntitiesToInstrument(instrumentationParams, 
+				entitiesToInstrumentIdMap,
 				methodNameInstrumentedMethodMap, input);
 		this.configureOnlineUpdates(instrumentationParams);
 
@@ -165,18 +169,21 @@ public class ByCounterWrapper {
 
 	/**Handles updates of the input model regarding all {@link EntityToInstrument}.
 	 * @param instrumentationParams The ByCounter instrumentation parameters which are updated.
+	 * @param entitiesToInstrumentMap Maps from {@link de.uka.ipd.sdq.ByCounter.instrumentation.EntityToInstrument#getId()}
+	 * to the {@link EntityToInstrument} it was mapped to.
 	 * @param entityToLineNumberMap Map which links each create ByCounter {@link LineNumberRange} with the corresponding {@link EntityToInstrument}. 
 	 * @param instrumentationProfile The instrumentation profile with the new parameters.
 	 */
 	private void handleEntitiesToInstrument(
 			InstrumentationParameters instrumentationParams,
-			final Map<LineNumberRange, InstrumentedCodeArea> rangeCodeAreaMap,
+			final Map<java.util.UUID, EntityToInstrument> entitiesToInstrumentMap, 
 			final Map<String, InstrumentedMethod> methodNameInstrumentedMethodMap,
 			final InstrumentationProfile instrumentationProfile) {
 		
-		final List<MethodDescriptor> methodsToInstrument = new ArrayList<MethodDescriptor>();
+		final List<de.uka.ipd.sdq.ByCounter.instrumentation.EntityToInstrument> entitiesToInstrument = new ArrayList<de.uka.ipd.sdq.ByCounter.instrumentation.EntityToInstrument>();
 		EntityToInstrumentToByCounterSwitch entitySwitch = new EntityToInstrumentToByCounterSwitch(
-				methodsToInstrument, rangeCodeAreaMap,
+				entitiesToInstrument, 
+				entitiesToInstrumentMap,
 				methodNameInstrumentedMethodMap, availableGastRootNodes);
 		for(EntityToInstrument entity : instrumentationProfile.getEntitiesToInstrument()) {
 			boolean success = entitySwitch.doSwitch(entity);
@@ -186,7 +193,8 @@ public class ByCounterWrapper {
 				throw new IllegalArgumentException(errorMsg);
 			}
 		}
-		instrumentationParams.setMethodsToInstrument(methodsToInstrument);
+		instrumentationParams.getEntitiesToInstrument().clear();
+		instrumentationParams.getEntitiesToInstrument().addAll(entitiesToInstrument);
 	}
 
 	/**Handles updates of the input model regarding Basic Blocks.
@@ -285,29 +293,17 @@ public class ByCounterWrapper {
 		final SortedSet<RequestResult> requestResults;
 		requestResults = resultCollection.getRequestResults();
 		for(RequestResult rr : requestResults) {
-			edu.kit.ipd.sdq.bycounter.output.RequestResult req = mapRequestResult(rr);
+			edu.kit.ipd.sdq.bycounter.output.RequestResult req = mapRequestResult(rr, entitiesToInstrumentIdMap);
 			currentRun.getRequestResults().add(req);
 		}
 		
-		/* create a lookup map to find the LineNumberRange arrays of methods. 
-		 * This is necessary because CountingResults only know the index of the corresponding 
-		 * LineNumberRange of the containing method.
-		 */
-		Map<String, LineNumberRange[]> fqMethodNameToLineNumberRanges = 
-			new HashMap<String, LineNumberRange[]>();
-		Iterator<MethodDescriptor> iter = this.bycounter.getInstrumentationParams().getMethodsToInstrument().iterator();
-		while(iter.hasNext()) {
-			MethodDescriptor md = iter.next();
-			fqMethodNameToLineNumberRanges.put(md.getCanonicalMethodName(), md.getCodeAreasToInstrument());
-		}
-
 		// convert ordinary results including threaded counting results
 		final SortedSet<CountingResult> results;
 		results = resultCollection.getCountingResults();
 
 		edu.kit.ipd.sdq.bycounter.output.CountingResult cr;
 		for(CountingResult result : results)  { 
-			cr = mapCountingResult(result);
+			cr = mapCountingResult(result, entitiesToInstrumentIdMap);
 			currentRun.getCountingResults().add(cr);
 		}
 		
@@ -321,16 +317,18 @@ public class ByCounterWrapper {
 	 * Maps from {@link RequestResult} to 
 	 * {@link edu.kit.ipd.sdq.bycounter.output.RequestResult}.
 	 * @param rr {@link RequestResult} to convert.
+	 * @param entitiesToInstrumentMap2 Maps from {@link de.uka.ipd.sdq.ByCounter.instrumentation.EntityToInstrument#getId()}
+	 * to the {@link EntityToInstrument} it was mapped to. 
 	 * @return {@link edu.kit.ipd.sdq.bycounter.output.RequestResult} created 
 	 * from rr.
 	 */
 	private static edu.kit.ipd.sdq.bycounter.output.RequestResult mapRequestResult(
-			RequestResult rr) {
+			RequestResult rr, Map<java.util.UUID, EntityToInstrument> entitiesToInstrumentMap2) {
 		edu.kit.ipd.sdq.bycounter.output.RequestResult req = 
 				outputFactory.createRequestResult();
 		req.setRequestId(mapUUID(rr.getRequestId()));
 		for(CountingResult cr : rr.getCountingResults()) {
-			req.getCountingResults().add(mapCountingResult(cr));
+			req.getCountingResults().add(mapCountingResult(cr, entitiesToInstrumentMap2));
 		}
 		return req;
 	}
@@ -340,6 +338,9 @@ public class ByCounterWrapper {
 	 * @return EMF {@link UUID}.
 	 */
 	private static UUID mapUUID(java.util.UUID uuid) {
+		if(uuid == null) {
+			return null;
+		}
 		UUID result = outputFactory.createUUID();
 		result.setStringRepresentation(uuid.toString());
 		return result;
@@ -349,10 +350,12 @@ public class ByCounterWrapper {
 	 * Converts from the Java {@link CountingResult} to
 	 * the EMF {@link edu.kit.ipd.sdq.bycounter.output.CountingResult}.
 	 * @param cr {@link CountingResult} to convert.
+	 * @param entitiesToInstrumentMap2 Maps from {@link de.uka.ipd.sdq.ByCounter.instrumentation.EntityToInstrument#getId()}
+	 * to the {@link EntityToInstrument} it was mapped to.
 	 * @return EMF {@link edu.kit.ipd.sdq.bycounter.output.CountingResult}.
 	 */
 	private static edu.kit.ipd.sdq.bycounter.output.CountingResult mapCountingResult(
-			CountingResult cr) {
+			CountingResult cr, Map<java.util.UUID, EntityToInstrument> entitiesToInstrumentMap2) {
 		edu.kit.ipd.sdq.bycounter.output.CountingResult result;
 		if(cr instanceof ThreadedCountingResult) {
 			final ThreadedCountingResult tcr = (ThreadedCountingResult)cr;
@@ -363,7 +366,7 @@ public class ByCounterWrapper {
 			for(ThreadedCountingResult tcrr : tcr.getSpawnedThreadedCountingResults()) {
 				// map spawned result
 				edu.kit.ipd.sdq.bycounter.output.ThreadedCountingResult mappedTcrr = 
-						(edu.kit.ipd.sdq.bycounter.output.ThreadedCountingResult)mapCountingResult(tcrr);
+						(edu.kit.ipd.sdq.bycounter.output.ThreadedCountingResult)mapCountingResult(tcrr, entitiesToInstrumentMap2);
 				tResult.getSpawnedThreadedCountingResults().add(mappedTcrr);
 			}
 			result = tResult;
@@ -376,18 +379,24 @@ public class ByCounterWrapper {
 		result.getMethodCallCounts().addAll(mapMethodCallCounts(cr.getMethodCallCounts()));
 		result.setMethodInvocationBeginning(cr.getMethodInvocationBeginning());
 		result.setReportingTime(cr.getReportingTime());
-		result.setObservedElement(mapObservedElement(cr.getObservedElement()));
+		result.setObservedElement(mapObservedElement(cr.getObservedElement(), entitiesToInstrumentMap2));
 		result.setMethodId(mapUUID(cr.getMethodID()));
 		result.setQualifiedMethodName(cr.getQualifiedMethodName());
 	
 		return result;
 	}
 
-	private static EntityToInstrument mapObservedElement(Object observedElement) {
-		EntityToInstrument result;
-		throw new RuntimeException("Not implemented!");
-		// TODO Auto-generated method stub
-//		return result;
+	/**
+	 * Converts ByCounters {@link de.uka.ipd.sdq.ByCounter.instrumentation.EntityToInstrument}
+	 * to it's EMF model counterpart.
+	 * @param observedElement Element that was instrumented to produce the result.
+	 * @param entitiesToInstrumentMap2 Maps from {@link de.uka.ipd.sdq.ByCounter.instrumentation.EntityToInstrument#getId()}
+	 * to the {@link EntityToInstrument} it was mapped to.
+	 * @return EMF {@link EntityToInstrument}.
+	 */
+	private static EntityToInstrument mapObservedElement(de.uka.ipd.sdq.ByCounter.instrumentation.EntityToInstrument observedElement, Map<java.util.UUID, EntityToInstrument> entitiesToInstrumentMap2) {
+		java.util.UUID id = observedElement.getId();
+		return entitiesToInstrumentMap2.get(id);
 	}
 
 	/**
@@ -397,7 +406,12 @@ public class ByCounterWrapper {
 	private static Collection<? extends MethodCallCount> mapMethodCallCounts(
 			SortedMap<String, Long> methodCallCounts) {
 		List<MethodCallCount> result = new LinkedList<MethodCallCount>();
-		// TODO Auto-generated method stub
+		for(Entry<String, Long> e : methodCallCounts.entrySet()) {
+			MethodCallCount mcc = outputFactory.createMethodCallCount();
+			mcc.setQualifiedFunctionName(e.getKey());
+			mcc.setCount(e.getValue());
+			result.add(mcc);
+		}
 		return result;
 	}
 
@@ -409,10 +423,12 @@ public class ByCounterWrapper {
 	private static Collection<? extends ArrayCreationCount> mapArrayCreationCounts(
 			Map<ArrayCreation, Long> arrayCreationCounts) {
 		List<ArrayCreationCount> result = new LinkedList<ArrayCreationCount>();
-		for(Entry<ArrayCreation, Long> e : arrayCreationCounts.entrySet()) {
-			ArrayCreationCount r = outputFactory.createArrayCreationCount();
-			r.setArrayCreation(mapArrayCreation(e.getKey()));
-			r.setCount(e.getValue());
+		if(arrayCreationCounts != null) {
+			for(Entry<ArrayCreation, Long> e : arrayCreationCounts.entrySet()) {
+				ArrayCreationCount r = outputFactory.createArrayCreationCount();
+				r.setArrayCreation(mapArrayCreation(e.getKey()));
+				r.setCount(e.getValue());
+			}
 		}
 		return result;
 	}
