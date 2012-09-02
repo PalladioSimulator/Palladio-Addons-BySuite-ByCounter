@@ -420,31 +420,13 @@ public interface InputPackage extends EPackage {
 	int INSTRUMENTED_REGION__INSTRUMENTATION_PROFILE = ENTITY_TO_INSTRUMENT__INSTRUMENTATION_PROFILE;
 
 	/**
-	 * The feature id for the '<em><b>Start Method</b></em>' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int INSTRUMENTED_REGION__START_METHOD = ENTITY_TO_INSTRUMENT_FEATURE_COUNT + 0;
-
-	/**
 	 * The feature id for the '<em><b>Start Line</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int INSTRUMENTED_REGION__START_LINE = ENTITY_TO_INSTRUMENT_FEATURE_COUNT + 1;
-
-	/**
-	 * The feature id for the '<em><b>Stop Method</b></em>' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int INSTRUMENTED_REGION__STOP_METHOD = ENTITY_TO_INSTRUMENT_FEATURE_COUNT + 2;
+	int INSTRUMENTED_REGION__START_LINE = ENTITY_TO_INSTRUMENT_FEATURE_COUNT + 0;
 
 	/**
 	 * The feature id for the '<em><b>Stop Line</b></em>' attribute.
@@ -453,7 +435,25 @@ public interface InputPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int INSTRUMENTED_REGION__STOP_LINE = ENTITY_TO_INSTRUMENT_FEATURE_COUNT + 3;
+	int INSTRUMENTED_REGION__STOP_LINE = ENTITY_TO_INSTRUMENT_FEATURE_COUNT + 1;
+
+	/**
+	 * The feature id for the '<em><b>Start Method</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int INSTRUMENTED_REGION__START_METHOD = ENTITY_TO_INSTRUMENT_FEATURE_COUNT + 2;
+
+	/**
+	 * The feature id for the '<em><b>Stop Method</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int INSTRUMENTED_REGION__STOP_METHOD = ENTITY_TO_INSTRUMENT_FEATURE_COUNT + 3;
 
 	/**
 	 * The number of structural features of the '<em>Instrumented Region</em>' class.

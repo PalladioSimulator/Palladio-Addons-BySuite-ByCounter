@@ -17,10 +17,10 @@ import de.fzi.gast.functions.Method;
  * <p>
  * The following features are supported:
  * <ul>
- *   <li>{@link edu.kit.ipd.sdq.bycounter.input.InstrumentedRegion#getStartMethod <em>Start Method</em>}</li>
  *   <li>{@link edu.kit.ipd.sdq.bycounter.input.InstrumentedRegion#getStartLine <em>Start Line</em>}</li>
- *   <li>{@link edu.kit.ipd.sdq.bycounter.input.InstrumentedRegion#getStopMethod <em>Stop Method</em>}</li>
  *   <li>{@link edu.kit.ipd.sdq.bycounter.input.InstrumentedRegion#getStopLine <em>Stop Line</em>}</li>
+ *   <li>{@link edu.kit.ipd.sdq.bycounter.input.InstrumentedRegion#getStartMethod <em>Start Method</em>}</li>
+ *   <li>{@link edu.kit.ipd.sdq.bycounter.input.InstrumentedRegion#getStopMethod <em>Stop Method</em>}</li>
  * </ul>
  * </p>
  *
@@ -96,12 +96,12 @@ public interface InstrumentedRegion extends EntityToInstrument {
 	 * </p>
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Start Method</em>' reference.
-	 * @see #setStartMethod(Function)
+	 * @see #setStartMethod(Method)
 	 * @see edu.kit.ipd.sdq.bycounter.input.InputPackage#getInstrumentedRegion_StartMethod()
 	 * @model required="true" ordered="false"
 	 * @generated
 	 */
-	Function getStartMethod();
+	Method getStartMethod();
 
 	/**
 	 * Sets the value of the '{@link edu.kit.ipd.sdq.bycounter.input.InstrumentedRegion#getStartMethod <em>Start Method</em>}' reference.
@@ -111,7 +111,7 @@ public interface InstrumentedRegion extends EntityToInstrument {
 	 * @see #getStartMethod()
 	 * @generated
 	 */
-	void setStartMethod(Function value);
+	void setStartMethod(Method value);
 
 	/**
 	 * Returns the value of the '<em><b>Stop Method</b></em>' reference.
@@ -122,12 +122,12 @@ public interface InstrumentedRegion extends EntityToInstrument {
 	 * </p>
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Stop Method</em>' reference.
-	 * @see #setStopMethod(Function)
+	 * @see #setStopMethod(Method)
 	 * @see edu.kit.ipd.sdq.bycounter.input.InputPackage#getInstrumentedRegion_StopMethod()
 	 * @model required="true" ordered="false"
 	 * @generated
 	 */
-	Function getStopMethod();
+	Method getStopMethod();
 
 	/**
 	 * Sets the value of the '{@link edu.kit.ipd.sdq.bycounter.input.InstrumentedRegion#getStopMethod <em>Stop Method</em>}' reference.
@@ -137,6 +137,6 @@ public interface InstrumentedRegion extends EntityToInstrument {
 	 * @see #getStopMethod()
 	 * @generated
 	 */
-	void setStopMethod(Function value);
+	void setStopMethod(Method value);
 
 } // InstrumentedRegion

@@ -408,24 +408,6 @@ public class InputPackageImpl extends EPackageImpl implements InputPackage {
 	 * @generated
 	 */
 	public EReference getInstrumentedRegion_StartMethod() {
-		return (EReference)instrumentedRegionEClass.getEStructuralFeatures().get(0);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public EAttribute getInstrumentedRegion_StartLine() {
-		return (EAttribute)instrumentedRegionEClass.getEStructuralFeatures().get(1);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public EReference getInstrumentedRegion_StopMethod() {
 		return (EReference)instrumentedRegionEClass.getEStructuralFeatures().get(2);
 	}
 
@@ -434,8 +416,26 @@ public class InputPackageImpl extends EPackageImpl implements InputPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public EAttribute getInstrumentedRegion_StartLine() {
+		return (EAttribute)instrumentedRegionEClass.getEStructuralFeatures().get(0);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EReference getInstrumentedRegion_StopMethod() {
+		return (EReference)instrumentedRegionEClass.getEStructuralFeatures().get(3);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	public EAttribute getInstrumentedRegion_StopLine() {
-		return (EAttribute)instrumentedRegionEClass.getEStructuralFeatures().get(3);
+		return (EAttribute)instrumentedRegionEClass.getEStructuralFeatures().get(1);
 	}
 
 	/**
@@ -514,10 +514,10 @@ public class InputPackageImpl extends EPackageImpl implements InputPackage {
 		createEReference(instrumentedMethodEClass, INSTRUMENTED_METHOD__METHOD);
 
 		instrumentedRegionEClass = createEClass(INSTRUMENTED_REGION);
-		createEReference(instrumentedRegionEClass, INSTRUMENTED_REGION__START_METHOD);
 		createEAttribute(instrumentedRegionEClass, INSTRUMENTED_REGION__START_LINE);
-		createEReference(instrumentedRegionEClass, INSTRUMENTED_REGION__STOP_METHOD);
 		createEAttribute(instrumentedRegionEClass, INSTRUMENTED_REGION__STOP_LINE);
+		createEReference(instrumentedRegionEClass, INSTRUMENTED_REGION__START_METHOD);
+		createEReference(instrumentedRegionEClass, INSTRUMENTED_REGION__STOP_METHOD);
 
 		entityToInstrumentEClass = createEClass(ENTITY_TO_INSTRUMENT);
 		createEReference(entityToInstrumentEClass, ENTITY_TO_INSTRUMENT__INSTRUMENTATION_PROFILE);
@@ -596,10 +596,10 @@ public class InputPackageImpl extends EPackageImpl implements InputPackage {
 		initEReference(getInstrumentedMethod_Method(), thefunctionsPackage.getMethod(), null, "method", null, 1, 1, InstrumentedMethod.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
 
 		initEClass(instrumentedRegionEClass, InstrumentedRegion.class, "InstrumentedRegion", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEReference(getInstrumentedRegion_StartMethod(), thefunctionsPackage.getFunction(), null, "startMethod", null, 1, 1, InstrumentedRegion.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
 		initEAttribute(getInstrumentedRegion_StartLine(), ecorePackage.getEInt(), "startLine", null, 1, 1, InstrumentedRegion.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
-		initEReference(getInstrumentedRegion_StopMethod(), thefunctionsPackage.getFunction(), null, "stopMethod", null, 1, 1, InstrumentedRegion.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
 		initEAttribute(getInstrumentedRegion_StopLine(), ecorePackage.getEInt(), "stopLine", null, 1, 1, InstrumentedRegion.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+		initEReference(getInstrumentedRegion_StartMethod(), thefunctionsPackage.getMethod(), null, "startMethod", null, 1, 1, InstrumentedRegion.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+		initEReference(getInstrumentedRegion_StopMethod(), thefunctionsPackage.getMethod(), null, "stopMethod", null, 1, 1, InstrumentedRegion.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
 
 		initEClass(entityToInstrumentEClass, EntityToInstrument.class, "EntityToInstrument", IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getEntityToInstrument_InstrumentationProfile(), this.getInstrumentationProfile(), this.getInstrumentationProfile_EntitiesToInstrument(), "instrumentationProfile", null, 0, 1, EntityToInstrument.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);

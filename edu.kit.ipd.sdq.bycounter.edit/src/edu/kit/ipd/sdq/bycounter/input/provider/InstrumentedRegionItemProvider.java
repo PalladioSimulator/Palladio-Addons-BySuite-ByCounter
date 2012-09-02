@@ -61,10 +61,10 @@ public class InstrumentedRegionItemProvider
 		if (itemPropertyDescriptors == null) {
 			super.getPropertyDescriptors(object);
 
-			addStartMethodPropertyDescriptor(object);
 			addStartLinePropertyDescriptor(object);
-			addStopMethodPropertyDescriptor(object);
 			addStopLinePropertyDescriptor(object);
+			addStartMethodPropertyDescriptor(object);
+			addStopMethodPropertyDescriptor(object);
 		}
 		return itemPropertyDescriptors;
 	}
