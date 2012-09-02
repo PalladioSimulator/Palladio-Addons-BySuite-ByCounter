@@ -74,9 +74,7 @@ public class EntityToInstrumentToByCounterSwitch extends InputSwitch<Boolean> {
 	public Boolean caseInstrumentedMethod(InstrumentedMethod instrumentedMethod) {
 		addRootNodeToAvailableRootNodes(instrumentedMethod);
 		final Method method = instrumentedMethod.getMethod();
-		MethodDescriptor methodDesc = new MethodDescriptor(
-				method.getSurroundingClass().getQualifiedName(),
-				ByCounterWrapper.constructSignature(method));
+		MethodDescriptor methodDesc = createMethodDescriptorForMethod(method);
 		de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentedMethod bcInstrumentedMethod =
 				new de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentedMethod(methodDesc);
 		entitiesToInstrument.add(bcInstrumentedMethod);
@@ -85,11 +83,11 @@ public class EntityToInstrumentToByCounterSwitch extends InputSwitch<Boolean> {
 		this.entitiesToInstrumentMap.put(bcInstrumentedMethod.getId(), instrumentedMethod);
 		return true;
 	}
-	
+
 	@Override
 	public Boolean caseInstrumentedRegion(InstrumentedRegion instrumentedRegion) {
-		MethodDescriptor startMethod;
-		MethodDescriptor stopMethod;
+		MethodDescriptor startMethod = createMethodDescriptorForMethod(instrumentedRegion.getStartMethod());
+		MethodDescriptor stopMethod = createMethodDescriptorForMethod(instrumentedRegion.getStopMethod());
 		de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentedRegion bcInstrumentedRegion = 
 				new de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentedRegion(
 						startMethod, instrumentedRegion.getStartLine(), 
@@ -139,6 +137,17 @@ public class EntityToInstrumentToByCounterSwitch extends InputSwitch<Boolean> {
 		this.entitiesToInstrument.add(bcCodeArea);
 		this.entitiesToInstrumentMap.put(bcCodeArea.getId(), area);
 		return true;
+	}
+
+	/**
+	 * @param method GAST {@link de.fzi.gast.functions.Method}.
+	 * @return ByCounter {@link MethodDescriptor}.
+	 */
+	private MethodDescriptor createMethodDescriptorForMethod(final Method method) {
+		MethodDescriptor methodDesc = new MethodDescriptor(
+				method.getSurroundingClass().getQualifiedName(),
+				ByCounterWrapper.constructSignature(method));
+		return methodDesc;
 	}
 
 	/**Generates a {@link LineNumberRange} corresponding to the given {@link InstrumentedCodeArea}.
