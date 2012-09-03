@@ -368,6 +368,15 @@ public class OutputPackageImpl extends EPackageImpl implements OutputPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public EReference getArrayCreationCount_CountingResult() {
+		return (EReference)arrayCreationCountEClass.getEStructuralFeatures().get(2);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	public EClass getArrayCreation() {
 		return arrayCreationEClass;
 	}
@@ -404,6 +413,15 @@ public class OutputPackageImpl extends EPackageImpl implements OutputPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public EReference getArrayCreation_ArrayCreationCount() {
+		return (EReference)arrayCreationEClass.getEStructuralFeatures().get(3);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	public EClass getMethodCallCount() {
 		return methodCallCountEClass;
 	}
@@ -424,6 +442,24 @@ public class OutputPackageImpl extends EPackageImpl implements OutputPackage {
 	 */
 	public EAttribute getMethodCallCount_Count() {
 		return (EAttribute)methodCallCountEClass.getEStructuralFeatures().get(1);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EReference getMethodCallCount_Function() {
+		return (EReference)methodCallCountEClass.getEStructuralFeatures().get(2);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EReference getMethodCallCount_CountingResult() {
+		return (EReference)methodCallCountEClass.getEStructuralFeatures().get(3);
 	}
 
 	/**
@@ -592,15 +628,19 @@ public class OutputPackageImpl extends EPackageImpl implements OutputPackage {
 		arrayCreationCountEClass = createEClass(ARRAY_CREATION_COUNT);
 		createEReference(arrayCreationCountEClass, ARRAY_CREATION_COUNT__ARRAY_CREATION);
 		createEAttribute(arrayCreationCountEClass, ARRAY_CREATION_COUNT__COUNT);
+		createEReference(arrayCreationCountEClass, ARRAY_CREATION_COUNT__COUNTING_RESULT);
 
 		arrayCreationEClass = createEClass(ARRAY_CREATION);
 		createEAttribute(arrayCreationEClass, ARRAY_CREATION__TYPE_DESCRIPTOR);
 		createEAttribute(arrayCreationEClass, ARRAY_CREATION__NUMBER_OF_DIMENSIONS);
 		createEAttribute(arrayCreationEClass, ARRAY_CREATION__ARRAY_TYPE);
+		createEReference(arrayCreationEClass, ARRAY_CREATION__ARRAY_CREATION_COUNT);
 
 		methodCallCountEClass = createEClass(METHOD_CALL_COUNT);
 		createEAttribute(methodCallCountEClass, METHOD_CALL_COUNT__QUALIFIED_FUNCTION_NAME);
 		createEAttribute(methodCallCountEClass, METHOD_CALL_COUNT__COUNT);
+		createEReference(methodCallCountEClass, METHOD_CALL_COUNT__FUNCTION);
+		createEReference(methodCallCountEClass, METHOD_CALL_COUNT__COUNTING_RESULT);
 
 		threadedCountingResultEClass = createEClass(THREADED_COUNTING_RESULT);
 		createEReference(threadedCountingResultEClass, THREADED_COUNTING_RESULT__SPAWNED_THREADED_COUNTING_RESULTS);
@@ -638,6 +678,7 @@ public class OutputPackageImpl extends EPackageImpl implements OutputPackage {
 		IdentifierPackage theIdentifierPackage = (IdentifierPackage)EPackage.Registry.INSTANCE.getEPackage(IdentifierPackage.eNS_URI);
 		InputPackage theInputPackage = (InputPackage)EPackage.Registry.INSTANCE.getEPackage(InputPackage.eNS_URI);
 		EcorePackage theEcorePackage = (EcorePackage)EPackage.Registry.INSTANCE.getEPackage(EcorePackage.eNS_URI);
+		functionsPackage thefunctionsPackage = (functionsPackage)EPackage.Registry.INSTANCE.getEPackage(functionsPackage.eNS_URI);
 
 		// Create type parameters
 
@@ -671,22 +712,26 @@ public class OutputPackageImpl extends EPackageImpl implements OutputPackage {
 		initEReference(getCountingResult_MethodId(), this.getUUID(), null, "methodId", null, 1, 1, CountingResult.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
 		initEAttribute(getCountingResult_QualifiedMethodName(), ecorePackage.getEString(), "qualifiedMethodName", null, 1, 1, CountingResult.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
 		initEReference(getCountingResult_ResultCollection(), this.getResultCollection(), this.getResultCollection_CountingResults(), "resultCollection", null, 0, 1, CountingResult.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
-		initEReference(getCountingResult_ArrayCreationCounts(), this.getArrayCreationCount(), null, "arrayCreationCounts", null, 0, -1, CountingResult.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
-		initEReference(getCountingResult_MethodCallCounts(), this.getMethodCallCount(), null, "methodCallCounts", null, 0, -1, CountingResult.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+		initEReference(getCountingResult_ArrayCreationCounts(), this.getArrayCreationCount(), this.getArrayCreationCount_CountingResult(), "arrayCreationCounts", null, 0, -1, CountingResult.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+		initEReference(getCountingResult_MethodCallCounts(), this.getMethodCallCount(), this.getMethodCallCount_CountingResult(), "methodCallCounts", null, 0, -1, CountingResult.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
 		initEReference(getCountingResult_RequestResult(), this.getRequestResult(), this.getRequestResult_CountingResults(), "requestResult", null, 0, 1, CountingResult.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
 
 		initEClass(arrayCreationCountEClass, ArrayCreationCount.class, "ArrayCreationCount", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEReference(getArrayCreationCount_ArrayCreation(), this.getArrayCreation(), null, "arrayCreation", null, 1, 1, ArrayCreationCount.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+		initEReference(getArrayCreationCount_ArrayCreation(), this.getArrayCreation(), this.getArrayCreation_ArrayCreationCount(), "arrayCreation", null, 1, 1, ArrayCreationCount.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
 		initEAttribute(getArrayCreationCount_Count(), theEcorePackage.getELong(), "count", null, 1, 1, ArrayCreationCount.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+		initEReference(getArrayCreationCount_CountingResult(), this.getCountingResult(), this.getCountingResult_ArrayCreationCounts(), "countingResult", null, 1, 1, ArrayCreationCount.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
 
 		initEClass(arrayCreationEClass, ArrayCreation.class, "ArrayCreation", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getArrayCreation_TypeDescriptor(), theEcorePackage.getEString(), "typeDescriptor", null, 1, 1, ArrayCreation.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
 		initEAttribute(getArrayCreation_NumberOfDimensions(), theEcorePackage.getEInt(), "numberOfDimensions", null, 1, 1, ArrayCreation.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
 		initEAttribute(getArrayCreation_ArrayType(), this.getArrayType(), "arrayType", null, 1, 1, ArrayCreation.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+		initEReference(getArrayCreation_ArrayCreationCount(), this.getArrayCreationCount(), this.getArrayCreationCount_ArrayCreation(), "arrayCreationCount", null, 1, 1, ArrayCreation.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
 
 		initEClass(methodCallCountEClass, MethodCallCount.class, "MethodCallCount", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getMethodCallCount_QualifiedFunctionName(), theEcorePackage.getEString(), "qualifiedFunctionName", null, 1, 1, MethodCallCount.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
 		initEAttribute(getMethodCallCount_Count(), theEcorePackage.getELong(), "count", null, 1, 1, MethodCallCount.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+		initEReference(getMethodCallCount_Function(), thefunctionsPackage.getFunction(), null, "function", null, 0, 1, MethodCallCount.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+		initEReference(getMethodCallCount_CountingResult(), this.getCountingResult(), this.getCountingResult_MethodCallCounts(), "countingResult", null, 1, 1, MethodCallCount.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
 
 		initEClass(threadedCountingResultEClass, ThreadedCountingResult.class, "ThreadedCountingResult", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getThreadedCountingResult_SpawnedThreadedCountingResults(), this.getThreadedCountingResult(), this.getThreadedCountingResult_ThreadedCountingResult(), "spawnedThreadedCountingResults", null, 0, -1, ThreadedCountingResult.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);

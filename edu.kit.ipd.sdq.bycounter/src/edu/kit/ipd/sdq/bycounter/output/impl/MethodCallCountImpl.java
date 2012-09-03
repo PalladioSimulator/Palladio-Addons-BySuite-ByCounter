@@ -6,15 +6,20 @@
  */
 package edu.kit.ipd.sdq.bycounter.output.impl;
 
+import de.fzi.gast.functions.Function;
+import edu.kit.ipd.sdq.bycounter.output.CountingResult;
 import edu.kit.ipd.sdq.bycounter.output.MethodCallCount;
 import edu.kit.ipd.sdq.bycounter.output.OutputPackage;
 
 import org.eclipse.emf.common.notify.Notification;
 
+import org.eclipse.emf.common.notify.NotificationChain;
 import org.eclipse.emf.ecore.EClass;
 
+import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.EObjectImpl;
+import org.eclipse.emf.ecore.util.EcoreUtil;
 
 /**
  * <!-- begin-user-doc -->
@@ -25,6 +30,8 @@ import org.eclipse.emf.ecore.impl.EObjectImpl;
  * <ul>
  *   <li>{@link edu.kit.ipd.sdq.bycounter.output.impl.MethodCallCountImpl#getQualifiedFunctionName <em>Qualified Function Name</em>}</li>
  *   <li>{@link edu.kit.ipd.sdq.bycounter.output.impl.MethodCallCountImpl#getCount <em>Count</em>}</li>
+ *   <li>{@link edu.kit.ipd.sdq.bycounter.output.impl.MethodCallCountImpl#getFunction <em>Function</em>}</li>
+ *   <li>{@link edu.kit.ipd.sdq.bycounter.output.impl.MethodCallCountImpl#getCountingResult <em>Counting Result</em>}</li>
  * </ul>
  * </p>
  *
@@ -70,6 +77,16 @@ public class MethodCallCountImpl extends EObjectImpl implements MethodCallCount 
 	 * @ordered
 	 */
 	protected long count = COUNT_EDEFAULT;
+
+	/**
+	 * The cached value of the '{@link #getFunction() <em>Function</em>}' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getFunction()
+	 * @generated
+	 * @ordered
+	 */
+	protected Function function;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -137,6 +154,129 @@ public class MethodCallCountImpl extends EObjectImpl implements MethodCallCount 
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public Function getFunction() {
+		if (function != null && function.eIsProxy()) {
+			InternalEObject oldFunction = (InternalEObject)function;
+			function = (Function)eResolveProxy(oldFunction);
+			if (function != oldFunction) {
+				if (eNotificationRequired())
+					eNotify(new ENotificationImpl(this, Notification.RESOLVE, OutputPackage.METHOD_CALL_COUNT__FUNCTION, oldFunction, function));
+			}
+		}
+		return function;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public Function basicGetFunction() {
+		return function;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setFunction(Function newFunction) {
+		Function oldFunction = function;
+		function = newFunction;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, OutputPackage.METHOD_CALL_COUNT__FUNCTION, oldFunction, function));
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public CountingResult getCountingResult() {
+		if (eContainerFeatureID() != OutputPackage.METHOD_CALL_COUNT__COUNTING_RESULT) return null;
+		return (CountingResult)eContainer();
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public NotificationChain basicSetCountingResult(CountingResult newCountingResult, NotificationChain msgs) {
+		msgs = eBasicSetContainer((InternalEObject)newCountingResult, OutputPackage.METHOD_CALL_COUNT__COUNTING_RESULT, msgs);
+		return msgs;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setCountingResult(CountingResult newCountingResult) {
+		if (newCountingResult != eInternalContainer() || (eContainerFeatureID() != OutputPackage.METHOD_CALL_COUNT__COUNTING_RESULT && newCountingResult != null)) {
+			if (EcoreUtil.isAncestor(this, newCountingResult))
+				throw new IllegalArgumentException("Recursive containment not allowed for " + toString());
+			NotificationChain msgs = null;
+			if (eInternalContainer() != null)
+				msgs = eBasicRemoveFromContainer(msgs);
+			if (newCountingResult != null)
+				msgs = ((InternalEObject)newCountingResult).eInverseAdd(this, OutputPackage.COUNTING_RESULT__METHOD_CALL_COUNTS, CountingResult.class, msgs);
+			msgs = basicSetCountingResult(newCountingResult, msgs);
+			if (msgs != null) msgs.dispatch();
+		}
+		else if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, OutputPackage.METHOD_CALL_COUNT__COUNTING_RESULT, newCountingResult, newCountingResult));
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public NotificationChain eInverseAdd(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
+		switch (featureID) {
+			case OutputPackage.METHOD_CALL_COUNT__COUNTING_RESULT:
+				if (eInternalContainer() != null)
+					msgs = eBasicRemoveFromContainer(msgs);
+				return basicSetCountingResult((CountingResult)otherEnd, msgs);
+		}
+		return super.eInverseAdd(otherEnd, featureID, msgs);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
+		switch (featureID) {
+			case OutputPackage.METHOD_CALL_COUNT__COUNTING_RESULT:
+				return basicSetCountingResult(null, msgs);
+		}
+		return super.eInverseRemove(otherEnd, featureID, msgs);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public NotificationChain eBasicRemoveFromContainerFeature(NotificationChain msgs) {
+		switch (eContainerFeatureID()) {
+			case OutputPackage.METHOD_CALL_COUNT__COUNTING_RESULT:
+				return eInternalContainer().eInverseRemove(this, OutputPackage.COUNTING_RESULT__METHOD_CALL_COUNTS, CountingResult.class, msgs);
+		}
+		return super.eBasicRemoveFromContainerFeature(msgs);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
@@ -144,6 +284,11 @@ public class MethodCallCountImpl extends EObjectImpl implements MethodCallCount 
 				return getQualifiedFunctionName();
 			case OutputPackage.METHOD_CALL_COUNT__COUNT:
 				return getCount();
+			case OutputPackage.METHOD_CALL_COUNT__FUNCTION:
+				if (resolve) return getFunction();
+				return basicGetFunction();
+			case OutputPackage.METHOD_CALL_COUNT__COUNTING_RESULT:
+				return getCountingResult();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -161,6 +306,12 @@ public class MethodCallCountImpl extends EObjectImpl implements MethodCallCount 
 				return;
 			case OutputPackage.METHOD_CALL_COUNT__COUNT:
 				setCount((Long)newValue);
+				return;
+			case OutputPackage.METHOD_CALL_COUNT__FUNCTION:
+				setFunction((Function)newValue);
+				return;
+			case OutputPackage.METHOD_CALL_COUNT__COUNTING_RESULT:
+				setCountingResult((CountingResult)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -180,6 +331,12 @@ public class MethodCallCountImpl extends EObjectImpl implements MethodCallCount 
 			case OutputPackage.METHOD_CALL_COUNT__COUNT:
 				setCount(COUNT_EDEFAULT);
 				return;
+			case OutputPackage.METHOD_CALL_COUNT__FUNCTION:
+				setFunction((Function)null);
+				return;
+			case OutputPackage.METHOD_CALL_COUNT__COUNTING_RESULT:
+				setCountingResult((CountingResult)null);
+				return;
 		}
 		super.eUnset(featureID);
 	}
@@ -196,6 +353,10 @@ public class MethodCallCountImpl extends EObjectImpl implements MethodCallCount 
 				return QUALIFIED_FUNCTION_NAME_EDEFAULT == null ? qualifiedFunctionName != null : !QUALIFIED_FUNCTION_NAME_EDEFAULT.equals(qualifiedFunctionName);
 			case OutputPackage.METHOD_CALL_COUNT__COUNT:
 				return count != COUNT_EDEFAULT;
+			case OutputPackage.METHOD_CALL_COUNT__FUNCTION:
+				return function != null;
+			case OutputPackage.METHOD_CALL_COUNT__COUNTING_RESULT:
+				return getCountingResult() != null;
 		}
 		return super.eIsSet(featureID);
 	}

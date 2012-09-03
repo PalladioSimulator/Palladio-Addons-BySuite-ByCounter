@@ -351,13 +351,22 @@ public interface OutputPackage extends EPackage {
 	int ARRAY_CREATION_COUNT__COUNT = 1;
 
 	/**
+	 * The feature id for the '<em><b>Counting Result</b></em>' container reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int ARRAY_CREATION_COUNT__COUNTING_RESULT = 2;
+
+	/**
 	 * The number of structural features of the '<em>Array Creation Count</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int ARRAY_CREATION_COUNT_FEATURE_COUNT = 2;
+	int ARRAY_CREATION_COUNT_FEATURE_COUNT = 3;
 
 	/**
 	 * The meta object id for the '{@link edu.kit.ipd.sdq.bycounter.output.impl.ArrayCreationImpl <em>Array Creation</em>}' class.
@@ -397,13 +406,22 @@ public interface OutputPackage extends EPackage {
 	int ARRAY_CREATION__ARRAY_TYPE = 2;
 
 	/**
+	 * The feature id for the '<em><b>Array Creation Count</b></em>' container reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int ARRAY_CREATION__ARRAY_CREATION_COUNT = 3;
+
+	/**
 	 * The number of structural features of the '<em>Array Creation</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int ARRAY_CREATION_FEATURE_COUNT = 3;
+	int ARRAY_CREATION_FEATURE_COUNT = 4;
 
 	/**
 	 * The meta object id for the '{@link edu.kit.ipd.sdq.bycounter.output.impl.MethodCallCountImpl <em>Method Call Count</em>}' class.
@@ -434,13 +452,31 @@ public interface OutputPackage extends EPackage {
 	int METHOD_CALL_COUNT__COUNT = 1;
 
 	/**
+	 * The feature id for the '<em><b>Function</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int METHOD_CALL_COUNT__FUNCTION = 2;
+
+	/**
+	 * The feature id for the '<em><b>Counting Result</b></em>' container reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int METHOD_CALL_COUNT__COUNTING_RESULT = 3;
+
+	/**
 	 * The number of structural features of the '<em>Method Call Count</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int METHOD_CALL_COUNT_FEATURE_COUNT = 2;
+	int METHOD_CALL_COUNT_FEATURE_COUNT = 4;
 
 	/**
 	 * The meta object id for the '{@link edu.kit.ipd.sdq.bycounter.output.impl.ThreadedCountingResultImpl <em>Threaded Counting Result</em>}' class.
@@ -792,6 +828,17 @@ public interface OutputPackage extends EPackage {
 	EAttribute getArrayCreationCount_Count();
 
 	/**
+	 * Returns the meta object for the container reference '{@link edu.kit.ipd.sdq.bycounter.output.ArrayCreationCount#getCountingResult <em>Counting Result</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the container reference '<em>Counting Result</em>'.
+	 * @see edu.kit.ipd.sdq.bycounter.output.ArrayCreationCount#getCountingResult()
+	 * @see #getArrayCreationCount()
+	 * @generated
+	 */
+	EReference getArrayCreationCount_CountingResult();
+
+	/**
 	 * Returns the meta object for class '{@link edu.kit.ipd.sdq.bycounter.output.ArrayCreation <em>Array Creation</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -835,6 +882,17 @@ public interface OutputPackage extends EPackage {
 	EAttribute getArrayCreation_ArrayType();
 
 	/**
+	 * Returns the meta object for the container reference '{@link edu.kit.ipd.sdq.bycounter.output.ArrayCreation#getArrayCreationCount <em>Array Creation Count</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the container reference '<em>Array Creation Count</em>'.
+	 * @see edu.kit.ipd.sdq.bycounter.output.ArrayCreation#getArrayCreationCount()
+	 * @see #getArrayCreation()
+	 * @generated
+	 */
+	EReference getArrayCreation_ArrayCreationCount();
+
+	/**
 	 * Returns the meta object for class '{@link edu.kit.ipd.sdq.bycounter.output.MethodCallCount <em>Method Call Count</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -865,6 +923,28 @@ public interface OutputPackage extends EPackage {
 	 * @generated
 	 */
 	EAttribute getMethodCallCount_Count();
+
+	/**
+	 * Returns the meta object for the reference '{@link edu.kit.ipd.sdq.bycounter.output.MethodCallCount#getFunction <em>Function</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the reference '<em>Function</em>'.
+	 * @see edu.kit.ipd.sdq.bycounter.output.MethodCallCount#getFunction()
+	 * @see #getMethodCallCount()
+	 * @generated
+	 */
+	EReference getMethodCallCount_Function();
+
+	/**
+	 * Returns the meta object for the container reference '{@link edu.kit.ipd.sdq.bycounter.output.MethodCallCount#getCountingResult <em>Counting Result</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the container reference '<em>Counting Result</em>'.
+	 * @see edu.kit.ipd.sdq.bycounter.output.MethodCallCount#getCountingResult()
+	 * @see #getMethodCallCount()
+	 * @generated
+	 */
+	EReference getMethodCallCount_CountingResult();
 
 	/**
 	 * Returns the meta object for the attribute '{@link edu.kit.ipd.sdq.bycounter.output.CountingResult#getMethodInvocationBeginning <em>Method Invocation Beginning</em>}'.
@@ -1175,6 +1255,14 @@ public interface OutputPackage extends EPackage {
 		EAttribute ARRAY_CREATION_COUNT__COUNT = eINSTANCE.getArrayCreationCount_Count();
 
 		/**
+		 * The meta object literal for the '<em><b>Counting Result</b></em>' container reference feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference ARRAY_CREATION_COUNT__COUNTING_RESULT = eINSTANCE.getArrayCreationCount_CountingResult();
+
+		/**
 		 * The meta object literal for the '{@link edu.kit.ipd.sdq.bycounter.output.impl.ArrayCreationImpl <em>Array Creation</em>}' class.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
@@ -1209,6 +1297,14 @@ public interface OutputPackage extends EPackage {
 		EAttribute ARRAY_CREATION__ARRAY_TYPE = eINSTANCE.getArrayCreation_ArrayType();
 
 		/**
+		 * The meta object literal for the '<em><b>Array Creation Count</b></em>' container reference feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference ARRAY_CREATION__ARRAY_CREATION_COUNT = eINSTANCE.getArrayCreation_ArrayCreationCount();
+
+		/**
 		 * The meta object literal for the '{@link edu.kit.ipd.sdq.bycounter.output.impl.MethodCallCountImpl <em>Method Call Count</em>}' class.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
@@ -1233,6 +1329,22 @@ public interface OutputPackage extends EPackage {
 		 * @generated
 		 */
 		EAttribute METHOD_CALL_COUNT__COUNT = eINSTANCE.getMethodCallCount_Count();
+
+		/**
+		 * The meta object literal for the '<em><b>Function</b></em>' reference feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference METHOD_CALL_COUNT__FUNCTION = eINSTANCE.getMethodCallCount_Function();
+
+		/**
+		 * The meta object literal for the '<em><b>Counting Result</b></em>' container reference feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference METHOD_CALL_COUNT__COUNTING_RESULT = eINSTANCE.getMethodCallCount_CountingResult();
 
 		/**
 		 * The meta object literal for the '<em><b>Method Invocation Beginning</b></em>' attribute feature.

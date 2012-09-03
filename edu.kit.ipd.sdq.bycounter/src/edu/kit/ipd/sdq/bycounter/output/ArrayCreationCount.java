@@ -18,6 +18,7 @@ import org.eclipse.emf.ecore.EObject;
  * <ul>
  *   <li>{@link edu.kit.ipd.sdq.bycounter.output.ArrayCreationCount#getArrayCreation <em>Array Creation</em>}</li>
  *   <li>{@link edu.kit.ipd.sdq.bycounter.output.ArrayCreationCount#getCount <em>Count</em>}</li>
+ *   <li>{@link edu.kit.ipd.sdq.bycounter.output.ArrayCreationCount#getCountingResult <em>Counting Result</em>}</li>
  * </ul>
  * </p>
  *
@@ -28,6 +29,7 @@ import org.eclipse.emf.ecore.EObject;
 public interface ArrayCreationCount extends EObject {
 	/**
 	 * Returns the value of the '<em><b>Array Creation</b></em>' containment reference.
+	 * It is bidirectional and its opposite is '{@link edu.kit.ipd.sdq.bycounter.output.ArrayCreation#getArrayCreationCount <em>Array Creation Count</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <p>
 	 * If the meaning of the '<em>Array Creation</em>' containment reference isn't clear,
@@ -37,7 +39,8 @@ public interface ArrayCreationCount extends EObject {
 	 * @return the value of the '<em>Array Creation</em>' containment reference.
 	 * @see #setArrayCreation(ArrayCreation)
 	 * @see edu.kit.ipd.sdq.bycounter.output.OutputPackage#getArrayCreationCount_ArrayCreation()
-	 * @model containment="true" required="true" ordered="false"
+	 * @see edu.kit.ipd.sdq.bycounter.output.ArrayCreation#getArrayCreationCount
+	 * @model opposite="arrayCreationCount" containment="true" required="true" ordered="false"
 	 * @generated
 	 */
 	ArrayCreation getArrayCreation();
@@ -77,5 +80,33 @@ public interface ArrayCreationCount extends EObject {
 	 * @generated
 	 */
 	void setCount(long value);
+
+	/**
+	 * Returns the value of the '<em><b>Counting Result</b></em>' container reference.
+	 * It is bidirectional and its opposite is '{@link edu.kit.ipd.sdq.bycounter.output.CountingResult#getArrayCreationCounts <em>Array Creation Counts</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Counting Result</em>' container reference isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Counting Result</em>' container reference.
+	 * @see #setCountingResult(CountingResult)
+	 * @see edu.kit.ipd.sdq.bycounter.output.OutputPackage#getArrayCreationCount_CountingResult()
+	 * @see edu.kit.ipd.sdq.bycounter.output.CountingResult#getArrayCreationCounts
+	 * @model opposite="arrayCreationCounts" required="true" transient="false" ordered="false"
+	 * @generated
+	 */
+	CountingResult getCountingResult();
+
+	/**
+	 * Sets the value of the '{@link edu.kit.ipd.sdq.bycounter.output.ArrayCreationCount#getCountingResult <em>Counting Result</em>}' container reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Counting Result</em>' container reference.
+	 * @see #getCountingResult()
+	 * @generated
+	 */
+	void setCountingResult(CountingResult value);
 
 } // ArrayCreationCount

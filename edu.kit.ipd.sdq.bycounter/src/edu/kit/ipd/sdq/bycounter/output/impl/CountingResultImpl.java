@@ -29,6 +29,7 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.EObjectImpl;
 
 import org.eclipse.emf.ecore.util.EDataTypeUniqueEList;
+import org.eclipse.emf.ecore.util.EObjectContainmentWithInverseEList;
 import org.eclipse.emf.ecore.util.EObjectContainmentEList;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.ecore.util.InternalEList;
@@ -203,7 +204,7 @@ public class CountingResultImpl extends EObjectImpl implements CountingResult {
 	 */
 	public EList<ArrayCreationCount> getArrayCreationCounts() {
 		if (arrayCreationCounts == null) {
-			arrayCreationCounts = new EObjectContainmentEList<ArrayCreationCount>(ArrayCreationCount.class, this, OutputPackage.COUNTING_RESULT__ARRAY_CREATION_COUNTS);
+			arrayCreationCounts = new EObjectContainmentWithInverseEList<ArrayCreationCount>(ArrayCreationCount.class, this, OutputPackage.COUNTING_RESULT__ARRAY_CREATION_COUNTS, OutputPackage.ARRAY_CREATION_COUNT__COUNTING_RESULT);
 		}
 		return arrayCreationCounts;
 	}
@@ -253,7 +254,7 @@ public class CountingResultImpl extends EObjectImpl implements CountingResult {
 	 */
 	public EList<MethodCallCount> getMethodCallCounts() {
 		if (methodCallCounts == null) {
-			methodCallCounts = new EObjectContainmentEList<MethodCallCount>(MethodCallCount.class, this, OutputPackage.COUNTING_RESULT__METHOD_CALL_COUNTS);
+			methodCallCounts = new EObjectContainmentWithInverseEList<MethodCallCount>(MethodCallCount.class, this, OutputPackage.COUNTING_RESULT__METHOD_CALL_COUNTS, OutputPackage.METHOD_CALL_COUNT__COUNTING_RESULT);
 		}
 		return methodCallCounts;
 	}
@@ -304,6 +305,7 @@ public class CountingResultImpl extends EObjectImpl implements CountingResult {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
 	public NotificationChain eInverseAdd(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
 		switch (featureID) {
@@ -311,6 +313,10 @@ public class CountingResultImpl extends EObjectImpl implements CountingResult {
 				if (eInternalContainer() != null)
 					msgs = eBasicRemoveFromContainer(msgs);
 				return basicSetResultCollection((ResultCollection)otherEnd, msgs);
+			case OutputPackage.COUNTING_RESULT__ARRAY_CREATION_COUNTS:
+				return ((InternalEList<InternalEObject>)(InternalEList<?>)getArrayCreationCounts()).basicAdd(otherEnd, msgs);
+			case OutputPackage.COUNTING_RESULT__METHOD_CALL_COUNTS:
+				return ((InternalEList<InternalEObject>)(InternalEList<?>)getMethodCallCounts()).basicAdd(otherEnd, msgs);
 			case OutputPackage.COUNTING_RESULT__REQUEST_RESULT:
 				if (eInternalContainer() != null)
 					msgs = eBasicRemoveFromContainer(msgs);

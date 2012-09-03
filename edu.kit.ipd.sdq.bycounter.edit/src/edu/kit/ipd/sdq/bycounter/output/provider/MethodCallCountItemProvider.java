@@ -66,6 +66,7 @@ public class MethodCallCountItemProvider
 
 			addQualifiedFunctionNamePropertyDescriptor(object);
 			addCountPropertyDescriptor(object);
+			addFunctionPropertyDescriptor(object);
 		}
 		return itemPropertyDescriptors;
 	}
@@ -110,6 +111,28 @@ public class MethodCallCountItemProvider
 				 false,
 				 false,
 				 ItemPropertyDescriptor.INTEGRAL_VALUE_IMAGE,
+				 null,
+				 null));
+	}
+
+	/**
+	 * This adds a property descriptor for the Function feature.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	protected void addFunctionPropertyDescriptor(Object object) {
+		itemPropertyDescriptors.add
+			(createItemPropertyDescriptor
+				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
+				 getResourceLocator(),
+				 getString("_UI_MethodCallCount_function_feature"),
+				 getString("_UI_PropertyDescriptor_description", "_UI_MethodCallCount_function_feature", "_UI_MethodCallCount_type"),
+				 OutputPackage.Literals.METHOD_CALL_COUNT__FUNCTION,
+				 true,
+				 false,
+				 true,
+				 null,
 				 null,
 				 null));
 	}

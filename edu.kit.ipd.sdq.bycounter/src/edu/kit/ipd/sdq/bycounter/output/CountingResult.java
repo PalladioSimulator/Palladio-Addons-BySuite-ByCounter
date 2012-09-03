@@ -41,6 +41,7 @@ public interface CountingResult extends EObject {
 	/**
 	 * Returns the value of the '<em><b>Array Creation Counts</b></em>' containment reference list.
 	 * The list contents are of type {@link edu.kit.ipd.sdq.bycounter.output.ArrayCreationCount}.
+	 * It is bidirectional and its opposite is '{@link edu.kit.ipd.sdq.bycounter.output.ArrayCreationCount#getCountingResult <em>Counting Result</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <p>
 	 * If the meaning of the '<em>Array Creation Counts</em>' attribute isn't clear,
@@ -49,7 +50,8 @@ public interface CountingResult extends EObject {
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Array Creation Counts</em>' containment reference list.
 	 * @see edu.kit.ipd.sdq.bycounter.output.OutputPackage#getCountingResult_ArrayCreationCounts()
-	 * @model containment="true" ordered="false"
+	 * @see edu.kit.ipd.sdq.bycounter.output.ArrayCreationCount#getCountingResult
+	 * @model opposite="countingResult" containment="true" ordered="false"
 	 * @generated
 	 */
 	EList<ArrayCreationCount> getArrayCreationCounts();
@@ -86,6 +88,7 @@ public interface CountingResult extends EObject {
 	/**
 	 * Returns the value of the '<em><b>Method Call Counts</b></em>' containment reference list.
 	 * The list contents are of type {@link edu.kit.ipd.sdq.bycounter.output.MethodCallCount}.
+	 * It is bidirectional and its opposite is '{@link edu.kit.ipd.sdq.bycounter.output.MethodCallCount#getCountingResult <em>Counting Result</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <p>
 	 * If the meaning of the '<em>Method Call Counts</em>' attribute isn't clear,
@@ -94,7 +97,8 @@ public interface CountingResult extends EObject {
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Method Call Counts</em>' containment reference list.
 	 * @see edu.kit.ipd.sdq.bycounter.output.OutputPackage#getCountingResult_MethodCallCounts()
-	 * @model containment="true" ordered="false"
+	 * @see edu.kit.ipd.sdq.bycounter.output.MethodCallCount#getCountingResult
+	 * @model opposite="countingResult" containment="true" ordered="false"
 	 * @generated
 	 */
 	EList<MethodCallCount> getMethodCallCounts();

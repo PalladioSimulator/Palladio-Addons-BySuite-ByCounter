@@ -19,6 +19,7 @@ import org.eclipse.emf.ecore.EObject;
  *   <li>{@link edu.kit.ipd.sdq.bycounter.output.ArrayCreation#getTypeDescriptor <em>Type Descriptor</em>}</li>
  *   <li>{@link edu.kit.ipd.sdq.bycounter.output.ArrayCreation#getNumberOfDimensions <em>Number Of Dimensions</em>}</li>
  *   <li>{@link edu.kit.ipd.sdq.bycounter.output.ArrayCreation#getArrayType <em>Array Type</em>}</li>
+ *   <li>{@link edu.kit.ipd.sdq.bycounter.output.ArrayCreation#getArrayCreationCount <em>Array Creation Count</em>}</li>
  * </ul>
  * </p>
  *
@@ -101,5 +102,33 @@ public interface ArrayCreation extends EObject {
 	 * @generated
 	 */
 	void setArrayType(ArrayType value);
+
+	/**
+	 * Returns the value of the '<em><b>Array Creation Count</b></em>' container reference.
+	 * It is bidirectional and its opposite is '{@link edu.kit.ipd.sdq.bycounter.output.ArrayCreationCount#getArrayCreation <em>Array Creation</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Array Creation Count</em>' container reference isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Array Creation Count</em>' container reference.
+	 * @see #setArrayCreationCount(ArrayCreationCount)
+	 * @see edu.kit.ipd.sdq.bycounter.output.OutputPackage#getArrayCreation_ArrayCreationCount()
+	 * @see edu.kit.ipd.sdq.bycounter.output.ArrayCreationCount#getArrayCreation
+	 * @model opposite="arrayCreation" required="true" transient="false" ordered="false"
+	 * @generated
+	 */
+	ArrayCreationCount getArrayCreationCount();
+
+	/**
+	 * Sets the value of the '{@link edu.kit.ipd.sdq.bycounter.output.ArrayCreation#getArrayCreationCount <em>Array Creation Count</em>}' container reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Array Creation Count</em>' container reference.
+	 * @see #getArrayCreationCount()
+	 * @generated
+	 */
+	void setArrayCreationCount(ArrayCreationCount value);
 
 } // ArrayCreation

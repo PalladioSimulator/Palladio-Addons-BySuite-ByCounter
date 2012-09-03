@@ -7,15 +7,19 @@
 package edu.kit.ipd.sdq.bycounter.output.impl;
 
 import edu.kit.ipd.sdq.bycounter.output.ArrayCreation;
+import edu.kit.ipd.sdq.bycounter.output.ArrayCreationCount;
 import edu.kit.ipd.sdq.bycounter.output.ArrayType;
 import edu.kit.ipd.sdq.bycounter.output.OutputPackage;
 
 import org.eclipse.emf.common.notify.Notification;
 
+import org.eclipse.emf.common.notify.NotificationChain;
 import org.eclipse.emf.ecore.EClass;
 
+import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.EObjectImpl;
+import org.eclipse.emf.ecore.util.EcoreUtil;
 
 /**
  * <!-- begin-user-doc -->
@@ -27,6 +31,7 @@ import org.eclipse.emf.ecore.impl.EObjectImpl;
  *   <li>{@link edu.kit.ipd.sdq.bycounter.output.impl.ArrayCreationImpl#getTypeDescriptor <em>Type Descriptor</em>}</li>
  *   <li>{@link edu.kit.ipd.sdq.bycounter.output.impl.ArrayCreationImpl#getNumberOfDimensions <em>Number Of Dimensions</em>}</li>
  *   <li>{@link edu.kit.ipd.sdq.bycounter.output.impl.ArrayCreationImpl#getArrayType <em>Array Type</em>}</li>
+ *   <li>{@link edu.kit.ipd.sdq.bycounter.output.impl.ArrayCreationImpl#getArrayCreationCount <em>Array Creation Count</em>}</li>
  * </ul>
  * </p>
  *
@@ -180,6 +185,91 @@ public class ArrayCreationImpl extends EObjectImpl implements ArrayCreation {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public ArrayCreationCount getArrayCreationCount() {
+		if (eContainerFeatureID() != OutputPackage.ARRAY_CREATION__ARRAY_CREATION_COUNT) return null;
+		return (ArrayCreationCount)eContainer();
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public NotificationChain basicSetArrayCreationCount(ArrayCreationCount newArrayCreationCount, NotificationChain msgs) {
+		msgs = eBasicSetContainer((InternalEObject)newArrayCreationCount, OutputPackage.ARRAY_CREATION__ARRAY_CREATION_COUNT, msgs);
+		return msgs;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setArrayCreationCount(ArrayCreationCount newArrayCreationCount) {
+		if (newArrayCreationCount != eInternalContainer() || (eContainerFeatureID() != OutputPackage.ARRAY_CREATION__ARRAY_CREATION_COUNT && newArrayCreationCount != null)) {
+			if (EcoreUtil.isAncestor(this, newArrayCreationCount))
+				throw new IllegalArgumentException("Recursive containment not allowed for " + toString());
+			NotificationChain msgs = null;
+			if (eInternalContainer() != null)
+				msgs = eBasicRemoveFromContainer(msgs);
+			if (newArrayCreationCount != null)
+				msgs = ((InternalEObject)newArrayCreationCount).eInverseAdd(this, OutputPackage.ARRAY_CREATION_COUNT__ARRAY_CREATION, ArrayCreationCount.class, msgs);
+			msgs = basicSetArrayCreationCount(newArrayCreationCount, msgs);
+			if (msgs != null) msgs.dispatch();
+		}
+		else if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, OutputPackage.ARRAY_CREATION__ARRAY_CREATION_COUNT, newArrayCreationCount, newArrayCreationCount));
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public NotificationChain eInverseAdd(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
+		switch (featureID) {
+			case OutputPackage.ARRAY_CREATION__ARRAY_CREATION_COUNT:
+				if (eInternalContainer() != null)
+					msgs = eBasicRemoveFromContainer(msgs);
+				return basicSetArrayCreationCount((ArrayCreationCount)otherEnd, msgs);
+		}
+		return super.eInverseAdd(otherEnd, featureID, msgs);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
+		switch (featureID) {
+			case OutputPackage.ARRAY_CREATION__ARRAY_CREATION_COUNT:
+				return basicSetArrayCreationCount(null, msgs);
+		}
+		return super.eInverseRemove(otherEnd, featureID, msgs);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public NotificationChain eBasicRemoveFromContainerFeature(NotificationChain msgs) {
+		switch (eContainerFeatureID()) {
+			case OutputPackage.ARRAY_CREATION__ARRAY_CREATION_COUNT:
+				return eInternalContainer().eInverseRemove(this, OutputPackage.ARRAY_CREATION_COUNT__ARRAY_CREATION, ArrayCreationCount.class, msgs);
+		}
+		return super.eBasicRemoveFromContainerFeature(msgs);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
@@ -189,6 +279,8 @@ public class ArrayCreationImpl extends EObjectImpl implements ArrayCreation {
 				return getNumberOfDimensions();
 			case OutputPackage.ARRAY_CREATION__ARRAY_TYPE:
 				return getArrayType();
+			case OutputPackage.ARRAY_CREATION__ARRAY_CREATION_COUNT:
+				return getArrayCreationCount();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -209,6 +301,9 @@ public class ArrayCreationImpl extends EObjectImpl implements ArrayCreation {
 				return;
 			case OutputPackage.ARRAY_CREATION__ARRAY_TYPE:
 				setArrayType((ArrayType)newValue);
+				return;
+			case OutputPackage.ARRAY_CREATION__ARRAY_CREATION_COUNT:
+				setArrayCreationCount((ArrayCreationCount)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -231,6 +326,9 @@ public class ArrayCreationImpl extends EObjectImpl implements ArrayCreation {
 			case OutputPackage.ARRAY_CREATION__ARRAY_TYPE:
 				setArrayType(ARRAY_TYPE_EDEFAULT);
 				return;
+			case OutputPackage.ARRAY_CREATION__ARRAY_CREATION_COUNT:
+				setArrayCreationCount((ArrayCreationCount)null);
+				return;
 		}
 		super.eUnset(featureID);
 	}
@@ -249,6 +347,8 @@ public class ArrayCreationImpl extends EObjectImpl implements ArrayCreation {
 				return numberOfDimensions != NUMBER_OF_DIMENSIONS_EDEFAULT;
 			case OutputPackage.ARRAY_CREATION__ARRAY_TYPE:
 				return arrayType != ARRAY_TYPE_EDEFAULT;
+			case OutputPackage.ARRAY_CREATION__ARRAY_CREATION_COUNT:
+				return getArrayCreationCount() != null;
 		}
 		return super.eIsSet(featureID);
 	}
