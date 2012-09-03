@@ -1,13 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="bycounter" nsURI="http://sdq.ipd.kit.edu/ByCounterModels/0.3"
-    nsPrefix="ByCounter">
+<ecore:EPackage xmi:version="2.0"
+    xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="bycounter"
+    nsURI="http://sdq.ipd.kit.edu/ByCounterModels/0.3" nsPrefix="ByCounter">
   <eSubpackages name="output" nsURI="http://sdq.ipd.kit.edu/ByCounterModels/Output/0.3"
       nsPrefix="ByCounter.Output">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
       <details key="documentation" value="Decorator&amp;nbsp;models&amp;nbsp;which&amp;nbsp;annotate&amp;nbsp;raw&amp;nbsp;resource&amp;nbsp;demands&amp;nbsp;to&amp;nbsp;AbstractInternalControlFlowActions."/>
     </eAnnotations>
-    <eClassifiers xsi:type="ecore:EClass" name="OutputModelRepository" eSuperTypes="platform:/plugin/de.uka.ipd.sdq.identifier/model/identifier.ecore#//Identifier"/>
+    <eClassifiers xsi:type="ecore:EClass" name="OutputModelRepository" eSuperTypes="platform:/plugin/de.uka.ipd.sdq.identifier/model/identifier.ecore#//Identifier">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="resultCollection" ordered="false"
+          upperBound="-1" eType="#//output/ResultCollection" containment="true"/>
+    </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="ResultCollection">
       <eStructuralFeatures xsi:type="ecore:EReference" name="requestResults" ordered="false"
           upperBound="-1" eType="#//output/RequestResult" containment="true" eOpposite="#//output/RequestResult/resultCollection"/>
@@ -28,12 +32,12 @@
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="CountingResult">
       <eStructuralFeatures xsi:type="ecore:EReference" name="callerId" ordered="false"
-          lowerBound="1" eType="#//output/UUID">
+          lowerBound="1" eType="#//output/UUID" containment="true">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="documentation" value="The ID of the method that invoked the method of the result. Can be null if the caller was not instrumented."/>
         </eAnnotations>
       </eStructuralFeatures>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" name="methodInvocationBeginning"
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="methodInvocationStartTime"
           ordered="false" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//ELong">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="documentation" value="Time at which the method that produced this result was invoked."/>
@@ -48,9 +52,13 @@
       <eStructuralFeatures xsi:type="ecore:EReference" name="observedElement" ordered="false"
           lowerBound="1" eType="#//input/EntityToInstrument"/>
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="opcodeCounts" ordered="false"
-          upperBound="-1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//ELong"/>
+          unique="false" upperBound="-1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//ELong">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="A list of counts for all possible opcodes, even if a particular opcode was not counted, i.e. the count is 0."/>
+        </eAnnotations>
+      </eStructuralFeatures>
       <eStructuralFeatures xsi:type="ecore:EReference" name="methodId" ordered="false"
-          lowerBound="1" eType="#//output/UUID">
+          lowerBound="1" eType="#//output/UUID" containment="true">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="documentation" value="The ID of the method of this result."/>
         </eAnnotations>
