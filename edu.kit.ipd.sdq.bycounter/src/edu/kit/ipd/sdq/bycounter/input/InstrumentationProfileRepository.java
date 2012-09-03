@@ -18,6 +18,7 @@ import org.eclipse.emf.common.util.EList;
  * <p>
  * The following features are supported:
  * <ul>
+ *   <li>{@link edu.kit.ipd.sdq.bycounter.input.InstrumentationProfileRepository#getExecutionProfile <em>Execution Profile</em>}</li>
  *   <li>{@link edu.kit.ipd.sdq.bycounter.input.InstrumentationProfileRepository#getInstrumentationProfile <em>Instrumentation Profile</em>}</li>
  * </ul>
  * </p>
@@ -27,6 +28,22 @@ import org.eclipse.emf.common.util.EList;
  * @generated
  */
 public interface InstrumentationProfileRepository extends Identifier {
+	/**
+	 * Returns the value of the '<em><b>Execution Profile</b></em>' containment reference list.
+	 * The list contents are of type {@link edu.kit.ipd.sdq.bycounter.input.ExecutionProfile}.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Execution Profile</em>' containment reference list isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Execution Profile</em>' containment reference list.
+	 * @see edu.kit.ipd.sdq.bycounter.input.InputPackage#getInstrumentationProfileRepository_ExecutionProfile()
+	 * @model containment="true" ordered="false"
+	 * @generated
+	 */
+	EList<ExecutionProfile> getExecutionProfile();
+
 	/**
 	 * Returns the value of the '<em><b>Instrumentation Profile</b></em>' containment reference list.
 	 * The list contents are of type {@link edu.kit.ipd.sdq.bycounter.input.InstrumentationProfile}.

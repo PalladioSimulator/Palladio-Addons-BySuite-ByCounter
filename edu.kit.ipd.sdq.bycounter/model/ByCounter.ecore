@@ -147,29 +147,61 @@
           upperBound="-1" eType="#//input/LogicalSet" containment="true" eOpposite="#//input/LogicalSet/instrumentationProfile"/>
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="instrumentRecursively"
           ordered="false" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"
-          defaultValueLiteral="true"/>
+          defaultValueLiteral="true">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="When set, instruments methods called from the methods specified in &#xA;entitesToInstrument that  are not Java API methods (packages java.*, javax.* sun.*) and not  native methods."/>
+        </eAnnotations>
+      </eStructuralFeatures>
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="aggregateInternalCallsTransparently"
           ordered="false" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"
           defaultValueLiteral="true"/>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" name="persistInstrumentedClassesToOSPath"
-          ordered="false" eType="ecore:EDataType platform:/plugin/org.eclipse.emf.ecore/model/Ecore.ecore#//EString"/>
-      <eStructuralFeatures xsi:type="ecore:EReference" name="intrumentationProfileRepository"
-          ordered="false" eType="#//input/InstrumentationProfileRepository" eOpposite="#//input/InstrumentationProfileRepository/instrumentationProfile"/>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" name="instrumentUsingLongCounters"
-          ordered="false" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"
-          defaultValueLiteral="true"/>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" name="instrumentUsingBasicBlocks"
-          ordered="false" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"
-          defaultValueLiteral="true"/>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" name="traceAndIdentifyRequests"
-          ordered="false" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"
-          defaultValueLiteral="false"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="aggregationExcludes"
           ordered="false" upperBound="-1" eType="ecore:EClass platform:/plugin/de.fzi.gast/model/gast.ecore#//functions/Method"
           containment="true"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="entitiesToInstrument"
           ordered="false" upperBound="-1" eType="#//input/EntityToInstrument" containment="true"
           eOpposite="#//input/EntityToInstrument/instrumentationProfile"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="intrumentationProfileRepository"
+          ordered="false" eType="#//input/InstrumentationProfileRepository" eOpposite="#//input/InstrumentationProfileRepository/instrumentationProfile"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="instrumentUsingLongCounters"
+          ordered="false" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"
+          defaultValueLiteral="true">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="When true, counters are long values instead of integers. Must be used for counting large execution frequencies. Setting this to false offers some performance benifits but can result in overflows."/>
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="instrumentUsingBasicBlocks"
+          ordered="false" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"
+          defaultValueLiteral="true">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="When true, bytecode instructions will be counted in groups made up of identified basic blocks. The execution numbers of single instructions are calculated after the execution. When false, every single bytecode instruction will be counted by an individual counter."/>
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="provideJoinThreadsAbility"
+          ordered="false" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="When true, allows ByCounter to wait for all threads spawned from instrumented methods to complete."/>
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="persistInstrumentedClassesToOSPath"
+          ordered="false" eType="ecore:EDataType platform:/plugin/org.eclipse.emf.ecore/model/Ecore.ecore#//EString">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="When set, classes will be written to the hereby specified directory."/>
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="provideOnlineSectionActiveUpdates"
+          ordered="false" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value=" When true, the instrumentation for providing updates on the execution of user specified code sections is inserted."/>
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="traceAndIdentifyRequests"
+          ordered="false" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"
+          defaultValueLiteral="false">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="RequestIDs are UUIDs used to track the method call graph across threads. They are created in a root method (a method called with no request ID) and then passed recursively on to all methods it calls. Note: Currently, constructors cannot be tracked."/>
+        </eAnnotations>
+      </eStructuralFeatures>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="LogicalSet" eSuperTypes="platform:/plugin/de.uka.ipd.sdq.identifier/model/identifier.ecore#//Identifier">
       <eStructuralFeatures xsi:type="ecore:EReference" name="internalClasses" ordered="false"
@@ -179,9 +211,31 @@
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="InstrumentationProfileRepository"
         eSuperTypes="platform:/plugin/de.uka.ipd.sdq.identifier/model/identifier.ecore#//Identifier">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="executionProfile" ordered="false"
+          upperBound="-1" eType="#//input/ExecutionProfile" containment="true"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="instrumentationProfile"
           ordered="false" upperBound="-1" eType="#//input/InstrumentationProfile"
           containment="true" eOpposite="#//input/InstrumentationProfile/intrumentationProfileRepository"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="ExecutionProfile">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="addUpResultsRecursively"
+          ordered="false" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="True, when result retrieval adds up counting results recursively.&#xA;This means that results for methods that call other methods include the counts of these called methods, i.e. of the entire calling tree.&#xA;When false, only the counts for operations done in the method itself - not those by called methods - are returned."/>
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="internalClassesDefinition"
+          ordered="false" upperBound="-1" eType="ecore:EDataType platform:/plugin/org.eclipse.emf.ecore/model/Ecore.ecore#//EString">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="The definition of internal classes. When adding up results when retrieving results recursively, this definition allows for adding up only results for classes defined as internal. A value of null means all classes are considered internal.&#xA;For each string, specifying a '*' at the end enables prefix matching, i.e. all classes with the prefix are matched. If a string specifies a class name, non-public/internal classes are also considered internal.&#xA;&#xA;Examples:&#xA;de.uka* matches de.ukap.Test, de.uka.ipd, ...&#xA;de.uka.Test matches de.uka.Test, de.uka.Test$XXX, de.uka.Test$XXX$YYY, ...&#xA;de.uka.Test matches de.uka.Test, but not de.uka.Test.{ENUM Y}"/>
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="waitForThreadsToFinnish"
+          ordered="false" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="When true, execution tries to wait for all threads from instrumented methods to finish before returning."/>
+        </eAnnotations>
+      </eStructuralFeatures>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="InstrumentedCodeArea" eSuperTypes="#//input/EntityToInstrument">
       <eStructuralFeatures xsi:type="ecore:EReference" name="from" ordered="false"
@@ -215,9 +269,17 @@
         </eAnnotations>
       </eStructuralFeatures>
       <eStructuralFeatures xsi:type="ecore:EReference" name="startMethod" ordered="false"
-          lowerBound="1" eType="ecore:EClass platform:/plugin/de.fzi.gast/model/gast.ecore#//functions/Method"/>
+          lowerBound="1" eType="ecore:EClass platform:/plugin/de.fzi.gast/model/gast.ecore#//functions/Method">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Method in which startLine defines the begin of the instrumentation region."/>
+        </eAnnotations>
+      </eStructuralFeatures>
       <eStructuralFeatures xsi:type="ecore:EReference" name="stopMethod" ordered="false"
-          lowerBound="1" eType="ecore:EClass platform:/plugin/de.fzi.gast/model/gast.ecore#//functions/Method"/>
+          lowerBound="1" eType="ecore:EClass platform:/plugin/de.fzi.gast/model/gast.ecore#//functions/Method">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Method in which stopLine defines the end of the instrumentation region."/>
+        </eAnnotations>
+      </eStructuralFeatures>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="EntityToInstrument" abstract="true">
       <eStructuralFeatures xsi:type="ecore:EReference" name="instrumentationProfile"

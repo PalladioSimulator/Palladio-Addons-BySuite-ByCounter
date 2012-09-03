@@ -86,6 +86,10 @@ public class InputAdapterFactory extends AdapterFactoryImpl {
 				return createInstrumentationProfileRepositoryAdapter();
 			}
 			@Override
+			public Adapter caseExecutionProfile(ExecutionProfile object) {
+				return createExecutionProfileAdapter();
+			}
+			@Override
 			public Adapter caseInstrumentedCodeArea(InstrumentedCodeArea object) {
 				return createInstrumentedCodeAreaAdapter();
 			}
@@ -164,6 +168,20 @@ public class InputAdapterFactory extends AdapterFactoryImpl {
 	 * @generated
 	 */
 	public Adapter createInstrumentationProfileRepositoryAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link edu.kit.ipd.sdq.bycounter.input.ExecutionProfile <em>Execution Profile</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see edu.kit.ipd.sdq.bycounter.input.ExecutionProfile
+	 * @generated
+	 */
+	public Adapter createExecutionProfileAdapter() {
 		return null;
 	}
 

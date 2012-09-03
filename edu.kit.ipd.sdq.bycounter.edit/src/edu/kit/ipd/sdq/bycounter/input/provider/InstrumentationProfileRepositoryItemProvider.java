@@ -84,6 +84,7 @@ public class InstrumentationProfileRepositoryItemProvider
 	public Collection<? extends EStructuralFeature> getChildrenFeatures(Object object) {
 		if (childrenFeatures == null) {
 			super.getChildrenFeatures(object);
+			childrenFeatures.add(InputPackage.Literals.INSTRUMENTATION_PROFILE_REPOSITORY__EXECUTION_PROFILE);
 			childrenFeatures.add(InputPackage.Literals.INSTRUMENTATION_PROFILE_REPOSITORY__INSTRUMENTATION_PROFILE);
 		}
 		return childrenFeatures;
@@ -139,6 +140,7 @@ public class InstrumentationProfileRepositoryItemProvider
 		updateChildren(notification);
 
 		switch (notification.getFeatureID(InstrumentationProfileRepository.class)) {
+			case InputPackage.INSTRUMENTATION_PROFILE_REPOSITORY__EXECUTION_PROFILE:
 			case InputPackage.INSTRUMENTATION_PROFILE_REPOSITORY__INSTRUMENTATION_PROFILE:
 				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), true, false));
 				return;
@@ -156,6 +158,11 @@ public class InstrumentationProfileRepositoryItemProvider
 	@Override
 	protected void collectNewChildDescriptors(Collection<Object> newChildDescriptors, Object object) {
 		super.collectNewChildDescriptors(newChildDescriptors, object);
+
+		newChildDescriptors.add
+			(createChildParameter
+				(InputPackage.Literals.INSTRUMENTATION_PROFILE_REPOSITORY__EXECUTION_PROFILE,
+				 InputFactory.eINSTANCE.createExecutionProfile()));
 
 		newChildDescriptors.add
 			(createChildParameter

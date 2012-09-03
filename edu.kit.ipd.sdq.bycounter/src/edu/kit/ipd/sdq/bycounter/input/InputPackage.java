@@ -108,58 +108,13 @@ public interface InputPackage extends EPackage {
 	int INSTRUMENTATION_PROFILE__AGGREGATE_INTERNAL_CALLS_TRANSPARENTLY = IdentifierPackage.IDENTIFIER_FEATURE_COUNT + 2;
 
 	/**
-	 * The feature id for the '<em><b>Persist Instrumented Classes To OS Path</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int INSTRUMENTATION_PROFILE__PERSIST_INSTRUMENTED_CLASSES_TO_OS_PATH = IdentifierPackage.IDENTIFIER_FEATURE_COUNT + 3;
-
-	/**
-	 * The feature id for the '<em><b>Intrumentation Profile Repository</b></em>' container reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int INSTRUMENTATION_PROFILE__INTRUMENTATION_PROFILE_REPOSITORY = IdentifierPackage.IDENTIFIER_FEATURE_COUNT + 4;
-
-	/**
-	 * The feature id for the '<em><b>Instrument Using Long Counters</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int INSTRUMENTATION_PROFILE__INSTRUMENT_USING_LONG_COUNTERS = IdentifierPackage.IDENTIFIER_FEATURE_COUNT + 5;
-
-	/**
-	 * The feature id for the '<em><b>Instrument Using Basic Blocks</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int INSTRUMENTATION_PROFILE__INSTRUMENT_USING_BASIC_BLOCKS = IdentifierPackage.IDENTIFIER_FEATURE_COUNT + 6;
-
-	/**
-	 * The feature id for the '<em><b>Trace And Identify Requests</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int INSTRUMENTATION_PROFILE__TRACE_AND_IDENTIFY_REQUESTS = IdentifierPackage.IDENTIFIER_FEATURE_COUNT + 7;
-
-	/**
 	 * The feature id for the '<em><b>Aggregation Excludes</b></em>' containment reference list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int INSTRUMENTATION_PROFILE__AGGREGATION_EXCLUDES = IdentifierPackage.IDENTIFIER_FEATURE_COUNT + 8;
+	int INSTRUMENTATION_PROFILE__AGGREGATION_EXCLUDES = IdentifierPackage.IDENTIFIER_FEATURE_COUNT + 3;
 
 	/**
 	 * The feature id for the '<em><b>Entities To Instrument</b></em>' containment reference list.
@@ -168,7 +123,70 @@ public interface InputPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int INSTRUMENTATION_PROFILE__ENTITIES_TO_INSTRUMENT = IdentifierPackage.IDENTIFIER_FEATURE_COUNT + 9;
+	int INSTRUMENTATION_PROFILE__ENTITIES_TO_INSTRUMENT = IdentifierPackage.IDENTIFIER_FEATURE_COUNT + 4;
+
+	/**
+	 * The feature id for the '<em><b>Intrumentation Profile Repository</b></em>' container reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int INSTRUMENTATION_PROFILE__INTRUMENTATION_PROFILE_REPOSITORY = IdentifierPackage.IDENTIFIER_FEATURE_COUNT + 5;
+
+	/**
+	 * The feature id for the '<em><b>Instrument Using Long Counters</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int INSTRUMENTATION_PROFILE__INSTRUMENT_USING_LONG_COUNTERS = IdentifierPackage.IDENTIFIER_FEATURE_COUNT + 6;
+
+	/**
+	 * The feature id for the '<em><b>Instrument Using Basic Blocks</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int INSTRUMENTATION_PROFILE__INSTRUMENT_USING_BASIC_BLOCKS = IdentifierPackage.IDENTIFIER_FEATURE_COUNT + 7;
+
+	/**
+	 * The feature id for the '<em><b>Provide Join Threads Ability</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int INSTRUMENTATION_PROFILE__PROVIDE_JOIN_THREADS_ABILITY = IdentifierPackage.IDENTIFIER_FEATURE_COUNT + 8;
+
+	/**
+	 * The feature id for the '<em><b>Persist Instrumented Classes To OS Path</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int INSTRUMENTATION_PROFILE__PERSIST_INSTRUMENTED_CLASSES_TO_OS_PATH = IdentifierPackage.IDENTIFIER_FEATURE_COUNT + 9;
+
+	/**
+	 * The feature id for the '<em><b>Provide Online Section Active Updates</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int INSTRUMENTATION_PROFILE__PROVIDE_ONLINE_SECTION_ACTIVE_UPDATES = IdentifierPackage.IDENTIFIER_FEATURE_COUNT + 10;
+
+	/**
+	 * The feature id for the '<em><b>Trace And Identify Requests</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int INSTRUMENTATION_PROFILE__TRACE_AND_IDENTIFY_REQUESTS = IdentifierPackage.IDENTIFIER_FEATURE_COUNT + 11;
 
 	/**
 	 * The number of structural features of the '<em>Instrumentation Profile</em>' class.
@@ -177,7 +195,7 @@ public interface InputPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int INSTRUMENTATION_PROFILE_FEATURE_COUNT = IdentifierPackage.IDENTIFIER_FEATURE_COUNT + 10;
+	int INSTRUMENTATION_PROFILE_FEATURE_COUNT = IdentifierPackage.IDENTIFIER_FEATURE_COUNT + 12;
 
 	/**
 	 * The meta object id for the '{@link edu.kit.ipd.sdq.bycounter.input.impl.LogicalSetImpl <em>Logical Set</em>}' class.
@@ -245,13 +263,22 @@ public interface InputPackage extends EPackage {
 	int INSTRUMENTATION_PROFILE_REPOSITORY__ID = IdentifierPackage.IDENTIFIER__ID;
 
 	/**
+	 * The feature id for the '<em><b>Execution Profile</b></em>' containment reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int INSTRUMENTATION_PROFILE_REPOSITORY__EXECUTION_PROFILE = IdentifierPackage.IDENTIFIER_FEATURE_COUNT + 0;
+
+	/**
 	 * The feature id for the '<em><b>Instrumentation Profile</b></em>' containment reference list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int INSTRUMENTATION_PROFILE_REPOSITORY__INSTRUMENTATION_PROFILE = IdentifierPackage.IDENTIFIER_FEATURE_COUNT + 0;
+	int INSTRUMENTATION_PROFILE_REPOSITORY__INSTRUMENTATION_PROFILE = IdentifierPackage.IDENTIFIER_FEATURE_COUNT + 1;
 
 	/**
 	 * The number of structural features of the '<em>Instrumentation Profile Repository</em>' class.
@@ -260,7 +287,53 @@ public interface InputPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int INSTRUMENTATION_PROFILE_REPOSITORY_FEATURE_COUNT = IdentifierPackage.IDENTIFIER_FEATURE_COUNT + 1;
+	int INSTRUMENTATION_PROFILE_REPOSITORY_FEATURE_COUNT = IdentifierPackage.IDENTIFIER_FEATURE_COUNT + 2;
+
+	/**
+	 * The meta object id for the '{@link edu.kit.ipd.sdq.bycounter.input.impl.ExecutionProfileImpl <em>Execution Profile</em>}' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see edu.kit.ipd.sdq.bycounter.input.impl.ExecutionProfileImpl
+	 * @see edu.kit.ipd.sdq.bycounter.input.impl.InputPackageImpl#getExecutionProfile()
+	 * @generated
+	 */
+	int EXECUTION_PROFILE = 3;
+
+	/**
+	 * The feature id for the '<em><b>Add Up Results Recursively</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int EXECUTION_PROFILE__ADD_UP_RESULTS_RECURSIVELY = 0;
+
+	/**
+	 * The feature id for the '<em><b>Internal Classes Definition</b></em>' attribute list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int EXECUTION_PROFILE__INTERNAL_CLASSES_DEFINITION = 1;
+
+	/**
+	 * The feature id for the '<em><b>Wait For Threads To Finnish</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int EXECUTION_PROFILE__WAIT_FOR_THREADS_TO_FINNISH = 2;
+
+	/**
+	 * The number of structural features of the '<em>Execution Profile</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int EXECUTION_PROFILE_FEATURE_COUNT = 3;
 
 	/**
 	 * The meta object id for the '{@link edu.kit.ipd.sdq.bycounter.input.impl.EntityToInstrumentImpl <em>Entity To Instrument</em>}' class.
@@ -270,7 +343,7 @@ public interface InputPackage extends EPackage {
 	 * @see edu.kit.ipd.sdq.bycounter.input.impl.InputPackageImpl#getEntityToInstrument()
 	 * @generated
 	 */
-	int ENTITY_TO_INSTRUMENT = 6;
+	int ENTITY_TO_INSTRUMENT = 7;
 
 	/**
 	 * The feature id for the '<em><b>Instrumentation Profile</b></em>' container reference.
@@ -298,7 +371,7 @@ public interface InputPackage extends EPackage {
 	 * @see edu.kit.ipd.sdq.bycounter.input.impl.InputPackageImpl#getInstrumentedCodeArea()
 	 * @generated
 	 */
-	int INSTRUMENTED_CODE_AREA = 3;
+	int INSTRUMENTED_CODE_AREA = 4;
 
 	/**
 	 * The feature id for the '<em><b>Instrumentation Profile</b></em>' container reference.
@@ -344,7 +417,7 @@ public interface InputPackage extends EPackage {
 	 * @see edu.kit.ipd.sdq.bycounter.input.impl.InputPackageImpl#getInstrumentedMethod()
 	 * @generated
 	 */
-	int INSTRUMENTED_METHOD = 4;
+	int INSTRUMENTED_METHOD = 5;
 
 	/**
 	 * The feature id for the '<em><b>Instrumentation Profile</b></em>' container reference.
@@ -408,7 +481,7 @@ public interface InputPackage extends EPackage {
 	 * @see edu.kit.ipd.sdq.bycounter.input.impl.InputPackageImpl#getInstrumentedRegion()
 	 * @generated
 	 */
-	int INSTRUMENTED_REGION = 5;
+	int INSTRUMENTED_REGION = 6;
 
 	/**
 	 * The feature id for the '<em><b>Instrumentation Profile</b></em>' container reference.
@@ -509,15 +582,26 @@ public interface InputPackage extends EPackage {
 	EAttribute getInstrumentationProfile_AggregateInternalCallsTransparently();
 
 	/**
-	 * Returns the meta object for the attribute '{@link edu.kit.ipd.sdq.bycounter.input.InstrumentationProfile#getPersistInstrumentedClassesToOSPath <em>Persist Instrumented Classes To OS Path</em>}'.
+	 * Returns the meta object for the containment reference list '{@link edu.kit.ipd.sdq.bycounter.input.InstrumentationProfile#getAggregationExcludes <em>Aggregation Excludes</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Persist Instrumented Classes To OS Path</em>'.
-	 * @see edu.kit.ipd.sdq.bycounter.input.InstrumentationProfile#getPersistInstrumentedClassesToOSPath()
+	 * @return the meta object for the containment reference list '<em>Aggregation Excludes</em>'.
+	 * @see edu.kit.ipd.sdq.bycounter.input.InstrumentationProfile#getAggregationExcludes()
 	 * @see #getInstrumentationProfile()
 	 * @generated
 	 */
-	EAttribute getInstrumentationProfile_PersistInstrumentedClassesToOSPath();
+	EReference getInstrumentationProfile_AggregationExcludes();
+
+	/**
+	 * Returns the meta object for the containment reference list '{@link edu.kit.ipd.sdq.bycounter.input.InstrumentationProfile#getEntitiesToInstrument <em>Entities To Instrument</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the containment reference list '<em>Entities To Instrument</em>'.
+	 * @see edu.kit.ipd.sdq.bycounter.input.InstrumentationProfile#getEntitiesToInstrument()
+	 * @see #getInstrumentationProfile()
+	 * @generated
+	 */
+	EReference getInstrumentationProfile_EntitiesToInstrument();
 
 	/**
 	 * Returns the meta object for the container reference '{@link edu.kit.ipd.sdq.bycounter.input.InstrumentationProfile#getIntrumentationProfileRepository <em>Intrumentation Profile Repository</em>}'.
@@ -553,6 +637,39 @@ public interface InputPackage extends EPackage {
 	EAttribute getInstrumentationProfile_InstrumentUsingBasicBlocks();
 
 	/**
+	 * Returns the meta object for the attribute '{@link edu.kit.ipd.sdq.bycounter.input.InstrumentationProfile#isProvideJoinThreadsAbility <em>Provide Join Threads Ability</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Provide Join Threads Ability</em>'.
+	 * @see edu.kit.ipd.sdq.bycounter.input.InstrumentationProfile#isProvideJoinThreadsAbility()
+	 * @see #getInstrumentationProfile()
+	 * @generated
+	 */
+	EAttribute getInstrumentationProfile_ProvideJoinThreadsAbility();
+
+	/**
+	 * Returns the meta object for the attribute '{@link edu.kit.ipd.sdq.bycounter.input.InstrumentationProfile#getPersistInstrumentedClassesToOSPath <em>Persist Instrumented Classes To OS Path</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Persist Instrumented Classes To OS Path</em>'.
+	 * @see edu.kit.ipd.sdq.bycounter.input.InstrumentationProfile#getPersistInstrumentedClassesToOSPath()
+	 * @see #getInstrumentationProfile()
+	 * @generated
+	 */
+	EAttribute getInstrumentationProfile_PersistInstrumentedClassesToOSPath();
+
+	/**
+	 * Returns the meta object for the attribute '{@link edu.kit.ipd.sdq.bycounter.input.InstrumentationProfile#isProvideOnlineSectionActiveUpdates <em>Provide Online Section Active Updates</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Provide Online Section Active Updates</em>'.
+	 * @see edu.kit.ipd.sdq.bycounter.input.InstrumentationProfile#isProvideOnlineSectionActiveUpdates()
+	 * @see #getInstrumentationProfile()
+	 * @generated
+	 */
+	EAttribute getInstrumentationProfile_ProvideOnlineSectionActiveUpdates();
+
+	/**
 	 * Returns the meta object for the attribute '{@link edu.kit.ipd.sdq.bycounter.input.InstrumentationProfile#isTraceAndIdentifyRequests <em>Trace And Identify Requests</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -562,28 +679,6 @@ public interface InputPackage extends EPackage {
 	 * @generated
 	 */
 	EAttribute getInstrumentationProfile_TraceAndIdentifyRequests();
-
-	/**
-	 * Returns the meta object for the containment reference list '{@link edu.kit.ipd.sdq.bycounter.input.InstrumentationProfile#getAggregationExcludes <em>Aggregation Excludes</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the containment reference list '<em>Aggregation Excludes</em>'.
-	 * @see edu.kit.ipd.sdq.bycounter.input.InstrumentationProfile#getAggregationExcludes()
-	 * @see #getInstrumentationProfile()
-	 * @generated
-	 */
-	EReference getInstrumentationProfile_AggregationExcludes();
-
-	/**
-	 * Returns the meta object for the containment reference list '{@link edu.kit.ipd.sdq.bycounter.input.InstrumentationProfile#getEntitiesToInstrument <em>Entities To Instrument</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the containment reference list '<em>Entities To Instrument</em>'.
-	 * @see edu.kit.ipd.sdq.bycounter.input.InstrumentationProfile#getEntitiesToInstrument()
-	 * @see #getInstrumentationProfile()
-	 * @generated
-	 */
-	EReference getInstrumentationProfile_EntitiesToInstrument();
 
 	/**
 	 * Returns the meta object for class '{@link edu.kit.ipd.sdq.bycounter.input.LogicalSet <em>Logical Set</em>}'.
@@ -628,6 +723,17 @@ public interface InputPackage extends EPackage {
 	EClass getInstrumentationProfileRepository();
 
 	/**
+	 * Returns the meta object for the containment reference list '{@link edu.kit.ipd.sdq.bycounter.input.InstrumentationProfileRepository#getExecutionProfile <em>Execution Profile</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the containment reference list '<em>Execution Profile</em>'.
+	 * @see edu.kit.ipd.sdq.bycounter.input.InstrumentationProfileRepository#getExecutionProfile()
+	 * @see #getInstrumentationProfileRepository()
+	 * @generated
+	 */
+	EReference getInstrumentationProfileRepository_ExecutionProfile();
+
+	/**
 	 * Returns the meta object for the containment reference list '{@link edu.kit.ipd.sdq.bycounter.input.InstrumentationProfileRepository#getInstrumentationProfile <em>Instrumentation Profile</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -637,6 +743,49 @@ public interface InputPackage extends EPackage {
 	 * @generated
 	 */
 	EReference getInstrumentationProfileRepository_InstrumentationProfile();
+
+	/**
+	 * Returns the meta object for class '{@link edu.kit.ipd.sdq.bycounter.input.ExecutionProfile <em>Execution Profile</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for class '<em>Execution Profile</em>'.
+	 * @see edu.kit.ipd.sdq.bycounter.input.ExecutionProfile
+	 * @generated
+	 */
+	EClass getExecutionProfile();
+
+	/**
+	 * Returns the meta object for the attribute '{@link edu.kit.ipd.sdq.bycounter.input.ExecutionProfile#isAddUpResultsRecursively <em>Add Up Results Recursively</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Add Up Results Recursively</em>'.
+	 * @see edu.kit.ipd.sdq.bycounter.input.ExecutionProfile#isAddUpResultsRecursively()
+	 * @see #getExecutionProfile()
+	 * @generated
+	 */
+	EAttribute getExecutionProfile_AddUpResultsRecursively();
+
+	/**
+	 * Returns the meta object for the attribute list '{@link edu.kit.ipd.sdq.bycounter.input.ExecutionProfile#getInternalClassesDefinition <em>Internal Classes Definition</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute list '<em>Internal Classes Definition</em>'.
+	 * @see edu.kit.ipd.sdq.bycounter.input.ExecutionProfile#getInternalClassesDefinition()
+	 * @see #getExecutionProfile()
+	 * @generated
+	 */
+	EAttribute getExecutionProfile_InternalClassesDefinition();
+
+	/**
+	 * Returns the meta object for the attribute '{@link edu.kit.ipd.sdq.bycounter.input.ExecutionProfile#isWaitForThreadsToFinnish <em>Wait For Threads To Finnish</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Wait For Threads To Finnish</em>'.
+	 * @see edu.kit.ipd.sdq.bycounter.input.ExecutionProfile#isWaitForThreadsToFinnish()
+	 * @see #getExecutionProfile()
+	 * @generated
+	 */
+	EAttribute getExecutionProfile_WaitForThreadsToFinnish();
 
 	/**
 	 * Returns the meta object for class '{@link edu.kit.ipd.sdq.bycounter.input.InstrumentedCodeArea <em>Instrumented Code Area</em>}'.
@@ -856,12 +1005,20 @@ public interface InputPackage extends EPackage {
 		EAttribute INSTRUMENTATION_PROFILE__AGGREGATE_INTERNAL_CALLS_TRANSPARENTLY = eINSTANCE.getInstrumentationProfile_AggregateInternalCallsTransparently();
 
 		/**
-		 * The meta object literal for the '<em><b>Persist Instrumented Classes To OS Path</b></em>' attribute feature.
+		 * The meta object literal for the '<em><b>Aggregation Excludes</b></em>' containment reference list feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		EAttribute INSTRUMENTATION_PROFILE__PERSIST_INSTRUMENTED_CLASSES_TO_OS_PATH = eINSTANCE.getInstrumentationProfile_PersistInstrumentedClassesToOSPath();
+		EReference INSTRUMENTATION_PROFILE__AGGREGATION_EXCLUDES = eINSTANCE.getInstrumentationProfile_AggregationExcludes();
+
+		/**
+		 * The meta object literal for the '<em><b>Entities To Instrument</b></em>' containment reference list feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference INSTRUMENTATION_PROFILE__ENTITIES_TO_INSTRUMENT = eINSTANCE.getInstrumentationProfile_EntitiesToInstrument();
 
 		/**
 		 * The meta object literal for the '<em><b>Intrumentation Profile Repository</b></em>' container reference feature.
@@ -888,28 +1045,36 @@ public interface InputPackage extends EPackage {
 		EAttribute INSTRUMENTATION_PROFILE__INSTRUMENT_USING_BASIC_BLOCKS = eINSTANCE.getInstrumentationProfile_InstrumentUsingBasicBlocks();
 
 		/**
+		 * The meta object literal for the '<em><b>Provide Join Threads Ability</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute INSTRUMENTATION_PROFILE__PROVIDE_JOIN_THREADS_ABILITY = eINSTANCE.getInstrumentationProfile_ProvideJoinThreadsAbility();
+
+		/**
+		 * The meta object literal for the '<em><b>Persist Instrumented Classes To OS Path</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute INSTRUMENTATION_PROFILE__PERSIST_INSTRUMENTED_CLASSES_TO_OS_PATH = eINSTANCE.getInstrumentationProfile_PersistInstrumentedClassesToOSPath();
+
+		/**
+		 * The meta object literal for the '<em><b>Provide Online Section Active Updates</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute INSTRUMENTATION_PROFILE__PROVIDE_ONLINE_SECTION_ACTIVE_UPDATES = eINSTANCE.getInstrumentationProfile_ProvideOnlineSectionActiveUpdates();
+
+		/**
 		 * The meta object literal for the '<em><b>Trace And Identify Requests</b></em>' attribute feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
 		EAttribute INSTRUMENTATION_PROFILE__TRACE_AND_IDENTIFY_REQUESTS = eINSTANCE.getInstrumentationProfile_TraceAndIdentifyRequests();
-
-		/**
-		 * The meta object literal for the '<em><b>Aggregation Excludes</b></em>' containment reference list feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EReference INSTRUMENTATION_PROFILE__AGGREGATION_EXCLUDES = eINSTANCE.getInstrumentationProfile_AggregationExcludes();
-
-		/**
-		 * The meta object literal for the '<em><b>Entities To Instrument</b></em>' containment reference list feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EReference INSTRUMENTATION_PROFILE__ENTITIES_TO_INSTRUMENT = eINSTANCE.getInstrumentationProfile_EntitiesToInstrument();
 
 		/**
 		 * The meta object literal for the '{@link edu.kit.ipd.sdq.bycounter.input.impl.LogicalSetImpl <em>Logical Set</em>}' class.
@@ -948,12 +1113,54 @@ public interface InputPackage extends EPackage {
 		EClass INSTRUMENTATION_PROFILE_REPOSITORY = eINSTANCE.getInstrumentationProfileRepository();
 
 		/**
+		 * The meta object literal for the '<em><b>Execution Profile</b></em>' containment reference list feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference INSTRUMENTATION_PROFILE_REPOSITORY__EXECUTION_PROFILE = eINSTANCE.getInstrumentationProfileRepository_ExecutionProfile();
+
+		/**
 		 * The meta object literal for the '<em><b>Instrumentation Profile</b></em>' containment reference list feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
 		EReference INSTRUMENTATION_PROFILE_REPOSITORY__INSTRUMENTATION_PROFILE = eINSTANCE.getInstrumentationProfileRepository_InstrumentationProfile();
+
+		/**
+		 * The meta object literal for the '{@link edu.kit.ipd.sdq.bycounter.input.impl.ExecutionProfileImpl <em>Execution Profile</em>}' class.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @see edu.kit.ipd.sdq.bycounter.input.impl.ExecutionProfileImpl
+		 * @see edu.kit.ipd.sdq.bycounter.input.impl.InputPackageImpl#getExecutionProfile()
+		 * @generated
+		 */
+		EClass EXECUTION_PROFILE = eINSTANCE.getExecutionProfile();
+
+		/**
+		 * The meta object literal for the '<em><b>Add Up Results Recursively</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute EXECUTION_PROFILE__ADD_UP_RESULTS_RECURSIVELY = eINSTANCE.getExecutionProfile_AddUpResultsRecursively();
+
+		/**
+		 * The meta object literal for the '<em><b>Internal Classes Definition</b></em>' attribute list feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute EXECUTION_PROFILE__INTERNAL_CLASSES_DEFINITION = eINSTANCE.getExecutionProfile_InternalClassesDefinition();
+
+		/**
+		 * The meta object literal for the '<em><b>Wait For Threads To Finnish</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute EXECUTION_PROFILE__WAIT_FOR_THREADS_TO_FINNISH = eINSTANCE.getExecutionProfile_WaitForThreadsToFinnish();
 
 		/**
 		 * The meta object literal for the '{@link edu.kit.ipd.sdq.bycounter.input.impl.InstrumentedCodeAreaImpl <em>Instrumented Code Area</em>}' class.

@@ -145,6 +145,29 @@ public class InputItemProviderAdapterFactory extends InputAdapterFactory impleme
 	}
 
 	/**
+	 * This keeps track of the one adapter used for all {@link edu.kit.ipd.sdq.bycounter.input.ExecutionProfile} instances.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	protected ExecutionProfileItemProvider executionProfileItemProvider;
+
+	/**
+	 * This creates an adapter for a {@link edu.kit.ipd.sdq.bycounter.input.ExecutionProfile}.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public Adapter createExecutionProfileAdapter() {
+		if (executionProfileItemProvider == null) {
+			executionProfileItemProvider = new ExecutionProfileItemProvider(this);
+		}
+
+		return executionProfileItemProvider;
+	}
+
+	/**
 	 * This keeps track of the one adapter used for all {@link edu.kit.ipd.sdq.bycounter.input.InstrumentedCodeArea} instances.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -315,6 +338,7 @@ public class InputItemProviderAdapterFactory extends InputAdapterFactory impleme
 		if (instrumentationProfileItemProvider != null) instrumentationProfileItemProvider.dispose();
 		if (logicalSetItemProvider != null) logicalSetItemProvider.dispose();
 		if (instrumentationProfileRepositoryItemProvider != null) instrumentationProfileRepositoryItemProvider.dispose();
+		if (executionProfileItemProvider != null) executionProfileItemProvider.dispose();
 		if (instrumentedCodeAreaItemProvider != null) instrumentedCodeAreaItemProvider.dispose();
 		if (instrumentedMethodItemProvider != null) instrumentedMethodItemProvider.dispose();
 		if (instrumentedRegionItemProvider != null) instrumentedRegionItemProvider.dispose();

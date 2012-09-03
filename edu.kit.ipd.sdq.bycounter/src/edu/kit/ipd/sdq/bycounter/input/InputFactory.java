@@ -53,6 +53,15 @@ public interface InputFactory extends EFactory {
 	InstrumentationProfileRepository createInstrumentationProfileRepository();
 
 	/**
+	 * Returns a new object of class '<em>Execution Profile</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Execution Profile</em>'.
+	 * @generated
+	 */
+	ExecutionProfile createExecutionProfile();
+
+	/**
 	 * Returns a new object of class '<em>Instrumented Code Area</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->

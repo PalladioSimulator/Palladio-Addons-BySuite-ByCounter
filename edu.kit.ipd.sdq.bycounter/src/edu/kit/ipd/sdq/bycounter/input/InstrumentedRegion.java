@@ -81,11 +81,10 @@ public interface InstrumentedRegion extends EntityToInstrument {
 	/**
 	 * Returns the value of the '<em><b>Start Method</b></em>' reference.
 	 * <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of the '<em>Start Method</em>' reference isn't clear,
-	 * there really should be more of a description here...
-	 * </p>
 	 * <!-- end-user-doc -->
+	 * <!-- begin-model-doc -->
+	 * Method in which startLine defines the begin of the instrumentation region.
+	 * <!-- end-model-doc -->
 	 * @return the value of the '<em>Start Method</em>' reference.
 	 * @see #setStartMethod(Method)
 	 * @see edu.kit.ipd.sdq.bycounter.input.InputPackage#getInstrumentedRegion_StartMethod()
@@ -107,11 +106,10 @@ public interface InstrumentedRegion extends EntityToInstrument {
 	/**
 	 * Returns the value of the '<em><b>Stop Method</b></em>' reference.
 	 * <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of the '<em>Stop Method</em>' reference isn't clear,
-	 * there really should be more of a description here...
-	 * </p>
 	 * <!-- end-user-doc -->
+	 * <!-- begin-model-doc -->
+	 * Method in which stopLine defines the end of the instrumentation region.
+	 * <!-- end-model-doc -->
 	 * @return the value of the '<em>Stop Method</em>' reference.
 	 * @see #setStopMethod(Method)
 	 * @see edu.kit.ipd.sdq.bycounter.input.InputPackage#getInstrumentedRegion_StopMethod()

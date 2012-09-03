@@ -93,6 +93,12 @@ public class InputSwitch<T> extends Switch<T> {
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
+			case InputPackage.EXECUTION_PROFILE: {
+				ExecutionProfile executionProfile = (ExecutionProfile)theEObject;
+				T result = caseExecutionProfile(executionProfile);
+				if (result == null) result = defaultCase(theEObject);
+				return result;
+			}
 			case InputPackage.INSTRUMENTED_CODE_AREA: {
 				InstrumentedCodeArea instrumentedCodeArea = (InstrumentedCodeArea)theEObject;
 				T result = caseInstrumentedCodeArea(instrumentedCodeArea);
@@ -166,6 +172,21 @@ public class InputSwitch<T> extends Switch<T> {
 	 * @generated
 	 */
 	public T caseInstrumentationProfileRepository(InstrumentationProfileRepository object) {
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Execution Profile</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Execution Profile</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseExecutionProfile(ExecutionProfile object) {
 		return null;
 	}
 

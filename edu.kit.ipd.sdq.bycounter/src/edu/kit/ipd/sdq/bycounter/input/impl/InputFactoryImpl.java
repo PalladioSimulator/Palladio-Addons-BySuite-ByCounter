@@ -63,6 +63,7 @@ public class InputFactoryImpl extends EFactoryImpl implements InputFactory {
 			case InputPackage.INSTRUMENTATION_PROFILE: return createInstrumentationProfile();
 			case InputPackage.LOGICAL_SET: return createLogicalSet();
 			case InputPackage.INSTRUMENTATION_PROFILE_REPOSITORY: return createInstrumentationProfileRepository();
+			case InputPackage.EXECUTION_PROFILE: return createExecutionProfile();
 			case InputPackage.INSTRUMENTED_CODE_AREA: return createInstrumentedCodeArea();
 			case InputPackage.INSTRUMENTED_METHOD: return createInstrumentedMethod();
 			case InputPackage.INSTRUMENTED_REGION: return createInstrumentedRegion();
@@ -99,6 +100,16 @@ public class InputFactoryImpl extends EFactoryImpl implements InputFactory {
 	public InstrumentationProfileRepository createInstrumentationProfileRepository() {
 		InstrumentationProfileRepositoryImpl instrumentationProfileRepository = new InstrumentationProfileRepositoryImpl();
 		return instrumentationProfileRepository;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public ExecutionProfile createExecutionProfile() {
+		ExecutionProfileImpl executionProfile = new ExecutionProfileImpl();
+		return executionProfile;
 	}
 
 	/**

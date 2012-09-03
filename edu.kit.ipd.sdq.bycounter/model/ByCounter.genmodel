@@ -111,16 +111,18 @@
             createChild="true" ecoreFeature="ecore:EReference ByCounter.ecore#//input/InstrumentationProfile/definedLogicalSets"/>
         <genFeatures xsi:type="genmodel:GenFeature" createChild="false" ecoreFeature="ecore:EAttribute ByCounter.ecore#//input/InstrumentationProfile/instrumentRecursively"/>
         <genFeatures xsi:type="genmodel:GenFeature" createChild="false" ecoreFeature="ecore:EAttribute ByCounter.ecore#//input/InstrumentationProfile/aggregateInternalCallsTransparently"/>
-        <genFeatures xsi:type="genmodel:GenFeature" createChild="false" ecoreFeature="ecore:EAttribute ByCounter.ecore#//input/InstrumentationProfile/persistInstrumentedClassesToOSPath"/>
-        <genFeatures xsi:type="genmodel:GenFeature" property="None" notify="false"
-            createChild="false" ecoreFeature="ecore:EReference ByCounter.ecore#//input/InstrumentationProfile/intrumentationProfileRepository"/>
-        <genFeatures xsi:type="genmodel:GenFeature" createChild="false" ecoreFeature="ecore:EAttribute ByCounter.ecore#//input/InstrumentationProfile/instrumentUsingLongCounters"/>
-        <genFeatures xsi:type="genmodel:GenFeature" createChild="false" ecoreFeature="ecore:EAttribute ByCounter.ecore#//input/InstrumentationProfile/instrumentUsingBasicBlocks"/>
-        <genFeatures xsi:type="genmodel:GenFeature" createChild="false" ecoreFeature="ecore:EAttribute ByCounter.ecore#//input/InstrumentationProfile/traceAndIdentifyRequests"/>
         <genFeatures xsi:type="genmodel:GenFeature" property="None" children="true"
             createChild="true" ecoreFeature="ecore:EReference ByCounter.ecore#//input/InstrumentationProfile/aggregationExcludes"/>
         <genFeatures xsi:type="genmodel:GenFeature" property="None" children="true"
             createChild="true" ecoreFeature="ecore:EReference ByCounter.ecore#//input/InstrumentationProfile/entitiesToInstrument"/>
+        <genFeatures xsi:type="genmodel:GenFeature" property="None" notify="false"
+            createChild="false" ecoreFeature="ecore:EReference ByCounter.ecore#//input/InstrumentationProfile/intrumentationProfileRepository"/>
+        <genFeatures xsi:type="genmodel:GenFeature" createChild="false" ecoreFeature="ecore:EAttribute ByCounter.ecore#//input/InstrumentationProfile/instrumentUsingLongCounters"/>
+        <genFeatures xsi:type="genmodel:GenFeature" createChild="false" ecoreFeature="ecore:EAttribute ByCounter.ecore#//input/InstrumentationProfile/instrumentUsingBasicBlocks"/>
+        <genFeatures xsi:type="genmodel:GenFeature" createChild="false" ecoreFeature="ecore:EAttribute ByCounter.ecore#//input/InstrumentationProfile/provideJoinThreadsAbility"/>
+        <genFeatures xsi:type="genmodel:GenFeature" createChild="false" ecoreFeature="ecore:EAttribute ByCounter.ecore#//input/InstrumentationProfile/persistInstrumentedClassesToOSPath"/>
+        <genFeatures xsi:type="genmodel:GenFeature" createChild="false" ecoreFeature="ecore:EAttribute ByCounter.ecore#//input/InstrumentationProfile/provideOnlineSectionActiveUpdates"/>
+        <genFeatures xsi:type="genmodel:GenFeature" createChild="false" ecoreFeature="ecore:EAttribute ByCounter.ecore#//input/InstrumentationProfile/traceAndIdentifyRequests"/>
       </genClasses>
       <genClasses xsi:type="genmodel:GenClass" ecoreClass="ByCounter.ecore#//input/LogicalSet">
         <genFeatures xsi:type="genmodel:GenFeature" notify="false" createChild="false"
@@ -130,7 +132,14 @@
       </genClasses>
       <genClasses xsi:type="genmodel:GenClass" ecoreClass="ByCounter.ecore#//input/InstrumentationProfileRepository">
         <genFeatures xsi:type="genmodel:GenFeature" property="None" children="true"
+            createChild="true" ecoreFeature="ecore:EReference ByCounter.ecore#//input/InstrumentationProfileRepository/executionProfile"/>
+        <genFeatures xsi:type="genmodel:GenFeature" property="None" children="true"
             createChild="true" ecoreFeature="ecore:EReference ByCounter.ecore#//input/InstrumentationProfileRepository/instrumentationProfile"/>
+      </genClasses>
+      <genClasses xsi:type="genmodel:GenClass" ecoreClass="ByCounter.ecore#//input/ExecutionProfile">
+        <genFeatures xsi:type="genmodel:GenFeature" createChild="false" ecoreFeature="ecore:EAttribute ByCounter.ecore#//input/ExecutionProfile/addUpResultsRecursively"/>
+        <genFeatures xsi:type="genmodel:GenFeature" createChild="false" ecoreFeature="ecore:EAttribute ByCounter.ecore#//input/ExecutionProfile/internalClassesDefinition"/>
+        <genFeatures xsi:type="genmodel:GenFeature" createChild="false" ecoreFeature="ecore:EAttribute ByCounter.ecore#//input/ExecutionProfile/waitForThreadsToFinnish"/>
       </genClasses>
       <genClasses xsi:type="genmodel:GenClass" ecoreClass="ByCounter.ecore#//input/InstrumentedCodeArea">
         <genFeatures xsi:type="genmodel:GenFeature" notify="false" createChild="false"

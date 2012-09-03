@@ -4,15 +4,19 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Observable;
 import java.util.Observer;
+import java.util.Set;
 import java.util.SortedMap;
 import java.util.SortedSet;
 import java.util.logging.Logger;
+
+import org.eclipse.emf.common.util.EList;
 
 import de.fzi.gast.core.Root;
 import de.fzi.gast.functions.Method;
@@ -21,6 +25,7 @@ import de.uka.ipd.sdq.ByCounter.execution.BytecodeCounter;
 import de.uka.ipd.sdq.ByCounter.execution.CountingResultCollector;
 import de.uka.ipd.sdq.ByCounter.execution.CountingResultCompleteMethodExecutionUpdate;
 import de.uka.ipd.sdq.ByCounter.execution.CountingResultSectionExecutionUpdate;
+import de.uka.ipd.sdq.ByCounter.execution.ExecutionSettings;
 import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentationCounterPrecision;
 import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentationParameters;
 import de.uka.ipd.sdq.ByCounter.parsing.ArrayCreation;
@@ -31,6 +36,7 @@ import de.uka.ipd.sdq.ByCounter.results.ThreadedCountingResult;
 import de.uka.ipd.sdq.ByCounter.utils.JavaTypeEnum;
 import de.uka.ipd.sdq.ByCounter.utils.MethodDescriptor;
 import edu.kit.ipd.sdq.bycounter.input.EntityToInstrument;
+import edu.kit.ipd.sdq.bycounter.input.ExecutionProfile;
 import edu.kit.ipd.sdq.bycounter.input.InstrumentationProfile;
 import edu.kit.ipd.sdq.bycounter.input.InstrumentedMethod;
 import edu.kit.ipd.sdq.bycounter.output.ArrayCreationCount;
@@ -82,7 +88,9 @@ public class ByCounterWrapper {
 	/** Wrapped instance of BytecodeCounter. */
 	private BytecodeCounter bycounter;
 	/** Current instrumentation configuration. */
-	private InstrumentationProfile inputModel;
+	private InstrumentationProfile instrumentationProfile;
+	/** Current execution configuration. */
+	private ExecutionProfile executionProfile;
 	/** List of available GAST Root Nodes. */
 	private final LinkedList<Root> availableGastRootNodes;
 	/** A map that maps the string representation of simple java 
@@ -117,7 +125,7 @@ public class ByCounterWrapper {
 		this.bycounter = new BytecodeCounter();
 		this.currentRun = outputFactory.createResultCollection();
 		this.updateObserver = new UpdateObserver();
-		this.inputModel = null;
+		this.instrumentationProfile = null;
 		this.availableGastRootNodes = new LinkedList<Root>();
 	}
 
@@ -125,7 +133,7 @@ public class ByCounterWrapper {
 	 * @return The configuration.
 	 */
 	public InstrumentationProfile getInstrumentationConfiguration() {
-		return inputModel;
+		return instrumentationProfile;
 	}
 	
 	/**
@@ -150,11 +158,45 @@ public class ByCounterWrapper {
 				entitiesToInstrumentIdMap,
 				methodNameInstrumentedMethodMap, input);
 		this.configureOnlineUpdates(instrumentationParams);
+		instrumentationParams.setProvideJoinThreadsAbility(input.isProvideJoinThreadsAbility());
+		instrumentationParams.setProvideOnlineSectionActiveUpdates(input.isProvideOnlineSectionActiveUpdates());
 
 		// update instrumentation parameters and instrument
-		this.inputModel = input;
+		this.instrumentationProfile = input;
 		this.bycounter.setInstrumentationParams(instrumentationParams);
 		this.bycounter.instrument();
+	}
+	
+	public ExecutionProfile getExecutionProfile() {
+		return executionProfile;
+	}
+	
+	public void setExecutionProfile(ExecutionProfile executionProfile) {
+		if(executionProfile == null) {
+			throw new IllegalArgumentException("Execution profile must not be null.");
+		}
+		
+		ExecutionSettings executionSettings = new ExecutionSettings();
+		executionSettings.setAddUpResultsRecursively(executionProfile.isAddUpResultsRecursively());
+		executionSettings.setWaitForThreadsToFinnish(executionProfile.isWaitForThreadsToFinnish());
+		handleInternalClassesDefinition(executionSettings, executionProfile.getInternalClassesDefinition());
+		
+		// update execution parameters
+		this.executionProfile = executionProfile;
+		this.bycounter.setExecutionSettings(executionSettings);
+	}
+
+	/**
+	 * @param executionSettings ByCounters {@link ExecutionSettings}.
+	 * @param internalClassesDefinition Definition in the execution profile.
+	 */
+	private void handleInternalClassesDefinition(ExecutionSettings executionSettings,
+			EList<String> internalClassesDefinition) {
+		Set<String> bcSet = new HashSet<String>();
+		for(String s : internalClassesDefinition) {
+			bcSet.add(s);
+		}
+		executionSettings.setInternalClassesDefinition(bcSet);
 	}
 
 	/**
@@ -261,7 +303,7 @@ public class ByCounterWrapper {
 				ByCounterWrapper.constructSignature(m));
 		this.currentRun = outputFactory.createResultCollection();
 
-		this.bycounter.getExecutionSettings().setAddUpResultsRecursively(this.inputModel.isInstrumentRecursively());
+		this.bycounter.getExecutionSettings().setAddUpResultsRecursively(this.instrumentationProfile.isInstrumentRecursively());
 		return this.bycounter.execute(methodToExecute, target, params).returnValue;
 	}
 	
