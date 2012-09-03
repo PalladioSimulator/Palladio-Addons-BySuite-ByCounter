@@ -6,7 +6,6 @@
  */
 package edu.kit.ipd.sdq.bycounter.input.impl;
 
-import de.fzi.gast.functions.Function;
 import de.fzi.gast.functions.Method;
 
 import edu.kit.ipd.sdq.bycounter.input.InputPackage;

@@ -8,7 +8,6 @@ package edu.kit.ipd.sdq.bycounter.input.provider;
 
 
 import edu.kit.ipd.sdq.bycounter.input.InputPackage;
-import edu.kit.ipd.sdq.bycounter.input.InstrumentedCodeArea;
 
 import java.util.Collection;
 import java.util.List;

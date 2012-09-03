@@ -6,7 +6,6 @@
  */
 package edu.kit.ipd.sdq.bycounter.input;
 
-import de.fzi.gast.functions.Function;
 import de.fzi.gast.functions.Method;
 
 /**
@@ -32,10 +31,6 @@ public interface InstrumentedRegion extends EntityToInstrument {
 	/**
 	 * Returns the value of the '<em><b>Start Line</b></em>' attribute.
 	 * <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of the '<em>Start Line</em>' attribute isn't clear,
-	 * there really should be more of a description here...
-	 * </p>
 	 * <!-- end-user-doc -->
 	 * <!-- begin-model-doc -->
 	 * Absolute line number in the file defining startMethod.
@@ -61,10 +56,6 @@ public interface InstrumentedRegion extends EntityToInstrument {
 	/**
 	 * Returns the value of the '<em><b>Stop Line</b></em>' attribute.
 	 * <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of the '<em>Stop Line</em>' attribute isn't clear,
-	 * there really should be more of a description here...
-	 * </p>
 	 * <!-- end-user-doc -->
 	 * <!-- begin-model-doc -->
 	 * Absolute line number in the file defining stopMethod.

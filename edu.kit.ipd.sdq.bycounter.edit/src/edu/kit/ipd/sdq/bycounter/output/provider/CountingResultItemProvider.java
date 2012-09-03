@@ -65,7 +65,7 @@ public class CountingResultItemProvider
 			super.getPropertyDescriptors(object);
 
 			addCallerIdPropertyDescriptor(object);
-			addMethodInvocationBeginningPropertyDescriptor(object);
+			addMethodInvocationStartTimePropertyDescriptor(object);
 			addReportingTimePropertyDescriptor(object);
 			addObservedElementPropertyDescriptor(object);
 			addOpcodeCountsPropertyDescriptor(object);
@@ -75,28 +75,6 @@ public class CountingResultItemProvider
 			addMethodCallCountsPropertyDescriptor(object);
 		}
 		return itemPropertyDescriptors;
-	}
-
-	/**
-	 * This adds a property descriptor for the Array Creation Counts feature.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected void addArrayCreationCountsPropertyDescriptor(Object object) {
-		itemPropertyDescriptors.add
-			(createItemPropertyDescriptor
-				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
-				 getResourceLocator(),
-				 getString("_UI_CountingResult_arrayCreationCounts_feature"),
-				 getString("_UI_PropertyDescriptor_description", "_UI_CountingResult_arrayCreationCounts_feature", "_UI_CountingResult_type"),
-				 OutputPackage.Literals.COUNTING_RESULT__ARRAY_CREATION_COUNTS,
-				 true,
-				 false,
-				 false,
-				 null,
-				 null,
-				 null));
 	}
 
 	/**
@@ -122,41 +100,19 @@ public class CountingResultItemProvider
 	}
 
 	/**
-	 * This adds a property descriptor for the Method Call Counts feature.
+	 * This adds a property descriptor for the Method Invocation Start Time feature.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	protected void addMethodCallCountsPropertyDescriptor(Object object) {
+	protected void addMethodInvocationStartTimePropertyDescriptor(Object object) {
 		itemPropertyDescriptors.add
 			(createItemPropertyDescriptor
 				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
 				 getResourceLocator(),
-				 getString("_UI_CountingResult_methodCallCounts_feature"),
-				 getString("_UI_PropertyDescriptor_description", "_UI_CountingResult_methodCallCounts_feature", "_UI_CountingResult_type"),
-				 OutputPackage.Literals.COUNTING_RESULT__METHOD_CALL_COUNTS,
-				 true,
-				 false,
-				 false,
-				 null,
-				 null,
-				 null));
-	}
-
-	/**
-	 * This adds a property descriptor for the Method Invocation Beginning feature.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected void addMethodInvocationBeginningPropertyDescriptor(Object object) {
-		itemPropertyDescriptors.add
-			(createItemPropertyDescriptor
-				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
-				 getResourceLocator(),
-				 getString("_UI_CountingResult_methodInvocationBeginning_feature"),
-				 getString("_UI_PropertyDescriptor_description", "_UI_CountingResult_methodInvocationBeginning_feature", "_UI_CountingResult_type"),
-				 OutputPackage.Literals.COUNTING_RESULT__METHOD_INVOCATION_BEGINNING,
+				 getString("_UI_CountingResult_methodInvocationStartTime_feature"),
+				 getString("_UI_PropertyDescriptor_description", "_UI_CountingResult_methodInvocationStartTime_feature", "_UI_CountingResult_type"),
+				 OutputPackage.Literals.COUNTING_RESULT__METHOD_INVOCATION_START_TIME,
 				 true,
 				 false,
 				 false,
@@ -276,6 +232,50 @@ public class CountingResultItemProvider
 	}
 
 	/**
+	 * This adds a property descriptor for the Array Creation Counts feature.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	protected void addArrayCreationCountsPropertyDescriptor(Object object) {
+		itemPropertyDescriptors.add
+			(createItemPropertyDescriptor
+				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
+				 getResourceLocator(),
+				 getString("_UI_CountingResult_arrayCreationCounts_feature"),
+				 getString("_UI_PropertyDescriptor_description", "_UI_CountingResult_arrayCreationCounts_feature", "_UI_CountingResult_type"),
+				 OutputPackage.Literals.COUNTING_RESULT__ARRAY_CREATION_COUNTS,
+				 true,
+				 false,
+				 false,
+				 null,
+				 null,
+				 null));
+	}
+
+	/**
+	 * This adds a property descriptor for the Method Call Counts feature.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	protected void addMethodCallCountsPropertyDescriptor(Object object) {
+		itemPropertyDescriptors.add
+			(createItemPropertyDescriptor
+				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
+				 getResourceLocator(),
+				 getString("_UI_CountingResult_methodCallCounts_feature"),
+				 getString("_UI_PropertyDescriptor_description", "_UI_CountingResult_methodCallCounts_feature", "_UI_CountingResult_type"),
+				 OutputPackage.Literals.COUNTING_RESULT__METHOD_CALL_COUNTS,
+				 true,
+				 false,
+				 false,
+				 null,
+				 null,
+				 null));
+	}
+
+	/**
 	 * This returns CountingResult.gif.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -313,7 +313,7 @@ public class CountingResultItemProvider
 
 		switch (notification.getFeatureID(CountingResult.class)) {
 			case OutputPackage.COUNTING_RESULT__CALLER_ID:
-			case OutputPackage.COUNTING_RESULT__METHOD_INVOCATION_BEGINNING:
+			case OutputPackage.COUNTING_RESULT__METHOD_INVOCATION_START_TIME:
 			case OutputPackage.COUNTING_RESULT__REPORTING_TIME:
 			case OutputPackage.COUNTING_RESULT__OBSERVED_ELEMENT:
 			case OutputPackage.COUNTING_RESULT__OPCODE_COUNTS:

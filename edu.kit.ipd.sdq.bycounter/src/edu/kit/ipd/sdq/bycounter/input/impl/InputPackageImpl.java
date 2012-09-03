@@ -407,15 +407,6 @@ public class InputPackageImpl extends EPackageImpl implements InputPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EReference getInstrumentedRegion_StartMethod() {
-		return (EReference)instrumentedRegionEClass.getEStructuralFeatures().get(2);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
 	public EAttribute getInstrumentedRegion_StartLine() {
 		return (EAttribute)instrumentedRegionEClass.getEStructuralFeatures().get(0);
 	}
@@ -425,8 +416,8 @@ public class InputPackageImpl extends EPackageImpl implements InputPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EReference getInstrumentedRegion_StopMethod() {
-		return (EReference)instrumentedRegionEClass.getEStructuralFeatures().get(3);
+	public EAttribute getInstrumentedRegion_StopLine() {
+		return (EAttribute)instrumentedRegionEClass.getEStructuralFeatures().get(1);
 	}
 
 	/**
@@ -434,8 +425,17 @@ public class InputPackageImpl extends EPackageImpl implements InputPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getInstrumentedRegion_StopLine() {
-		return (EAttribute)instrumentedRegionEClass.getEStructuralFeatures().get(1);
+	public EReference getInstrumentedRegion_StartMethod() {
+		return (EReference)instrumentedRegionEClass.getEStructuralFeatures().get(2);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EReference getInstrumentedRegion_StopMethod() {
+		return (EReference)instrumentedRegionEClass.getEStructuralFeatures().get(3);
 	}
 
 	/**

@@ -7,10 +7,6 @@
 package edu.kit.ipd.sdq.bycounter.input.provider;
 
 
-import de.uka.ipd.sdq.identifier.provider.IdentifierItemProvider;
-
-import edu.kit.ipd.sdq.bycounter.input.EntityToInstrument;
-
 import edu.kit.ipd.sdq.bycounter.output.provider.ByCounterEditPlugin;
 
 import java.util.Collection;

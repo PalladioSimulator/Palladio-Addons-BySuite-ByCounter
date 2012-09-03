@@ -10,9 +10,6 @@ import de.fzi.gast.functions.Method;
 
 import de.uka.ipd.sdq.identifier.Identifier;
 
-import java.util.Map;
-
-import org.eclipse.emf.common.util.DiagnosticChain;
 import org.eclipse.emf.common.util.EList;
 
 /**

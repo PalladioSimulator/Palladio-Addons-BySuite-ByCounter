@@ -639,27 +639,6 @@ public interface InputPackage extends EPackage {
 	EReference getInstrumentationProfileRepository_InstrumentationProfile();
 
 	/**
-	 * Returns the meta object for class '{@link edu.kit.ipd.sdq.bycounter.input.EntityToInstrument <em>Entity To Instrument</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for class '<em>Entity To Instrument</em>'.
-	 * @see edu.kit.ipd.sdq.bycounter.input.EntityToInstrument
-	 * @generated
-	 */
-	EClass getEntityToInstrument();
-
-	/**
-	 * Returns the meta object for the container reference '{@link edu.kit.ipd.sdq.bycounter.input.EntityToInstrument#getInstrumentationProfile <em>Instrumentation Profile</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the container reference '<em>Instrumentation Profile</em>'.
-	 * @see edu.kit.ipd.sdq.bycounter.input.EntityToInstrument#getInstrumentationProfile()
-	 * @see #getEntityToInstrument()
-	 * @generated
-	 */
-	EReference getEntityToInstrument_InstrumentationProfile();
-
-	/**
 	 * Returns the meta object for class '{@link edu.kit.ipd.sdq.bycounter.input.InstrumentedCodeArea <em>Instrumented Code Area</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -798,6 +777,27 @@ public interface InputPackage extends EPackage {
 	 * @generated
 	 */
 	EReference getInstrumentedRegion_StopMethod();
+
+	/**
+	 * Returns the meta object for class '{@link edu.kit.ipd.sdq.bycounter.input.EntityToInstrument <em>Entity To Instrument</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for class '<em>Entity To Instrument</em>'.
+	 * @see edu.kit.ipd.sdq.bycounter.input.EntityToInstrument
+	 * @generated
+	 */
+	EClass getEntityToInstrument();
+
+	/**
+	 * Returns the meta object for the container reference '{@link edu.kit.ipd.sdq.bycounter.input.EntityToInstrument#getInstrumentationProfile <em>Instrumentation Profile</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the container reference '<em>Instrumentation Profile</em>'.
+	 * @see edu.kit.ipd.sdq.bycounter.input.EntityToInstrument#getInstrumentationProfile()
+	 * @see #getEntityToInstrument()
+	 * @generated
+	 */
+	EReference getEntityToInstrument_InstrumentationProfile();
 
 	/**
 	 * Returns the factory that creates the instances of the model.
@@ -956,24 +956,6 @@ public interface InputPackage extends EPackage {
 		EReference INSTRUMENTATION_PROFILE_REPOSITORY__INSTRUMENTATION_PROFILE = eINSTANCE.getInstrumentationProfileRepository_InstrumentationProfile();
 
 		/**
-		 * The meta object literal for the '{@link edu.kit.ipd.sdq.bycounter.input.impl.EntityToInstrumentImpl <em>Entity To Instrument</em>}' class.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @see edu.kit.ipd.sdq.bycounter.input.impl.EntityToInstrumentImpl
-		 * @see edu.kit.ipd.sdq.bycounter.input.impl.InputPackageImpl#getEntityToInstrument()
-		 * @generated
-		 */
-		EClass ENTITY_TO_INSTRUMENT = eINSTANCE.getEntityToInstrument();
-
-		/**
-		 * The meta object literal for the '<em><b>Instrumentation Profile</b></em>' container reference feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EReference ENTITY_TO_INSTRUMENT__INSTRUMENTATION_PROFILE = eINSTANCE.getEntityToInstrument_InstrumentationProfile();
-
-		/**
 		 * The meta object literal for the '{@link edu.kit.ipd.sdq.bycounter.input.impl.InstrumentedCodeAreaImpl <em>Instrumented Code Area</em>}' class.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
@@ -1082,6 +1064,24 @@ public interface InputPackage extends EPackage {
 		 * @generated
 		 */
 		EReference INSTRUMENTED_REGION__STOP_METHOD = eINSTANCE.getInstrumentedRegion_StopMethod();
+
+		/**
+		 * The meta object literal for the '{@link edu.kit.ipd.sdq.bycounter.input.impl.EntityToInstrumentImpl <em>Entity To Instrument</em>}' class.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @see edu.kit.ipd.sdq.bycounter.input.impl.EntityToInstrumentImpl
+		 * @see edu.kit.ipd.sdq.bycounter.input.impl.InputPackageImpl#getEntityToInstrument()
+		 * @generated
+		 */
+		EClass ENTITY_TO_INSTRUMENT = eINSTANCE.getEntityToInstrument();
+
+		/**
+		 * The meta object literal for the '<em><b>Instrumentation Profile</b></em>' container reference feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference ENTITY_TO_INSTRUMENT__INSTRUMENTATION_PROFILE = eINSTANCE.getEntityToInstrument_InstrumentationProfile();
 
 	}
 

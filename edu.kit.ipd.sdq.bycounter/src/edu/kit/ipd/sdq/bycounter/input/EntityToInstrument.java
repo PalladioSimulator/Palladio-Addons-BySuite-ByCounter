@@ -25,7 +25,6 @@ import org.eclipse.emf.ecore.EObject;
  * @generated
  */
 public interface EntityToInstrument extends EObject {
-
 	/**
 	 * Returns the value of the '<em><b>Instrumentation Profile</b></em>' container reference.
 	 * It is bidirectional and its opposite is '{@link edu.kit.ipd.sdq.bycounter.input.InstrumentationProfile#getEntitiesToInstrument <em>Entities To Instrument</em>}'.
@@ -53,4 +52,5 @@ public interface EntityToInstrument extends EObject {
 	 * @generated
 	 */
 	void setInstrumentationProfile(InstrumentationProfile value);
+
 } // EntityToInstrument
