@@ -3,6 +3,8 @@
  */
 package de.fzi.se.bycounter.modelbridge.tests;
 
+import java.io.File;
+
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.ecore.util.EContentAdapter;
 import org.junit.Assert;
@@ -43,7 +45,7 @@ public class CallsTest {
 	/** Path in the file system to the file containing the Measurement run (as output). */
 	private static final String FILEPATH_OUTPUT_MODEL = "models/Validation/ExternalCallTest_MeasurementRun.output";
 	/** Path in the file system to the file containing the instrumentation profile (input). */
-	private static final String FILEPATH_INPUT_INSTRUMENTATION_PROFILE = "models/ByCounter/ExternalCallTest.input";
+	private static final String FILEPATH_INPUT_INSTRUMENTATION_PROFILE = "models/ByCounter/CallsTest.input";
 	
 
 	/**Initialization of the test environment.
@@ -146,15 +148,16 @@ public class CallsTest {
 		});
 	}
 	
-	/**Test class and logical-set external calls.
-	 * Shows if external call is measured correctly.
+	/**Test class and logical-set internal calls.
+	 * Shows if internal call is measured correctly.
 	 */
 	@Test
-	public void testClassAndLogicalSetExternalCalls() {
+	public void testClassAndLogicalSetInternalCalls() {
 		/* TODO @Martin: Execute and verify class-external method classExternalCall().
 		 * InstrumentrationProfile: LogicalSet does not contain External(.class).
 		 */
 		Assert.fail();
+		Assert.assertTrue("Instrumentation profile repository file not found.", new File(FILEPATH_INPUT_INSTRUMENTATION_PROFILE).exists());
 		// Instrument
 		InstrumentationProfileRepository profileRepo = (InstrumentationProfileRepository) ModelHandlingUtil
 				.loadFromFile(ModelHandlingUtil.getResourceSet(), FILEPATH_INPUT_INSTRUMENTATION_PROFILE);
@@ -165,9 +168,41 @@ public class CallsTest {
 		byCounterWrapper.setInstrumentationConfiguration(profileRepo.getInstrumentationProfile().get(0));
 		
 		// Execution
-		Method targetMethod = getFibonacciMethod();
+		Method targetMethod = findMethodInCalls("methodInternalCall");
 		Object instance = byCounterWrapper.instantiate(targetMethod);
-		byCounterWrapper.execute(targetMethod, instance, new Object[] {100});
+		byCounterWrapper.execute(targetMethod, instance, new Object[] {});
+
+		// Store results
+		ResultCollection result = byCounterWrapper.generateResult();
+		ModelHandlingUtil.saveToFile(ModelHandlingUtil.getResourceSet(),
+				FILEPATH_OUTPUT_MODEL,
+				result);
+
+	}
+	
+	/**Test class and logical-set external calls.
+	 * Shows if external call is measured correctly.
+	 */
+	@Test
+	public void testClassAndLogicalSetExternalCalls() {
+		/* TODO @Martin: Execute and verify class-external method classExternalCall().
+		 * InstrumentrationProfile: LogicalSet does not contain External(.class).
+		 */
+		Assert.fail();
+		Assert.assertTrue("Instrumentation profile repository file not found.", new File(FILEPATH_INPUT_INSTRUMENTATION_PROFILE).exists());
+		// Instrument
+		InstrumentationProfileRepository profileRepo = (InstrumentationProfileRepository) ModelHandlingUtil
+				.loadFromFile(ModelHandlingUtil.getResourceSet(), FILEPATH_INPUT_INSTRUMENTATION_PROFILE);
+		ByCounterWrapper byCounterWrapper = new ByCounterWrapper();
+		if (profileRepo.getInstrumentationProfile().size() != 1) {
+			throw new IllegalStateException("File contains more than one instrumentation profile. This is not expected by the test case.");
+		}
+		byCounterWrapper.setInstrumentationConfiguration(profileRepo.getInstrumentationProfile().get(0));
+		
+		// Execution
+		Method targetMethod = getMethodExternalCall();
+		Object instance = byCounterWrapper.instantiate(targetMethod);
+		byCounterWrapper.execute(targetMethod, instance, new Object[] {});
 
 		// Store results
 		ResultCollection result = byCounterWrapper.generateResult();
@@ -181,6 +216,22 @@ public class CallsTest {
 	 * @return The fibonacci method in the gast.
 	 */
 	private Method getFibonacciMethod() {
+		return findMethodInCalls("fibonacci");
+	}
+
+	/**Gets the first method with the name methodExternalCall from <code>FILEPATH_GAST_MODEL</code>.
+	 * @return The methodExternalCall method in the gast.
+	 */
+	private Method getMethodExternalCall() {
+		return findMethodInCalls("methodExternalCall");
+	}
+
+	/**
+	 * Find the specified method in the {@link Calls} class GAST.
+	 * @param simpleMethodName Simple method name.
+	 * @return {@link Method} when found. Null otherwise.
+	 */
+	private Method findMethodInCalls(final String simpleMethodName) {
 		Root gastRepo = (Root) ModelHandlingUtil.loadFromFile(ModelHandlingUtil.getResourceSet(), FILEPATH_GAST_MODEL);
 		
 		final String fqpn = Calls.class.getPackage().getName();
@@ -191,7 +242,7 @@ public class CallsTest {
 				// find Class
 				if (clazz.getQualifiedName().equals(Calls.class.getCanonicalName())) {
 					for(Method meth : clazz.getMethods()) {
-						if(meth.getSimpleName().equals("fibonacci")) {
+						if(meth.getSimpleName().equals(simpleMethodName)) {
 							return meth;
 						}
 					}
