@@ -50,7 +50,9 @@ public enum ArrayType implements Enumerator {
 	 * @generated
 	 * @ordered
 	 */
-	BYTE(2, "BYTE", "BYTE"), /**
+	BYTE(2, "BYTE", "BYTE"),
+
+	/**
 	 * The '<em><b>CHAR</b></em>' literal object.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->

@@ -7,6 +7,7 @@
 package edu.kit.ipd.sdq.bycounter.output;
 
 import de.fzi.gast.functions.Function;
+
 import org.eclipse.emf.ecore.EObject;
 
 /**

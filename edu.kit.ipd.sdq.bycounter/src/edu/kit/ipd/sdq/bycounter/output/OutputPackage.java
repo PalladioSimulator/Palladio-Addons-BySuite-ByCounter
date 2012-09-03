@@ -85,13 +85,22 @@ public interface OutputPackage extends EPackage {
 	int OUTPUT_MODEL_REPOSITORY__ID = IdentifierPackage.IDENTIFIER__ID;
 
 	/**
+	 * The feature id for the '<em><b>Result Collection</b></em>' containment reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int OUTPUT_MODEL_REPOSITORY__RESULT_COLLECTION = IdentifierPackage.IDENTIFIER_FEATURE_COUNT + 0;
+
+	/**
 	 * The number of structural features of the '<em>Model Repository</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int OUTPUT_MODEL_REPOSITORY_FEATURE_COUNT = IdentifierPackage.IDENTIFIER_FEATURE_COUNT + 0;
+	int OUTPUT_MODEL_REPOSITORY_FEATURE_COUNT = IdentifierPackage.IDENTIFIER_FEATURE_COUNT + 1;
 
 	/**
 	 * The meta object id for the '{@link edu.kit.ipd.sdq.bycounter.output.impl.ResultCollectionImpl <em>Result Collection</em>}' class.
@@ -215,7 +224,7 @@ public interface OutputPackage extends EPackage {
 	int COUNTING_RESULT = 4;
 
 	/**
-	 * The feature id for the '<em><b>Caller Id</b></em>' reference.
+	 * The feature id for the '<em><b>Caller Id</b></em>' containment reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -224,13 +233,13 @@ public interface OutputPackage extends EPackage {
 	int COUNTING_RESULT__CALLER_ID = 0;
 
 	/**
-	 * The feature id for the '<em><b>Method Invocation Beginning</b></em>' attribute.
+	 * The feature id for the '<em><b>Method Invocation Start Time</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int COUNTING_RESULT__METHOD_INVOCATION_BEGINNING = 1;
+	int COUNTING_RESULT__METHOD_INVOCATION_START_TIME = 1;
 
 	/**
 	 * The feature id for the '<em><b>Reporting Time</b></em>' attribute.
@@ -260,7 +269,7 @@ public interface OutputPackage extends EPackage {
 	int COUNTING_RESULT__OPCODE_COUNTS = 4;
 
 	/**
-	 * The feature id for the '<em><b>Method Id</b></em>' reference.
+	 * The feature id for the '<em><b>Method Id</b></em>' containment reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -489,7 +498,7 @@ public interface OutputPackage extends EPackage {
 	int THREADED_COUNTING_RESULT = 8;
 
 	/**
-	 * The feature id for the '<em><b>Caller Id</b></em>' reference.
+	 * The feature id for the '<em><b>Caller Id</b></em>' containment reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -498,13 +507,13 @@ public interface OutputPackage extends EPackage {
 	int THREADED_COUNTING_RESULT__CALLER_ID = COUNTING_RESULT__CALLER_ID;
 
 	/**
-	 * The feature id for the '<em><b>Method Invocation Beginning</b></em>' attribute.
+	 * The feature id for the '<em><b>Method Invocation Start Time</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int THREADED_COUNTING_RESULT__METHOD_INVOCATION_BEGINNING = COUNTING_RESULT__METHOD_INVOCATION_BEGINNING;
+	int THREADED_COUNTING_RESULT__METHOD_INVOCATION_START_TIME = COUNTING_RESULT__METHOD_INVOCATION_START_TIME;
 
 	/**
 	 * The feature id for the '<em><b>Reporting Time</b></em>' attribute.
@@ -534,7 +543,7 @@ public interface OutputPackage extends EPackage {
 	int THREADED_COUNTING_RESULT__OPCODE_COUNTS = COUNTING_RESULT__OPCODE_COUNTS;
 
 	/**
-	 * The feature id for the '<em><b>Method Id</b></em>' reference.
+	 * The feature id for the '<em><b>Method Id</b></em>' containment reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -623,7 +632,6 @@ public interface OutputPackage extends EPackage {
 	 */
 	int THREADED_COUNTING_RESULT_FEATURE_COUNT = COUNTING_RESULT_FEATURE_COUNT + 3;
 
-
 	/**
 	 * The meta object id for the '{@link edu.kit.ipd.sdq.bycounter.output.ArrayType <em>Array Type</em>}' enum.
 	 * <!-- begin-user-doc -->
@@ -644,6 +652,17 @@ public interface OutputPackage extends EPackage {
 	 * @generated
 	 */
 	EClass getOutputModelRepository();
+
+	/**
+	 * Returns the meta object for the containment reference list '{@link edu.kit.ipd.sdq.bycounter.output.OutputModelRepository#getResultCollection <em>Result Collection</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the containment reference list '<em>Result Collection</em>'.
+	 * @see edu.kit.ipd.sdq.bycounter.output.OutputModelRepository#getResultCollection()
+	 * @see #getOutputModelRepository()
+	 * @generated
+	 */
+	EReference getOutputModelRepository_ResultCollection();
 
 	/**
 	 * Returns the meta object for class '{@link edu.kit.ipd.sdq.bycounter.output.ResultCollection <em>Result Collection</em>}'.
@@ -688,6 +707,28 @@ public interface OutputPackage extends EPackage {
 	EClass getRequestResult();
 
 	/**
+	 * Returns the meta object for the reference '{@link edu.kit.ipd.sdq.bycounter.output.RequestResult#getRequestId <em>Request Id</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the reference '<em>Request Id</em>'.
+	 * @see edu.kit.ipd.sdq.bycounter.output.RequestResult#getRequestId()
+	 * @see #getRequestResult()
+	 * @generated
+	 */
+	EReference getRequestResult_RequestId();
+
+	/**
+	 * Returns the meta object for the containment reference list '{@link edu.kit.ipd.sdq.bycounter.output.RequestResult#getCountingResults <em>Counting Results</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the containment reference list '<em>Counting Results</em>'.
+	 * @see edu.kit.ipd.sdq.bycounter.output.RequestResult#getCountingResults()
+	 * @see #getRequestResult()
+	 * @generated
+	 */
+	EReference getRequestResult_CountingResults();
+
+	/**
 	 * Returns the meta object for the container reference '{@link edu.kit.ipd.sdq.bycounter.output.RequestResult#getResultCollection <em>Result Collection</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -720,28 +761,6 @@ public interface OutputPackage extends EPackage {
 	EAttribute getUUID_StringRepresentation();
 
 	/**
-	 * Returns the meta object for the reference '{@link edu.kit.ipd.sdq.bycounter.output.RequestResult#getRequestId <em>Request Id</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the reference '<em>Request Id</em>'.
-	 * @see edu.kit.ipd.sdq.bycounter.output.RequestResult#getRequestId()
-	 * @see #getRequestResult()
-	 * @generated
-	 */
-	EReference getRequestResult_RequestId();
-
-	/**
-	 * Returns the meta object for the containment reference list '{@link edu.kit.ipd.sdq.bycounter.output.RequestResult#getCountingResults <em>Counting Results</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the containment reference list '<em>Counting Results</em>'.
-	 * @see edu.kit.ipd.sdq.bycounter.output.RequestResult#getCountingResults()
-	 * @see #getRequestResult()
-	 * @generated
-	 */
-	EReference getRequestResult_CountingResults();
-
-	/**
 	 * Returns the meta object for class '{@link edu.kit.ipd.sdq.bycounter.output.CountingResult <em>Counting Result</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -750,6 +769,94 @@ public interface OutputPackage extends EPackage {
 	 * @generated
 	 */
 	EClass getCountingResult();
+
+	/**
+	 * Returns the meta object for the containment reference '{@link edu.kit.ipd.sdq.bycounter.output.CountingResult#getCallerId <em>Caller Id</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the containment reference '<em>Caller Id</em>'.
+	 * @see edu.kit.ipd.sdq.bycounter.output.CountingResult#getCallerId()
+	 * @see #getCountingResult()
+	 * @generated
+	 */
+	EReference getCountingResult_CallerId();
+
+	/**
+	 * Returns the meta object for the attribute '{@link edu.kit.ipd.sdq.bycounter.output.CountingResult#getMethodInvocationStartTime <em>Method Invocation Start Time</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Method Invocation Start Time</em>'.
+	 * @see edu.kit.ipd.sdq.bycounter.output.CountingResult#getMethodInvocationStartTime()
+	 * @see #getCountingResult()
+	 * @generated
+	 */
+	EAttribute getCountingResult_MethodInvocationStartTime();
+
+	/**
+	 * Returns the meta object for the attribute '{@link edu.kit.ipd.sdq.bycounter.output.CountingResult#getReportingTime <em>Reporting Time</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Reporting Time</em>'.
+	 * @see edu.kit.ipd.sdq.bycounter.output.CountingResult#getReportingTime()
+	 * @see #getCountingResult()
+	 * @generated
+	 */
+	EAttribute getCountingResult_ReportingTime();
+
+	/**
+	 * Returns the meta object for the reference '{@link edu.kit.ipd.sdq.bycounter.output.CountingResult#getObservedElement <em>Observed Element</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the reference '<em>Observed Element</em>'.
+	 * @see edu.kit.ipd.sdq.bycounter.output.CountingResult#getObservedElement()
+	 * @see #getCountingResult()
+	 * @generated
+	 */
+	EReference getCountingResult_ObservedElement();
+
+	/**
+	 * Returns the meta object for the attribute list '{@link edu.kit.ipd.sdq.bycounter.output.CountingResult#getOpcodeCounts <em>Opcode Counts</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute list '<em>Opcode Counts</em>'.
+	 * @see edu.kit.ipd.sdq.bycounter.output.CountingResult#getOpcodeCounts()
+	 * @see #getCountingResult()
+	 * @generated
+	 */
+	EAttribute getCountingResult_OpcodeCounts();
+
+	/**
+	 * Returns the meta object for the containment reference '{@link edu.kit.ipd.sdq.bycounter.output.CountingResult#getMethodId <em>Method Id</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the containment reference '<em>Method Id</em>'.
+	 * @see edu.kit.ipd.sdq.bycounter.output.CountingResult#getMethodId()
+	 * @see #getCountingResult()
+	 * @generated
+	 */
+	EReference getCountingResult_MethodId();
+
+	/**
+	 * Returns the meta object for the attribute '{@link edu.kit.ipd.sdq.bycounter.output.CountingResult#getQualifiedMethodName <em>Qualified Method Name</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Qualified Method Name</em>'.
+	 * @see edu.kit.ipd.sdq.bycounter.output.CountingResult#getQualifiedMethodName()
+	 * @see #getCountingResult()
+	 * @generated
+	 */
+	EAttribute getCountingResult_QualifiedMethodName();
+
+	/**
+	 * Returns the meta object for the container reference '{@link edu.kit.ipd.sdq.bycounter.output.CountingResult#getResultCollection <em>Result Collection</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the container reference '<em>Result Collection</em>'.
+	 * @see edu.kit.ipd.sdq.bycounter.output.CountingResult#getResultCollection()
+	 * @see #getCountingResult()
+	 * @generated
+	 */
+	EReference getCountingResult_ResultCollection();
 
 	/**
 	 * Returns the meta object for the containment reference list '{@link edu.kit.ipd.sdq.bycounter.output.CountingResult#getArrayCreationCounts <em>Array Creation Counts</em>}'.
@@ -761,17 +868,6 @@ public interface OutputPackage extends EPackage {
 	 * @generated
 	 */
 	EReference getCountingResult_ArrayCreationCounts();
-
-	/**
-	 * Returns the meta object for the reference '{@link edu.kit.ipd.sdq.bycounter.output.CountingResult#getCallerId <em>Caller Id</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the reference '<em>Caller Id</em>'.
-	 * @see edu.kit.ipd.sdq.bycounter.output.CountingResult#getCallerId()
-	 * @see #getCountingResult()
-	 * @generated
-	 */
-	EReference getCountingResult_CallerId();
 
 	/**
 	 * Returns the meta object for the containment reference list '{@link edu.kit.ipd.sdq.bycounter.output.CountingResult#getMethodCallCounts <em>Method Call Counts</em>}'.
@@ -947,83 +1043,6 @@ public interface OutputPackage extends EPackage {
 	EReference getMethodCallCount_CountingResult();
 
 	/**
-	 * Returns the meta object for the attribute '{@link edu.kit.ipd.sdq.bycounter.output.CountingResult#getMethodInvocationBeginning <em>Method Invocation Beginning</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Method Invocation Beginning</em>'.
-	 * @see edu.kit.ipd.sdq.bycounter.output.CountingResult#getMethodInvocationBeginning()
-	 * @see #getCountingResult()
-	 * @generated
-	 */
-	EAttribute getCountingResult_MethodInvocationBeginning();
-
-	/**
-	 * Returns the meta object for the attribute '{@link edu.kit.ipd.sdq.bycounter.output.CountingResult#getReportingTime <em>Reporting Time</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Reporting Time</em>'.
-	 * @see edu.kit.ipd.sdq.bycounter.output.CountingResult#getReportingTime()
-	 * @see #getCountingResult()
-	 * @generated
-	 */
-	EAttribute getCountingResult_ReportingTime();
-
-	/**
-	 * Returns the meta object for the reference '{@link edu.kit.ipd.sdq.bycounter.output.CountingResult#getObservedElement <em>Observed Element</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the reference '<em>Observed Element</em>'.
-	 * @see edu.kit.ipd.sdq.bycounter.output.CountingResult#getObservedElement()
-	 * @see #getCountingResult()
-	 * @generated
-	 */
-	EReference getCountingResult_ObservedElement();
-
-	/**
-	 * Returns the meta object for the attribute list '{@link edu.kit.ipd.sdq.bycounter.output.CountingResult#getOpcodeCounts <em>Opcode Counts</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute list '<em>Opcode Counts</em>'.
-	 * @see edu.kit.ipd.sdq.bycounter.output.CountingResult#getOpcodeCounts()
-	 * @see #getCountingResult()
-	 * @generated
-	 */
-	EAttribute getCountingResult_OpcodeCounts();
-
-	/**
-	 * Returns the meta object for the reference '{@link edu.kit.ipd.sdq.bycounter.output.CountingResult#getMethodId <em>Method Id</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the reference '<em>Method Id</em>'.
-	 * @see edu.kit.ipd.sdq.bycounter.output.CountingResult#getMethodId()
-	 * @see #getCountingResult()
-	 * @generated
-	 */
-	EReference getCountingResult_MethodId();
-
-	/**
-	 * Returns the meta object for the attribute '{@link edu.kit.ipd.sdq.bycounter.output.CountingResult#getQualifiedMethodName <em>Qualified Method Name</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Qualified Method Name</em>'.
-	 * @see edu.kit.ipd.sdq.bycounter.output.CountingResult#getQualifiedMethodName()
-	 * @see #getCountingResult()
-	 * @generated
-	 */
-	EAttribute getCountingResult_QualifiedMethodName();
-
-	/**
-	 * Returns the meta object for the container reference '{@link edu.kit.ipd.sdq.bycounter.output.CountingResult#getResultCollection <em>Result Collection</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the container reference '<em>Result Collection</em>'.
-	 * @see edu.kit.ipd.sdq.bycounter.output.CountingResult#getResultCollection()
-	 * @see #getCountingResult()
-	 * @generated
-	 */
-	EReference getCountingResult_ResultCollection();
-
-	/**
 	 * Returns the meta object for class '{@link edu.kit.ipd.sdq.bycounter.output.ThreadedCountingResult <em>Threaded Counting Result</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -1109,6 +1128,14 @@ public interface OutputPackage extends EPackage {
 		EClass OUTPUT_MODEL_REPOSITORY = eINSTANCE.getOutputModelRepository();
 
 		/**
+		 * The meta object literal for the '<em><b>Result Collection</b></em>' containment reference list feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference OUTPUT_MODEL_REPOSITORY__RESULT_COLLECTION = eINSTANCE.getOutputModelRepository_ResultCollection();
+
+		/**
 		 * The meta object literal for the '{@link edu.kit.ipd.sdq.bycounter.output.impl.ResultCollectionImpl <em>Result Collection</em>}' class.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
@@ -1145,6 +1172,22 @@ public interface OutputPackage extends EPackage {
 		EClass REQUEST_RESULT = eINSTANCE.getRequestResult();
 
 		/**
+		 * The meta object literal for the '<em><b>Request Id</b></em>' reference feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference REQUEST_RESULT__REQUEST_ID = eINSTANCE.getRequestResult_RequestId();
+
+		/**
+		 * The meta object literal for the '<em><b>Counting Results</b></em>' containment reference list feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference REQUEST_RESULT__COUNTING_RESULTS = eINSTANCE.getRequestResult_CountingResults();
+
+		/**
 		 * The meta object literal for the '<em><b>Result Collection</b></em>' container reference feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
@@ -1171,22 +1214,6 @@ public interface OutputPackage extends EPackage {
 		EAttribute UUID__STRING_REPRESENTATION = eINSTANCE.getUUID_StringRepresentation();
 
 		/**
-		 * The meta object literal for the '<em><b>Request Id</b></em>' reference feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EReference REQUEST_RESULT__REQUEST_ID = eINSTANCE.getRequestResult_RequestId();
-
-		/**
-		 * The meta object literal for the '<em><b>Counting Results</b></em>' containment reference list feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EReference REQUEST_RESULT__COUNTING_RESULTS = eINSTANCE.getRequestResult_CountingResults();
-
-		/**
 		 * The meta object literal for the '{@link edu.kit.ipd.sdq.bycounter.output.impl.CountingResultImpl <em>Counting Result</em>}' class.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
@@ -1197,20 +1224,76 @@ public interface OutputPackage extends EPackage {
 		EClass COUNTING_RESULT = eINSTANCE.getCountingResult();
 
 		/**
+		 * The meta object literal for the '<em><b>Caller Id</b></em>' containment reference feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference COUNTING_RESULT__CALLER_ID = eINSTANCE.getCountingResult_CallerId();
+
+		/**
+		 * The meta object literal for the '<em><b>Method Invocation Start Time</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute COUNTING_RESULT__METHOD_INVOCATION_START_TIME = eINSTANCE.getCountingResult_MethodInvocationStartTime();
+
+		/**
+		 * The meta object literal for the '<em><b>Reporting Time</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute COUNTING_RESULT__REPORTING_TIME = eINSTANCE.getCountingResult_ReportingTime();
+
+		/**
+		 * The meta object literal for the '<em><b>Observed Element</b></em>' reference feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference COUNTING_RESULT__OBSERVED_ELEMENT = eINSTANCE.getCountingResult_ObservedElement();
+
+		/**
+		 * The meta object literal for the '<em><b>Opcode Counts</b></em>' attribute list feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute COUNTING_RESULT__OPCODE_COUNTS = eINSTANCE.getCountingResult_OpcodeCounts();
+
+		/**
+		 * The meta object literal for the '<em><b>Method Id</b></em>' containment reference feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference COUNTING_RESULT__METHOD_ID = eINSTANCE.getCountingResult_MethodId();
+
+		/**
+		 * The meta object literal for the '<em><b>Qualified Method Name</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute COUNTING_RESULT__QUALIFIED_METHOD_NAME = eINSTANCE.getCountingResult_QualifiedMethodName();
+
+		/**
+		 * The meta object literal for the '<em><b>Result Collection</b></em>' container reference feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference COUNTING_RESULT__RESULT_COLLECTION = eINSTANCE.getCountingResult_ResultCollection();
+
+		/**
 		 * The meta object literal for the '<em><b>Array Creation Counts</b></em>' containment reference list feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
 		EReference COUNTING_RESULT__ARRAY_CREATION_COUNTS = eINSTANCE.getCountingResult_ArrayCreationCounts();
-
-		/**
-		 * The meta object literal for the '<em><b>Caller Id</b></em>' reference feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EReference COUNTING_RESULT__CALLER_ID = eINSTANCE.getCountingResult_CallerId();
 
 		/**
 		 * The meta object literal for the '<em><b>Method Call Counts</b></em>' containment reference list feature.
@@ -1345,62 +1428,6 @@ public interface OutputPackage extends EPackage {
 		 * @generated
 		 */
 		EReference METHOD_CALL_COUNT__COUNTING_RESULT = eINSTANCE.getMethodCallCount_CountingResult();
-
-		/**
-		 * The meta object literal for the '<em><b>Method Invocation Beginning</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute COUNTING_RESULT__METHOD_INVOCATION_BEGINNING = eINSTANCE.getCountingResult_MethodInvocationBeginning();
-
-		/**
-		 * The meta object literal for the '<em><b>Reporting Time</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute COUNTING_RESULT__REPORTING_TIME = eINSTANCE.getCountingResult_ReportingTime();
-
-		/**
-		 * The meta object literal for the '<em><b>Observed Element</b></em>' reference feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EReference COUNTING_RESULT__OBSERVED_ELEMENT = eINSTANCE.getCountingResult_ObservedElement();
-
-		/**
-		 * The meta object literal for the '<em><b>Opcode Counts</b></em>' attribute list feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute COUNTING_RESULT__OPCODE_COUNTS = eINSTANCE.getCountingResult_OpcodeCounts();
-
-		/**
-		 * The meta object literal for the '<em><b>Method Id</b></em>' reference feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EReference COUNTING_RESULT__METHOD_ID = eINSTANCE.getCountingResult_MethodId();
-
-		/**
-		 * The meta object literal for the '<em><b>Qualified Method Name</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute COUNTING_RESULT__QUALIFIED_METHOD_NAME = eINSTANCE.getCountingResult_QualifiedMethodName();
-
-		/**
-		 * The meta object literal for the '<em><b>Result Collection</b></em>' container reference feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EReference COUNTING_RESULT__RESULT_COLLECTION = eINSTANCE.getCountingResult_ResultCollection();
 
 		/**
 		 * The meta object literal for the '{@link edu.kit.ipd.sdq.bycounter.output.impl.ThreadedCountingResultImpl <em>Threaded Counting Result</em>}' class.

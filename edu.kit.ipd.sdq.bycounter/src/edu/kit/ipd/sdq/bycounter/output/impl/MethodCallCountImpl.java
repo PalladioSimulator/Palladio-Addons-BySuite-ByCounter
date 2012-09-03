@@ -7,18 +7,20 @@
 package edu.kit.ipd.sdq.bycounter.output.impl;
 
 import de.fzi.gast.functions.Function;
+
 import edu.kit.ipd.sdq.bycounter.output.CountingResult;
 import edu.kit.ipd.sdq.bycounter.output.MethodCallCount;
 import edu.kit.ipd.sdq.bycounter.output.OutputPackage;
 
 import org.eclipse.emf.common.notify.Notification;
-
 import org.eclipse.emf.common.notify.NotificationChain;
-import org.eclipse.emf.ecore.EClass;
 
+import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
+
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.EObjectImpl;
+
 import org.eclipse.emf.ecore.util.EcoreUtil;
 
 /**

@@ -12,13 +12,14 @@ import edu.kit.ipd.sdq.bycounter.output.ArrayType;
 import edu.kit.ipd.sdq.bycounter.output.OutputPackage;
 
 import org.eclipse.emf.common.notify.Notification;
-
 import org.eclipse.emf.common.notify.NotificationChain;
-import org.eclipse.emf.ecore.EClass;
 
+import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
+
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.EObjectImpl;
+
 import org.eclipse.emf.ecore.util.EcoreUtil;
 
 /**
@@ -66,7 +67,7 @@ public class ArrayCreationImpl extends EObjectImpl implements ArrayCreation {
 	 * @generated
 	 * @ordered
 	 */
-	protected static final int NUMBER_OF_DIMENSIONS_EDEFAULT = 0; // TODO The default value literal "1" is not valid.
+	protected static final int NUMBER_OF_DIMENSIONS_EDEFAULT = 0;
 
 	/**
 	 * The cached value of the '{@link #getNumberOfDimensions() <em>Number Of Dimensions</em>}' attribute.

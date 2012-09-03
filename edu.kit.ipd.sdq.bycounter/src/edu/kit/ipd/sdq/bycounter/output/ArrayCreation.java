@@ -56,6 +56,10 @@ public interface ArrayCreation extends EObject {
 	/**
 	 * Returns the value of the '<em><b>Number Of Dimensions</b></em>' attribute.
 	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Number Of Dimensions</em>' attribute isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Number Of Dimensions</em>' attribute.
 	 * @see #setNumberOfDimensions(int)

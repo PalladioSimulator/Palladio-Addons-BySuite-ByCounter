@@ -215,6 +215,15 @@ public class OutputPackageImpl extends EPackageImpl implements OutputPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public EReference getOutputModelRepository_ResultCollection() {
+		return (EReference)outputModelRepositoryEClass.getEStructuralFeatures().get(0);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	public EClass getResultCollection() {
 		return resultCollectionEClass;
 	}
@@ -251,6 +260,24 @@ public class OutputPackageImpl extends EPackageImpl implements OutputPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public EReference getRequestResult_RequestId() {
+		return (EReference)requestResultEClass.getEStructuralFeatures().get(0);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EReference getRequestResult_CountingResults() {
+		return (EReference)requestResultEClass.getEStructuralFeatures().get(1);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	public EReference getRequestResult_ResultCollection() {
 		return (EReference)requestResultEClass.getEStructuralFeatures().get(2);
 	}
@@ -278,24 +305,6 @@ public class OutputPackageImpl extends EPackageImpl implements OutputPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EReference getRequestResult_RequestId() {
-		return (EReference)requestResultEClass.getEStructuralFeatures().get(0);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public EReference getRequestResult_CountingResults() {
-		return (EReference)requestResultEClass.getEStructuralFeatures().get(1);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
 	public EClass getCountingResult() {
 		return countingResultEClass;
 	}
@@ -305,8 +314,8 @@ public class OutputPackageImpl extends EPackageImpl implements OutputPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EReference getCountingResult_ArrayCreationCounts() {
-		return (EReference)countingResultEClass.getEStructuralFeatures().get(8);
+	public EReference getCountingResult_CallerId() {
+		return (EReference)countingResultEClass.getEStructuralFeatures().get(0);
 	}
 
 	/**
@@ -314,8 +323,71 @@ public class OutputPackageImpl extends EPackageImpl implements OutputPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EReference getCountingResult_CallerId() {
-		return (EReference)countingResultEClass.getEStructuralFeatures().get(0);
+	public EAttribute getCountingResult_MethodInvocationStartTime() {
+		return (EAttribute)countingResultEClass.getEStructuralFeatures().get(1);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getCountingResult_ReportingTime() {
+		return (EAttribute)countingResultEClass.getEStructuralFeatures().get(2);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EReference getCountingResult_ObservedElement() {
+		return (EReference)countingResultEClass.getEStructuralFeatures().get(3);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getCountingResult_OpcodeCounts() {
+		return (EAttribute)countingResultEClass.getEStructuralFeatures().get(4);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EReference getCountingResult_MethodId() {
+		return (EReference)countingResultEClass.getEStructuralFeatures().get(5);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getCountingResult_QualifiedMethodName() {
+		return (EAttribute)countingResultEClass.getEStructuralFeatures().get(6);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EReference getCountingResult_ResultCollection() {
+		return (EReference)countingResultEClass.getEStructuralFeatures().get(7);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EReference getCountingResult_ArrayCreationCounts() {
+		return (EReference)countingResultEClass.getEStructuralFeatures().get(8);
 	}
 
 	/**
@@ -467,69 +539,6 @@ public class OutputPackageImpl extends EPackageImpl implements OutputPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getCountingResult_MethodInvocationBeginning() {
-		return (EAttribute)countingResultEClass.getEStructuralFeatures().get(1);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public EAttribute getCountingResult_ReportingTime() {
-		return (EAttribute)countingResultEClass.getEStructuralFeatures().get(2);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public EReference getCountingResult_ObservedElement() {
-		return (EReference)countingResultEClass.getEStructuralFeatures().get(3);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public EAttribute getCountingResult_OpcodeCounts() {
-		return (EAttribute)countingResultEClass.getEStructuralFeatures().get(4);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public EReference getCountingResult_MethodId() {
-		return (EReference)countingResultEClass.getEStructuralFeatures().get(5);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public EAttribute getCountingResult_QualifiedMethodName() {
-		return (EAttribute)countingResultEClass.getEStructuralFeatures().get(6);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public EReference getCountingResult_ResultCollection() {
-		return (EReference)countingResultEClass.getEStructuralFeatures().get(7);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
 	public EClass getThreadedCountingResult() {
 		return threadedCountingResultEClass;
 	}
@@ -599,6 +608,7 @@ public class OutputPackageImpl extends EPackageImpl implements OutputPackage {
 
 		// Create classes and their features
 		outputModelRepositoryEClass = createEClass(OUTPUT_MODEL_REPOSITORY);
+		createEReference(outputModelRepositoryEClass, OUTPUT_MODEL_REPOSITORY__RESULT_COLLECTION);
 
 		resultCollectionEClass = createEClass(RESULT_COLLECTION);
 		createEReference(resultCollectionEClass, RESULT_COLLECTION__REQUEST_RESULTS);
@@ -614,7 +624,7 @@ public class OutputPackageImpl extends EPackageImpl implements OutputPackage {
 
 		countingResultEClass = createEClass(COUNTING_RESULT);
 		createEReference(countingResultEClass, COUNTING_RESULT__CALLER_ID);
-		createEAttribute(countingResultEClass, COUNTING_RESULT__METHOD_INVOCATION_BEGINNING);
+		createEAttribute(countingResultEClass, COUNTING_RESULT__METHOD_INVOCATION_START_TIME);
 		createEAttribute(countingResultEClass, COUNTING_RESULT__REPORTING_TIME);
 		createEReference(countingResultEClass, COUNTING_RESULT__OBSERVED_ELEMENT);
 		createEAttribute(countingResultEClass, COUNTING_RESULT__OPCODE_COUNTS);
@@ -690,6 +700,7 @@ public class OutputPackageImpl extends EPackageImpl implements OutputPackage {
 
 		// Initialize classes and features; add operations and parameters
 		initEClass(outputModelRepositoryEClass, OutputModelRepository.class, "OutputModelRepository", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEReference(getOutputModelRepository_ResultCollection(), this.getResultCollection(), null, "resultCollection", null, 0, -1, OutputModelRepository.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
 
 		initEClass(resultCollectionEClass, ResultCollection.class, "ResultCollection", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getResultCollection_RequestResults(), this.getRequestResult(), this.getRequestResult_ResultCollection(), "requestResults", null, 0, -1, ResultCollection.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
@@ -704,12 +715,12 @@ public class OutputPackageImpl extends EPackageImpl implements OutputPackage {
 		initEAttribute(getUUID_StringRepresentation(), ecorePackage.getEJavaObject(), "stringRepresentation", null, 1, 1, edu.kit.ipd.sdq.bycounter.output.UUID.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
 
 		initEClass(countingResultEClass, CountingResult.class, "CountingResult", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEReference(getCountingResult_CallerId(), this.getUUID(), null, "callerId", null, 1, 1, CountingResult.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
-		initEAttribute(getCountingResult_MethodInvocationBeginning(), ecorePackage.getELong(), "methodInvocationBeginning", null, 1, 1, CountingResult.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+		initEReference(getCountingResult_CallerId(), this.getUUID(), null, "callerId", null, 1, 1, CountingResult.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+		initEAttribute(getCountingResult_MethodInvocationStartTime(), ecorePackage.getELong(), "methodInvocationStartTime", null, 1, 1, CountingResult.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
 		initEAttribute(getCountingResult_ReportingTime(), ecorePackage.getELong(), "reportingTime", null, 1, 1, CountingResult.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
 		initEReference(getCountingResult_ObservedElement(), theInputPackage.getEntityToInstrument(), null, "observedElement", null, 1, 1, CountingResult.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
-		initEAttribute(getCountingResult_OpcodeCounts(), ecorePackage.getELong(), "opcodeCounts", null, 0, -1, CountingResult.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
-		initEReference(getCountingResult_MethodId(), this.getUUID(), null, "methodId", null, 1, 1, CountingResult.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+		initEAttribute(getCountingResult_OpcodeCounts(), ecorePackage.getELong(), "opcodeCounts", null, 0, -1, CountingResult.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+		initEReference(getCountingResult_MethodId(), this.getUUID(), null, "methodId", null, 1, 1, CountingResult.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
 		initEAttribute(getCountingResult_QualifiedMethodName(), ecorePackage.getEString(), "qualifiedMethodName", null, 1, 1, CountingResult.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
 		initEReference(getCountingResult_ResultCollection(), this.getResultCollection(), this.getResultCollection_CountingResults(), "resultCollection", null, 0, 1, CountingResult.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
 		initEReference(getCountingResult_ArrayCreationCounts(), this.getArrayCreationCount(), this.getArrayCreationCount_CountingResult(), "arrayCreationCounts", null, 0, -1, CountingResult.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);

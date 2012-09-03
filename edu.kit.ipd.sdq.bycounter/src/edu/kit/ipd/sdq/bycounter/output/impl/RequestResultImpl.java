@@ -10,8 +10,8 @@ import edu.kit.ipd.sdq.bycounter.output.CountingResult;
 import edu.kit.ipd.sdq.bycounter.output.OutputPackage;
 import edu.kit.ipd.sdq.bycounter.output.RequestResult;
 import edu.kit.ipd.sdq.bycounter.output.ResultCollection;
-
 import edu.kit.ipd.sdq.bycounter.output.UUID;
+
 import java.util.Collection;
 
 import org.eclipse.emf.common.notify.Notification;
@@ -27,7 +27,6 @@ import org.eclipse.emf.ecore.impl.EObjectImpl;
 
 import org.eclipse.emf.ecore.util.EObjectContainmentWithInverseEList;
 import org.eclipse.emf.ecore.util.EcoreUtil;
-import org.eclipse.emf.ecore.util.EObjectContainmentEList;
 import org.eclipse.emf.ecore.util.InternalEList;
 
 /**
@@ -90,6 +89,56 @@ public class RequestResultImpl extends EObjectImpl implements RequestResult {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public UUID getRequestId() {
+		if (requestId != null && requestId.eIsProxy()) {
+			InternalEObject oldRequestId = (InternalEObject)requestId;
+			requestId = (UUID)eResolveProxy(oldRequestId);
+			if (requestId != oldRequestId) {
+				if (eNotificationRequired())
+					eNotify(new ENotificationImpl(this, Notification.RESOLVE, OutputPackage.REQUEST_RESULT__REQUEST_ID, oldRequestId, requestId));
+			}
+		}
+		return requestId;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public UUID basicGetRequestId() {
+		return requestId;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setRequestId(UUID newRequestId) {
+		UUID oldRequestId = requestId;
+		requestId = newRequestId;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, OutputPackage.REQUEST_RESULT__REQUEST_ID, oldRequestId, requestId));
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EList<CountingResult> getCountingResults() {
+		if (countingResults == null) {
+			countingResults = new EObjectContainmentWithInverseEList<CountingResult>(CountingResult.class, this, OutputPackage.REQUEST_RESULT__COUNTING_RESULTS, OutputPackage.COUNTING_RESULT__REQUEST_RESULT);
+		}
+		return countingResults;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	public ResultCollection getResultCollection() {
 		if (eContainerFeatureID() != OutputPackage.REQUEST_RESULT__RESULT_COLLECTION) return null;
 		return (ResultCollection)eContainer();
@@ -143,56 +192,6 @@ public class RequestResultImpl extends EObjectImpl implements RequestResult {
 				return basicSetResultCollection((ResultCollection)otherEnd, msgs);
 		}
 		return super.eInverseAdd(otherEnd, featureID, msgs);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public UUID getRequestId() {
-		if (requestId != null && requestId.eIsProxy()) {
-			InternalEObject oldRequestId = (InternalEObject)requestId;
-			requestId = (UUID)eResolveProxy(oldRequestId);
-			if (requestId != oldRequestId) {
-				if (eNotificationRequired())
-					eNotify(new ENotificationImpl(this, Notification.RESOLVE, OutputPackage.REQUEST_RESULT__REQUEST_ID, oldRequestId, requestId));
-			}
-		}
-		return requestId;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public UUID basicGetRequestId() {
-		return requestId;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public void setRequestId(UUID newRequestId) {
-		UUID oldRequestId = requestId;
-		requestId = newRequestId;
-		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, OutputPackage.REQUEST_RESULT__REQUEST_ID, oldRequestId, requestId));
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public EList<CountingResult> getCountingResults() {
-		if (countingResults == null) {
-			countingResults = new EObjectContainmentWithInverseEList<CountingResult>(CountingResult.class, this, OutputPackage.REQUEST_RESULT__COUNTING_RESULTS, OutputPackage.COUNTING_RESULT__REQUEST_RESULT);
-		}
-		return countingResults;
 	}
 
 	/**

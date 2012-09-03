@@ -30,38 +30,10 @@ import org.eclipse.emf.ecore.EObject;
  */
 public interface RequestResult extends EObject {
 	/**
-	 * Returns the value of the '<em><b>Result Collection</b></em>' container reference.
-	 * It is bidirectional and its opposite is '{@link edu.kit.ipd.sdq.bycounter.output.ResultCollection#getRequestResults <em>Request Results</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of the '<em>Result Collection</em>' containment reference list isn't clear,
-	 * there really should be more of a description here...
-	 * </p>
-	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Result Collection</em>' container reference.
-	 * @see #setResultCollection(ResultCollection)
-	 * @see edu.kit.ipd.sdq.bycounter.output.OutputPackage#getRequestResult_ResultCollection()
-	 * @see edu.kit.ipd.sdq.bycounter.output.ResultCollection#getRequestResults
-	 * @model opposite="requestResults" required="true" transient="false" ordered="false"
-	 * @generated
-	 */
-	ResultCollection getResultCollection();
-
-	/**
-	 * Sets the value of the '{@link edu.kit.ipd.sdq.bycounter.output.RequestResult#getResultCollection <em>Result Collection</em>}' container reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Result Collection</em>' container reference.
-	 * @see #getResultCollection()
-	 * @generated
-	 */
-	void setResultCollection(ResultCollection value);
-
-	/**
 	 * Returns the value of the '<em><b>Request Id</b></em>' reference.
 	 * <!-- begin-user-doc -->
 	 * <p>
-	 * If the meaning of the '<em>Request Id</em>' attribute isn't clear,
+	 * If the meaning of the '<em>Request Id</em>' reference isn't clear,
 	 * there really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
@@ -100,5 +72,33 @@ public interface RequestResult extends EObject {
 	 * @generated
 	 */
 	EList<CountingResult> getCountingResults();
+
+	/**
+	 * Returns the value of the '<em><b>Result Collection</b></em>' container reference.
+	 * It is bidirectional and its opposite is '{@link edu.kit.ipd.sdq.bycounter.output.ResultCollection#getRequestResults <em>Request Results</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Result Collection</em>' container reference isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Result Collection</em>' container reference.
+	 * @see #setResultCollection(ResultCollection)
+	 * @see edu.kit.ipd.sdq.bycounter.output.OutputPackage#getRequestResult_ResultCollection()
+	 * @see edu.kit.ipd.sdq.bycounter.output.ResultCollection#getRequestResults
+	 * @model opposite="requestResults" required="true" transient="false" ordered="false"
+	 * @generated
+	 */
+	ResultCollection getResultCollection();
+
+	/**
+	 * Sets the value of the '{@link edu.kit.ipd.sdq.bycounter.output.RequestResult#getResultCollection <em>Result Collection</em>}' container reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Result Collection</em>' container reference.
+	 * @see #getResultCollection()
+	 * @generated
+	 */
+	void setResultCollection(ResultCollection value);
 
 } // RequestResult
