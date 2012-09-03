@@ -377,11 +377,12 @@ public class ByCounterWrapper {
 		result.getArrayCreationCounts().addAll(mapArrayCreationCounts(cr.getArrayCreationCounts()));
 		result.setCallerId(mapUUID(cr.getCallerID()));
 		result.getMethodCallCounts().addAll(mapMethodCallCounts(cr.getMethodCallCounts()));
-		result.setMethodInvocationBeginning(cr.getMethodInvocationBeginning());
-		result.setReportingTime(cr.getReportingTime());
-		result.setObservedElement(mapObservedElement(cr.getObservedElement(), entitiesToInstrumentMap2));
 		result.setMethodId(mapUUID(cr.getMethodID()));
+		result.setMethodInvocationStartTime(cr.getMethodInvocationBeginning());
+		result.getOpcodeCounts().addAll(mapOpcodeCounts(cr.getOpcodeCounts()));
+		result.setObservedElement(mapObservedElement(cr.getObservedElement(), entitiesToInstrumentMap2));
 		result.setQualifiedMethodName(cr.getQualifiedMethodName());
+		result.setReportingTime(cr.getReportingTime());
 	
 		return result;
 	}
@@ -411,6 +412,19 @@ public class ByCounterWrapper {
 			mcc.setQualifiedFunctionName(e.getKey());
 			mcc.setCount(e.getValue());
 			result.add(mcc);
+		}
+		return result;
+	}
+
+	/**
+	 * @param opcodeCounts Opcode counts indexed by the opcode. Value is the count.
+	 * @return List of opcode counts.
+	 */
+	private static Collection<? extends Long> mapOpcodeCounts(
+			long[] opcodeCounts) {
+		List<Long> result = new LinkedList<Long>();
+		for(long v : opcodeCounts) {
+			result.add(v);
 		}
 		return result;
 	}
