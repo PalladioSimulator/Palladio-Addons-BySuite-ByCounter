@@ -22,7 +22,6 @@ import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
 
-import org.eclipse.emf.ecore.util.EObjectContainmentEList;
 import org.eclipse.emf.ecore.util.EObjectContainmentWithInverseEList;
 import org.eclipse.emf.ecore.util.InternalEList;
 
@@ -87,7 +86,7 @@ public class InstrumentationProfileRepositoryImpl extends IdentifierImpl impleme
 	 */
 	public EList<ExecutionProfile> getExecutionProfile() {
 		if (executionProfile == null) {
-			executionProfile = new EObjectContainmentEList<ExecutionProfile>(ExecutionProfile.class, this, InputPackage.INSTRUMENTATION_PROFILE_REPOSITORY__EXECUTION_PROFILE);
+			executionProfile = new EObjectContainmentWithInverseEList<ExecutionProfile>(ExecutionProfile.class, this, InputPackage.INSTRUMENTATION_PROFILE_REPOSITORY__EXECUTION_PROFILE, InputPackage.EXECUTION_PROFILE__INSTRUMENTATION_PROFILE_REPOSITORY);
 		}
 		return executionProfile;
 	}
@@ -113,6 +112,8 @@ public class InstrumentationProfileRepositoryImpl extends IdentifierImpl impleme
 	@Override
 	public NotificationChain eInverseAdd(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
 		switch (featureID) {
+			case InputPackage.INSTRUMENTATION_PROFILE_REPOSITORY__EXECUTION_PROFILE:
+				return ((InternalEList<InternalEObject>)(InternalEList<?>)getExecutionProfile()).basicAdd(otherEnd, msgs);
 			case InputPackage.INSTRUMENTATION_PROFILE_REPOSITORY__INSTRUMENTATION_PROFILE:
 				return ((InternalEList<InternalEObject>)(InternalEList<?>)getInstrumentationProfile()).basicAdd(otherEnd, msgs);
 		}

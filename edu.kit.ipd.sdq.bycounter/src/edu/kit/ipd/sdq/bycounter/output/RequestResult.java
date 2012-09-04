@@ -6,9 +6,9 @@
  */
 package edu.kit.ipd.sdq.bycounter.output;
 
-import org.eclipse.emf.common.util.EList;
+import de.uka.ipd.sdq.identifier.Identifier;
 
-import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.common.util.EList;
 
 /**
  * <!-- begin-user-doc -->
@@ -18,7 +18,6 @@ import org.eclipse.emf.ecore.EObject;
  * <p>
  * The following features are supported:
  * <ul>
- *   <li>{@link edu.kit.ipd.sdq.bycounter.output.RequestResult#getRequestId <em>Request Id</em>}</li>
  *   <li>{@link edu.kit.ipd.sdq.bycounter.output.RequestResult#getCountingResults <em>Counting Results</em>}</li>
  *   <li>{@link edu.kit.ipd.sdq.bycounter.output.RequestResult#getResultCollection <em>Result Collection</em>}</li>
  * </ul>
@@ -28,33 +27,7 @@ import org.eclipse.emf.ecore.EObject;
  * @model
  * @generated
  */
-public interface RequestResult extends EObject {
-	/**
-	 * Returns the value of the '<em><b>Request Id</b></em>' reference.
-	 * <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of the '<em>Request Id</em>' reference isn't clear,
-	 * there really should be more of a description here...
-	 * </p>
-	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Request Id</em>' reference.
-	 * @see #setRequestId(UUID)
-	 * @see edu.kit.ipd.sdq.bycounter.output.OutputPackage#getRequestResult_RequestId()
-	 * @model required="true" ordered="false"
-	 * @generated
-	 */
-	UUID getRequestId();
-
-	/**
-	 * Sets the value of the '{@link edu.kit.ipd.sdq.bycounter.output.RequestResult#getRequestId <em>Request Id</em>}' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Request Id</em>' reference.
-	 * @see #getRequestId()
-	 * @generated
-	 */
-	void setRequestId(UUID value);
-
+public interface RequestResult extends Identifier {
 	/**
 	 * Returns the value of the '<em><b>Counting Results</b></em>' containment reference list.
 	 * The list contents are of type {@link edu.kit.ipd.sdq.bycounter.output.CountingResult}.

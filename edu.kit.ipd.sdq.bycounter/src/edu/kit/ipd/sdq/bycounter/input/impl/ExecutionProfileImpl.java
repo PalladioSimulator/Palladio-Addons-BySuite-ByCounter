@@ -8,19 +8,18 @@ package edu.kit.ipd.sdq.bycounter.input.impl;
 
 import edu.kit.ipd.sdq.bycounter.input.ExecutionProfile;
 import edu.kit.ipd.sdq.bycounter.input.InputPackage;
-
-import java.util.Collection;
+import edu.kit.ipd.sdq.bycounter.input.InstrumentationProfileRepository;
 
 import org.eclipse.emf.common.notify.Notification;
-
-import org.eclipse.emf.common.util.EList;
+import org.eclipse.emf.common.notify.NotificationChain;
 
 import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.InternalEObject;
 
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.EObjectImpl;
 
-import org.eclipse.emf.ecore.util.EDataTypeUniqueEList;
+import org.eclipse.emf.ecore.util.EcoreUtil;
 
 /**
  * <!-- begin-user-doc -->
@@ -30,8 +29,8 @@ import org.eclipse.emf.ecore.util.EDataTypeUniqueEList;
  * The following features are implemented:
  * <ul>
  *   <li>{@link edu.kit.ipd.sdq.bycounter.input.impl.ExecutionProfileImpl#isAddUpResultsRecursively <em>Add Up Results Recursively</em>}</li>
- *   <li>{@link edu.kit.ipd.sdq.bycounter.input.impl.ExecutionProfileImpl#getInternalClassesDefinition <em>Internal Classes Definition</em>}</li>
  *   <li>{@link edu.kit.ipd.sdq.bycounter.input.impl.ExecutionProfileImpl#isWaitForThreadsToFinnish <em>Wait For Threads To Finnish</em>}</li>
+ *   <li>{@link edu.kit.ipd.sdq.bycounter.input.impl.ExecutionProfileImpl#getInstrumentationProfileRepository <em>Instrumentation Profile Repository</em>}</li>
  * </ul>
  * </p>
  *
@@ -57,16 +56,6 @@ public class ExecutionProfileImpl extends EObjectImpl implements ExecutionProfil
 	 * @ordered
 	 */
 	protected boolean addUpResultsRecursively = ADD_UP_RESULTS_RECURSIVELY_EDEFAULT;
-
-	/**
-	 * The cached value of the '{@link #getInternalClassesDefinition() <em>Internal Classes Definition</em>}' attribute list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getInternalClassesDefinition()
-	 * @generated
-	 * @ordered
-	 */
-	protected EList<String> internalClassesDefinition;
 
 	/**
 	 * The default value of the '{@link #isWaitForThreadsToFinnish() <em>Wait For Threads To Finnish</em>}' attribute.
@@ -133,18 +122,6 @@ public class ExecutionProfileImpl extends EObjectImpl implements ExecutionProfil
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EList<String> getInternalClassesDefinition() {
-		if (internalClassesDefinition == null) {
-			internalClassesDefinition = new EDataTypeUniqueEList<String>(String.class, this, InputPackage.EXECUTION_PROFILE__INTERNAL_CLASSES_DEFINITION);
-		}
-		return internalClassesDefinition;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
 	public boolean isWaitForThreadsToFinnish() {
 		return waitForThreadsToFinnish;
 	}
@@ -166,15 +143,100 @@ public class ExecutionProfileImpl extends EObjectImpl implements ExecutionProfil
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public InstrumentationProfileRepository getInstrumentationProfileRepository() {
+		if (eContainerFeatureID() != InputPackage.EXECUTION_PROFILE__INSTRUMENTATION_PROFILE_REPOSITORY) return null;
+		return (InstrumentationProfileRepository)eContainer();
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public NotificationChain basicSetInstrumentationProfileRepository(InstrumentationProfileRepository newInstrumentationProfileRepository, NotificationChain msgs) {
+		msgs = eBasicSetContainer((InternalEObject)newInstrumentationProfileRepository, InputPackage.EXECUTION_PROFILE__INSTRUMENTATION_PROFILE_REPOSITORY, msgs);
+		return msgs;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setInstrumentationProfileRepository(InstrumentationProfileRepository newInstrumentationProfileRepository) {
+		if (newInstrumentationProfileRepository != eInternalContainer() || (eContainerFeatureID() != InputPackage.EXECUTION_PROFILE__INSTRUMENTATION_PROFILE_REPOSITORY && newInstrumentationProfileRepository != null)) {
+			if (EcoreUtil.isAncestor(this, newInstrumentationProfileRepository))
+				throw new IllegalArgumentException("Recursive containment not allowed for " + toString());
+			NotificationChain msgs = null;
+			if (eInternalContainer() != null)
+				msgs = eBasicRemoveFromContainer(msgs);
+			if (newInstrumentationProfileRepository != null)
+				msgs = ((InternalEObject)newInstrumentationProfileRepository).eInverseAdd(this, InputPackage.INSTRUMENTATION_PROFILE_REPOSITORY__EXECUTION_PROFILE, InstrumentationProfileRepository.class, msgs);
+			msgs = basicSetInstrumentationProfileRepository(newInstrumentationProfileRepository, msgs);
+			if (msgs != null) msgs.dispatch();
+		}
+		else if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, InputPackage.EXECUTION_PROFILE__INSTRUMENTATION_PROFILE_REPOSITORY, newInstrumentationProfileRepository, newInstrumentationProfileRepository));
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public NotificationChain eInverseAdd(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
+		switch (featureID) {
+			case InputPackage.EXECUTION_PROFILE__INSTRUMENTATION_PROFILE_REPOSITORY:
+				if (eInternalContainer() != null)
+					msgs = eBasicRemoveFromContainer(msgs);
+				return basicSetInstrumentationProfileRepository((InstrumentationProfileRepository)otherEnd, msgs);
+		}
+		return super.eInverseAdd(otherEnd, featureID, msgs);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
+		switch (featureID) {
+			case InputPackage.EXECUTION_PROFILE__INSTRUMENTATION_PROFILE_REPOSITORY:
+				return basicSetInstrumentationProfileRepository(null, msgs);
+		}
+		return super.eInverseRemove(otherEnd, featureID, msgs);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public NotificationChain eBasicRemoveFromContainerFeature(NotificationChain msgs) {
+		switch (eContainerFeatureID()) {
+			case InputPackage.EXECUTION_PROFILE__INSTRUMENTATION_PROFILE_REPOSITORY:
+				return eInternalContainer().eInverseRemove(this, InputPackage.INSTRUMENTATION_PROFILE_REPOSITORY__EXECUTION_PROFILE, InstrumentationProfileRepository.class, msgs);
+		}
+		return super.eBasicRemoveFromContainerFeature(msgs);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
 			case InputPackage.EXECUTION_PROFILE__ADD_UP_RESULTS_RECURSIVELY:
 				return isAddUpResultsRecursively();
-			case InputPackage.EXECUTION_PROFILE__INTERNAL_CLASSES_DEFINITION:
-				return getInternalClassesDefinition();
 			case InputPackage.EXECUTION_PROFILE__WAIT_FOR_THREADS_TO_FINNISH:
 				return isWaitForThreadsToFinnish();
+			case InputPackage.EXECUTION_PROFILE__INSTRUMENTATION_PROFILE_REPOSITORY:
+				return getInstrumentationProfileRepository();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -184,19 +246,17 @@ public class ExecutionProfileImpl extends EObjectImpl implements ExecutionProfil
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	@SuppressWarnings("unchecked")
 	@Override
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
 			case InputPackage.EXECUTION_PROFILE__ADD_UP_RESULTS_RECURSIVELY:
 				setAddUpResultsRecursively((Boolean)newValue);
 				return;
-			case InputPackage.EXECUTION_PROFILE__INTERNAL_CLASSES_DEFINITION:
-				getInternalClassesDefinition().clear();
-				getInternalClassesDefinition().addAll((Collection<? extends String>)newValue);
-				return;
 			case InputPackage.EXECUTION_PROFILE__WAIT_FOR_THREADS_TO_FINNISH:
 				setWaitForThreadsToFinnish((Boolean)newValue);
+				return;
+			case InputPackage.EXECUTION_PROFILE__INSTRUMENTATION_PROFILE_REPOSITORY:
+				setInstrumentationProfileRepository((InstrumentationProfileRepository)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -213,11 +273,11 @@ public class ExecutionProfileImpl extends EObjectImpl implements ExecutionProfil
 			case InputPackage.EXECUTION_PROFILE__ADD_UP_RESULTS_RECURSIVELY:
 				setAddUpResultsRecursively(ADD_UP_RESULTS_RECURSIVELY_EDEFAULT);
 				return;
-			case InputPackage.EXECUTION_PROFILE__INTERNAL_CLASSES_DEFINITION:
-				getInternalClassesDefinition().clear();
-				return;
 			case InputPackage.EXECUTION_PROFILE__WAIT_FOR_THREADS_TO_FINNISH:
 				setWaitForThreadsToFinnish(WAIT_FOR_THREADS_TO_FINNISH_EDEFAULT);
+				return;
+			case InputPackage.EXECUTION_PROFILE__INSTRUMENTATION_PROFILE_REPOSITORY:
+				setInstrumentationProfileRepository((InstrumentationProfileRepository)null);
 				return;
 		}
 		super.eUnset(featureID);
@@ -233,10 +293,10 @@ public class ExecutionProfileImpl extends EObjectImpl implements ExecutionProfil
 		switch (featureID) {
 			case InputPackage.EXECUTION_PROFILE__ADD_UP_RESULTS_RECURSIVELY:
 				return addUpResultsRecursively != ADD_UP_RESULTS_RECURSIVELY_EDEFAULT;
-			case InputPackage.EXECUTION_PROFILE__INTERNAL_CLASSES_DEFINITION:
-				return internalClassesDefinition != null && !internalClassesDefinition.isEmpty();
 			case InputPackage.EXECUTION_PROFILE__WAIT_FOR_THREADS_TO_FINNISH:
 				return waitForThreadsToFinnish != WAIT_FOR_THREADS_TO_FINNISH_EDEFAULT;
+			case InputPackage.EXECUTION_PROFILE__INSTRUMENTATION_PROFILE_REPOSITORY:
+				return getInstrumentationProfileRepository() != null;
 		}
 		return super.eIsSet(featureID);
 	}
@@ -253,8 +313,6 @@ public class ExecutionProfileImpl extends EObjectImpl implements ExecutionProfil
 		StringBuffer result = new StringBuffer(super.toString());
 		result.append(" (addUpResultsRecursively: ");
 		result.append(addUpResultsRecursively);
-		result.append(", internalClassesDefinition: ");
-		result.append(internalClassesDefinition);
 		result.append(", waitForThreadsToFinnish: ");
 		result.append(waitForThreadsToFinnish);
 		result.append(')');

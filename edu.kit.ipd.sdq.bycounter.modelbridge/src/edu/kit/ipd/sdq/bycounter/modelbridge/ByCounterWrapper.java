@@ -20,6 +20,7 @@ import org.eclipse.emf.common.util.EList;
 
 import de.fzi.gast.core.Root;
 import de.fzi.gast.functions.Method;
+import de.fzi.gast.types.GASTClass;
 import de.fzi.gast.variables.FormalParameter;
 import de.uka.ipd.sdq.ByCounter.execution.BytecodeCounter;
 import de.uka.ipd.sdq.ByCounter.execution.CountingResultCollector;
@@ -39,6 +40,7 @@ import edu.kit.ipd.sdq.bycounter.input.EntityToInstrument;
 import edu.kit.ipd.sdq.bycounter.input.ExecutionProfile;
 import edu.kit.ipd.sdq.bycounter.input.InstrumentationProfile;
 import edu.kit.ipd.sdq.bycounter.input.InstrumentedMethod;
+import edu.kit.ipd.sdq.bycounter.input.LogicalSet;
 import edu.kit.ipd.sdq.bycounter.output.ArrayCreationCount;
 import edu.kit.ipd.sdq.bycounter.output.ArrayType;
 import edu.kit.ipd.sdq.bycounter.output.MethodCallCount;
@@ -179,7 +181,7 @@ public class ByCounterWrapper {
 		ExecutionSettings executionSettings = new ExecutionSettings();
 		executionSettings.setAddUpResultsRecursively(executionProfile.isAddUpResultsRecursively());
 		executionSettings.setWaitForThreadsToFinnish(executionProfile.isWaitForThreadsToFinnish());
-		handleInternalClassesDefinition(executionSettings, executionProfile.getInternalClassesDefinition());
+		handleInternalClassesDefinition(executionSettings, this.instrumentationProfile.getDefinedLogicalSets());
 		
 		// update execution parameters
 		this.executionProfile = executionProfile;
@@ -188,13 +190,17 @@ public class ByCounterWrapper {
 
 	/**
 	 * @param executionSettings ByCounters {@link ExecutionSettings}.
-	 * @param internalClassesDefinition Definition in the execution profile.
+	 * @param definedLogicalSets Definition of class sets in the instrumentation 
+	 * profile.
 	 */
 	private void handleInternalClassesDefinition(ExecutionSettings executionSettings,
-			EList<String> internalClassesDefinition) {
+			EList<LogicalSet> definedLogicalSets) {
 		Set<String> bcSet = new HashSet<String>();
-		for(String s : internalClassesDefinition) {
-			bcSet.add(s);
+		for(LogicalSet lSet : definedLogicalSets) {
+			for(GASTClass iClass : lSet.getInternalClasses()) {
+				String s = iClass.getQualifiedName();
+				bcSet.add(s);
+			}
 		}
 		executionSettings.setInternalClassesDefinition(bcSet);
 	}
@@ -368,7 +374,7 @@ public class ByCounterWrapper {
 			RequestResult rr, Map<java.util.UUID, EntityToInstrument> entitiesToInstrumentMap2) {
 		edu.kit.ipd.sdq.bycounter.output.RequestResult req = 
 				outputFactory.createRequestResult();
-		req.setRequestId(mapUUID(rr.getRequestId()));
+		req.setId(mapUUID(rr.getRequestId()).toString());
 		for(CountingResult cr : rr.getCountingResults()) {
 			req.getCountingResults().add(mapCountingResult(cr, entitiesToInstrumentMap2));
 		}
@@ -482,24 +488,13 @@ public class ByCounterWrapper {
 		if(arrayCreationCounts != null) {
 			for(Entry<ArrayCreation, Long> e : arrayCreationCounts.entrySet()) {
 				ArrayCreationCount r = outputFactory.createArrayCreationCount();
-				r.setArrayCreation(mapArrayCreation(e.getKey()));
+				ArrayCreation arrayCreation = e.getKey();
+				r.setArrayType(mapArrayType(arrayCreation.getTypeOpcode()));
+				r.setNumberOfDimensions(arrayCreation.getNumberOfDimensions());
+				r.setTypeDescriptor(arrayCreation.getTypeDesc());
 				r.setCount(e.getValue());
 			}
 		}
-		return result;
-	}
-
-	/**
-	 * @param arrayCreation ByCounter {@link ArrayCreation}.
-	 * @return EMF {@link edu.kit.ipd.sdq.bycounter.output.ArrayCreation}.
-	 */
-	private static edu.kit.ipd.sdq.bycounter.output.ArrayCreation mapArrayCreation(
-			ArrayCreation arrayCreation) {
-		edu.kit.ipd.sdq.bycounter.output.ArrayCreation result = 
-				outputFactory.createArrayCreation();
-		result.setArrayType(mapArrayType(arrayCreation.getTypeOpcode()));
-		result.setNumberOfDimensions(arrayCreation.getNumberOfDimensions());
-		result.setTypeDescriptor(arrayCreation.getTypeDesc());
 		return result;
 	}
 

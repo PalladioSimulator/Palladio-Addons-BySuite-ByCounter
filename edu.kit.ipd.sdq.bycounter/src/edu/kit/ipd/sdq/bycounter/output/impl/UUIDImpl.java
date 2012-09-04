@@ -38,7 +38,7 @@ public class UUIDImpl extends EObjectImpl implements UUID {
 	 * @generated
 	 * @ordered
 	 */
-	protected static final Object STRING_REPRESENTATION_EDEFAULT = null;
+	protected static final String STRING_REPRESENTATION_EDEFAULT = null;
 
 	/**
 	 * The cached value of the '{@link #getStringRepresentation() <em>String Representation</em>}' attribute.
@@ -48,7 +48,7 @@ public class UUIDImpl extends EObjectImpl implements UUID {
 	 * @generated
 	 * @ordered
 	 */
-	protected Object stringRepresentation = STRING_REPRESENTATION_EDEFAULT;
+	protected String stringRepresentation = STRING_REPRESENTATION_EDEFAULT;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -74,7 +74,7 @@ public class UUIDImpl extends EObjectImpl implements UUID {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public Object getStringRepresentation() {
+	public String getStringRepresentation() {
 		return stringRepresentation;
 	}
 
@@ -83,8 +83,8 @@ public class UUIDImpl extends EObjectImpl implements UUID {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setStringRepresentation(Object newStringRepresentation) {
-		Object oldStringRepresentation = stringRepresentation;
+	public void setStringRepresentation(String newStringRepresentation) {
+		String oldStringRepresentation = stringRepresentation;
 		stringRepresentation = newStringRepresentation;
 		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, OutputPackage.UUID__STRING_REPRESENTATION, oldStringRepresentation, stringRepresentation));
@@ -113,7 +113,7 @@ public class UUIDImpl extends EObjectImpl implements UUID {
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
 			case OutputPackage.UUID__STRING_REPRESENTATION:
-				setStringRepresentation(newValue);
+				setStringRepresentation((String)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);

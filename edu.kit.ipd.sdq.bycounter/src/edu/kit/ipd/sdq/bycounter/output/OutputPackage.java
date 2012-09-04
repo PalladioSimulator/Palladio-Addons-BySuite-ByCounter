@@ -150,13 +150,13 @@ public interface OutputPackage extends EPackage {
 	int REQUEST_RESULT = 2;
 
 	/**
-	 * The feature id for the '<em><b>Request Id</b></em>' reference.
+	 * The feature id for the '<em><b>Id</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int REQUEST_RESULT__REQUEST_ID = 0;
+	int REQUEST_RESULT__ID = IdentifierPackage.IDENTIFIER__ID;
 
 	/**
 	 * The feature id for the '<em><b>Counting Results</b></em>' containment reference list.
@@ -165,7 +165,7 @@ public interface OutputPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int REQUEST_RESULT__COUNTING_RESULTS = 1;
+	int REQUEST_RESULT__COUNTING_RESULTS = IdentifierPackage.IDENTIFIER_FEATURE_COUNT + 0;
 
 	/**
 	 * The feature id for the '<em><b>Result Collection</b></em>' container reference.
@@ -174,7 +174,7 @@ public interface OutputPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int REQUEST_RESULT__RESULT_COLLECTION = 2;
+	int REQUEST_RESULT__RESULT_COLLECTION = IdentifierPackage.IDENTIFIER_FEATURE_COUNT + 1;
 
 	/**
 	 * The number of structural features of the '<em>Request Result</em>' class.
@@ -183,35 +183,7 @@ public interface OutputPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int REQUEST_RESULT_FEATURE_COUNT = 3;
-
-	/**
-	 * The meta object id for the '{@link edu.kit.ipd.sdq.bycounter.output.impl.UUIDImpl <em>UUID</em>}' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see edu.kit.ipd.sdq.bycounter.output.impl.UUIDImpl
-	 * @see edu.kit.ipd.sdq.bycounter.output.impl.OutputPackageImpl#getUUID()
-	 * @generated
-	 */
-	int UUID = 3;
-
-	/**
-	 * The feature id for the '<em><b>String Representation</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int UUID__STRING_REPRESENTATION = 0;
-
-	/**
-	 * The number of structural features of the '<em>UUID</em>' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int UUID_FEATURE_COUNT = 1;
+	int REQUEST_RESULT_FEATURE_COUNT = IdentifierPackage.IDENTIFIER_FEATURE_COUNT + 2;
 
 	/**
 	 * The meta object id for the '{@link edu.kit.ipd.sdq.bycounter.output.impl.CountingResultImpl <em>Counting Result</em>}' class.
@@ -221,7 +193,7 @@ public interface OutputPackage extends EPackage {
 	 * @see edu.kit.ipd.sdq.bycounter.output.impl.OutputPackageImpl#getCountingResult()
 	 * @generated
 	 */
-	int COUNTING_RESULT = 4;
+	int COUNTING_RESULT = 3;
 
 	/**
 	 * The feature id for the '<em><b>Caller Id</b></em>' containment reference.
@@ -332,6 +304,34 @@ public interface OutputPackage extends EPackage {
 	int COUNTING_RESULT_FEATURE_COUNT = 11;
 
 	/**
+	 * The meta object id for the '{@link edu.kit.ipd.sdq.bycounter.output.impl.UUIDImpl <em>UUID</em>}' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see edu.kit.ipd.sdq.bycounter.output.impl.UUIDImpl
+	 * @see edu.kit.ipd.sdq.bycounter.output.impl.OutputPackageImpl#getUUID()
+	 * @generated
+	 */
+	int UUID = 4;
+
+	/**
+	 * The feature id for the '<em><b>String Representation</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int UUID__STRING_REPRESENTATION = 0;
+
+	/**
+	 * The number of structural features of the '<em>UUID</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int UUID_FEATURE_COUNT = 1;
+
+	/**
 	 * The meta object id for the '{@link edu.kit.ipd.sdq.bycounter.output.impl.ArrayCreationCountImpl <em>Array Creation Count</em>}' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -342,50 +342,13 @@ public interface OutputPackage extends EPackage {
 	int ARRAY_CREATION_COUNT = 5;
 
 	/**
-	 * The feature id for the '<em><b>Array Creation</b></em>' containment reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int ARRAY_CREATION_COUNT__ARRAY_CREATION = 0;
-
-	/**
 	 * The feature id for the '<em><b>Count</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int ARRAY_CREATION_COUNT__COUNT = 1;
-
-	/**
-	 * The feature id for the '<em><b>Counting Result</b></em>' container reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int ARRAY_CREATION_COUNT__COUNTING_RESULT = 2;
-
-	/**
-	 * The number of structural features of the '<em>Array Creation Count</em>' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int ARRAY_CREATION_COUNT_FEATURE_COUNT = 3;
-
-	/**
-	 * The meta object id for the '{@link edu.kit.ipd.sdq.bycounter.output.impl.ArrayCreationImpl <em>Array Creation</em>}' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see edu.kit.ipd.sdq.bycounter.output.impl.ArrayCreationImpl
-	 * @see edu.kit.ipd.sdq.bycounter.output.impl.OutputPackageImpl#getArrayCreation()
-	 * @generated
-	 */
-	int ARRAY_CREATION = 6;
+	int ARRAY_CREATION_COUNT__COUNT = 0;
 
 	/**
 	 * The feature id for the '<em><b>Type Descriptor</b></em>' attribute.
@@ -394,7 +357,7 @@ public interface OutputPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int ARRAY_CREATION__TYPE_DESCRIPTOR = 0;
+	int ARRAY_CREATION_COUNT__TYPE_DESCRIPTOR = 1;
 
 	/**
 	 * The feature id for the '<em><b>Number Of Dimensions</b></em>' attribute.
@@ -403,7 +366,7 @@ public interface OutputPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int ARRAY_CREATION__NUMBER_OF_DIMENSIONS = 1;
+	int ARRAY_CREATION_COUNT__NUMBER_OF_DIMENSIONS = 2;
 
 	/**
 	 * The feature id for the '<em><b>Array Type</b></em>' attribute.
@@ -412,25 +375,25 @@ public interface OutputPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int ARRAY_CREATION__ARRAY_TYPE = 2;
+	int ARRAY_CREATION_COUNT__ARRAY_TYPE = 3;
 
 	/**
-	 * The feature id for the '<em><b>Array Creation Count</b></em>' container reference.
+	 * The feature id for the '<em><b>Counting Result</b></em>' container reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int ARRAY_CREATION__ARRAY_CREATION_COUNT = 3;
+	int ARRAY_CREATION_COUNT__COUNTING_RESULT = 4;
 
 	/**
-	 * The number of structural features of the '<em>Array Creation</em>' class.
+	 * The number of structural features of the '<em>Array Creation Count</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int ARRAY_CREATION_FEATURE_COUNT = 4;
+	int ARRAY_CREATION_COUNT_FEATURE_COUNT = 5;
 
 	/**
 	 * The meta object id for the '{@link edu.kit.ipd.sdq.bycounter.output.impl.MethodCallCountImpl <em>Method Call Count</em>}' class.
@@ -440,7 +403,7 @@ public interface OutputPackage extends EPackage {
 	 * @see edu.kit.ipd.sdq.bycounter.output.impl.OutputPackageImpl#getMethodCallCount()
 	 * @generated
 	 */
-	int METHOD_CALL_COUNT = 7;
+	int METHOD_CALL_COUNT = 6;
 
 	/**
 	 * The feature id for the '<em><b>Qualified Function Name</b></em>' attribute.
@@ -495,7 +458,7 @@ public interface OutputPackage extends EPackage {
 	 * @see edu.kit.ipd.sdq.bycounter.output.impl.OutputPackageImpl#getThreadedCountingResult()
 	 * @generated
 	 */
-	int THREADED_COUNTING_RESULT = 8;
+	int THREADED_COUNTING_RESULT = 7;
 
 	/**
 	 * The feature id for the '<em><b>Caller Id</b></em>' containment reference.
@@ -640,7 +603,7 @@ public interface OutputPackage extends EPackage {
 	 * @see edu.kit.ipd.sdq.bycounter.output.impl.OutputPackageImpl#getArrayType()
 	 * @generated
 	 */
-	int ARRAY_TYPE = 9;
+	int ARRAY_TYPE = 8;
 
 
 	/**
@@ -707,17 +670,6 @@ public interface OutputPackage extends EPackage {
 	EClass getRequestResult();
 
 	/**
-	 * Returns the meta object for the reference '{@link edu.kit.ipd.sdq.bycounter.output.RequestResult#getRequestId <em>Request Id</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the reference '<em>Request Id</em>'.
-	 * @see edu.kit.ipd.sdq.bycounter.output.RequestResult#getRequestId()
-	 * @see #getRequestResult()
-	 * @generated
-	 */
-	EReference getRequestResult_RequestId();
-
-	/**
 	 * Returns the meta object for the containment reference list '{@link edu.kit.ipd.sdq.bycounter.output.RequestResult#getCountingResults <em>Counting Results</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -738,27 +690,6 @@ public interface OutputPackage extends EPackage {
 	 * @generated
 	 */
 	EReference getRequestResult_ResultCollection();
-
-	/**
-	 * Returns the meta object for class '{@link edu.kit.ipd.sdq.bycounter.output.UUID <em>UUID</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for class '<em>UUID</em>'.
-	 * @see edu.kit.ipd.sdq.bycounter.output.UUID
-	 * @generated
-	 */
-	EClass getUUID();
-
-	/**
-	 * Returns the meta object for the attribute '{@link edu.kit.ipd.sdq.bycounter.output.UUID#getStringRepresentation <em>String Representation</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>String Representation</em>'.
-	 * @see edu.kit.ipd.sdq.bycounter.output.UUID#getStringRepresentation()
-	 * @see #getUUID()
-	 * @generated
-	 */
-	EAttribute getUUID_StringRepresentation();
 
 	/**
 	 * Returns the meta object for class '{@link edu.kit.ipd.sdq.bycounter.output.CountingResult <em>Counting Result</em>}'.
@@ -892,6 +823,27 @@ public interface OutputPackage extends EPackage {
 	EReference getCountingResult_RequestResult();
 
 	/**
+	 * Returns the meta object for class '{@link edu.kit.ipd.sdq.bycounter.output.UUID <em>UUID</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for class '<em>UUID</em>'.
+	 * @see edu.kit.ipd.sdq.bycounter.output.UUID
+	 * @generated
+	 */
+	EClass getUUID();
+
+	/**
+	 * Returns the meta object for the attribute '{@link edu.kit.ipd.sdq.bycounter.output.UUID#getStringRepresentation <em>String Representation</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>String Representation</em>'.
+	 * @see edu.kit.ipd.sdq.bycounter.output.UUID#getStringRepresentation()
+	 * @see #getUUID()
+	 * @generated
+	 */
+	EAttribute getUUID_StringRepresentation();
+
+	/**
 	 * Returns the meta object for class '{@link edu.kit.ipd.sdq.bycounter.output.ArrayCreationCount <em>Array Creation Count</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -900,17 +852,6 @@ public interface OutputPackage extends EPackage {
 	 * @generated
 	 */
 	EClass getArrayCreationCount();
-
-	/**
-	 * Returns the meta object for the containment reference '{@link edu.kit.ipd.sdq.bycounter.output.ArrayCreationCount#getArrayCreation <em>Array Creation</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the containment reference '<em>Array Creation</em>'.
-	 * @see edu.kit.ipd.sdq.bycounter.output.ArrayCreationCount#getArrayCreation()
-	 * @see #getArrayCreationCount()
-	 * @generated
-	 */
-	EReference getArrayCreationCount_ArrayCreation();
 
 	/**
 	 * Returns the meta object for the attribute '{@link edu.kit.ipd.sdq.bycounter.output.ArrayCreationCount#getCount <em>Count</em>}'.
@@ -924,6 +865,39 @@ public interface OutputPackage extends EPackage {
 	EAttribute getArrayCreationCount_Count();
 
 	/**
+	 * Returns the meta object for the attribute '{@link edu.kit.ipd.sdq.bycounter.output.ArrayCreationCount#getTypeDescriptor <em>Type Descriptor</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Type Descriptor</em>'.
+	 * @see edu.kit.ipd.sdq.bycounter.output.ArrayCreationCount#getTypeDescriptor()
+	 * @see #getArrayCreationCount()
+	 * @generated
+	 */
+	EAttribute getArrayCreationCount_TypeDescriptor();
+
+	/**
+	 * Returns the meta object for the attribute '{@link edu.kit.ipd.sdq.bycounter.output.ArrayCreationCount#getNumberOfDimensions <em>Number Of Dimensions</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Number Of Dimensions</em>'.
+	 * @see edu.kit.ipd.sdq.bycounter.output.ArrayCreationCount#getNumberOfDimensions()
+	 * @see #getArrayCreationCount()
+	 * @generated
+	 */
+	EAttribute getArrayCreationCount_NumberOfDimensions();
+
+	/**
+	 * Returns the meta object for the attribute '{@link edu.kit.ipd.sdq.bycounter.output.ArrayCreationCount#getArrayType <em>Array Type</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Array Type</em>'.
+	 * @see edu.kit.ipd.sdq.bycounter.output.ArrayCreationCount#getArrayType()
+	 * @see #getArrayCreationCount()
+	 * @generated
+	 */
+	EAttribute getArrayCreationCount_ArrayType();
+
+	/**
 	 * Returns the meta object for the container reference '{@link edu.kit.ipd.sdq.bycounter.output.ArrayCreationCount#getCountingResult <em>Counting Result</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -933,60 +907,6 @@ public interface OutputPackage extends EPackage {
 	 * @generated
 	 */
 	EReference getArrayCreationCount_CountingResult();
-
-	/**
-	 * Returns the meta object for class '{@link edu.kit.ipd.sdq.bycounter.output.ArrayCreation <em>Array Creation</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for class '<em>Array Creation</em>'.
-	 * @see edu.kit.ipd.sdq.bycounter.output.ArrayCreation
-	 * @generated
-	 */
-	EClass getArrayCreation();
-
-	/**
-	 * Returns the meta object for the attribute '{@link edu.kit.ipd.sdq.bycounter.output.ArrayCreation#getTypeDescriptor <em>Type Descriptor</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Type Descriptor</em>'.
-	 * @see edu.kit.ipd.sdq.bycounter.output.ArrayCreation#getTypeDescriptor()
-	 * @see #getArrayCreation()
-	 * @generated
-	 */
-	EAttribute getArrayCreation_TypeDescriptor();
-
-	/**
-	 * Returns the meta object for the attribute '{@link edu.kit.ipd.sdq.bycounter.output.ArrayCreation#getNumberOfDimensions <em>Number Of Dimensions</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Number Of Dimensions</em>'.
-	 * @see edu.kit.ipd.sdq.bycounter.output.ArrayCreation#getNumberOfDimensions()
-	 * @see #getArrayCreation()
-	 * @generated
-	 */
-	EAttribute getArrayCreation_NumberOfDimensions();
-
-	/**
-	 * Returns the meta object for the attribute '{@link edu.kit.ipd.sdq.bycounter.output.ArrayCreation#getArrayType <em>Array Type</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Array Type</em>'.
-	 * @see edu.kit.ipd.sdq.bycounter.output.ArrayCreation#getArrayType()
-	 * @see #getArrayCreation()
-	 * @generated
-	 */
-	EAttribute getArrayCreation_ArrayType();
-
-	/**
-	 * Returns the meta object for the container reference '{@link edu.kit.ipd.sdq.bycounter.output.ArrayCreation#getArrayCreationCount <em>Array Creation Count</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the container reference '<em>Array Creation Count</em>'.
-	 * @see edu.kit.ipd.sdq.bycounter.output.ArrayCreation#getArrayCreationCount()
-	 * @see #getArrayCreation()
-	 * @generated
-	 */
-	EReference getArrayCreation_ArrayCreationCount();
 
 	/**
 	 * Returns the meta object for class '{@link edu.kit.ipd.sdq.bycounter.output.MethodCallCount <em>Method Call Count</em>}'.
@@ -1172,14 +1092,6 @@ public interface OutputPackage extends EPackage {
 		EClass REQUEST_RESULT = eINSTANCE.getRequestResult();
 
 		/**
-		 * The meta object literal for the '<em><b>Request Id</b></em>' reference feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EReference REQUEST_RESULT__REQUEST_ID = eINSTANCE.getRequestResult_RequestId();
-
-		/**
 		 * The meta object literal for the '<em><b>Counting Results</b></em>' containment reference list feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
@@ -1194,24 +1106,6 @@ public interface OutputPackage extends EPackage {
 		 * @generated
 		 */
 		EReference REQUEST_RESULT__RESULT_COLLECTION = eINSTANCE.getRequestResult_ResultCollection();
-
-		/**
-		 * The meta object literal for the '{@link edu.kit.ipd.sdq.bycounter.output.impl.UUIDImpl <em>UUID</em>}' class.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @see edu.kit.ipd.sdq.bycounter.output.impl.UUIDImpl
-		 * @see edu.kit.ipd.sdq.bycounter.output.impl.OutputPackageImpl#getUUID()
-		 * @generated
-		 */
-		EClass UUID = eINSTANCE.getUUID();
-
-		/**
-		 * The meta object literal for the '<em><b>String Representation</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute UUID__STRING_REPRESENTATION = eINSTANCE.getUUID_StringRepresentation();
 
 		/**
 		 * The meta object literal for the '{@link edu.kit.ipd.sdq.bycounter.output.impl.CountingResultImpl <em>Counting Result</em>}' class.
@@ -1312,6 +1206,24 @@ public interface OutputPackage extends EPackage {
 		EReference COUNTING_RESULT__REQUEST_RESULT = eINSTANCE.getCountingResult_RequestResult();
 
 		/**
+		 * The meta object literal for the '{@link edu.kit.ipd.sdq.bycounter.output.impl.UUIDImpl <em>UUID</em>}' class.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @see edu.kit.ipd.sdq.bycounter.output.impl.UUIDImpl
+		 * @see edu.kit.ipd.sdq.bycounter.output.impl.OutputPackageImpl#getUUID()
+		 * @generated
+		 */
+		EClass UUID = eINSTANCE.getUUID();
+
+		/**
+		 * The meta object literal for the '<em><b>String Representation</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute UUID__STRING_REPRESENTATION = eINSTANCE.getUUID_StringRepresentation();
+
+		/**
 		 * The meta object literal for the '{@link edu.kit.ipd.sdq.bycounter.output.impl.ArrayCreationCountImpl <em>Array Creation Count</em>}' class.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
@@ -1322,14 +1234,6 @@ public interface OutputPackage extends EPackage {
 		EClass ARRAY_CREATION_COUNT = eINSTANCE.getArrayCreationCount();
 
 		/**
-		 * The meta object literal for the '<em><b>Array Creation</b></em>' containment reference feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EReference ARRAY_CREATION_COUNT__ARRAY_CREATION = eINSTANCE.getArrayCreationCount_ArrayCreation();
-
-		/**
 		 * The meta object literal for the '<em><b>Count</b></em>' attribute feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
@@ -1338,30 +1242,12 @@ public interface OutputPackage extends EPackage {
 		EAttribute ARRAY_CREATION_COUNT__COUNT = eINSTANCE.getArrayCreationCount_Count();
 
 		/**
-		 * The meta object literal for the '<em><b>Counting Result</b></em>' container reference feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EReference ARRAY_CREATION_COUNT__COUNTING_RESULT = eINSTANCE.getArrayCreationCount_CountingResult();
-
-		/**
-		 * The meta object literal for the '{@link edu.kit.ipd.sdq.bycounter.output.impl.ArrayCreationImpl <em>Array Creation</em>}' class.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @see edu.kit.ipd.sdq.bycounter.output.impl.ArrayCreationImpl
-		 * @see edu.kit.ipd.sdq.bycounter.output.impl.OutputPackageImpl#getArrayCreation()
-		 * @generated
-		 */
-		EClass ARRAY_CREATION = eINSTANCE.getArrayCreation();
-
-		/**
 		 * The meta object literal for the '<em><b>Type Descriptor</b></em>' attribute feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		EAttribute ARRAY_CREATION__TYPE_DESCRIPTOR = eINSTANCE.getArrayCreation_TypeDescriptor();
+		EAttribute ARRAY_CREATION_COUNT__TYPE_DESCRIPTOR = eINSTANCE.getArrayCreationCount_TypeDescriptor();
 
 		/**
 		 * The meta object literal for the '<em><b>Number Of Dimensions</b></em>' attribute feature.
@@ -1369,7 +1255,7 @@ public interface OutputPackage extends EPackage {
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		EAttribute ARRAY_CREATION__NUMBER_OF_DIMENSIONS = eINSTANCE.getArrayCreation_NumberOfDimensions();
+		EAttribute ARRAY_CREATION_COUNT__NUMBER_OF_DIMENSIONS = eINSTANCE.getArrayCreationCount_NumberOfDimensions();
 
 		/**
 		 * The meta object literal for the '<em><b>Array Type</b></em>' attribute feature.
@@ -1377,15 +1263,15 @@ public interface OutputPackage extends EPackage {
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		EAttribute ARRAY_CREATION__ARRAY_TYPE = eINSTANCE.getArrayCreation_ArrayType();
+		EAttribute ARRAY_CREATION_COUNT__ARRAY_TYPE = eINSTANCE.getArrayCreationCount_ArrayType();
 
 		/**
-		 * The meta object literal for the '<em><b>Array Creation Count</b></em>' container reference feature.
+		 * The meta object literal for the '<em><b>Counting Result</b></em>' container reference feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		EReference ARRAY_CREATION__ARRAY_CREATION_COUNT = eINSTANCE.getArrayCreation_ArrayCreationCount();
+		EReference ARRAY_CREATION_COUNT__COUNTING_RESULT = eINSTANCE.getArrayCreationCount_CountingResult();
 
 		/**
 		 * The meta object literal for the '{@link edu.kit.ipd.sdq.bycounter.output.impl.MethodCallCountImpl <em>Method Call Count</em>}' class.

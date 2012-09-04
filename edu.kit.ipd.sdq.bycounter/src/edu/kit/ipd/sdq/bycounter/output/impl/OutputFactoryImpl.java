@@ -64,10 +64,9 @@ public class OutputFactoryImpl extends EFactoryImpl implements OutputFactory {
 			case OutputPackage.OUTPUT_MODEL_REPOSITORY: return createOutputModelRepository();
 			case OutputPackage.RESULT_COLLECTION: return createResultCollection();
 			case OutputPackage.REQUEST_RESULT: return createRequestResult();
-			case OutputPackage.UUID: return createUUID();
 			case OutputPackage.COUNTING_RESULT: return createCountingResult();
+			case OutputPackage.UUID: return createUUID();
 			case OutputPackage.ARRAY_CREATION_COUNT: return createArrayCreationCount();
-			case OutputPackage.ARRAY_CREATION: return createArrayCreation();
 			case OutputPackage.METHOD_CALL_COUNT: return createMethodCallCount();
 			case OutputPackage.THREADED_COUNTING_RESULT: return createThreadedCountingResult();
 			default:
@@ -140,16 +139,6 @@ public class OutputFactoryImpl extends EFactoryImpl implements OutputFactory {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public UUID createUUID() {
-		UUIDImpl uuid = new UUIDImpl();
-		return uuid;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
 	public CountingResult createCountingResult() {
 		CountingResultImpl countingResult = new CountingResultImpl();
 		return countingResult;
@@ -160,9 +149,9 @@ public class OutputFactoryImpl extends EFactoryImpl implements OutputFactory {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public ArrayCreationCount createArrayCreationCount() {
-		ArrayCreationCountImpl arrayCreationCount = new ArrayCreationCountImpl();
-		return arrayCreationCount;
+	public UUID createUUID() {
+		UUIDImpl uuid = new UUIDImpl();
+		return uuid;
 	}
 
 	/**
@@ -170,9 +159,9 @@ public class OutputFactoryImpl extends EFactoryImpl implements OutputFactory {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public ArrayCreation createArrayCreation() {
-		ArrayCreationImpl arrayCreation = new ArrayCreationImpl();
-		return arrayCreation;
+	public ArrayCreationCount createArrayCreationCount() {
+		ArrayCreationCountImpl arrayCreationCount = new ArrayCreationCountImpl();
+		return arrayCreationCount;
 	}
 
 	/**

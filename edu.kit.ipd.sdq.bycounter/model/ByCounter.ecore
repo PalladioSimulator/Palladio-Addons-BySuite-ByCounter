@@ -18,17 +18,11 @@
       <eStructuralFeatures xsi:type="ecore:EReference" name="countingResults" ordered="false"
           upperBound="-1" eType="#//output/CountingResult" containment="true" eOpposite="#//output/CountingResult/resultCollection"/>
     </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" name="RequestResult">
-      <eStructuralFeatures xsi:type="ecore:EReference" name="requestId" ordered="false"
-          lowerBound="1" eType="#//output/UUID"/>
+    <eClassifiers xsi:type="ecore:EClass" name="RequestResult" eSuperTypes="platform:/plugin/de.uka.ipd.sdq.identifier/model/identifier.ecore#//Identifier">
       <eStructuralFeatures xsi:type="ecore:EReference" name="countingResults" ordered="false"
           upperBound="-1" eType="#//output/CountingResult" containment="true" eOpposite="#//output/CountingResult/requestResult"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="resultCollection" ordered="false"
           lowerBound="1" eType="#//output/ResultCollection" eOpposite="#//output/ResultCollection/requestResults"/>
-    </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" name="UUID">
-      <eStructuralFeatures xsi:type="ecore:EAttribute" name="stringRepresentation"
-          ordered="false" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EJavaObject"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="CountingResult">
       <eStructuralFeatures xsi:type="ecore:EReference" name="callerId" ordered="false"
@@ -75,15 +69,13 @@
       <eStructuralFeatures xsi:type="ecore:EReference" name="requestResult" ordered="false"
           eType="#//output/RequestResult" eOpposite="#//output/RequestResult/countingResults"/>
     </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="UUID">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="stringRepresentation"
+          ordered="false" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="ArrayCreationCount">
-      <eStructuralFeatures xsi:type="ecore:EReference" name="arrayCreation" ordered="false"
-          lowerBound="1" eType="#//output/ArrayCreation" containment="true" eOpposite="#//output/ArrayCreation/arrayCreationCount"/>
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="count" ordered="false"
           lowerBound="1" eType="ecore:EDataType platform:/plugin/org.eclipse.emf.ecore/model/Ecore.ecore#//ELong"/>
-      <eStructuralFeatures xsi:type="ecore:EReference" name="countingResult" ordered="false"
-          lowerBound="1" eType="#//output/CountingResult" eOpposite="#//output/CountingResult/arrayCreationCounts"/>
-    </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" name="ArrayCreation">
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="typeDescriptor" ordered="false"
           lowerBound="1" eType="ecore:EDataType platform:/plugin/org.eclipse.emf.ecore/model/Ecore.ecore#//EString">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
@@ -98,8 +90,8 @@
           <details key="documentation" value="The opcode of the array type."/>
         </eAnnotations>
       </eStructuralFeatures>
-      <eStructuralFeatures xsi:type="ecore:EReference" name="arrayCreationCount" ordered="false"
-          lowerBound="1" eType="#//output/ArrayCreationCount" eOpposite="#//output/ArrayCreationCount/arrayCreation"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="countingResult" ordered="false"
+          lowerBound="1" eType="#//output/CountingResult" eOpposite="#//output/CountingResult/arrayCreationCounts"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EEnum" name="ArrayType">
       <eLiterals name="INVALID">
@@ -212,7 +204,7 @@
     <eClassifiers xsi:type="ecore:EClass" name="InstrumentationProfileRepository"
         eSuperTypes="platform:/plugin/de.uka.ipd.sdq.identifier/model/identifier.ecore#//Identifier">
       <eStructuralFeatures xsi:type="ecore:EReference" name="executionProfile" ordered="false"
-          upperBound="-1" eType="#//input/ExecutionProfile" containment="true"/>
+          upperBound="-1" eType="#//input/ExecutionProfile" containment="true" eOpposite="#//input/ExecutionProfile/instrumentationProfileRepository"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="instrumentationProfile"
           ordered="false" upperBound="-1" eType="#//input/InstrumentationProfile"
           containment="true" eOpposite="#//input/InstrumentationProfile/intrumentationProfileRepository"/>
@@ -224,18 +216,14 @@
           <details key="documentation" value="True, when result retrieval adds up counting results recursively.&#xA;This means that results for methods that call other methods include the counts of these called methods, i.e. of the entire calling tree.&#xA;When false, only the counts for operations done in the method itself - not those by called methods - are returned."/>
         </eAnnotations>
       </eStructuralFeatures>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" name="internalClassesDefinition"
-          ordered="false" upperBound="-1" eType="ecore:EDataType platform:/plugin/org.eclipse.emf.ecore/model/Ecore.ecore#//EString">
-        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-          <details key="documentation" value="The definition of internal classes. When adding up results when retrieving results recursively, this definition allows for adding up only results for classes defined as internal. A value of null means all classes are considered internal.&#xA;For each string, specifying a '*' at the end enables prefix matching, i.e. all classes with the prefix are matched. If a string specifies a class name, non-public/internal classes are also considered internal.&#xA;&#xA;Examples:&#xA;de.uka* matches de.ukap.Test, de.uka.ipd, ...&#xA;de.uka.Test matches de.uka.Test, de.uka.Test$XXX, de.uka.Test$XXX$YYY, ...&#xA;de.uka.Test matches de.uka.Test, but not de.uka.Test.{ENUM Y}"/>
-        </eAnnotations>
-      </eStructuralFeatures>
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="waitForThreadsToFinnish"
           ordered="false" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="documentation" value="When true, execution tries to wait for all threads from instrumented methods to finish before returning."/>
         </eAnnotations>
       </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="instrumentationProfileRepository"
+          ordered="false" eType="#//input/InstrumentationProfileRepository" eOpposite="#//input/InstrumentationProfileRepository/executionProfile"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="InstrumentedCodeArea" eSuperTypes="#//input/EntityToInstrument">
       <eStructuralFeatures xsi:type="ecore:EReference" name="from" ordered="false"

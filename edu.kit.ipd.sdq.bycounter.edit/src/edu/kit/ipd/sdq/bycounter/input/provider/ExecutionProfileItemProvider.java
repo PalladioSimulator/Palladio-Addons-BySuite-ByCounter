@@ -67,7 +67,6 @@ public class ExecutionProfileItemProvider
 			super.getPropertyDescriptors(object);
 
 			addAddUpResultsRecursivelyPropertyDescriptor(object);
-			addInternalClassesDefinitionPropertyDescriptor(object);
 			addWaitForThreadsToFinnishPropertyDescriptor(object);
 		}
 		return itemPropertyDescriptors;
@@ -91,28 +90,6 @@ public class ExecutionProfileItemProvider
 				 false,
 				 false,
 				 ItemPropertyDescriptor.BOOLEAN_VALUE_IMAGE,
-				 null,
-				 null));
-	}
-
-	/**
-	 * This adds a property descriptor for the Internal Classes Definition feature.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected void addInternalClassesDefinitionPropertyDescriptor(Object object) {
-		itemPropertyDescriptors.add
-			(createItemPropertyDescriptor
-				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
-				 getResourceLocator(),
-				 getString("_UI_ExecutionProfile_internalClassesDefinition_feature"),
-				 getString("_UI_PropertyDescriptor_description", "_UI_ExecutionProfile_internalClassesDefinition_feature", "_UI_ExecutionProfile_type"),
-				 InputPackage.Literals.EXECUTION_PROFILE__INTERNAL_CLASSES_DEFINITION,
-				 true,
-				 false,
-				 false,
-				 ItemPropertyDescriptor.GENERIC_VALUE_IMAGE,
 				 null,
 				 null));
 	}
@@ -175,7 +152,6 @@ public class ExecutionProfileItemProvider
 
 		switch (notification.getFeatureID(ExecutionProfile.class)) {
 			case InputPackage.EXECUTION_PROFILE__ADD_UP_RESULTS_RECURSIVELY:
-			case InputPackage.EXECUTION_PROFILE__INTERNAL_CLASSES_DEFINITION:
 			case InputPackage.EXECUTION_PROFILE__WAIT_FOR_THREADS_TO_FINNISH:
 				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
 				return;

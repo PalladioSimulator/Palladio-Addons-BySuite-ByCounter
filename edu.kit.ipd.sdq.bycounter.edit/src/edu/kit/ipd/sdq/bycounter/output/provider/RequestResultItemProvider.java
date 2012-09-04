@@ -7,6 +7,8 @@
 package edu.kit.ipd.sdq.bycounter.output.provider;
 
 
+import de.uka.ipd.sdq.identifier.provider.IdentifierItemProvider;
+
 import edu.kit.ipd.sdq.bycounter.output.OutputFactory;
 import edu.kit.ipd.sdq.bycounter.output.OutputPackage;
 import edu.kit.ipd.sdq.bycounter.output.RequestResult;
@@ -21,14 +23,12 @@ import org.eclipse.emf.common.util.ResourceLocator;
 
 import org.eclipse.emf.ecore.EStructuralFeature;
 
-import org.eclipse.emf.edit.provider.ComposeableAdapterFactory;
 import org.eclipse.emf.edit.provider.IEditingDomainItemProvider;
 import org.eclipse.emf.edit.provider.IItemLabelProvider;
 import org.eclipse.emf.edit.provider.IItemPropertyDescriptor;
 import org.eclipse.emf.edit.provider.IItemPropertySource;
 import org.eclipse.emf.edit.provider.IStructuredItemContentProvider;
 import org.eclipse.emf.edit.provider.ITreeItemContentProvider;
-import org.eclipse.emf.edit.provider.ItemProviderAdapter;
 import org.eclipse.emf.edit.provider.ViewerNotification;
 
 /**
@@ -38,7 +38,7 @@ import org.eclipse.emf.edit.provider.ViewerNotification;
  * @generated
  */
 public class RequestResultItemProvider
-	extends ItemProviderAdapter
+	extends IdentifierItemProvider
 	implements
 		IEditingDomainItemProvider,
 		IStructuredItemContentProvider,
@@ -66,31 +66,8 @@ public class RequestResultItemProvider
 		if (itemPropertyDescriptors == null) {
 			super.getPropertyDescriptors(object);
 
-			addRequestIdPropertyDescriptor(object);
 		}
 		return itemPropertyDescriptors;
-	}
-
-	/**
-	 * This adds a property descriptor for the Request Id feature.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected void addRequestIdPropertyDescriptor(Object object) {
-		itemPropertyDescriptors.add
-			(createItemPropertyDescriptor
-				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
-				 getResourceLocator(),
-				 getString("_UI_RequestResult_requestId_feature"),
-				 getString("_UI_PropertyDescriptor_description", "_UI_RequestResult_requestId_feature", "_UI_RequestResult_type"),
-				 OutputPackage.Literals.REQUEST_RESULT__REQUEST_ID,
-				 true,
-				 false,
-				 false,
-				 null,
-				 null,
-				 null));
 	}
 
 	/**
@@ -143,7 +120,10 @@ public class RequestResultItemProvider
 	 */
 	@Override
 	public String getText(Object object) {
-		return getString("_UI_RequestResult_type");
+		String label = ((RequestResult)object).getId();
+		return label == null || label.length() == 0 ?
+			getString("_UI_RequestResult_type") :
+			getString("_UI_RequestResult_type") + " " + label;
 	}
 
 	/**
@@ -158,9 +138,6 @@ public class RequestResultItemProvider
 		updateChildren(notification);
 
 		switch (notification.getFeatureID(RequestResult.class)) {
-			case OutputPackage.REQUEST_RESULT__REQUEST_ID:
-				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
-				return;
 			case OutputPackage.REQUEST_RESULT__COUNTING_RESULTS:
 			case OutputPackage.REQUEST_RESULT__RESULT_COLLECTION:
 				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), true, false));

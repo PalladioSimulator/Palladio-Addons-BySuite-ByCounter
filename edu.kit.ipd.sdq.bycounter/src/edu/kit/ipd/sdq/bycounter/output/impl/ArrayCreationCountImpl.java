@@ -6,8 +6,8 @@
  */
 package edu.kit.ipd.sdq.bycounter.output.impl;
 
-import edu.kit.ipd.sdq.bycounter.output.ArrayCreation;
 import edu.kit.ipd.sdq.bycounter.output.ArrayCreationCount;
+import edu.kit.ipd.sdq.bycounter.output.ArrayType;
 import edu.kit.ipd.sdq.bycounter.output.CountingResult;
 import edu.kit.ipd.sdq.bycounter.output.OutputPackage;
 
@@ -29,8 +29,10 @@ import org.eclipse.emf.ecore.util.EcoreUtil;
  * <p>
  * The following features are implemented:
  * <ul>
- *   <li>{@link edu.kit.ipd.sdq.bycounter.output.impl.ArrayCreationCountImpl#getArrayCreation <em>Array Creation</em>}</li>
  *   <li>{@link edu.kit.ipd.sdq.bycounter.output.impl.ArrayCreationCountImpl#getCount <em>Count</em>}</li>
+ *   <li>{@link edu.kit.ipd.sdq.bycounter.output.impl.ArrayCreationCountImpl#getTypeDescriptor <em>Type Descriptor</em>}</li>
+ *   <li>{@link edu.kit.ipd.sdq.bycounter.output.impl.ArrayCreationCountImpl#getNumberOfDimensions <em>Number Of Dimensions</em>}</li>
+ *   <li>{@link edu.kit.ipd.sdq.bycounter.output.impl.ArrayCreationCountImpl#getArrayType <em>Array Type</em>}</li>
  *   <li>{@link edu.kit.ipd.sdq.bycounter.output.impl.ArrayCreationCountImpl#getCountingResult <em>Counting Result</em>}</li>
  * </ul>
  * </p>
@@ -38,16 +40,6 @@ import org.eclipse.emf.ecore.util.EcoreUtil;
  * @generated
  */
 public class ArrayCreationCountImpl extends EObjectImpl implements ArrayCreationCount {
-	/**
-	 * The cached value of the '{@link #getArrayCreation() <em>Array Creation</em>}' containment reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getArrayCreation()
-	 * @generated
-	 * @ordered
-	 */
-	protected ArrayCreation arrayCreation;
-
 	/**
 	 * The default value of the '{@link #getCount() <em>Count</em>}' attribute.
 	 * <!-- begin-user-doc -->
@@ -67,6 +59,66 @@ public class ArrayCreationCountImpl extends EObjectImpl implements ArrayCreation
 	 * @ordered
 	 */
 	protected long count = COUNT_EDEFAULT;
+
+	/**
+	 * The default value of the '{@link #getTypeDescriptor() <em>Type Descriptor</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getTypeDescriptor()
+	 * @generated
+	 * @ordered
+	 */
+	protected static final String TYPE_DESCRIPTOR_EDEFAULT = null;
+
+	/**
+	 * The cached value of the '{@link #getTypeDescriptor() <em>Type Descriptor</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getTypeDescriptor()
+	 * @generated
+	 * @ordered
+	 */
+	protected String typeDescriptor = TYPE_DESCRIPTOR_EDEFAULT;
+
+	/**
+	 * The default value of the '{@link #getNumberOfDimensions() <em>Number Of Dimensions</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getNumberOfDimensions()
+	 * @generated
+	 * @ordered
+	 */
+	protected static final int NUMBER_OF_DIMENSIONS_EDEFAULT = 0;
+
+	/**
+	 * The cached value of the '{@link #getNumberOfDimensions() <em>Number Of Dimensions</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getNumberOfDimensions()
+	 * @generated
+	 * @ordered
+	 */
+	protected int numberOfDimensions = NUMBER_OF_DIMENSIONS_EDEFAULT;
+
+	/**
+	 * The default value of the '{@link #getArrayType() <em>Array Type</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getArrayType()
+	 * @generated
+	 * @ordered
+	 */
+	protected static final ArrayType ARRAY_TYPE_EDEFAULT = ArrayType.INVALID;
+
+	/**
+	 * The cached value of the '{@link #getArrayType() <em>Array Type</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getArrayType()
+	 * @generated
+	 * @ordered
+	 */
+	protected ArrayType arrayType = ARRAY_TYPE_EDEFAULT;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -92,49 +144,6 @@ public class ArrayCreationCountImpl extends EObjectImpl implements ArrayCreation
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public ArrayCreation getArrayCreation() {
-		return arrayCreation;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public NotificationChain basicSetArrayCreation(ArrayCreation newArrayCreation, NotificationChain msgs) {
-		ArrayCreation oldArrayCreation = arrayCreation;
-		arrayCreation = newArrayCreation;
-		if (eNotificationRequired()) {
-			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, OutputPackage.ARRAY_CREATION_COUNT__ARRAY_CREATION, oldArrayCreation, newArrayCreation);
-			if (msgs == null) msgs = notification; else msgs.add(notification);
-		}
-		return msgs;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public void setArrayCreation(ArrayCreation newArrayCreation) {
-		if (newArrayCreation != arrayCreation) {
-			NotificationChain msgs = null;
-			if (arrayCreation != null)
-				msgs = ((InternalEObject)arrayCreation).eInverseRemove(this, OutputPackage.ARRAY_CREATION__ARRAY_CREATION_COUNT, ArrayCreation.class, msgs);
-			if (newArrayCreation != null)
-				msgs = ((InternalEObject)newArrayCreation).eInverseAdd(this, OutputPackage.ARRAY_CREATION__ARRAY_CREATION_COUNT, ArrayCreation.class, msgs);
-			msgs = basicSetArrayCreation(newArrayCreation, msgs);
-			if (msgs != null) msgs.dispatch();
-		}
-		else if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, OutputPackage.ARRAY_CREATION_COUNT__ARRAY_CREATION, newArrayCreation, newArrayCreation));
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
 	public long getCount() {
 		return count;
 	}
@@ -149,6 +158,69 @@ public class ArrayCreationCountImpl extends EObjectImpl implements ArrayCreation
 		count = newCount;
 		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, OutputPackage.ARRAY_CREATION_COUNT__COUNT, oldCount, count));
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public String getTypeDescriptor() {
+		return typeDescriptor;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setTypeDescriptor(String newTypeDescriptor) {
+		String oldTypeDescriptor = typeDescriptor;
+		typeDescriptor = newTypeDescriptor;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, OutputPackage.ARRAY_CREATION_COUNT__TYPE_DESCRIPTOR, oldTypeDescriptor, typeDescriptor));
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public int getNumberOfDimensions() {
+		return numberOfDimensions;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setNumberOfDimensions(int newNumberOfDimensions) {
+		int oldNumberOfDimensions = numberOfDimensions;
+		numberOfDimensions = newNumberOfDimensions;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, OutputPackage.ARRAY_CREATION_COUNT__NUMBER_OF_DIMENSIONS, oldNumberOfDimensions, numberOfDimensions));
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public ArrayType getArrayType() {
+		return arrayType;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setArrayType(ArrayType newArrayType) {
+		ArrayType oldArrayType = arrayType;
+		arrayType = newArrayType == null ? ARRAY_TYPE_EDEFAULT : newArrayType;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, OutputPackage.ARRAY_CREATION_COUNT__ARRAY_TYPE, oldArrayType, arrayType));
 	}
 
 	/**
@@ -200,10 +272,6 @@ public class ArrayCreationCountImpl extends EObjectImpl implements ArrayCreation
 	@Override
 	public NotificationChain eInverseAdd(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
 		switch (featureID) {
-			case OutputPackage.ARRAY_CREATION_COUNT__ARRAY_CREATION:
-				if (arrayCreation != null)
-					msgs = ((InternalEObject)arrayCreation).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - OutputPackage.ARRAY_CREATION_COUNT__ARRAY_CREATION, null, msgs);
-				return basicSetArrayCreation((ArrayCreation)otherEnd, msgs);
 			case OutputPackage.ARRAY_CREATION_COUNT__COUNTING_RESULT:
 				if (eInternalContainer() != null)
 					msgs = eBasicRemoveFromContainer(msgs);
@@ -220,8 +288,6 @@ public class ArrayCreationCountImpl extends EObjectImpl implements ArrayCreation
 	@Override
 	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
 		switch (featureID) {
-			case OutputPackage.ARRAY_CREATION_COUNT__ARRAY_CREATION:
-				return basicSetArrayCreation(null, msgs);
 			case OutputPackage.ARRAY_CREATION_COUNT__COUNTING_RESULT:
 				return basicSetCountingResult(null, msgs);
 		}
@@ -250,10 +316,14 @@ public class ArrayCreationCountImpl extends EObjectImpl implements ArrayCreation
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
-			case OutputPackage.ARRAY_CREATION_COUNT__ARRAY_CREATION:
-				return getArrayCreation();
 			case OutputPackage.ARRAY_CREATION_COUNT__COUNT:
 				return getCount();
+			case OutputPackage.ARRAY_CREATION_COUNT__TYPE_DESCRIPTOR:
+				return getTypeDescriptor();
+			case OutputPackage.ARRAY_CREATION_COUNT__NUMBER_OF_DIMENSIONS:
+				return getNumberOfDimensions();
+			case OutputPackage.ARRAY_CREATION_COUNT__ARRAY_TYPE:
+				return getArrayType();
 			case OutputPackage.ARRAY_CREATION_COUNT__COUNTING_RESULT:
 				return getCountingResult();
 		}
@@ -268,11 +338,17 @@ public class ArrayCreationCountImpl extends EObjectImpl implements ArrayCreation
 	@Override
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
-			case OutputPackage.ARRAY_CREATION_COUNT__ARRAY_CREATION:
-				setArrayCreation((ArrayCreation)newValue);
-				return;
 			case OutputPackage.ARRAY_CREATION_COUNT__COUNT:
 				setCount((Long)newValue);
+				return;
+			case OutputPackage.ARRAY_CREATION_COUNT__TYPE_DESCRIPTOR:
+				setTypeDescriptor((String)newValue);
+				return;
+			case OutputPackage.ARRAY_CREATION_COUNT__NUMBER_OF_DIMENSIONS:
+				setNumberOfDimensions((Integer)newValue);
+				return;
+			case OutputPackage.ARRAY_CREATION_COUNT__ARRAY_TYPE:
+				setArrayType((ArrayType)newValue);
 				return;
 			case OutputPackage.ARRAY_CREATION_COUNT__COUNTING_RESULT:
 				setCountingResult((CountingResult)newValue);
@@ -289,11 +365,17 @@ public class ArrayCreationCountImpl extends EObjectImpl implements ArrayCreation
 	@Override
 	public void eUnset(int featureID) {
 		switch (featureID) {
-			case OutputPackage.ARRAY_CREATION_COUNT__ARRAY_CREATION:
-				setArrayCreation((ArrayCreation)null);
-				return;
 			case OutputPackage.ARRAY_CREATION_COUNT__COUNT:
 				setCount(COUNT_EDEFAULT);
+				return;
+			case OutputPackage.ARRAY_CREATION_COUNT__TYPE_DESCRIPTOR:
+				setTypeDescriptor(TYPE_DESCRIPTOR_EDEFAULT);
+				return;
+			case OutputPackage.ARRAY_CREATION_COUNT__NUMBER_OF_DIMENSIONS:
+				setNumberOfDimensions(NUMBER_OF_DIMENSIONS_EDEFAULT);
+				return;
+			case OutputPackage.ARRAY_CREATION_COUNT__ARRAY_TYPE:
+				setArrayType(ARRAY_TYPE_EDEFAULT);
 				return;
 			case OutputPackage.ARRAY_CREATION_COUNT__COUNTING_RESULT:
 				setCountingResult((CountingResult)null);
@@ -310,10 +392,14 @@ public class ArrayCreationCountImpl extends EObjectImpl implements ArrayCreation
 	@Override
 	public boolean eIsSet(int featureID) {
 		switch (featureID) {
-			case OutputPackage.ARRAY_CREATION_COUNT__ARRAY_CREATION:
-				return arrayCreation != null;
 			case OutputPackage.ARRAY_CREATION_COUNT__COUNT:
 				return count != COUNT_EDEFAULT;
+			case OutputPackage.ARRAY_CREATION_COUNT__TYPE_DESCRIPTOR:
+				return TYPE_DESCRIPTOR_EDEFAULT == null ? typeDescriptor != null : !TYPE_DESCRIPTOR_EDEFAULT.equals(typeDescriptor);
+			case OutputPackage.ARRAY_CREATION_COUNT__NUMBER_OF_DIMENSIONS:
+				return numberOfDimensions != NUMBER_OF_DIMENSIONS_EDEFAULT;
+			case OutputPackage.ARRAY_CREATION_COUNT__ARRAY_TYPE:
+				return arrayType != ARRAY_TYPE_EDEFAULT;
 			case OutputPackage.ARRAY_CREATION_COUNT__COUNTING_RESULT:
 				return getCountingResult() != null;
 		}
@@ -332,6 +418,12 @@ public class ArrayCreationCountImpl extends EObjectImpl implements ArrayCreation
 		StringBuffer result = new StringBuffer(super.toString());
 		result.append(" (count: ");
 		result.append(count);
+		result.append(", typeDescriptor: ");
+		result.append(typeDescriptor);
+		result.append(", numberOfDimensions: ");
+		result.append(numberOfDimensions);
+		result.append(", arrayType: ");
+		result.append(arrayType);
 		result.append(')');
 		return result.toString();
 	}

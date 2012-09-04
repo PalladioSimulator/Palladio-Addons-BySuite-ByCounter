@@ -8,7 +8,6 @@ package edu.kit.ipd.sdq.bycounter.output.provider;
 
 
 import edu.kit.ipd.sdq.bycounter.output.ArrayCreationCount;
-import edu.kit.ipd.sdq.bycounter.output.OutputFactory;
 import edu.kit.ipd.sdq.bycounter.output.OutputPackage;
 
 import java.util.Collection;
@@ -18,8 +17,6 @@ import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.common.notify.Notification;
 
 import org.eclipse.emf.common.util.ResourceLocator;
-
-import org.eclipse.emf.ecore.EStructuralFeature;
 
 import org.eclipse.emf.edit.provider.ComposeableAdapterFactory;
 import org.eclipse.emf.edit.provider.IEditingDomainItemProvider;
@@ -68,6 +65,9 @@ public class ArrayCreationCountItemProvider
 			super.getPropertyDescriptors(object);
 
 			addCountPropertyDescriptor(object);
+			addTypeDescriptorPropertyDescriptor(object);
+			addNumberOfDimensionsPropertyDescriptor(object);
+			addArrayTypePropertyDescriptor(object);
 		}
 		return itemPropertyDescriptors;
 	}
@@ -95,33 +95,69 @@ public class ArrayCreationCountItemProvider
 	}
 
 	/**
-	 * This specifies how to implement {@link #getChildren} and is used to deduce an appropriate feature for an
-	 * {@link org.eclipse.emf.edit.command.AddCommand}, {@link org.eclipse.emf.edit.command.RemoveCommand} or
-	 * {@link org.eclipse.emf.edit.command.MoveCommand} in {@link #createCommand}.
+	 * This adds a property descriptor for the Type Descriptor feature.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	@Override
-	public Collection<? extends EStructuralFeature> getChildrenFeatures(Object object) {
-		if (childrenFeatures == null) {
-			super.getChildrenFeatures(object);
-			childrenFeatures.add(OutputPackage.Literals.ARRAY_CREATION_COUNT__ARRAY_CREATION);
-		}
-		return childrenFeatures;
+	protected void addTypeDescriptorPropertyDescriptor(Object object) {
+		itemPropertyDescriptors.add
+			(createItemPropertyDescriptor
+				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
+				 getResourceLocator(),
+				 getString("_UI_ArrayCreationCount_typeDescriptor_feature"),
+				 getString("_UI_PropertyDescriptor_description", "_UI_ArrayCreationCount_typeDescriptor_feature", "_UI_ArrayCreationCount_type"),
+				 OutputPackage.Literals.ARRAY_CREATION_COUNT__TYPE_DESCRIPTOR,
+				 true,
+				 false,
+				 false,
+				 ItemPropertyDescriptor.GENERIC_VALUE_IMAGE,
+				 null,
+				 null));
 	}
 
 	/**
+	 * This adds a property descriptor for the Number Of Dimensions feature.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	@Override
-	protected EStructuralFeature getChildFeature(Object object, Object child) {
-		// Check the type of the specified child object and return the proper feature to use for
-		// adding (see {@link AddCommand}) it as a child.
+	protected void addNumberOfDimensionsPropertyDescriptor(Object object) {
+		itemPropertyDescriptors.add
+			(createItemPropertyDescriptor
+				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
+				 getResourceLocator(),
+				 getString("_UI_ArrayCreationCount_numberOfDimensions_feature"),
+				 getString("_UI_PropertyDescriptor_description", "_UI_ArrayCreationCount_numberOfDimensions_feature", "_UI_ArrayCreationCount_type"),
+				 OutputPackage.Literals.ARRAY_CREATION_COUNT__NUMBER_OF_DIMENSIONS,
+				 true,
+				 false,
+				 false,
+				 ItemPropertyDescriptor.INTEGRAL_VALUE_IMAGE,
+				 null,
+				 null));
+	}
 
-		return super.getChildFeature(object, child);
+	/**
+	 * This adds a property descriptor for the Array Type feature.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	protected void addArrayTypePropertyDescriptor(Object object) {
+		itemPropertyDescriptors.add
+			(createItemPropertyDescriptor
+				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
+				 getResourceLocator(),
+				 getString("_UI_ArrayCreationCount_arrayType_feature"),
+				 getString("_UI_PropertyDescriptor_description", "_UI_ArrayCreationCount_arrayType_feature", "_UI_ArrayCreationCount_type"),
+				 OutputPackage.Literals.ARRAY_CREATION_COUNT__ARRAY_TYPE,
+				 true,
+				 false,
+				 false,
+				 ItemPropertyDescriptor.GENERIC_VALUE_IMAGE,
+				 null,
+				 null));
 	}
 
 	/**
@@ -160,10 +196,10 @@ public class ArrayCreationCountItemProvider
 
 		switch (notification.getFeatureID(ArrayCreationCount.class)) {
 			case OutputPackage.ARRAY_CREATION_COUNT__COUNT:
+			case OutputPackage.ARRAY_CREATION_COUNT__TYPE_DESCRIPTOR:
+			case OutputPackage.ARRAY_CREATION_COUNT__NUMBER_OF_DIMENSIONS:
+			case OutputPackage.ARRAY_CREATION_COUNT__ARRAY_TYPE:
 				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
-				return;
-			case OutputPackage.ARRAY_CREATION_COUNT__ARRAY_CREATION:
-				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), true, false));
 				return;
 		}
 		super.notifyChanged(notification);
@@ -179,11 +215,6 @@ public class ArrayCreationCountItemProvider
 	@Override
 	protected void collectNewChildDescriptors(Collection<Object> newChildDescriptors, Object object) {
 		super.collectNewChildDescriptors(newChildDescriptors, object);
-
-		newChildDescriptors.add
-			(createChildParameter
-				(OutputPackage.Literals.ARRAY_CREATION_COUNT__ARRAY_CREATION,
-				 OutputFactory.eINSTANCE.createArrayCreation()));
 	}
 
 	/**

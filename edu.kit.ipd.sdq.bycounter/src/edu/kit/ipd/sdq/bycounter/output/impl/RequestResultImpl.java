@@ -6,11 +6,12 @@
  */
 package edu.kit.ipd.sdq.bycounter.output.impl;
 
+import de.uka.ipd.sdq.identifier.impl.IdentifierImpl;
+
 import edu.kit.ipd.sdq.bycounter.output.CountingResult;
 import edu.kit.ipd.sdq.bycounter.output.OutputPackage;
 import edu.kit.ipd.sdq.bycounter.output.RequestResult;
 import edu.kit.ipd.sdq.bycounter.output.ResultCollection;
-import edu.kit.ipd.sdq.bycounter.output.UUID;
 
 import java.util.Collection;
 
@@ -23,7 +24,6 @@ import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
 
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
-import org.eclipse.emf.ecore.impl.EObjectImpl;
 
 import org.eclipse.emf.ecore.util.EObjectContainmentWithInverseEList;
 import org.eclipse.emf.ecore.util.EcoreUtil;
@@ -36,7 +36,6 @@ import org.eclipse.emf.ecore.util.InternalEList;
  * <p>
  * The following features are implemented:
  * <ul>
- *   <li>{@link edu.kit.ipd.sdq.bycounter.output.impl.RequestResultImpl#getRequestId <em>Request Id</em>}</li>
  *   <li>{@link edu.kit.ipd.sdq.bycounter.output.impl.RequestResultImpl#getCountingResults <em>Counting Results</em>}</li>
  *   <li>{@link edu.kit.ipd.sdq.bycounter.output.impl.RequestResultImpl#getResultCollection <em>Result Collection</em>}</li>
  * </ul>
@@ -44,17 +43,7 @@ import org.eclipse.emf.ecore.util.InternalEList;
  *
  * @generated
  */
-public class RequestResultImpl extends EObjectImpl implements RequestResult {
-	/**
-	 * The cached value of the '{@link #getRequestId() <em>Request Id</em>}' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getRequestId()
-	 * @generated
-	 * @ordered
-	 */
-	protected UUID requestId;
-
+public class RequestResultImpl extends IdentifierImpl implements RequestResult {
 	/**
 	 * The cached value of the '{@link #getCountingResults() <em>Counting Results</em>}' containment reference list.
 	 * <!-- begin-user-doc -->
@@ -82,44 +71,6 @@ public class RequestResultImpl extends EObjectImpl implements RequestResult {
 	@Override
 	protected EClass eStaticClass() {
 		return OutputPackage.Literals.REQUEST_RESULT;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public UUID getRequestId() {
-		if (requestId != null && requestId.eIsProxy()) {
-			InternalEObject oldRequestId = (InternalEObject)requestId;
-			requestId = (UUID)eResolveProxy(oldRequestId);
-			if (requestId != oldRequestId) {
-				if (eNotificationRequired())
-					eNotify(new ENotificationImpl(this, Notification.RESOLVE, OutputPackage.REQUEST_RESULT__REQUEST_ID, oldRequestId, requestId));
-			}
-		}
-		return requestId;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public UUID basicGetRequestId() {
-		return requestId;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public void setRequestId(UUID newRequestId) {
-		UUID oldRequestId = requestId;
-		requestId = newRequestId;
-		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, OutputPackage.REQUEST_RESULT__REQUEST_ID, oldRequestId, requestId));
 	}
 
 	/**
@@ -232,9 +183,6 @@ public class RequestResultImpl extends EObjectImpl implements RequestResult {
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
-			case OutputPackage.REQUEST_RESULT__REQUEST_ID:
-				if (resolve) return getRequestId();
-				return basicGetRequestId();
 			case OutputPackage.REQUEST_RESULT__COUNTING_RESULTS:
 				return getCountingResults();
 			case OutputPackage.REQUEST_RESULT__RESULT_COLLECTION:
@@ -252,9 +200,6 @@ public class RequestResultImpl extends EObjectImpl implements RequestResult {
 	@Override
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
-			case OutputPackage.REQUEST_RESULT__REQUEST_ID:
-				setRequestId((UUID)newValue);
-				return;
 			case OutputPackage.REQUEST_RESULT__COUNTING_RESULTS:
 				getCountingResults().clear();
 				getCountingResults().addAll((Collection<? extends CountingResult>)newValue);
@@ -274,9 +219,6 @@ public class RequestResultImpl extends EObjectImpl implements RequestResult {
 	@Override
 	public void eUnset(int featureID) {
 		switch (featureID) {
-			case OutputPackage.REQUEST_RESULT__REQUEST_ID:
-				setRequestId((UUID)null);
-				return;
 			case OutputPackage.REQUEST_RESULT__COUNTING_RESULTS:
 				getCountingResults().clear();
 				return;
@@ -295,8 +237,6 @@ public class RequestResultImpl extends EObjectImpl implements RequestResult {
 	@Override
 	public boolean eIsSet(int featureID) {
 		switch (featureID) {
-			case OutputPackage.REQUEST_RESULT__REQUEST_ID:
-				return requestId != null;
 			case OutputPackage.REQUEST_RESULT__COUNTING_RESULTS:
 				return countingResults != null && !countingResults.isEmpty();
 			case OutputPackage.REQUEST_RESULT__RESULT_COLLECTION:

@@ -309,22 +309,22 @@ public interface InputPackage extends EPackage {
 	int EXECUTION_PROFILE__ADD_UP_RESULTS_RECURSIVELY = 0;
 
 	/**
-	 * The feature id for the '<em><b>Internal Classes Definition</b></em>' attribute list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int EXECUTION_PROFILE__INTERNAL_CLASSES_DEFINITION = 1;
-
-	/**
 	 * The feature id for the '<em><b>Wait For Threads To Finnish</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int EXECUTION_PROFILE__WAIT_FOR_THREADS_TO_FINNISH = 2;
+	int EXECUTION_PROFILE__WAIT_FOR_THREADS_TO_FINNISH = 1;
+
+	/**
+	 * The feature id for the '<em><b>Instrumentation Profile Repository</b></em>' container reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int EXECUTION_PROFILE__INSTRUMENTATION_PROFILE_REPOSITORY = 2;
 
 	/**
 	 * The number of structural features of the '<em>Execution Profile</em>' class.
@@ -766,17 +766,6 @@ public interface InputPackage extends EPackage {
 	EAttribute getExecutionProfile_AddUpResultsRecursively();
 
 	/**
-	 * Returns the meta object for the attribute list '{@link edu.kit.ipd.sdq.bycounter.input.ExecutionProfile#getInternalClassesDefinition <em>Internal Classes Definition</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute list '<em>Internal Classes Definition</em>'.
-	 * @see edu.kit.ipd.sdq.bycounter.input.ExecutionProfile#getInternalClassesDefinition()
-	 * @see #getExecutionProfile()
-	 * @generated
-	 */
-	EAttribute getExecutionProfile_InternalClassesDefinition();
-
-	/**
 	 * Returns the meta object for the attribute '{@link edu.kit.ipd.sdq.bycounter.input.ExecutionProfile#isWaitForThreadsToFinnish <em>Wait For Threads To Finnish</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -786,6 +775,17 @@ public interface InputPackage extends EPackage {
 	 * @generated
 	 */
 	EAttribute getExecutionProfile_WaitForThreadsToFinnish();
+
+	/**
+	 * Returns the meta object for the container reference '{@link edu.kit.ipd.sdq.bycounter.input.ExecutionProfile#getInstrumentationProfileRepository <em>Instrumentation Profile Repository</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the container reference '<em>Instrumentation Profile Repository</em>'.
+	 * @see edu.kit.ipd.sdq.bycounter.input.ExecutionProfile#getInstrumentationProfileRepository()
+	 * @see #getExecutionProfile()
+	 * @generated
+	 */
+	EReference getExecutionProfile_InstrumentationProfileRepository();
 
 	/**
 	 * Returns the meta object for class '{@link edu.kit.ipd.sdq.bycounter.input.InstrumentedCodeArea <em>Instrumented Code Area</em>}'.
@@ -1147,20 +1147,20 @@ public interface InputPackage extends EPackage {
 		EAttribute EXECUTION_PROFILE__ADD_UP_RESULTS_RECURSIVELY = eINSTANCE.getExecutionProfile_AddUpResultsRecursively();
 
 		/**
-		 * The meta object literal for the '<em><b>Internal Classes Definition</b></em>' attribute list feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute EXECUTION_PROFILE__INTERNAL_CLASSES_DEFINITION = eINSTANCE.getExecutionProfile_InternalClassesDefinition();
-
-		/**
 		 * The meta object literal for the '<em><b>Wait For Threads To Finnish</b></em>' attribute feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
 		EAttribute EXECUTION_PROFILE__WAIT_FOR_THREADS_TO_FINNISH = eINSTANCE.getExecutionProfile_WaitForThreadsToFinnish();
+
+		/**
+		 * The meta object literal for the '<em><b>Instrumentation Profile Repository</b></em>' container reference feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference EXECUTION_PROFILE__INSTRUMENTATION_PROFILE_REPOSITORY = eINSTANCE.getExecutionProfile_InstrumentationProfileRepository();
 
 		/**
 		 * The meta object literal for the '{@link edu.kit.ipd.sdq.bycounter.input.impl.InstrumentedCodeAreaImpl <em>Instrumented Code Area</em>}' class.

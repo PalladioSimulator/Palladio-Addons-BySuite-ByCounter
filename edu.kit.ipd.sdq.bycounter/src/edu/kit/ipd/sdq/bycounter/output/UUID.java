@@ -34,12 +34,12 @@ public interface UUID extends EObject {
 	 * </p>
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>String Representation</em>' attribute.
-	 * @see #setStringRepresentation(Object)
+	 * @see #setStringRepresentation(String)
 	 * @see edu.kit.ipd.sdq.bycounter.output.OutputPackage#getUUID_StringRepresentation()
 	 * @model required="true" ordered="false"
 	 * @generated
 	 */
-	Object getStringRepresentation();
+	String getStringRepresentation();
 
 	/**
 	 * Sets the value of the '{@link edu.kit.ipd.sdq.bycounter.output.UUID#getStringRepresentation <em>String Representation</em>}' attribute.
@@ -49,6 +49,6 @@ public interface UUID extends EObject {
 	 * @see #getStringRepresentation()
 	 * @generated
 	 */
-	void setStringRepresentation(Object value);
+	void setStringRepresentation(String value);
 
 } // UUID

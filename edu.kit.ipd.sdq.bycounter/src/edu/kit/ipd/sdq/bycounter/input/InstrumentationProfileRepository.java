@@ -31,6 +31,7 @@ public interface InstrumentationProfileRepository extends Identifier {
 	/**
 	 * Returns the value of the '<em><b>Execution Profile</b></em>' containment reference list.
 	 * The list contents are of type {@link edu.kit.ipd.sdq.bycounter.input.ExecutionProfile}.
+	 * It is bidirectional and its opposite is '{@link edu.kit.ipd.sdq.bycounter.input.ExecutionProfile#getInstrumentationProfileRepository <em>Instrumentation Profile Repository</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <p>
 	 * If the meaning of the '<em>Execution Profile</em>' containment reference list isn't clear,
@@ -39,7 +40,8 @@ public interface InstrumentationProfileRepository extends Identifier {
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Execution Profile</em>' containment reference list.
 	 * @see edu.kit.ipd.sdq.bycounter.input.InputPackage#getInstrumentationProfileRepository_ExecutionProfile()
-	 * @model containment="true" ordered="false"
+	 * @see edu.kit.ipd.sdq.bycounter.input.ExecutionProfile#getInstrumentationProfileRepository
+	 * @model opposite="instrumentationProfileRepository" containment="true" ordered="false"
 	 * @generated
 	 */
 	EList<ExecutionProfile> getExecutionProfile();

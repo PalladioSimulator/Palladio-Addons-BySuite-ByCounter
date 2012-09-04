@@ -53,15 +53,6 @@ public interface OutputFactory extends EFactory {
 	RequestResult createRequestResult();
 
 	/**
-	 * Returns a new object of class '<em>UUID</em>'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>UUID</em>'.
-	 * @generated
-	 */
-	UUID createUUID();
-
-	/**
 	 * Returns a new object of class '<em>Counting Result</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -71,6 +62,15 @@ public interface OutputFactory extends EFactory {
 	CountingResult createCountingResult();
 
 	/**
+	 * Returns a new object of class '<em>UUID</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>UUID</em>'.
+	 * @generated
+	 */
+	UUID createUUID();
+
+	/**
 	 * Returns a new object of class '<em>Array Creation Count</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -78,15 +78,6 @@ public interface OutputFactory extends EFactory {
 	 * @generated
 	 */
 	ArrayCreationCount createArrayCreationCount();
-
-	/**
-	 * Returns a new object of class '<em>Array Creation</em>'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Array Creation</em>'.
-	 * @generated
-	 */
-	ArrayCreation createArrayCreation();
 
 	/**
 	 * Returns a new object of class '<em>Method Call Count</em>'.
