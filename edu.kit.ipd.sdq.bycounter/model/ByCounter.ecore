@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<ecore:EPackage xmi:version="2.0"
-    xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="bycounter"
-    nsURI="http://sdq.ipd.kit.edu/ByCounterModels/0.3" nsPrefix="ByCounter">
+<ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="bycounter" nsURI="http://sdq.ipd.kit.edu/ByCounterModels/0.3"
+    nsPrefix="ByCounter">
   <eSubpackages name="output" nsURI="http://sdq.ipd.kit.edu/ByCounterModels/Output/0.3"
       nsPrefix="ByCounter.Output">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
@@ -170,7 +169,8 @@
         </eAnnotations>
       </eStructuralFeatures>
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="provideJoinThreadsAbility"
-          ordered="false" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean">
+          ordered="false" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"
+          defaultValueLiteral="true">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="documentation" value="When true, allows ByCounter to wait for all threads spawned from instrumented methods to complete."/>
         </eAnnotations>
@@ -182,7 +182,8 @@
         </eAnnotations>
       </eStructuralFeatures>
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="provideOnlineSectionActiveUpdates"
-          ordered="false" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean">
+          ordered="false" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"
+          defaultValueLiteral="true">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="documentation" value=" When true, the instrumentation for providing updates on the execution of user specified code sections is inserted."/>
         </eAnnotations>
@@ -211,13 +212,15 @@
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="ExecutionProfile">
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="addUpResultsRecursively"
-          ordered="false" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean">
+          ordered="false" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"
+          defaultValueLiteral="true">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="documentation" value="True, when result retrieval adds up counting results recursively.&#xA;This means that results for methods that call other methods include the counts of these called methods, i.e. of the entire calling tree.&#xA;When false, only the counts for operations done in the method itself - not those by called methods - are returned."/>
         </eAnnotations>
       </eStructuralFeatures>
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="waitForThreadsToFinnish"
-          ordered="false" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean">
+          ordered="false" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"
+          defaultValueLiteral="true">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="documentation" value="When true, execution tries to wait for all threads from instrumented methods to finish before returning."/>
         </eAnnotations>

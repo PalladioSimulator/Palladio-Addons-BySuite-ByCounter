@@ -29,6 +29,7 @@ import org.eclipse.emf.ecore.EObject;
 public interface ExecutionProfile extends EObject {
 	/**
 	 * Returns the value of the '<em><b>Add Up Results Recursively</b></em>' attribute.
+	 * The default value is <code>"true"</code>.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * <!-- begin-model-doc -->
@@ -39,7 +40,7 @@ public interface ExecutionProfile extends EObject {
 	 * @return the value of the '<em>Add Up Results Recursively</em>' attribute.
 	 * @see #setAddUpResultsRecursively(boolean)
 	 * @see edu.kit.ipd.sdq.bycounter.input.InputPackage#getExecutionProfile_AddUpResultsRecursively()
-	 * @model required="true" ordered="false"
+	 * @model default="true" required="true" ordered="false"
 	 * @generated
 	 */
 	boolean isAddUpResultsRecursively();
@@ -56,6 +57,7 @@ public interface ExecutionProfile extends EObject {
 
 	/**
 	 * Returns the value of the '<em><b>Wait For Threads To Finnish</b></em>' attribute.
+	 * The default value is <code>"true"</code>.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * <!-- begin-model-doc -->
@@ -64,7 +66,7 @@ public interface ExecutionProfile extends EObject {
 	 * @return the value of the '<em>Wait For Threads To Finnish</em>' attribute.
 	 * @see #setWaitForThreadsToFinnish(boolean)
 	 * @see edu.kit.ipd.sdq.bycounter.input.InputPackage#getExecutionProfile_WaitForThreadsToFinnish()
-	 * @model required="true" ordered="false"
+	 * @model default="true" required="true" ordered="false"
 	 * @generated
 	 */
 	boolean isWaitForThreadsToFinnish();

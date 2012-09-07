@@ -228,6 +228,7 @@ public interface InstrumentationProfile extends Identifier {
 
 	/**
 	 * Returns the value of the '<em><b>Provide Join Threads Ability</b></em>' attribute.
+	 * The default value is <code>"true"</code>.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * <!-- begin-model-doc -->
@@ -236,7 +237,7 @@ public interface InstrumentationProfile extends Identifier {
 	 * @return the value of the '<em>Provide Join Threads Ability</em>' attribute.
 	 * @see #setProvideJoinThreadsAbility(boolean)
 	 * @see edu.kit.ipd.sdq.bycounter.input.InputPackage#getInstrumentationProfile_ProvideJoinThreadsAbility()
-	 * @model required="true" ordered="false"
+	 * @model default="true" required="true" ordered="false"
 	 * @generated
 	 */
 	boolean isProvideJoinThreadsAbility();
@@ -278,6 +279,7 @@ public interface InstrumentationProfile extends Identifier {
 
 	/**
 	 * Returns the value of the '<em><b>Provide Online Section Active Updates</b></em>' attribute.
+	 * The default value is <code>"true"</code>.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * <!-- begin-model-doc -->
@@ -286,7 +288,7 @@ public interface InstrumentationProfile extends Identifier {
 	 * @return the value of the '<em>Provide Online Section Active Updates</em>' attribute.
 	 * @see #setProvideOnlineSectionActiveUpdates(boolean)
 	 * @see edu.kit.ipd.sdq.bycounter.input.InputPackage#getInstrumentationProfile_ProvideOnlineSectionActiveUpdates()
-	 * @model required="true" ordered="false"
+	 * @model default="true" required="true" ordered="false"
 	 * @generated
 	 */
 	boolean isProvideOnlineSectionActiveUpdates();

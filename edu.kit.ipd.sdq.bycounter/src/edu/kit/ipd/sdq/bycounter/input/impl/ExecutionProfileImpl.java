@@ -45,7 +45,7 @@ public class ExecutionProfileImpl extends EObjectImpl implements ExecutionProfil
 	 * @generated
 	 * @ordered
 	 */
-	protected static final boolean ADD_UP_RESULTS_RECURSIVELY_EDEFAULT = false;
+	protected static final boolean ADD_UP_RESULTS_RECURSIVELY_EDEFAULT = true;
 
 	/**
 	 * The cached value of the '{@link #isAddUpResultsRecursively() <em>Add Up Results Recursively</em>}' attribute.
@@ -65,7 +65,7 @@ public class ExecutionProfileImpl extends EObjectImpl implements ExecutionProfil
 	 * @generated
 	 * @ordered
 	 */
-	protected static final boolean WAIT_FOR_THREADS_TO_FINNISH_EDEFAULT = false;
+	protected static final boolean WAIT_FOR_THREADS_TO_FINNISH_EDEFAULT = true;
 
 	/**
 	 * The cached value of the '{@link #isWaitForThreadsToFinnish() <em>Wait For Threads To Finnish</em>}' attribute.

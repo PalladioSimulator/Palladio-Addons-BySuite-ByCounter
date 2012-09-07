@@ -176,7 +176,7 @@ public class InstrumentationProfileImpl extends IdentifierImpl implements Instru
 	 * @generated
 	 * @ordered
 	 */
-	protected static final boolean PROVIDE_JOIN_THREADS_ABILITY_EDEFAULT = false;
+	protected static final boolean PROVIDE_JOIN_THREADS_ABILITY_EDEFAULT = true;
 
 	/**
 	 * The cached value of the '{@link #isProvideJoinThreadsAbility() <em>Provide Join Threads Ability</em>}' attribute.
@@ -216,7 +216,7 @@ public class InstrumentationProfileImpl extends IdentifierImpl implements Instru
 	 * @generated
 	 * @ordered
 	 */
-	protected static final boolean PROVIDE_ONLINE_SECTION_ACTIVE_UPDATES_EDEFAULT = false;
+	protected static final boolean PROVIDE_ONLINE_SECTION_ACTIVE_UPDATES_EDEFAULT = true;
 
 	/**
 	 * The cached value of the '{@link #isProvideOnlineSectionActiveUpdates() <em>Provide Online Section Active Updates</em>}' attribute.
