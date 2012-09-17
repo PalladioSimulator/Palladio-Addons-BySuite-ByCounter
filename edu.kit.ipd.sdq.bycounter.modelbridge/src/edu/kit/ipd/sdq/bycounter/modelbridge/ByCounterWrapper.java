@@ -548,4 +548,9 @@ public class ByCounterWrapper {
 			return ArrayType.INVALID;
 		}
 	}
+	
+	public EntityToInstrument queryActiveSection(long threadId) {
+		//TODO: Implement query in model bridge
+		throw new UnsupportedOperationException("Querying the current active section is not supported yet.");
+	}
 }
