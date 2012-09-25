@@ -74,11 +74,31 @@ public class ByCounterWrapper {
 				log.info("Notification received: " + updateData);
 				// compare the observation with the expectation
 				CountingResult observation = ((CountingResultSectionExecutionUpdate)updateData).sectionResult;
+
+				//TODO Stored updated data in results collection; Might be possible similar to the following code taken from #generateResults
+				// convert request results
+				final SortedSet<RequestResult> requestResults;
+				requestResults = resultCollection.getRequestResults();
+				for(RequestResult rr : requestResults) {
+					edu.kit.ipd.sdq.bycounter.output.RequestResult req = mapRequestResult(rr, entitiesToInstrumentIdMap);
+					currentRun.getRequestResults().add(req);
+				}
+				
+				// convert ordinary results including threaded counting results
+				final SortedSet<CountingResult> results;
+				results = resultCollection.getCountingResults();
+
+				edu.kit.ipd.sdq.bycounter.output.CountingResult cr;
+				for(CountingResult result : results)  { 
+					cr = mapCountingResult(result, entitiesToInstrumentIdMap);
+					currentRun.getCountingResults().add(cr);
+				}
 			} else if(updateData instanceof CountingResultCompleteMethodExecutionUpdate) {
 				// skip complete result
 			}else {
 				throw new IllegalArgumentException("Incorrect updateData type.");
 			}
+			
 		}
 	}
 
@@ -105,12 +125,12 @@ public class ByCounterWrapper {
 	private Map<java.util.UUID, EntityToInstrument> entitiesToInstrumentIdMap;
 	/** Object used to handle online updates by ByCounter. */
 	private UpdateObserver updateObserver;
-	/** {@link ResultCollection} for the current ByCounter run. Is set in 
-	 * {@link #execute(Method, Object, Object[])}.*/
+	/** {@link ResultCollection} for the current ByCounter run. It is set on construction time. It is not set in 
+	 * {@link #execute(Method, Object, Object[])} in order to allow external applications to listen on changes during execution.*/
 	private ResultCollection currentRun;
 	
 	static {
-		// initialise the gastTypeJavaTypeMap
+		// initialize the gastTypeJavaTypeMap
 		gastTypeJavaTypeMap = new HashMap<String, JavaTypeEnum>();
 		gastTypeJavaTypeMap.put("boolean", JavaTypeEnum.Boolean);
 		gastTypeJavaTypeMap.put("byte", JavaTypeEnum.Byte);
@@ -123,12 +143,16 @@ public class ByCounterWrapper {
 		gastTypeJavaTypeMap.put("void", JavaTypeEnum.Void);
 	}
 
+	/**Initializes the wrapper.
+	 */
 	public ByCounterWrapper() {
 		this.bycounter = new BytecodeCounter();
 		this.currentRun = outputFactory.createResultCollection();
 		this.updateObserver = new UpdateObserver();
+		CountingResultCollector.getInstance().addObserver(updateObserver);
 		this.instrumentationProfile = null;
 		this.availableGastRootNodes = new LinkedList<Root>();
+		this.currentRun = outputFactory.createResultCollection();
 	}
 
 	/**Gets the current configuration for the instrumentation.
@@ -298,7 +322,7 @@ public class ByCounterWrapper {
 	/**
 	 * Uses ByCounter as setup using 
 	 * {@link #setInstrumentationConfiguration(InstrumentationProfile)} to execute 
-	 * the specified method
+	 * the specified method. The observed results can be accessed via {@link #getResultCollection()}.
 	 * @param m Method to execute.
 	 * @param target Object on which the method is executed.
 	 * @param params Arguments of the method to execute.
@@ -307,8 +331,6 @@ public class ByCounterWrapper {
 		MethodDescriptor methodToExecute = new MethodDescriptor(
 				m.getSurroundingClass().getQualifiedName(),
 				ByCounterWrapper.constructSignature(m));
-		this.currentRun = outputFactory.createResultCollection();
-
 		this.bycounter.getExecutionSettings().setAddUpResultsRecursively(this.instrumentationProfile.isInstrumentRecursively());
 		return this.bycounter.execute(methodToExecute, target, params).returnValue;
 	}
@@ -324,25 +346,20 @@ public class ByCounterWrapper {
 		return this.bycounter.instantiate(methodToExecute);
 	}
 	
-	/**
-	 * After executing instrumented code ({@link #execute(Method, Object[])}), 
-	 * this method retrieves the ByCounter results and saves them in the 
-	 * OutputModel.
-	 * @return An instance of {@link MeasurementRun} filled with all results 
-	 * created by executing the ByCounter instrumented code using 
-	 * {@link #execute(Method, Object[])}
-	 * since the last call to this method.
+	/**Provides a copy of all results stored in the {@link CountingResultCollector} singleton instance.
+	 * @return Copy of results.
 	 */
 	public ResultCollection generateResult() {
 		final de.uka.ipd.sdq.ByCounter.results.ResultCollection resultCollection = 
 				CountingResultCollector.getInstance().retrieveAllCountingResults();
-
+		ResultCollection copy = OutputFactory.eINSTANCE.createResultCollection();
+		
 		// convert request results
 		final SortedSet<RequestResult> requestResults;
 		requestResults = resultCollection.getRequestResults();
 		for(RequestResult rr : requestResults) {
 			edu.kit.ipd.sdq.bycounter.output.RequestResult req = mapRequestResult(rr, entitiesToInstrumentIdMap);
-			currentRun.getRequestResults().add(req);
+			copy.getRequestResults().add(req);
 		}
 		
 		// convert ordinary results including threaded counting results
@@ -352,13 +369,10 @@ public class ByCounterWrapper {
 		edu.kit.ipd.sdq.bycounter.output.CountingResult cr;
 		for(CountingResult result : results)  { 
 			cr = mapCountingResult(result, entitiesToInstrumentIdMap);
-			currentRun.getCountingResults().add(cr);
+			copy.getCountingResults().add(cr);
 		}
 		
-		// results have been stored in the EMF model and are now removed from ByCounter
-		CountingResultCollector.getInstance().clearResults();
-		
-		return currentRun;
+		return copy;
 	}
 
 	/**
@@ -552,5 +566,19 @@ public class ByCounterWrapper {
 	public EntityToInstrument queryActiveSection(long threadId) {
 		//TODO: Implement query in model bridge
 		throw new UnsupportedOperationException("Querying the current active section is not supported yet.");
+	}
+
+	/**Returns the current result collection.
+	 * @return The result collection.
+	 */
+	public ResultCollection getResultCollection() {
+		return currentRun;
+	}
+	
+	/**Clears the result collection (singleton used by ByCounter as well as the EMF model).
+	 */
+	public void clearResultCollection() {
+		currentRun = OutputFactory.eINSTANCE.createResultCollection();
+		CountingResultCollector.getInstance().clearResults();
 	}
 }
