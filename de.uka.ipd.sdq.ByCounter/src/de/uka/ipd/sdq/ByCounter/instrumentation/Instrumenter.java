@@ -425,8 +425,8 @@ public final class Instrumenter {
 					} else {
 						this.instrumentationState.getInstrumentationContext().setCountingMode(CountingMode.Regions);
 					}
-					this.instrumentationState.getInstrumentationContext().setQueryActiveSectionSupported(
-							this.instrumentationParameters.getProvideOnlineSectionActiveUpdates());
+					this.instrumentationState.getInstrumentationContext().setQueryActiveEntitySupported(
+							this.instrumentationParameters.getProvideOnlineActiveEntityUpdates());
 					this.log.info(message);
 	//				String s = javax.swing.JOptionPane.showInputDialog("OK: "+message);
 				}

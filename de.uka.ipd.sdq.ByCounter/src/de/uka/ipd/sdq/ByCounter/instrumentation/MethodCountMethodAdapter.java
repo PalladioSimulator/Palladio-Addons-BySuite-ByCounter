@@ -607,27 +607,26 @@ public final class MethodCountMethodAdapter extends MethodAdapter {
 	
 	/**
 	 * Insert code that executes the 
-	 * {@link CountingResultCollector#protocolSectionActive(String, int)} 
+	 * {@link CountingResultCollector#protocolActiveEntity(String)} 
 	 * method.
-	 * @param rangeBlockIndex Index of the active range block.
+	 * @param currentlyActiveEntity Index of the active range block.
 	 */
-	protected void insertProtocolActiveSection(Integer rangeBlockIndex) {
-		// set current section
-		mv.visitLdcInsn(new Long(rangeBlockIndex));
-		mv.visitVarInsn(Opcodes.LSTORE, this.currentActiveSectionVar);
-		
-		if(this.instrumentationParameters.getProvideOnlineSectionActiveUpdates()) {
+	protected void insertProtocolActiveEntity(EntityToInstrument currentlyActiveEntity) {
+		if(this.instrumentationParameters.getProvideOnlineActiveEntityUpdates()) {
 			// call CountingResultCollector
 			mv.visitMethodInsn(Opcodes.INVOKESTATIC, 
 					COUNTINGRESULTCOLLECTOR_CANONICALNAME_DESCRIPTOR, 
 					"getInstance", 
 					"()L" + COUNTINGRESULTCOLLECTOR_CANONICALNAME_DESCRIPTOR + ";");
-			mv.visitLdcInsn(this.qualifyingMethodName);
-			insertIntegerPushInsn(mv, rangeBlockIndex);
+			if(currentlyActiveEntity == null) {
+				mv.visitInsn(Opcodes.ACONST_NULL);
+			} else {
+				mv.visitLdcInsn(currentlyActiveEntity.getId().toString());
+			}
 			mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL, 
 					COUNTINGRESULTCOLLECTOR_CANONICALNAME_DESCRIPTOR, 
-					"protocolSectionActive", 
-					CountingResultCollector.SIGNATURE_protocolSectionActive);
+					"protocolActiveEntity", 
+					CountingResultCollector.SIGNATURE_protocolActiveEntity);
 		}
 	}
 
@@ -1277,22 +1276,28 @@ public final class MethodCountMethodAdapter extends MethodAdapter {
 				if(this.useRangeBlocks 
 						&& this.instrumentationParameters.getRecordBlockExecutionOrder()) {
 					Integer rangeBlockIndex = this.instrumentationState.getRangeBlockContainsLabels().get(label);
+					EntityToInstrument currentlyActiveEntity;
 					if(rangeBlockIndex != null) {
 						// label is part of a range block
 						insertAddIntegerToArrayList(mv,
 								this.rangeBlockExecutionOrderArrayListVar, 
 								rangeBlockIndex);
+						currentlyActiveEntity = this.codeAreasForMethod.get(rangeBlockIndex);
 						if(this.instrumentationParameters.getProvideOnlineSectionExecutionUpdates()) {
-							InstrumentedCodeArea codeArea = this.codeAreasForMethod.get(rangeBlockIndex);
-							this.insertResultCollectorUpdateCall(codeArea);
+							this.insertResultCollectorUpdateCall(currentlyActiveEntity);
 							callUpdate = false; // update already done
 						}
 					} else {
+						currentlyActiveEntity = null;
 						rangeBlockIndex = -1;
 					}
 
-					// update active section
-					insertProtocolActiveSection(rangeBlockIndex);
+					// set current section
+					mv.visitLdcInsn(new Long(rangeBlockIndex));
+					mv.visitVarInsn(Opcodes.LSTORE, this.currentActiveSectionVar);
+
+					// update active entity
+					insertProtocolActiveEntity(currentlyActiveEntity);
 				}
 				if(callUpdate) {
 					this.insertResultCollectorUpdateCall(this.instrumentationEntities.get(0));

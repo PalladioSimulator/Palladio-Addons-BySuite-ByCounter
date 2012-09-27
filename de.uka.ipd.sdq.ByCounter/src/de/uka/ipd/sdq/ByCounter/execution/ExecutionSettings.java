@@ -191,7 +191,7 @@ public class ExecutionSettings implements Cloneable {
 	 * @return True, when result retrieval adds up counting results recursively.
 	 * This means that results for methods that call other methods include the 
 	 * counts of these called methods, i.e. of the entire calling tree.
-	 * When false, only the counts for operation done in the method itself
+	 * When false, only the counts for operations done in the method itself
 	 * - not those by called methods - are returned.
 	 */
 	public boolean getAddUpResultsRecursively() {
@@ -203,7 +203,7 @@ public class ExecutionSettings implements Cloneable {
 	 * When true, result retrieval adds up counting results recursively.
 	 * This means that results for methods that call other methods include the 
 	 * counts of these called methods, i.e. of the entire calling tree.
-	 * When false, only the counts for operation done in the method itself
+	 * When false, only the counts for operations done in the method itself
 	 * - not those by called methods - are returned.
 	 */
 	public void setAddUpResultsRecursively(boolean addUpResultsRecursively) {

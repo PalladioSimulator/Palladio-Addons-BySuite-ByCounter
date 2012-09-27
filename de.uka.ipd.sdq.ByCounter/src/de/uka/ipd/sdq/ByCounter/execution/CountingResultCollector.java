@@ -1,12 +1,16 @@
 package de.uka.ipd.sdq.ByCounter.execution;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Observable;
+import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import de.uka.ipd.sdq.ByCounter.instrumentation.EntityToInstrument;
 import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentationContext;
 import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentationParameters;
 import de.uka.ipd.sdq.ByCounter.reporting.ICountingResultWriter;
@@ -49,9 +53,9 @@ public final class CountingResultCollector extends Observable implements ICollec
 
 	/**
 	 * The bytecode parameter descriptor for 
-	 * {@link #protocolSectionActive(String, int)}.
+	 * {@link #protocolActiveEntity(String)}.
 	 */
-	public static final String SIGNATURE_protocolSectionActive = "(Ljava/lang/String;I)V";
+	public static final String SIGNATURE_protocolActiveEntity = "(Ljava/lang/String;)V";
 
 	/**
 	 * The bytecode parameter descriptor for 
@@ -120,10 +124,10 @@ public final class CountingResultCollector extends Observable implements ICollec
 	private List<AbstractCollectionStrategy> collectionStrategies;
 
 	/**
-	 * When {@link InstrumentationParameters#getProvideOnlineSectionActiveUpdates()}
-	 * is true, this field hold the section last entered.
+	 * When {@link InstrumentationParameters#getProvideOnlineActiveEntityUpdates()}
+	 * is true, this field hold the instrumented entity last entered.
 	 */
-	private ActiveSection activeSection;
+	private Map<Long, EntityToInstrument> activeEntity;
 
 	/**
 	 * Private constructor that is invoked to create the singleton instance
@@ -141,7 +145,7 @@ public final class CountingResultCollector extends Observable implements ICollec
 		this.collectionStrategies.add(this.strategyDefault);
 		this.collectionStrategies.add(this.inliningStrategyWished);
 		this.collectionStrategies.add(this.inliningStrategyForced);
-		this.activeSection = null;
+		this.activeEntity = new HashMap<Long, EntityToInstrument>();
 		this.spawnedThreads = new LinkedList<Thread>();
 	}
 
@@ -154,7 +158,7 @@ public final class CountingResultCollector extends Observable implements ICollec
 		for(ICollectionStrategy s : this.collectionStrategies) {
 			s.clearResults();
 		}
-		this.activeSection = null;
+		this.activeEntity.clear();
 		this.spawnedThreads.clear();
 	}
 
@@ -261,22 +265,16 @@ public final class CountingResultCollector extends Observable implements ICollec
 	
 	/**
 	 * Called by an instrumented method if 
-	 * {@link InstrumentationParameters#getProvideOnlineSectionActiveUpdates()}
+	 * {@link InstrumentationParameters#getProvideOnlineActiveEntityUpdates()}
 	 * is true.
-	 * @param qualifyingMethodName Qualifying method name of the reporting 
-	 * method.
-	 * @param sectionId Id of the section in the reporting method.
+	 * @param activeEntityUUID {@link UUID#toString()} of the instrumented entity of the reporting method.
 	 */
-	public void protocolSectionActive(
-			final String qualifyingMethodName, 
-			final int sectionId) {
-		if(sectionId < 0) {
-			this.activeSection = null;
-		} else {
-			this.activeSection = new ActiveSection();
-			this.activeSection.qualifyingMethodName = qualifyingMethodName;
-			this.activeSection.sectionId = sectionId;
+	public void protocolActiveEntity(final String activeEntityUUID) {
+		EntityToInstrument entity = null;
+		if(activeEntityUUID != null) {
+			entity = instrumentationContext.getEntitiesToInstrument().get(UUID.fromString(activeEntityUUID));
 		}
+		this.activeEntity.put(Thread.currentThread().getId(), entity);
 	}
 	
 	/**
@@ -288,18 +286,19 @@ public final class CountingResultCollector extends Observable implements ICollec
 	}
 	
 	/**
-	 * @return When a section in an instrumented method is currently being 
-	 * executed and {@link InstrumentationParameters#getProvideOnlineSectionActiveUpdates()}
-	 * is true, this section is returned as an {@link ActiveSection}.
-	 * Otherwise returns <code>null</code>.
+	 * When an {@link EntityToInstrument} is currently being 
+	 * executed and {@link InstrumentationParameters#getProvideOnlineActiveEntityUpdates()}
+	 * is true, this entity is returned for it's thread id.
+	 * @return A map from  thread id to the currently active 
+	 * {@link EntityToInstrument} for that thread. The entity can be null.
 	 * @throws InvalidQueryException Thrown when the instrumentation does not
 	 * support the query. 
 	 */
-	public ActiveSection queryActiveSection() throws InvalidQueryException {
-		if(!this.instrumentationContext.getQueryActiveSectionSupported()) {
+	public Map<Long, EntityToInstrument> queryActiveEntity() throws InvalidQueryException {
+		if(!this.instrumentationContext.getQueryActiveEntitySupported()) {
 			throw new InvalidQueryException("The instrumentation does not provide support for querying active sections.");
 		}
-		return this.activeSection;
+		return this.activeEntity;
 	}
 	
 	/**

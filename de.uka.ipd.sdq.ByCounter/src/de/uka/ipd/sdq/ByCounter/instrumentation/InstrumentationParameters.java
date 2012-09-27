@@ -192,9 +192,9 @@ public final class InstrumentationParameters implements Cloneable {
 	private boolean provideOnlineSectionExecutionUpdates;
 	
 	/**
-	 * @see #getProvideOnlineSectionActiveUpdates()
+	 * @see #getProvideOnlineActiveEntityUpdates()
 	 */
-	private boolean provideOnlineSectionActiveUpdates;
+	private boolean provideOnlineActiveEntityUpdates;
 	
 	/**
 	 * @see #getTraceAndIdentifyRequests()
@@ -311,7 +311,7 @@ public final class InstrumentationParameters implements Cloneable {
 		copy.instrumentationScopeOverrideMethodLevel = this.instrumentationScopeOverrideMethodLevel;
 		copy.instrumentRecursively = this.instrumentRecursively;
 		copy.provideJoinThreadsAbility = this.provideJoinThreadsAbility;
-		copy.provideOnlineSectionActiveUpdates = this.provideOnlineSectionActiveUpdates;
+		copy.provideOnlineActiveEntityUpdates = this.provideOnlineActiveEntityUpdates;
 		copy.provideOnlineSectionExecutionUpdates = this.provideOnlineSectionExecutionUpdates;
 		copy.rangeBlocks = this.rangeBlocks;
 		copy.recordBlockExecutionOrder = this.recordBlockExecutionOrder;
@@ -496,7 +496,7 @@ public final class InstrumentationParameters implements Cloneable {
 		b.append("instrumentRecursively:              " + this.instrumentRecursively + ", \n");
 		b.append("entitesToInstrument:                " + this.entitiesToInstrument + ", \n");
 		b.append("provideJoinThreadsAbility:          " + this.provideJoinThreadsAbility + ", \n");
-		b.append("provideOnlineSectionActiveUpdates:  " + this.provideOnlineSectionActiveUpdates + ", \n");
+		b.append("provideOnlineActiveEntityUpdates:   " + this.provideOnlineActiveEntityUpdates + ", \n");
 		b.append("provideOnlineSectionExecutionUpdates:" + this.provideOnlineSectionExecutionUpdates + ", \n");
 		b.append("rangeBlocks:                        " + this.rangeBlocks + ", \n");
 		b.append("recordBlockExecutionOrder:          " + this.recordBlockExecutionOrder + ", \n");
@@ -529,7 +529,7 @@ public final class InstrumentationParameters implements Cloneable {
 	 * When true, bytecode instructions will be counted in groups made up of 
 	 * identified basic blocks. The execution numbers of single instructions 
 	 * are calculated after the execution.
-	 * When false, every single bytecode instruction will be counted 
+	 * When false, every single bytecode instruction will be counted
 	 * by an individual counter.
 	 * @return the useBasicBlocks
 	 */
@@ -700,12 +700,12 @@ public final class InstrumentationParameters implements Cloneable {
 	}
 
 	/**
-	 * @return When true, the instrumented section that is currently being 
+	 * @return When true, the instrumented entity that is currently being 
 	 * executed can be queried from the {@link CountingResultCollector}
-	 * using the method {@link CountingResultCollector#queryActiveSection()}
+	 * using the method {@link CountingResultCollector#queryActiveEntity()}
 	 */
-	public boolean getProvideOnlineSectionActiveUpdates() {
-		return provideOnlineSectionActiveUpdates;
+	public boolean getProvideOnlineActiveEntityUpdates() {
+		return provideOnlineActiveEntityUpdates;
 	}
 
 	/**
@@ -725,11 +725,11 @@ public final class InstrumentationParameters implements Cloneable {
 	 * @param provideOnlineSectionEnteredUpdates
 	 * When true, the instrumented section that is currently being 
 	 * executed can be queried from the {@link CountingResultCollector}
-	 * using the method {@link CountingResultCollector#queryActiveSection()}.
+	 * using the method {@link CountingResultCollector#queryActiveEntity()}.
 	 */
 	public void setProvideOnlineSectionActiveUpdates(
 			boolean provideOnlineSectionEnteredUpdates) {
-		this.provideOnlineSectionActiveUpdates = provideOnlineSectionEnteredUpdates;
+		this.provideOnlineActiveEntityUpdates = provideOnlineSectionEnteredUpdates;
 	}
 
 	/**
@@ -875,9 +875,9 @@ public final class InstrumentationParameters implements Cloneable {
 				throw new IllegalArgumentException("Array parameter recording is only supported with useBasicBlocks=false.");
 			}
 		}
-		if(this.provideOnlineSectionActiveUpdates) {
+		if(this.provideOnlineActiveEntityUpdates) {
 			if(!this.useBasicBlocks) {
-				throw new IllegalArgumentException("Online section active updates can only be provided when instrumenting ranges (useBasicBlocks=true)");
+				throw new IllegalArgumentException("Online active entity updates can only be provided when instrumenting ranges (useBasicBlocks=true)");
 			}
 		}
 	}

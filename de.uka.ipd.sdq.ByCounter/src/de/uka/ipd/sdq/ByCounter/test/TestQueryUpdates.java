@@ -2,6 +2,7 @@ package de.uka.ipd.sdq.ByCounter.test;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -13,7 +14,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
-import de.uka.ipd.sdq.ByCounter.execution.ActiveSection;
 import de.uka.ipd.sdq.ByCounter.execution.BytecodeCounter;
 import de.uka.ipd.sdq.ByCounter.execution.CountingResultCollector;
 import de.uka.ipd.sdq.ByCounter.execution.InvalidQueryException;
@@ -157,8 +157,10 @@ public class TestQueryUpdates extends AbstractByCounterTest {
 		CountingResultCollector crc = CountingResultCollector.getInstance();
 		for(int i = 0; i < 2; i++) {
 			while(classInstance.getCurrentState() < i+2) {Thread.yield();} // wait for other thread
-			ActiveSection s = crc.queryActiveSection();
-			Assert.assertEquals(i+1, s.sectionId);
+			Map<Long, EntityToInstrument> activeEntityMap = crc.queryActiveEntity();
+			Assert.assertEquals(1, activeEntityMap.size());
+			EntityToInstrument activeE = activeEntityMap.values().iterator().next();
+			Assert.assertEquals(entitiesToInstrument.get(i+1), activeE);
 			classInstance.nextState();
 	    }
         executeThread.join();

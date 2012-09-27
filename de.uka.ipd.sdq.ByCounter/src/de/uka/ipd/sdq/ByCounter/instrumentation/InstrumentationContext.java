@@ -82,10 +82,10 @@ public class InstrumentationContext implements Serializable {
 	private CountingMode countingMode;
 	
 	/**
-	 * When true, the currently executed section can be queried using 
-	 * {@link CountingResultCollector#queryActiveSection()}.
+	 * When true, the currently executed entity can be queried using 
+	 * {@link CountingResultCollector#queryActiveEntity()}.
 	 */
-	private boolean queryActiveSectionSupported;
+	private boolean queryActiveEntitySupported;
 
 	/**
 	 * Array creation types by method.
@@ -110,7 +110,7 @@ public class InstrumentationContext implements Serializable {
 		this.blockCountingMode = new HashMap<String, BlockCountingMode>();
 		this.countingMode = CountingMode.Default;
 		this.rangesByMethod = new HashMap<String, InstrumentedCodeArea[]>();
-		this.queryActiveSectionSupported = false;
+		this.queryActiveEntitySupported = false;
 		this.entitiesToInstrument = new HashMap<UUID, EntityToInstrument>();
 	}
 	
@@ -281,19 +281,19 @@ public class InstrumentationContext implements Serializable {
 	}
 
 	/**
-	 * @return When true, the currently executed section can be queried using 
-	 * {@link CountingResultCollector#queryActiveSection()}.
+	 * @return When true, the currently executed entity can be queried using 
+	 * {@link CountingResultCollector#queryActiveEntity()}.
 	 */
-	public boolean getQueryActiveSectionSupported() {
-		return queryActiveSectionSupported;
+	public boolean getQueryActiveEntitySupported() {
+		return queryActiveEntitySupported;
 	}
 
 	/**
-	 * @param queryActiveSectionSupported When true, the currently executed section can be queried using 
-	 * {@link CountingResultCollector#queryActiveSection()}.
+	 * @param queryActiveEntitySupported When true, the currently executed entity can be queried using 
+	 * {@link CountingResultCollector#queryActiveEntity()}.
 	 */
-	public void setQueryActiveSectionSupported(boolean queryActiveSectionSupported) {
-		this.queryActiveSectionSupported = queryActiveSectionSupported;
+	public void setQueryActiveEntitySupported(boolean queryActiveEntitySupported) {
+		this.queryActiveEntitySupported = queryActiveEntitySupported;
 	}
 
 	/**
