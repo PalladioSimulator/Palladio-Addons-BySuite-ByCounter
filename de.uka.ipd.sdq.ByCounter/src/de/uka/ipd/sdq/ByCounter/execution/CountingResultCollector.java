@@ -124,7 +124,7 @@ public final class CountingResultCollector extends Observable implements ICollec
 	private List<AbstractCollectionStrategy> collectionStrategies;
 
 	/**
-	 * When {@link InstrumentationParameters#getProvideOnlineActiveEntityUpdates()}
+	 * When {@link InstrumentationParameters#getProvideOnlineSectionActiveUpdates()}
 	 * is true, this field hold the instrumented entity last entered.
 	 */
 	private Map<Long, EntityToInstrument> activeEntity;
@@ -265,7 +265,7 @@ public final class CountingResultCollector extends Observable implements ICollec
 	
 	/**
 	 * Called by an instrumented method if 
-	 * {@link InstrumentationParameters#getProvideOnlineActiveEntityUpdates()}
+	 * {@link InstrumentationParameters#getProvideOnlineSectionActiveUpdates()}
 	 * is true.
 	 * @param activeEntityUUID {@link UUID#toString()} of the instrumented entity of the reporting method.
 	 */
@@ -287,18 +287,18 @@ public final class CountingResultCollector extends Observable implements ICollec
 	
 	/**
 	 * When an {@link EntityToInstrument} is currently being 
-	 * executed and {@link InstrumentationParameters#getProvideOnlineActiveEntityUpdates()}
+	 * executed and {@link InstrumentationParameters#getProvideOnlineSectionActiveUpdates()}
 	 * is true, this entity is returned for it's thread id.
 	 * @return A map from  thread id to the currently active 
 	 * {@link EntityToInstrument} for that thread. The entity can be null.
 	 * @throws InvalidQueryException Thrown when the instrumentation does not
 	 * support the query. 
 	 */
-	public Map<Long, EntityToInstrument> queryActiveEntity() throws InvalidQueryException {
+	public EntityToInstrument queryActiveSection(long threadId) throws InvalidQueryException {
 		if(!this.instrumentationContext.getQueryActiveEntitySupported()) {
 			throw new InvalidQueryException("The instrumentation does not provide support for querying active sections.");
 		}
-		return this.activeEntity;
+		return this.activeEntity.get(threadId);
 	}
 	
 	/**

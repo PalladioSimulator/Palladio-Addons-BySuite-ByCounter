@@ -90,6 +90,9 @@ public final class InstrumentationParameters implements Cloneable {
 
 	/** Default value for {@link #getProvideOnlineSectionExecutionUpdates()}. */
 	private static final boolean PROVIDE_ONLINE_SECTION_EXECUTION_UPDATES_DEFAULT = false;
+
+	/** Default value for {@link #getProvideOnlineSectionActiveUpdates()}. */
+	private static final boolean PROVIDE_ONLINE_SECTION_ACTIVE_UPDATES_DEFAULT = false;
 	
 	/** Default value for #{@link #getProvideJoinThreadsAbility()}. */
 	private static final boolean PROVIDE_JOIN_THREADS_ABILITY_DEFAULT = true;
@@ -192,9 +195,9 @@ public final class InstrumentationParameters implements Cloneable {
 	private boolean provideOnlineSectionExecutionUpdates;
 	
 	/**
-	 * @see #getProvideOnlineActiveEntityUpdates()
+	 * @see #getProvideOnlineSectionActiveUpdates()
 	 */
-	private boolean provideOnlineActiveEntityUpdates;
+	private boolean provideOnlineSectionActiveUpdates;
 	
 	/**
 	 * @see #getTraceAndIdentifyRequests()
@@ -286,6 +289,7 @@ public final class InstrumentationParameters implements Cloneable {
 		this.recordBlockExecutionOrder = RECORD_BLOCK_EXECUTION_ORDER_DEFAULT;
 		this.instrumentRecursively = INSTRUMENT_RECURSIVELY_DEFAULT;
 		this.provideOnlineSectionExecutionUpdates = PROVIDE_ONLINE_SECTION_EXECUTION_UPDATES_DEFAULT;
+		this.provideOnlineSectionActiveUpdates = PROVIDE_ONLINE_SECTION_ACTIVE_UPDATES_DEFAULT;
 		this.provideJoinThreadsAbility = PROVIDE_JOIN_THREADS_ABILITY_DEFAULT;
 		this.entitiesToInstrument = pEntitesToInstrument;
 	}
@@ -311,7 +315,7 @@ public final class InstrumentationParameters implements Cloneable {
 		copy.instrumentationScopeOverrideMethodLevel = this.instrumentationScopeOverrideMethodLevel;
 		copy.instrumentRecursively = this.instrumentRecursively;
 		copy.provideJoinThreadsAbility = this.provideJoinThreadsAbility;
-		copy.provideOnlineActiveEntityUpdates = this.provideOnlineActiveEntityUpdates;
+		copy.provideOnlineSectionActiveUpdates = this.provideOnlineSectionActiveUpdates;
 		copy.provideOnlineSectionExecutionUpdates = this.provideOnlineSectionExecutionUpdates;
 		copy.rangeBlocks = this.rangeBlocks;
 		copy.recordBlockExecutionOrder = this.recordBlockExecutionOrder;
@@ -496,7 +500,7 @@ public final class InstrumentationParameters implements Cloneable {
 		b.append("instrumentRecursively:              " + this.instrumentRecursively + ", \n");
 		b.append("entitesToInstrument:                " + this.entitiesToInstrument + ", \n");
 		b.append("provideJoinThreadsAbility:          " + this.provideJoinThreadsAbility + ", \n");
-		b.append("provideOnlineActiveEntityUpdates:   " + this.provideOnlineActiveEntityUpdates + ", \n");
+		b.append("provideOnlineActiveEntityUpdates:   " + this.provideOnlineSectionActiveUpdates + ", \n");
 		b.append("provideOnlineSectionExecutionUpdates:" + this.provideOnlineSectionExecutionUpdates + ", \n");
 		b.append("rangeBlocks:                        " + this.rangeBlocks + ", \n");
 		b.append("recordBlockExecutionOrder:          " + this.recordBlockExecutionOrder + ", \n");
@@ -702,10 +706,10 @@ public final class InstrumentationParameters implements Cloneable {
 	/**
 	 * @return When true, the instrumented entity that is currently being 
 	 * executed can be queried from the {@link CountingResultCollector}
-	 * using the method {@link CountingResultCollector#queryActiveEntity()}
+	 * using the method {@link CountingResultCollector#queryActiveSection(long)}
 	 */
-	public boolean getProvideOnlineActiveEntityUpdates() {
-		return provideOnlineActiveEntityUpdates;
+	public boolean getProvideOnlineSectionActiveUpdates() {
+		return provideOnlineSectionActiveUpdates;
 	}
 
 	/**
@@ -725,11 +729,11 @@ public final class InstrumentationParameters implements Cloneable {
 	 * @param provideOnlineSectionEnteredUpdates
 	 * When true, the instrumented section that is currently being 
 	 * executed can be queried from the {@link CountingResultCollector}
-	 * using the method {@link CountingResultCollector#queryActiveEntity()}.
+	 * using the method {@link CountingResultCollector#queryActiveSection(long)}.
 	 */
 	public void setProvideOnlineSectionActiveUpdates(
 			boolean provideOnlineSectionEnteredUpdates) {
-		this.provideOnlineActiveEntityUpdates = provideOnlineSectionEnteredUpdates;
+		this.provideOnlineSectionActiveUpdates = provideOnlineSectionEnteredUpdates;
 	}
 
 	/**
@@ -875,7 +879,7 @@ public final class InstrumentationParameters implements Cloneable {
 				throw new IllegalArgumentException("Array parameter recording is only supported with useBasicBlocks=false.");
 			}
 		}
-		if(this.provideOnlineActiveEntityUpdates) {
+		if(this.provideOnlineSectionActiveUpdates) {
 			if(!this.useBasicBlocks) {
 				throw new IllegalArgumentException("Online active entity updates can only be provided when instrumenting ranges (useBasicBlocks=true)");
 			}

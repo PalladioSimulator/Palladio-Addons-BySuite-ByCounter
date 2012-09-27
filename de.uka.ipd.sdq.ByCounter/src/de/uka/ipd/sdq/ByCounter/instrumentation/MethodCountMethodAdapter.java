@@ -612,7 +612,7 @@ public final class MethodCountMethodAdapter extends MethodAdapter {
 	 * @param currentlyActiveEntity Index of the active range block.
 	 */
 	protected void insertProtocolActiveEntity(EntityToInstrument currentlyActiveEntity) {
-		if(this.instrumentationParameters.getProvideOnlineActiveEntityUpdates()) {
+		if(this.instrumentationParameters.getProvideOnlineSectionActiveUpdates()) {
 			// call CountingResultCollector
 			mv.visitMethodInsn(Opcodes.INVOKESTATIC, 
 					COUNTINGRESULTCOLLECTOR_CANONICALNAME_DESCRIPTOR, 

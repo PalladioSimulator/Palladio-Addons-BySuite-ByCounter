@@ -83,7 +83,7 @@ public class InstrumentationContext implements Serializable {
 	
 	/**
 	 * When true, the currently executed entity can be queried using 
-	 * {@link CountingResultCollector#queryActiveEntity()}.
+	 * {@link CountingResultCollector#queryActiveSection()}.
 	 */
 	private boolean queryActiveEntitySupported;
 
@@ -282,7 +282,7 @@ public class InstrumentationContext implements Serializable {
 
 	/**
 	 * @return When true, the currently executed entity can be queried using 
-	 * {@link CountingResultCollector#queryActiveEntity()}.
+	 * {@link CountingResultCollector#queryActiveSection()}.
 	 */
 	public boolean getQueryActiveEntitySupported() {
 		return queryActiveEntitySupported;
@@ -290,7 +290,7 @@ public class InstrumentationContext implements Serializable {
 
 	/**
 	 * @param queryActiveEntitySupported When true, the currently executed entity can be queried using 
-	 * {@link CountingResultCollector#queryActiveEntity()}.
+	 * {@link CountingResultCollector#queryActiveSection()}.
 	 */
 	public void setQueryActiveEntitySupported(boolean queryActiveEntitySupported) {
 		this.queryActiveEntitySupported = queryActiveEntitySupported;

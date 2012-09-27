@@ -2,7 +2,6 @@ package de.uka.ipd.sdq.ByCounter.test;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -157,9 +156,7 @@ public class TestQueryUpdates extends AbstractByCounterTest {
 		CountingResultCollector crc = CountingResultCollector.getInstance();
 		for(int i = 0; i < 2; i++) {
 			while(classInstance.getCurrentState() < i+2) {Thread.yield();} // wait for other thread
-			Map<Long, EntityToInstrument> activeEntityMap = crc.queryActiveEntity();
-			Assert.assertEquals(1, activeEntityMap.size());
-			EntityToInstrument activeE = activeEntityMap.values().iterator().next();
+			EntityToInstrument activeE = crc.queryActiveSection(executeThread.getId());
 			Assert.assertEquals(entitiesToInstrument.get(i+1), activeE);
 			classInstance.nextState();
 	    }
