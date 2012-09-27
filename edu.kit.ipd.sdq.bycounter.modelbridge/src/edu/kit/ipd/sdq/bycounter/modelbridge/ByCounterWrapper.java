@@ -27,6 +27,7 @@ import de.uka.ipd.sdq.ByCounter.execution.CountingResultCollector;
 import de.uka.ipd.sdq.ByCounter.execution.CountingResultCompleteMethodExecutionUpdate;
 import de.uka.ipd.sdq.ByCounter.execution.CountingResultSectionExecutionUpdate;
 import de.uka.ipd.sdq.ByCounter.execution.ExecutionSettings;
+import de.uka.ipd.sdq.ByCounter.execution.InvalidQueryException;
 import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentationCounterPrecision;
 import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentationParameters;
 import de.uka.ipd.sdq.ByCounter.parsing.ArrayCreation;
@@ -442,7 +443,7 @@ public class ByCounterWrapper {
 		result.setMethodId(mapUUID(cr.getMethodID()));
 		result.setMethodInvocationStartTime(cr.getMethodInvocationBeginning());
 		result.getOpcodeCounts().addAll(mapOpcodeCounts(cr.getOpcodeCounts()));
-		result.setObservedElement(mapObservedElement(cr.getObservedElement(), entitiesToInstrumentMap2));
+		result.setObservedElement(mapEntityToInstrument(cr.getObservedElement(), entitiesToInstrumentMap2));
 		result.setQualifiedMethodName(cr.getQualifiedMethodName());
 		result.setReportingTime(cr.getReportingTime());
 	
@@ -452,13 +453,13 @@ public class ByCounterWrapper {
 	/**
 	 * Converts ByCounters {@link de.uka.ipd.sdq.ByCounter.instrumentation.EntityToInstrument}
 	 * to it's EMF model counterpart.
-	 * @param observedElement Element that was instrumented to produce the result.
+	 * @param entityToInstrument Element that was instrumented to produce the result.
 	 * @param entitiesToInstrumentMap2 Maps from {@link de.uka.ipd.sdq.ByCounter.instrumentation.EntityToInstrument#getId()}
 	 * to the {@link EntityToInstrument} it was mapped to.
 	 * @return EMF {@link EntityToInstrument}.
 	 */
-	private static EntityToInstrument mapObservedElement(de.uka.ipd.sdq.ByCounter.instrumentation.EntityToInstrument observedElement, Map<java.util.UUID, EntityToInstrument> entitiesToInstrumentMap2) {
-		java.util.UUID id = observedElement.getId();
+	private static EntityToInstrument mapEntityToInstrument(de.uka.ipd.sdq.ByCounter.instrumentation.EntityToInstrument entityToInstrument, Map<java.util.UUID, EntityToInstrument> entitiesToInstrumentMap2) {
+		java.util.UUID id = entityToInstrument.getId();
 		return entitiesToInstrumentMap2.get(id);
 	}
 
@@ -563,9 +564,19 @@ public class ByCounterWrapper {
 		}
 	}
 	
+	/**
+	 * @param threadId Id of the thread of the executed code.
+	 * @return The {@link EntityToInstrument} that is currently being executed.
+	 * Null otherwise. 
+	 */
 	public EntityToInstrument queryActiveSection(long threadId) {
-		//TODO: Implement query in model bridge
-		throw new UnsupportedOperationException("Querying the current active section is not supported yet.");
+		de.uka.ipd.sdq.ByCounter.instrumentation.EntityToInstrument activeSection;
+		try {
+			activeSection = CountingResultCollector.getInstance().queryActiveSection(threadId);
+		} catch (InvalidQueryException e) {
+			throw new RuntimeException(e);
+		}
+		return mapEntityToInstrument(activeSection, entitiesToInstrumentIdMap);
 	}
 
 	/**Returns the current result collection.
