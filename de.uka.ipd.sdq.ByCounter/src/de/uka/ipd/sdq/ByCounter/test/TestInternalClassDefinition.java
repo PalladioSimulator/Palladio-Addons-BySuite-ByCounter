@@ -121,15 +121,20 @@ public class TestInternalClassDefinition extends AbstractByCounterTest {
 		counter.getExecutionSettings().setAddUpResultsRecursively(true);
 		counter.execute(myMethod, new Object[0]);
 
+		// retrieve results
+		CountingResult[] results = CountingResultCollector.getInstance().retrieveAllCountingResults().getCountingResults().toArray(new CountingResult[0]);
+		e.compare(results);
+
+
+		CountingResultCollector.getInstance().clearResults();
 		// define internal classes
 		Set<String> internalClassesDefinition = new HashSet<String>();
 		internalClassesDefinition.add(TestSubjectInterfaceMethods.class.getCanonicalName());
 		internalClassesDefinition.add(ClassZ.class.getCanonicalName());
 		counter.getExecutionSettings().setInternalClassesDefinition(internalClassesDefinition);
+
+		counter.execute(myMethod, new Object[0]);
 		
-		// retrieve results
-		CountingResult[] results = CountingResultCollector.getInstance().retrieveAllCountingResults().getCountingResults().toArray(new CountingResult[0]);
-		e.compare(results);
 		// try retrieving results again and make sure they still match
 		results = CountingResultCollector.getInstance().retrieveAllCountingResults().getCountingResults().toArray(new CountingResult[0]);
 		e.compare(results);

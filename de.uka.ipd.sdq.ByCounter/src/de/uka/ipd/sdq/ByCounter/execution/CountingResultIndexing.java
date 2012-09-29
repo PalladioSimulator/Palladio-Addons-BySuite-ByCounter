@@ -1,6 +1,5 @@
 package de.uka.ipd.sdq.ByCounter.execution;
 
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -40,15 +39,23 @@ public class CountingResultIndexing {
 	 * TODO does not consider forced inlining
 	 */
 	private HashMap<CountingArtefactInformation, CountingResult> countingResultsByArtefactInformation;
+	
+	/**
+	 *	A {@link SortedSet} that holds the results.
+	 */
+	private SortedSet<CountingResult> countingResults;
 
 	public CountingResultIndexing() {
 		this.log = Logger.getLogger(getClass().getCanonicalName());
+		this.countingResults = new TreeSet<CountingResult>();
 		this.countingInformationsByBeginning = new HashMap<Long, List<CountingArtefactInformation>>();
 		this.countingInformationsByMethodname = new HashMap<String, List<CountingArtefactInformation>>();//TODO consider removing this...
 		this.countingResultsByArtefactInformation = new HashMap<CountingArtefactInformation, CountingResult>();
 	}
 	
 	public void clearResults() {
+		this.log.fine("Used to have "+this.countingResults.size()+" results before clearing");
+		this.countingResults.clear();
 		this.countingInformationsByBeginning.clear();
 		this.countingInformationsByMethodname.clear();
 		this.countingResultsByArtefactInformation.clear();
@@ -61,6 +68,14 @@ public class CountingResultIndexing {
 	 */
 	public void add(CountingResult res,
 			long reportingStart) {
+
+		this.countingResults.add(res);
+		
+		int nrOfCountingResults=this.countingResults.size();
+		if(nrOfCountingResults%10000==0){
+			log.warning(nrOfCountingResults+" results in ByCounter");
+		}
+		
 		CountingArtefactInformation artefact;//does THIS create too much overhead? it requires ALL elements to be in memory?
 		final String qualifyingMethodName = res.getQualifiedMethodName();
 		final Long executionStart = res.getMethodInvocationBeginning();
@@ -138,47 +153,6 @@ public class CountingResultIndexing {
 			"use retrieveAllCountingResults instead");
 		return this.countingInformationsByMethodname.get(name);
 	}
-
-	/**
-	 * Gets the {@link CountingArtefactInformation} by the time of
-	 * method execution beginning.
-	 * TODO does not consider forced inlining?
-	 * @param time A time as returned by System.nanoTime().
-	 * @return The specified {@link CountingArtefactInformation}.
-	 */
-	public List<CountingArtefactInformation> getCountingArtefactsByTime(long time){
-		log.warning("getCountingArtefactsByTime disregards inlined and force-inlined methods, " +
-			"use retrieveAllCountingResults instead");
-		return this.countingInformationsByBeginning.get(time);
-	}
-
-	/**
-	 * Gets the {@link CountingArtefactInformation} by the time of
-	 * method execution beginning.
-	 * TODO does not consider forced inlining?
-	 * @param timestamp A time as {@link Timestamp}.
-	 * @return The specified {@link CountingArtefactInformation}.
-	 */
-	public List<CountingArtefactInformation> getCountingArtefactsByTimestamp(Timestamp timestamp){
-		log.warning("getCountingArtefactsByTimestamp disregards inlined and force-inlined methods, " +
-			"use retrieveAllCountingResults instead");
-		return this.countingInformationsByBeginning.get(timestamp.getTime());
-	}
-
-	/**
-	 * Gets the {@link CountingArtefactInformation} by the time of
-	 * method execution beginning.
-	 * Timestamp should be unique.
-	 * TODO does not consider forced inlining?
-	 * @param timestamp A time as {@link Timestamp}.
-	 * @return The specified {@link CountingResultBase}.
-	 */
-	public CountingResultBase getCountingResultByMethodStartTimestamp(Timestamp timestamp){
-		log.warning("getCountingResultByMethodStartTimestamp disregards inlined and force-inlined methods, " +
-			"use retrieveAllCountingResults instead");
-		return this.countingResultsByArtefactInformation.get(this.countingInformationsByBeginning.get(timestamp.getTime()));
-	}
-
 
 	/**
 	 * Gets the {@link CountingArtefactInformation} by the time of
@@ -303,26 +277,35 @@ public class CountingResultIndexing {
 		}
 		return totalCountingResult;
 	}
-	
+
 	/**
-	 * Gets the {@link CountingResultBase}s that exist for the given method name.
-	 * @param name The name of a method measured by ByCounter.
-	 * @return A {@link Set} of {@link CountingResultBase}s for the given name.
+	 * @param lastMethodExecutionDetails {@link MethodExecutionRecord} with 
+	 * information on internal classes. 
+	 * @return Results added up recursively.
 	 */
-	public synchronized SortedSet<CountingResultBase> retrieveCountingResultsByMethodName(String name){
-		log.warning("retrieveCountingResultsByMethodName disregards inlined and force-inlined methods, " +
-			"use retrieveAllCountingResults instead");
-		SortedSet<CountingResultBase> counts = new TreeSet<CountingResultBase>();
-		Iterator<CountingArtefactInformation> iter = this.countingInformationsByMethodname.get(name).iterator();
-		CountingArtefactInformation cai = null;
-		CountingResultBase cr = null;
-		for(;iter.hasNext();){
-			cai = iter.next();
-			cr = this.countingResultsByArtefactInformation.get(cai);
-			if(cr!=null){
-				counts.add(cr);
+	public List<CountingResult> retrieveRecursiveSum(final MethodExecutionRecord lastMethodExecutionDetails) {
+		// calculate the sums for all results
+		long callerStartTime;
+		long callerReportTime;
+		long prevCallerReportTime = Long.MIN_VALUE;
+		List<CountingResult> ret = new LinkedList<CountingResult>();
+		for(CountingResultBase cr : this.countingResults) {
+			// countingResults are ordered by callerStartTime!
+			callerStartTime = cr.getMethodInvocationBeginning();
+			callerReportTime = cr.getReportingTime();
+			if(prevCallerReportTime > callerReportTime) {
+				// do not return results that have been added up into a previous result already
+				continue;
+			}
+			CountingResult crSum = this.retrieveCountingResultByStartTime_evaluateCallingTree(callerStartTime, true);
+			if(lastMethodExecutionDetails == null
+					|| lastMethodExecutionDetails.executionSettings.isInternalClass(
+					crSum.getQualifiedMethodName())) {
+				ret.add(crSum);
+				prevCallerReportTime = callerReportTime;
 			}
 		}
-		return counts;
+		
+		return ret;
 	}
 }

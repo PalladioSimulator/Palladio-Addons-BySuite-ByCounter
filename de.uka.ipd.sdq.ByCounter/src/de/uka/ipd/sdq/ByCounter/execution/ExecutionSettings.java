@@ -117,6 +117,10 @@ public class ExecutionSettings implements Cloneable {
 		if(i >= 0) {
 			className = qualifyingMethodName.substring(0, i);
 		}
+		i = className.lastIndexOf('.');
+		if(i >= 0 && className.indexOf("(") >= 0) {
+			className = className.substring(0, i);
+		}
 		
 		for(String s : this.internalClassesDefinition) {
 			if(s.charAt(s.length() - 1) == INTERNAL_CLASSES_DEFINITION_WILDCARD_CHAR) {

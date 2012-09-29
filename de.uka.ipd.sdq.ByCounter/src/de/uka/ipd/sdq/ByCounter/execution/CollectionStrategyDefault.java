@@ -2,14 +2,10 @@ package de.uka.ipd.sdq.ByCounter.execution;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
-import java.util.SortedSet;
 import java.util.TreeMap;
-import java.util.TreeSet;
 import java.util.UUID;
 
 import de.uka.ipd.sdq.ByCounter.instrumentation.BlockCountingMode;
@@ -29,11 +25,6 @@ import de.uka.ipd.sdq.ByCounter.results.ThreadedCountingResult;
  *
  */
 public class CollectionStrategyDefault extends AbstractCollectionStrategy {
-
-	/**
-	 *	A {@link SortedSet} that holds the results.
-	 */
-	private SortedSet<CountingResult> countingResults;
 	
 	/** {@link BlockResultCalculation} helper. */
 	private BlockResultCalculation blockCalculation;
@@ -62,6 +53,17 @@ public class CollectionStrategyDefault extends AbstractCollectionStrategy {
 	 * to be added still.
 	 */
 	private InstrumentedRegion regionEnd;
+
+	/**
+	 * {@link ResultCollection} for all results that are collected.
+	 */
+	private ResultCollection currentResultCollection;
+	
+	/**
+	 * Map that maps requestIds to a {@link RequestResult} if there was such 
+	 * a result before. Otherwise the entry will be null.
+	 */
+	private Map<UUID, RequestResult> requestMap;
 	
 	/**
 	 * Construct the strategy object.
@@ -69,7 +71,6 @@ public class CollectionStrategyDefault extends AbstractCollectionStrategy {
 	 */
 	public CollectionStrategyDefault(CountingResultCollector parent) {
 		super(parent);
-		this.countingResults = new TreeSet<CountingResult>();
 		this.blockCalculation = new BlockResultCalculation(parentResultCollector.instrumentationContext);
 		this.countingResultIndexing = new CountingResultIndexing();
 		this.countingResultUpdateIndexing = new CountingResultUpdateIndexing();
@@ -78,18 +79,21 @@ public class CollectionStrategyDefault extends AbstractCollectionStrategy {
 		this.blockExecutionSequenceLengthByMethod = new HashMap<UUID, Integer>();
 		this.currentRegion = null;
 		this.regionEnd = null;
+		this.currentResultCollection = new ResultCollection();
+		this.requestMap = new HashMap<UUID, RequestResult>();
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public void clearResults() {
-		this.log.fine("Used to have "+this.countingResults.size()+" results before clearing");
-		this.countingResults.clear();
 		this.countingResultIndexing.clearResults();
 		this.countingResultUpdateIndexing.clearResults();
 		this.countingResultRegionIndexing.clearResults();
 		this.countingResultThreadIndexing.clearResults();
 		this.blockExecutionSequenceLengthByMethod.clear();
+		// create a new collection so that users of the original collection still have the results.
+		this.currentResultCollection = new ResultCollection();
+		this.requestMap.clear();
 	}
 
 	/** 
@@ -126,6 +130,11 @@ public class CollectionStrategyDefault extends AbstractCollectionStrategy {
 			}
 			// update length of execution sequence
 			blockExecutionSequenceLengthByMethod.put(result.ownID, newExSeqLength);
+		}
+
+		MethodExecutionRecord lastMethodExecutionDetails = parentResultCollector.getLastMethodExecutionDetails();
+		if(lastMethodExecutionDetails == null) {
+			log.warning("No method execution details are available. Please make certain that instrumented code has been executed.");
 		}
 		
 		CalculatedCounts[] ccounts = calculateResultCounts(result);
@@ -180,6 +189,7 @@ public class CollectionStrategyDefault extends AbstractCollectionStrategy {
 							// region started
 							this.currentRegion = ir;
 							log.info("Region started: " + ir);
+							this.addResultToCollection(res);
 						}
 						// this is not the else case if the region is a single line
 						if(ir.getStopLabelIds().contains(labelBlockIndex)
@@ -192,25 +202,27 @@ public class CollectionStrategyDefault extends AbstractCollectionStrategy {
 					}
 				}
 			}
-
+			res.setResultCollection(this.currentResultCollection);
 			// When this result is not an update, add it to the permanent results
 			if(!(result instanceof ProtocolCountUpdateStructure)) {
 				if(result.blockCountingMode != BlockCountingMode.LabelBlocks) {
 					if(this.parentResultCollector.instrumentationContext.getCountingMode() == CountingMode.Regions) {
 						if(this.currentRegion != null) {
+							res = this.countingResultThreadIndexing.apply(res, result.spawnedThreads);
 							this.countingResultRegionIndexing.add(res, this.currentRegion);
-							this.countingResultThreadIndexing.add(res, result.spawnedThreads);
+						} else {
+							// no region active, skip result
 						}
 					} else {
-						this.countingResults.add(res);
-						
-						int nrOfCountingResults=this.countingResults.size();
-						if(nrOfCountingResults%10000==0){
-							log.warning(nrOfCountingResults+" results in ByCounter");
-						}
-				
+						res = this.countingResultThreadIndexing.apply(res, result.spawnedThreads);
 						this.countingResultIndexing.add(res, result.reportingStart);
-						this.countingResultThreadIndexing.add(res, result.spawnedThreads);
+
+						if(lastMethodExecutionDetails != null && lastMethodExecutionDetails.executionSettings.getAddUpResultsRecursively()) {
+							// adding will be done on retrieveResults()
+							return true;
+						} else {
+							addResultToCollection(res);
+						}
 					}
 				} else {
 					return false;
@@ -235,12 +247,44 @@ public class CollectionStrategyDefault extends AbstractCollectionStrategy {
 					CountingResultCollector.getInstance().setChanged();
 					CountingResultCollector.getInstance().notifyObservers(update);
 				} else {
+					res = this.countingResultThreadIndexing.apply(res, result.spawnedThreads);
 					this.countingResultUpdateIndexing.add(res);
-					this.countingResultThreadIndexing.add(res, result.spawnedThreads);
 				}
 			}
+
 		}
 		return true;
+	}
+
+	/**
+	 * Adds the result to {@link #currentResultCollection}.
+	 * @param res CountingResult.
+	 */
+	private void addResultToCollection(CountingResult res) {
+		final UUID requestID = res.getRequestID();
+		if(requestID != null) {
+			RequestResult requestResult = requestMap.get(requestID);
+			if(requestResult == null) {
+				// add a new RequestResult
+				requestResult = new RequestResult();
+				requestResult.setRequestId(requestID);
+				requestMap.put(requestID, requestResult);
+				this.currentResultCollection.getRequestResults().add(requestResult);
+			}
+			// add the result to the RequestResult
+			requestResult.getCountingResults().add(res);
+		} else {
+			if(res instanceof ThreadedCountingResult) {
+				if(((ThreadedCountingResult) res).getThreadedCountingResultSource() == null) {
+					this.currentResultCollection.getCountingResults().add(res);
+				} else {
+					// the parent result is already added, do nothing.
+				}
+			} else {
+				// not a threaded result
+				this.currentResultCollection.getCountingResults().add(res);
+			}
+		}
 	}
 
 	/**
@@ -331,76 +375,12 @@ public class CollectionStrategyDefault extends AbstractCollectionStrategy {
 	 */
 	@Override
 	public ResultCollection retrieveAllCountingResults() {
-		ResultCollection ret = new ResultCollection();
 		MethodExecutionRecord lastMethodExecutionDetails = parentResultCollector.getLastMethodExecutionDetails();
 		if(lastMethodExecutionDetails == null) {
 			log.warning("No method execution details are available. Please make certain that instrumented code has been executed.");
+		} else  if(lastMethodExecutionDetails.executionSettings.getAddUpResultsRecursively()) {
+			currentResultCollection.getCountingResults().addAll(this.countingResultIndexing.retrieveRecursiveSum(lastMethodExecutionDetails));
 		}
-		
-		if(lastMethodExecutionDetails != null && !lastMethodExecutionDetails.executionSettings.getAddUpResultsRecursively()) {
-			// no more calculation is necessary; return results
-			Iterator<CountingResult> iter = this.countingResults.iterator();
-			while(iter.hasNext()){
-				ret.getCountingResults().add(iter.next());
-			}
-		} else {
-			// calculate the sums for all results
-			long callerStartTime;
-			long callerReportTime;
-			long prevCallerReportTime = Long.MIN_VALUE;
-			for(CountingResultBase cr : this.countingResults) {
-				// countingResults are ordered by callerStartTime!
-				callerStartTime = cr.getMethodInvocationBeginning();
-				callerReportTime = cr.getReportingTime();
-				if(prevCallerReportTime > callerReportTime) {
-					// do not return results that have been added up into a previous result already
-					continue;
-				}
-				CountingResult crSum = this.countingResultIndexing.retrieveCountingResultByStartTime_evaluateCallingTree(callerStartTime, true);
-				if(lastMethodExecutionDetails == null
-						|| lastMethodExecutionDetails.executionSettings.isInternalClass(
-						crSum.getQualifiedMethodName())) {
-					ret.getCountingResults().add(crSum);
-					prevCallerReportTime = callerReportTime;
-				}
-			}
-		}
-		ret.getCountingResults().addAll(this.countingResultRegionIndexing.retrieveAllCountingResults().getCountingResults());
-		ret = findRequestResults(ret);
-		this.countingResultThreadIndexing.applyThreadStructure(ret.getCountingResults());
-		return ret;
+		return currentResultCollection;
 	}
-
-	/**
-	 * @param ret {@link ResultCollection} with entries in 
-	 * {@link ResultCollection#getCountingResults()}.
-	 * @return {@link ResultCollection} where Results have been converted to
-	 * {@link RequestResult}s.
-	 */
-	protected ResultCollection findRequestResults(ResultCollection ret) {
-		Map<UUID, RequestResult> requestMap = new HashMap<UUID, RequestResult>();
-		List<CountingResult> deleteFromCountingResults  = new LinkedList<CountingResult>();
-		for(CountingResult r : ret.getCountingResults()) {
-			final UUID requestID = r.getRequestID();
-			if(requestID != null) {
-				RequestResult requestResult = requestMap.get(requestID);
-				if(requestResult == null) {
-					// add a new RequestResult
-					requestResult = new RequestResult();
-					requestResult.setRequestId(requestID);
-					requestMap.put(requestID, requestResult);
-				}
-				// add the result to the RequestResult
-				requestResult.getCountingResults().add(r);
-				deleteFromCountingResults.add(r);
-			}
-		}
-		// add entries in the map to request results
-		ret.getRequestResults().addAll(requestMap.values());
-		// remove the results that were moved.
-		ret.getCountingResults().removeAll(deleteFromCountingResults);
-		
-		return ret;
-	}
-
 }

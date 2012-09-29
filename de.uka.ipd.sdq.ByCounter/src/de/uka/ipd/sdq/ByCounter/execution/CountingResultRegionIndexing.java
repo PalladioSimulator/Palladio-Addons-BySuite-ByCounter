@@ -1,26 +1,21 @@
 package de.uka.ipd.sdq.ByCounter.execution;
 
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentedRegion;
 import de.uka.ipd.sdq.ByCounter.results.CountingResult;
-import de.uka.ipd.sdq.ByCounter.results.ResultCollection;
 
 /**
  * Indexing for counting regions.
  * @author Martin Krogmann
  */
-public class CountingResultRegionIndexing implements ICollectionStrategy {
+public class CountingResultRegionIndexing {
 	
-	Map<InstrumentedRegion, List<CountingResult>> results;
+	Map<InstrumentedRegion, CountingResult> results;
 	
 	public CountingResultRegionIndexing() {
-		this.results = new HashMap<InstrumentedRegion, List<CountingResult>>();
+		this.results = new HashMap<InstrumentedRegion, CountingResult>();
 	}
 
 	/**
@@ -28,41 +23,21 @@ public class CountingResultRegionIndexing implements ICollectionStrategy {
 	 * @param currentRegion Region to which the result belongs.
 	 */
 	public void add(CountingResult res, InstrumentedRegion currentRegion) {
-		List<CountingResult> rs = this.results.get(currentRegion);
+		CountingResult rs = this.results.get(currentRegion);
 		if(rs == null) {
 			// no entry for this region id yet
-			rs = new LinkedList<CountingResult>();
-			this.results.put(currentRegion, rs);
+			this.results.put(currentRegion, res);
+			res.setObservedElement(currentRegion);
+		} else {
+			// add up with the existing results
+			rs.add(res);
 		}
-		rs.add(res);
 	}
 
-	@Override
+	/**
+	 * Clear the internal map.
+	 */
 	public void clearResults() {
 		this.results.clear();
 	}
-
-	@Override
-	public boolean protocolCount(ProtocolCountStructure result) {
-		throw new IllegalArgumentException("Don't use this protocol method.");
-	}
-
-	@Override
-	public final ResultCollection retrieveAllCountingResults() {
-		ResultCollection res = new ResultCollection();
-		// for each region
-		for(Entry<InstrumentedRegion, List<CountingResult>> e : this.results.entrySet()) {
-			// add up the counting results
-			InstrumentedRegion ir = e.getKey();
-			Iterator<CountingResult> iter = e.getValue().iterator();
-			CountingResult irResult = (CountingResult) iter.next().clone();
-			while(iter.hasNext()) {
-				irResult.add(iter.next());
-			}
-			irResult.setObservedElement(ir);
-			res.getCountingResults().add(irResult);
-		}
-		return res;
-	}
-
 }

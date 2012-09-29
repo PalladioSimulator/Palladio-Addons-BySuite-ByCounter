@@ -218,6 +218,7 @@ public class TestThreads extends AbstractByCounterTest {
 		// initialize ByCounter
 		BytecodeCounter counter = setupByCounter();
 		counter.getInstrumentationParams().setInstrumentRecursively(true);
+		counter.getExecutionSettings().setAddUpResultsRecursively(true);
 		counter.instrument(methodRun);
 		
 		Object[] executionParameters = new Object[0];
@@ -260,7 +261,7 @@ public class TestThreads extends AbstractByCounterTest {
 		
         // define expectations
         Expectation e = new Expectation(true);
-        e.add(0)
+        e.add()
         .add(Opcodes.LLOAD, 1)
         .add(Opcodes.ALOAD, 3)
         .add(Opcodes.ASTORE, 2)
@@ -334,7 +335,7 @@ public class TestThreads extends AbstractByCounterTest {
         CountingResult[] results = countingResults.toArray(new CountingResult[0]);
         // we expect 1 result with 4 child thread results
 		Expectation e = new Expectation(true);
-		e.add(createExpectationsRunThreads(0));
+		e.add(createExpectationsRunThreads(-1));
 		e.compare(results);
 		
 		// output for debugging purposes
