@@ -527,6 +527,11 @@ implements Serializable, Cloneable, IFullCountingResult, Comparable<IFullCountin
 		this.methodCallCounts = new TreeMap<String,Long>(src.methodCallCounts);
 		this.arrayCreationCounts = copyOfArrayCreationCounts;
 		this.setThreadId(src.threadId);
+		this.setIndexOfRangeBlock(src.getIndexOfRangeBlock());
+		this.setCharacterisations(src.characterisations);
+		this.setCharacterisationTitles(src.getCharacterisationTitles());
+		this.setCharacterisationTypes(src.getCharacterisationTypes());
+		this.setInvariantMethodsAreInlined(src.invariantMethodsAreInlined);
 	}
 	
 	/**
