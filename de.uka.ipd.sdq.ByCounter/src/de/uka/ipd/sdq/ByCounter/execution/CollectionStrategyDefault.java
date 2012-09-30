@@ -238,12 +238,10 @@ public class CollectionStrategyDefault extends AbstractCollectionStrategy {
 						this.countingResultRegionIndexing.add(res, this.regionEnd);
 						this.regionEnd = null;
 					}
-					// make sure observers are updated
 
-					final Integer labelIndex = result.blockExecutionSequence.get(result.blockExecutionSequence.size()-1);
+					// make sure observers are updated
 					CountingResultSectionExecutionUpdate update = 
-							new CountingResultSectionExecutionUpdate(labelIndex,
-																		res);
+							new CountingResultSectionExecutionUpdate(res);
 					CountingResultCollector.getInstance().setChanged();
 					CountingResultCollector.getInstance().notifyObservers(update);
 				} else {

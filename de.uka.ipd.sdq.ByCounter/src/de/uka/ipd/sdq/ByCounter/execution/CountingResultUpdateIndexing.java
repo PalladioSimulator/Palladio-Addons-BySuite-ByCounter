@@ -87,8 +87,7 @@ public class CountingResultUpdateIndexing {
 			resultSumForSection.add(r);
 		}
 		CountingResultSectionExecutionUpdate update = 
-				new CountingResultSectionExecutionUpdate(resultSumForSection.getIndexOfRangeBlock(),
-															resultSumForSection);
+				new CountingResultSectionExecutionUpdate(resultSumForSection);
 		resultQueue.clear();
 		CountingResultCollector.getInstance().setChanged();
 		CountingResultCollector.getInstance().notifyObservers(update);
