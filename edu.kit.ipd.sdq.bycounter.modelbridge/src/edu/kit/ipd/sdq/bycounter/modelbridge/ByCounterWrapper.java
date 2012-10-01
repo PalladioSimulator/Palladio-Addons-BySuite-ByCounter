@@ -35,15 +35,14 @@ import de.uka.ipd.sdq.ByCounter.parsing.LineNumberRange;
 import de.uka.ipd.sdq.ByCounter.results.CountingResult;
 import de.uka.ipd.sdq.ByCounter.results.RequestResult;
 import de.uka.ipd.sdq.ByCounter.results.ThreadedCountingResult;
-import de.uka.ipd.sdq.ByCounter.utils.JavaTypeEnum;
 import de.uka.ipd.sdq.ByCounter.utils.MethodDescriptor;
 import edu.kit.ipd.sdq.bycounter.input.EntityToInstrument;
 import edu.kit.ipd.sdq.bycounter.input.ExecutionProfile;
 import edu.kit.ipd.sdq.bycounter.input.InstrumentationProfile;
 import edu.kit.ipd.sdq.bycounter.input.InstrumentedMethod;
 import edu.kit.ipd.sdq.bycounter.input.LogicalSet;
+import edu.kit.ipd.sdq.bycounter.modelbridge.util.TypeMapping;
 import edu.kit.ipd.sdq.bycounter.output.ArrayCreationCount;
-import edu.kit.ipd.sdq.bycounter.output.ArrayType;
 import edu.kit.ipd.sdq.bycounter.output.MethodCallCount;
 import edu.kit.ipd.sdq.bycounter.output.OutputFactory;
 import edu.kit.ipd.sdq.bycounter.output.ResultCollection;
@@ -72,12 +71,37 @@ public class ByCounterWrapper {
 			if(updateData instanceof CountingResultSectionExecutionUpdate) {
 				log.info("Notification received: " + updateData);
 				CountingResult observation = ((CountingResultSectionExecutionUpdate)updateData).sectionResult;
+
+				// convert result
+				edu.kit.ipd.sdq.bycounter.output.CountingResult cr;
+				cr = mapCountingResult(observation, entitiesToInstrumentIdMap);
+				cr.setResultCollection(currentRun);
+
+				if(observation instanceof ThreadedCountingResult) {
+					// for threaded results, parent/child relationships need to be mapped.
+					edu.kit.ipd.sdq.bycounter.output.ThreadedCountingResult tcr = 
+							(edu.kit.ipd.sdq.bycounter.output.ThreadedCountingResult)cr;
+					ThreadedCountingResult threadedCountingResult = (ThreadedCountingResult) observation;
+					// is there a parent?
+					ThreadedCountingResult source = threadedCountingResult.getThreadedCountingResultSource();
+					if(source != null) {
+						edu.kit.ipd.sdq.bycounter.output.ThreadedCountingResult tcrSource = 
+								(edu.kit.ipd.sdq.bycounter.output.ThreadedCountingResult) countingResultToEMFMap.get(source);
+						tcr.setThreadedCountingResult(tcrSource);
+						tcrSource.getSpawnedThreadedCountingResults().add(tcr);
+					}
+					// are there children?
+					for(ThreadedCountingResult spawn : threadedCountingResult.getSpawnedThreadedCountingResults()) {
+						edu.kit.ipd.sdq.bycounter.output.ThreadedCountingResult mappedSpawn = 
+								(edu.kit.ipd.sdq.bycounter.output.ThreadedCountingResult) countingResultToEMFMap.get(spawn);
+						if(mappedSpawn != null) {
+							tcr.getSpawnedThreadedCountingResults().add(mappedSpawn);
+						}
+					}
+				}
 				
+				// add the result to the correct collection.
 				if(observation.getRequestResult() == null) {
-					// convert ordinary result
-					edu.kit.ipd.sdq.bycounter.output.CountingResult cr;
-					cr = mapCountingResult(observation, entitiesToInstrumentIdMap);
-					cr.setResultCollection(currentRun);
 					currentRun.getCountingResults().add(cr);
 
 				} else { // requestResult != null
@@ -87,11 +111,11 @@ public class ByCounterWrapper {
 							mapRequestResult(requestResult, entitiesToInstrumentIdMap);
 					req.setResultCollection(currentRun);
 					currentRun.getRequestResults().add(req);
-				}				
+				}
 				
 			} else if(updateData instanceof CountingResultCompleteMethodExecutionUpdate) {
 				// skip complete result
-			}else {
+			} else {
 				throw new IllegalArgumentException("Incorrect updateData type.");
 			}
 			
@@ -111,34 +135,22 @@ public class ByCounterWrapper {
 	private ExecutionProfile executionProfile;
 	/** List of available GAST Root Nodes. */
 	private final LinkedList<Root> availableGastRootNodes;
-	/** A map that maps the string representation of simple java 
-	 * types in the GAST to the JavaTypeEnum. */
-	private static Map<String, JavaTypeEnum> gastTypeJavaTypeMap;
 	/**
 	 * Maps from {@link de.uka.ipd.sdq.ByCounter.instrumentation.EntityToInstrument#getId()}
 	 * to the {@link EntityToInstrument} it was mapped to.
 	 */
 	private Map<java.util.UUID, EntityToInstrument> entitiesToInstrumentIdMap;
+	/**
+	 * Maps from {@link CountingResult} to the EMF element that was created for 
+	 * it.
+	 */
+	private Map<CountingResult, edu.kit.ipd.sdq.bycounter.output.CountingResult> countingResultToEMFMap;
 	/** Object used to handle online updates by ByCounter. */
 	private UpdateObserver updateObserver;
 	/** {@link ResultCollection} for the current ByCounter run. It is set on construction time. It is not set in 
 	 * {@link #execute(Method, Object, Object[])} in order to allow external applications to listen on changes during execution.*/
 	private ResultCollection currentRun;
 	
-	static {
-		// initialize the gastTypeJavaTypeMap
-		gastTypeJavaTypeMap = new HashMap<String, JavaTypeEnum>();
-		gastTypeJavaTypeMap.put("boolean", JavaTypeEnum.Boolean);
-		gastTypeJavaTypeMap.put("byte", JavaTypeEnum.Byte);
-		gastTypeJavaTypeMap.put("char", JavaTypeEnum.Char);
-		gastTypeJavaTypeMap.put("double", JavaTypeEnum.Double);
-		gastTypeJavaTypeMap.put("float", JavaTypeEnum.Float);
-		gastTypeJavaTypeMap.put("int", JavaTypeEnum.Int);
-		gastTypeJavaTypeMap.put("long", JavaTypeEnum.Long);
-		gastTypeJavaTypeMap.put("short", JavaTypeEnum.Short);
-		gastTypeJavaTypeMap.put("void", JavaTypeEnum.Void);
-	}
-
 	/**Initializes the wrapper.
 	 */
 	public ByCounterWrapper() {
@@ -148,6 +160,7 @@ public class ByCounterWrapper {
 		CountingResultCollector.getInstance().addObserver(updateObserver);
 		this.instrumentationProfile = null;
 		this.availableGastRootNodes = new LinkedList<Root>();
+		this.countingResultToEMFMap = new HashMap<CountingResult, edu.kit.ipd.sdq.bycounter.output.CountingResult>();
 	}
 
 	/**Gets the current configuration for the instrumentation.
@@ -371,7 +384,7 @@ public class ByCounterWrapper {
 	 * @return {@link edu.kit.ipd.sdq.bycounter.output.RequestResult} created 
 	 * from rr.
 	 */
-	private static edu.kit.ipd.sdq.bycounter.output.RequestResult mapRequestResult(
+	private edu.kit.ipd.sdq.bycounter.output.RequestResult mapRequestResult(
 			RequestResult rr, Map<java.util.UUID, EntityToInstrument> entitiesToInstrumentMap2) {
 		edu.kit.ipd.sdq.bycounter.output.RequestResult req = 
 				outputFactory.createRequestResult();
@@ -403,7 +416,7 @@ public class ByCounterWrapper {
 	 * to the {@link EntityToInstrument} it was mapped to.
 	 * @return EMF {@link edu.kit.ipd.sdq.bycounter.output.CountingResult}.
 	 */
-	private static edu.kit.ipd.sdq.bycounter.output.CountingResult mapCountingResult(
+	private edu.kit.ipd.sdq.bycounter.output.CountingResult mapCountingResult(
 			CountingResult cr, Map<java.util.UUID, EntityToInstrument> entitiesToInstrumentMap2) {
 		edu.kit.ipd.sdq.bycounter.output.CountingResult result;
 		if(cr instanceof ThreadedCountingResult) {
@@ -419,6 +432,11 @@ public class ByCounterWrapper {
 				tResult.getSpawnedThreadedCountingResults().add(mappedTcrr);
 				mappedTcrr.setThreadedCountingResult(tResult);
 			}
+			// map parent/source
+			ThreadedCountingResult tcrSource = tcr.getThreadedCountingResultSource();
+			if(tcrSource != null) {
+				tResult.setThreadedCountingResult((edu.kit.ipd.sdq.bycounter.output.ThreadedCountingResult) this.countingResultToEMFMap.get(tcrSource));
+			}
 			result = tResult;
 		} else {
 			result = outputFactory.createCountingResult();
@@ -433,6 +451,9 @@ public class ByCounterWrapper {
 		result.setObservedElement(mapEntityToInstrument(cr.getObservedElement(), entitiesToInstrumentMap2));
 		result.setQualifiedMethodName(cr.getQualifiedMethodName());
 		result.setReportingTime(cr.getReportingTime());
+		
+		// save mapping
+		this.countingResultToEMFMap.put(cr, result);
 	
 		return result;
 	}
@@ -491,64 +512,13 @@ public class ByCounterWrapper {
 			for(Entry<ArrayCreation, Long> e : arrayCreationCounts.entrySet()) {
 				ArrayCreationCount r = outputFactory.createArrayCreationCount();
 				ArrayCreation arrayCreation = e.getKey();
-				r.setArrayType(mapArrayType(arrayCreation.getTypeOpcode()));
+				r.setArrayType(TypeMapping.mapArrayType(arrayCreation.getTypeOpcode()));
 				r.setNumberOfDimensions(arrayCreation.getNumberOfDimensions());
 				r.setTypeDescriptor(arrayCreation.getTypeDesc());
 				r.setCount(e.getValue());
 			}
 		}
 		return result;
-	}
-
-	// Field descriptor #263 I
-	private static final int T_BOOLEAN = 4;
-	  
-	// Field descriptor #263 I
-	private static final int T_CHAR = 5;
-	  
-	// Field descriptor #263 I
-	private static final int T_FLOAT = 6;
-	 
-	// Field descriptor #263 I
-	private static final int T_DOUBLE = 7;
-	 
-	// Field descriptor #263 I
-	private static final int T_BYTE = 8;
-	  
-	// Field descriptor #263 I
-	private static final int T_SHORT = 9;
-	  
-	// Field descriptor #263 I
-	private static final int T_INT = 10;
-	  
-	// Field descriptor #263 I
-	private static final int T_LONG = 11;
-
-	/**
-	 * @param typeOpcode Array type opcode.
-	 * @return Type in the {@link ArrayType} enum.
-	 */
-	private static ArrayType mapArrayType(int typeOpcode) {
-		switch(typeOpcode) {
-		case(T_BOOLEAN):
-			return ArrayType.BOOLEAN;
-		case(T_BYTE):
-			return ArrayType.BYTE;
-		case(T_CHAR):
-			return ArrayType.CHAR;
-		case(T_FLOAT):
-			return ArrayType.FLOAT;
-		case(T_DOUBLE):
-			return ArrayType.DOUBLE;
-		case(T_SHORT):
-			return ArrayType.SHORT;
-		case(T_INT):
-			return ArrayType.INT;
-		case(T_LONG):
-			return ArrayType.LONG;
-		default:
-			return ArrayType.INVALID;
-		}
 	}
 	
 	/**
@@ -578,5 +548,6 @@ public class ByCounterWrapper {
 	public void clearResultCollection() {
 		currentRun = OutputFactory.eINSTANCE.createResultCollection();
 		CountingResultCollector.getInstance().clearResults();
+		this.countingResultToEMFMap.clear();
 	}
 }
