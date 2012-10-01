@@ -199,10 +199,18 @@ public class ByCounterWrapper {
 		this.bycounter.instrument();
 	}
 	
+	/**
+	 * @return The {@link ExecutionProfile} to use for executing
+	 * instrumented code and collecting results produced by it.
+	 */
 	public ExecutionProfile getExecutionProfile() {
 		return executionProfile;
 	}
-	
+
+	/**
+	 * @param executionProfile The {@link ExecutionProfile} to use for executing
+	 * instrumented code and collecting results produced by it.
+	 */
 	public void setExecutionProfile(ExecutionProfile executionProfile) {
 		if(executionProfile == null) {
 			throw new IllegalArgumentException("Execution profile must not be null.");
