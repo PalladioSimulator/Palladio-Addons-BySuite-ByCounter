@@ -60,7 +60,6 @@ public class ByCounterWrapper {
 	/**
 	 * Class used to handle online updates by ByCounter.
 	 * @author Martin Krogmann
-	 *
 	 */
 	private final class UpdateObserver implements Observer {
 
@@ -70,30 +69,26 @@ public class ByCounterWrapper {
 		 * @param updateData Update data provided by crc.
 		 */
 		public void update(Observable crc, Object updateData) {
-			// TODO
 			if(updateData instanceof CountingResultSectionExecutionUpdate) {
 				log.info("Notification received: " + updateData);
-				// compare the observation with the expectation
 				CountingResult observation = ((CountingResultSectionExecutionUpdate)updateData).sectionResult;
-
-				//TODO Stored updated data in results collection; Might be possible similar to the following code taken from #generateResults
-				// convert request results
-				final SortedSet<RequestResult> requestResults;
-				requestResults = resultCollection.getRequestResults();
-				for(RequestResult rr : requestResults) {
-					edu.kit.ipd.sdq.bycounter.output.RequestResult req = mapRequestResult(rr, entitiesToInstrumentIdMap);
-					currentRun.getRequestResults().add(req);
-				}
 				
-				// convert ordinary results including threaded counting results
-				final SortedSet<CountingResult> results;
-				results = resultCollection.getCountingResults();
-
-				edu.kit.ipd.sdq.bycounter.output.CountingResult cr;
-				for(CountingResult result : results)  { 
-					cr = mapCountingResult(result, entitiesToInstrumentIdMap);
+				if(observation.getRequestResult() == null) {
+					// convert ordinary result
+					edu.kit.ipd.sdq.bycounter.output.CountingResult cr;
+					cr = mapCountingResult(observation, entitiesToInstrumentIdMap);
+					cr.setResultCollection(currentRun);
 					currentRun.getCountingResults().add(cr);
-				}
+
+				} else { // requestResult != null
+					RequestResult requestResult = observation.getRequestResult();
+					// convert request result
+					edu.kit.ipd.sdq.bycounter.output.RequestResult req = 
+							mapRequestResult(requestResult, entitiesToInstrumentIdMap);
+					req.setResultCollection(currentRun);
+					currentRun.getRequestResults().add(req);
+				}				
+				
 			} else if(updateData instanceof CountingResultCompleteMethodExecutionUpdate) {
 				// skip complete result
 			}else {
@@ -153,7 +148,6 @@ public class ByCounterWrapper {
 		CountingResultCollector.getInstance().addObserver(updateObserver);
 		this.instrumentationProfile = null;
 		this.availableGastRootNodes = new LinkedList<Root>();
-		this.currentRun = outputFactory.createResultCollection();
 	}
 
 	/**Gets the current configuration for the instrumentation.
@@ -184,7 +178,7 @@ public class ByCounterWrapper {
 		handleEntitiesToInstrument(instrumentationParams, 
 				entitiesToInstrumentIdMap,
 				methodNameInstrumentedMethodMap, input);
-		this.configureOnlineUpdates(instrumentationParams);
+		instrumentationParams.setProvideOnlineSectionExecutionUpdates(true);
 		instrumentationParams.setProvideJoinThreadsAbility(input.isProvideJoinThreadsAbility());
 		instrumentationParams.setProvideOnlineSectionActiveUpdates(input.isProvideOnlineSectionActiveUpdates());
 
@@ -228,16 +222,6 @@ public class ByCounterWrapper {
 			}
 		}
 		executionSettings.setInternalClassesDefinition(bcSet);
-	}
-
-	/**
-	 * Changes the {@link InstrumentationParameters} to enable online updates
-	 * and registers an observer with the {@link CountingResultCollector}.
-	 * @param instrumentationParams {@link InstrumentationParameters} to change.
-	 */
-	private void configureOnlineUpdates(InstrumentationParameters instrumentationParams) {
-		instrumentationParams.setProvideOnlineSectionExecutionUpdates(true);
-		CountingResultCollector.getInstance().addObserver(this.updateObserver);
 	}
 
 	/**Handles updates of the input model regarding all {@link EntityToInstrument}.
@@ -360,6 +344,7 @@ public class ByCounterWrapper {
 		requestResults = resultCollection.getRequestResults();
 		for(RequestResult rr : requestResults) {
 			edu.kit.ipd.sdq.bycounter.output.RequestResult req = mapRequestResult(rr, entitiesToInstrumentIdMap);
+			req.setResultCollection(copy);
 			copy.getRequestResults().add(req);
 		}
 		
@@ -370,6 +355,7 @@ public class ByCounterWrapper {
 		edu.kit.ipd.sdq.bycounter.output.CountingResult cr;
 		for(CountingResult result : results)  { 
 			cr = mapCountingResult(result, entitiesToInstrumentIdMap);
+			cr.setResultCollection(copy);
 			copy.getCountingResults().add(cr);
 		}
 		
@@ -431,6 +417,7 @@ public class ByCounterWrapper {
 				edu.kit.ipd.sdq.bycounter.output.ThreadedCountingResult mappedTcrr = 
 						(edu.kit.ipd.sdq.bycounter.output.ThreadedCountingResult)mapCountingResult(tcrr, entitiesToInstrumentMap2);
 				tResult.getSpawnedThreadedCountingResults().add(mappedTcrr);
+				mappedTcrr.setThreadedCountingResult(tResult);
 			}
 			result = tResult;
 		} else {
