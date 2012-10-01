@@ -18,12 +18,17 @@ public interface ICollectionStrategy {
 	 * @return True, if the result was accepted.
 	 */
 	public abstract boolean protocolCount(ProtocolCountStructure result);
+	
+	/**
+	 * @param resultCollection The {@link ResultCollection} that the 
+	 * {@link ICollectionStrategy} 
+	 * will fill with results.
+	 */
+	public void setResultCollection(ResultCollection resultCollection);
 
 	/**
-	 * @return The {@link CountingResultBase}s produced from the handling and 
-	 * accepting of 
-	 * results by this strategy.  
+	 * This is called before retrieving results to allow any late calculations 
+	 * to take place.
 	 */
-	public abstract ResultCollection retrieveAllCountingResults();
-
+	void prepareCountingResults();
 }

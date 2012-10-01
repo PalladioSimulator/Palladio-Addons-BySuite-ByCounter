@@ -10,7 +10,6 @@ import java.util.UUID;
 import de.uka.ipd.sdq.ByCounter.instrumentation.BlockCountingMode;
 import de.uka.ipd.sdq.ByCounter.parsing.ArrayCreation;
 import de.uka.ipd.sdq.ByCounter.results.CountingResult;
-import de.uka.ipd.sdq.ByCounter.results.ResultCollection;
 
 /**
  * This class can be used in addition to {@link CountingResultCollector} in 
@@ -214,15 +213,14 @@ public class CollectionStrategyForceInlining extends AbstractCollectionStrategy 
 	
 	/** {@inheritDoc} */
 	@Override
-	public ResultCollection retrieveAllCountingResults() {
+	public void prepareCountingResults() {
 		if(useDeferredBBcalculations) {
 			processDeferredResults();
 		}
-		ResultCollection res = new ResultCollection();
 		if(this.hasInliningResult) {
-			res.getCountingResults().add(countingResult);
+			countingResult.setResultCollection(this.currentResultCollection);
+			this.currentResultCollection.getCountingResults().add(countingResult);
 		}
-		return res;
 	}
 
 	public SortedMap<String, Integer> getForcedInlining_OccurenceCountsReportingMethods() {

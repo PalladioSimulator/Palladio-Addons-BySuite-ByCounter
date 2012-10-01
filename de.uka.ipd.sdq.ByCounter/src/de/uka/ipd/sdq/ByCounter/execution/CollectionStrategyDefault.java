@@ -14,7 +14,6 @@ import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentedRegion;
 import de.uka.ipd.sdq.ByCounter.parsing.ArrayCreation;
 import de.uka.ipd.sdq.ByCounter.results.CountingResult;
 import de.uka.ipd.sdq.ByCounter.results.RequestResult;
-import de.uka.ipd.sdq.ByCounter.results.ResultCollection;
 import de.uka.ipd.sdq.ByCounter.results.ThreadedCountingResult;
 
 /**
@@ -55,11 +54,6 @@ public class CollectionStrategyDefault extends AbstractCollectionStrategy {
 	private InstrumentedRegion regionEnd;
 
 	/**
-	 * {@link ResultCollection} for all results that are collected.
-	 */
-	private ResultCollection currentResultCollection;
-	
-	/**
 	 * Map that maps requestIds to a {@link RequestResult} if there was such 
 	 * a result before. Otherwise the entry will be null.
 	 */
@@ -79,7 +73,6 @@ public class CollectionStrategyDefault extends AbstractCollectionStrategy {
 		this.blockExecutionSequenceLengthByMethod = new HashMap<UUID, Integer>();
 		this.currentRegion = null;
 		this.regionEnd = null;
-		this.currentResultCollection = new ResultCollection();
 		this.requestMap = new HashMap<UUID, RequestResult>();
 	}
 
@@ -91,8 +84,6 @@ public class CollectionStrategyDefault extends AbstractCollectionStrategy {
 		this.countingResultRegionIndexing.clearResults();
 		this.countingResultThreadIndexing.clearResults();
 		this.blockExecutionSequenceLengthByMethod.clear();
-		// create a new collection so that users of the original collection still have the results.
-		this.currentResultCollection = new ResultCollection();
 		this.requestMap.clear();
 	}
 
@@ -101,6 +92,17 @@ public class CollectionStrategyDefault extends AbstractCollectionStrategy {
 	 */
 	public CountingResultIndexing getCountingResultIndexing() {
 		return countingResultIndexing;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public void prepareCountingResults() {
+		MethodExecutionRecord lastMethodExecutionDetails = parentResultCollector.getLastMethodExecutionDetails();
+		if(lastMethodExecutionDetails == null) {
+			log.warning("No method execution details are available. Please make certain that instrumented code has been executed.");
+		} else  if(lastMethodExecutionDetails.executionSettings.getAddUpResultsRecursively()) {
+			currentResultCollection.getCountingResults().addAll(this.countingResultIndexing.retrieveRecursiveSum(lastMethodExecutionDetails));
+		}
 	}
 
 	/** Add to counting results. */
@@ -366,19 +368,5 @@ public class CollectionStrategyDefault extends AbstractCollectionStrategy {
 			lastEntry = entry;
 		}
 		return result;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public ResultCollection retrieveAllCountingResults() {
-		MethodExecutionRecord lastMethodExecutionDetails = parentResultCollector.getLastMethodExecutionDetails();
-		if(lastMethodExecutionDetails == null) {
-			log.warning("No method execution details are available. Please make certain that instrumented code has been executed.");
-		} else  if(lastMethodExecutionDetails.executionSettings.getAddUpResultsRecursively()) {
-			currentResultCollection.getCountingResults().addAll(this.countingResultIndexing.retrieveRecursiveSum(lastMethodExecutionDetails));
-		}
-		return currentResultCollection;
 	}
 }

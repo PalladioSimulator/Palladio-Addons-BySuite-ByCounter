@@ -6,7 +6,6 @@ import java.util.UUID;
 
 import de.uka.ipd.sdq.ByCounter.parsing.ArrayCreation;
 import de.uka.ipd.sdq.ByCounter.results.CountingResult;
-import de.uka.ipd.sdq.ByCounter.results.ResultCollection;
 
 
 /**
@@ -105,14 +104,13 @@ public class CollectionStrategyWishedInlining extends
 		}
 		return true;
 	}
-
+	
+	/** {@inheritDoc} */
 	@Override
-	public ResultCollection retrieveAllCountingResults() {
-		ResultCollection result = new ResultCollection();
+	public void prepareCountingResults() {
 		if(this.hasInliningResult) {
-			result.getCountingResults().add(this.inlined_countingResult);
-		}
-		return result;
+			this.inlined_countingResult.setResultCollection(this.currentResultCollection);
+			this.currentResultCollection.getCountingResults().add(this.inlined_countingResult);
+		}	
 	}
-
 }

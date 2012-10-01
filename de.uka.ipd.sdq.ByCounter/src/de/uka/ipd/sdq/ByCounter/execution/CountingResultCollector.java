@@ -35,7 +35,7 @@ import de.uka.ipd.sdq.ByCounter.results.ResultCollection;
  * @since 0.1
  * @version 1.2
  */
-public final class CountingResultCollector extends Observable implements ICollectionStrategy {
+public final class CountingResultCollector extends Observable {
 	
 	/** Default value for {@link #getMode()}. */
 	public static final CountingResultCollectorMode MODE_DEFAULT = CountingResultCollectorMode.UseReportingMethodChoiceByInstrumentedMethods;
@@ -129,6 +129,8 @@ public final class CountingResultCollector extends Observable implements ICollec
 	 */
 	private Map<Long, EntityToInstrument> activeEntity;
 
+	private ResultCollection currentResultCollection;
+
 	/**
 	 * Private constructor that is invoked to create the singleton instance
 	 */
@@ -147,6 +149,7 @@ public final class CountingResultCollector extends Observable implements ICollec
 		this.collectionStrategies.add(this.inliningStrategyForced);
 		this.activeEntity = new HashMap<Long, EntityToInstrument>();
 		this.spawnedThreads = new LinkedList<Thread>();
+		this.resetResultCollection();
 	}
 
 	/**
@@ -158,10 +161,22 @@ public final class CountingResultCollector extends Observable implements ICollec
 		for(ICollectionStrategy s : this.collectionStrategies) {
 			s.clearResults();
 		}
+		this.resetResultCollection();
 		this.activeEntity.clear();
 		this.spawnedThreads.clear();
 	}
 
+	/**
+	 * Reconstruct the {@link #currentResultCollection} and provide a 
+	 * reference to each {@link ICollectionStrategy}.
+	 */
+	private void resetResultCollection() {
+		this.currentResultCollection = new ResultCollection();
+		for(ICollectionStrategy s : this.collectionStrategies) {
+			s.setResultCollection(this.currentResultCollection);
+		}	
+	}
+	
 	/**
 	 * Gets all result writers registered to the collector.
 	 * @return A list of {@link ICountingResultWriter}s.
@@ -314,21 +329,16 @@ public final class CountingResultCollector extends Observable implements ICollec
 		
 	/**
 	 * Get all results the {@link CountingResultCollector} holds.
-	 * This does not clear the {@link CountingResultCollector} list.
+	 * This does not clear the {@link CountingResultCollector} contents.
 	 * You have to explicitly
 	 * call <code>clearResults()</code> if that is your intention.
 	 * @return A {@link ResultCollection}.
 	 */
 	public synchronized ResultCollection retrieveAllCountingResults() {
-		ResultCollection ret = new ResultCollection();
-
-		// add the results of all strategies
 		for(ICollectionStrategy s : this.collectionStrategies) {
-			ResultCollection results = s.retrieveAllCountingResults();
-			ret.add(results);
+			s.prepareCountingResults();
 		}
-
-		return ret;
+		return currentResultCollection;
 	}
 	
 	/**
