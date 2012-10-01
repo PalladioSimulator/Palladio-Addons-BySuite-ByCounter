@@ -273,6 +273,7 @@ public class CollectionStrategyDefault extends AbstractCollectionStrategy {
 			}
 			// add the result to the RequestResult
 			requestResult.getCountingResults().add(res);
+			res.setRequestResult(requestResult);
 		} else {
 			if(res instanceof ThreadedCountingResult) {
 				if(((ThreadedCountingResult) res).getThreadedCountingResultSource() == null) {
