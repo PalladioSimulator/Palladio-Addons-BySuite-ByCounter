@@ -182,8 +182,6 @@ public class ByCounterWrapper {
 		// create ByCounter instrumentation parameters
 		InstrumentationParameters instrumentationParams = new InstrumentationParameters();
 		this.handlePersistInstrumentedClasses(instrumentationParams, input);
-		input.isAggregateInternalCallsTransparently(); // TODO: implement aggregateInterncalCallsTransparently
-		input.getDefinedLogicalSets(); // TODO: implement handling definedLogicalSets
 		instrumentationParams.setInstrumentRecursively(input.isInstrumentRecursively()); 
 		this.handleBasicBlocks(instrumentationParams, input);
 		final Map<String, InstrumentedMethod> methodNameInstrumentedMethodMap = new HashMap<String, InstrumentedMethod>();
@@ -213,7 +211,8 @@ public class ByCounterWrapper {
 		ExecutionSettings executionSettings = new ExecutionSettings();
 		executionSettings.setAddUpResultsRecursively(executionProfile.isAddUpResultsRecursively());
 		executionSettings.setWaitForThreadsToFinnish(executionProfile.isWaitForThreadsToFinnish());
-		handleInternalClassesDefinition(executionSettings, this.instrumentationProfile.getDefinedLogicalSets());
+//		executionProfile.isAggregateInternalCallsTransparently(); // TODO: implement aggregateInterncalCallsTransparently
+		handleInternalClassesDefinition(executionSettings, executionProfile.getDefinedLogicalSets());
 		
 		// update execution parameters
 		this.executionProfile = executionProfile;

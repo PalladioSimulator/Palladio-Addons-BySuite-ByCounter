@@ -10,8 +10,8 @@ import de.fzi.gast.types.GASTClass;
 
 import de.uka.ipd.sdq.identifier.impl.IdentifierImpl;
 
+import edu.kit.ipd.sdq.bycounter.input.ExecutionProfile;
 import edu.kit.ipd.sdq.bycounter.input.InputPackage;
-import edu.kit.ipd.sdq.bycounter.input.InstrumentationProfile;
 import edu.kit.ipd.sdq.bycounter.input.LogicalSet;
 
 import java.util.Collection;
@@ -37,7 +37,7 @@ import org.eclipse.emf.ecore.util.EcoreUtil;
  * The following features are implemented:
  * <ul>
  *   <li>{@link edu.kit.ipd.sdq.bycounter.input.impl.LogicalSetImpl#getInternalClasses <em>Internal Classes</em>}</li>
- *   <li>{@link edu.kit.ipd.sdq.bycounter.input.impl.LogicalSetImpl#getInstrumentationProfile <em>Instrumentation Profile</em>}</li>
+ *   <li>{@link edu.kit.ipd.sdq.bycounter.input.impl.LogicalSetImpl#getExecutionProfile <em>Execution Profile</em>}</li>
  * </ul>
  * </p>
  *
@@ -90,9 +90,9 @@ public class LogicalSetImpl extends IdentifierImpl implements LogicalSet {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public InstrumentationProfile getInstrumentationProfile() {
-		if (eContainerFeatureID() != InputPackage.LOGICAL_SET__INSTRUMENTATION_PROFILE) return null;
-		return (InstrumentationProfile)eContainer();
+	public ExecutionProfile getExecutionProfile() {
+		if (eContainerFeatureID() != InputPackage.LOGICAL_SET__EXECUTION_PROFILE) return null;
+		return (ExecutionProfile)eContainer();
 	}
 
 	/**
@@ -100,8 +100,8 @@ public class LogicalSetImpl extends IdentifierImpl implements LogicalSet {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public NotificationChain basicSetInstrumentationProfile(InstrumentationProfile newInstrumentationProfile, NotificationChain msgs) {
-		msgs = eBasicSetContainer((InternalEObject)newInstrumentationProfile, InputPackage.LOGICAL_SET__INSTRUMENTATION_PROFILE, msgs);
+	public NotificationChain basicSetExecutionProfile(ExecutionProfile newExecutionProfile, NotificationChain msgs) {
+		msgs = eBasicSetContainer((InternalEObject)newExecutionProfile, InputPackage.LOGICAL_SET__EXECUTION_PROFILE, msgs);
 		return msgs;
 	}
 
@@ -110,20 +110,20 @@ public class LogicalSetImpl extends IdentifierImpl implements LogicalSet {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setInstrumentationProfile(InstrumentationProfile newInstrumentationProfile) {
-		if (newInstrumentationProfile != eInternalContainer() || (eContainerFeatureID() != InputPackage.LOGICAL_SET__INSTRUMENTATION_PROFILE && newInstrumentationProfile != null)) {
-			if (EcoreUtil.isAncestor(this, newInstrumentationProfile))
+	public void setExecutionProfile(ExecutionProfile newExecutionProfile) {
+		if (newExecutionProfile != eInternalContainer() || (eContainerFeatureID() != InputPackage.LOGICAL_SET__EXECUTION_PROFILE && newExecutionProfile != null)) {
+			if (EcoreUtil.isAncestor(this, newExecutionProfile))
 				throw new IllegalArgumentException("Recursive containment not allowed for " + toString());
 			NotificationChain msgs = null;
 			if (eInternalContainer() != null)
 				msgs = eBasicRemoveFromContainer(msgs);
-			if (newInstrumentationProfile != null)
-				msgs = ((InternalEObject)newInstrumentationProfile).eInverseAdd(this, InputPackage.INSTRUMENTATION_PROFILE__DEFINED_LOGICAL_SETS, InstrumentationProfile.class, msgs);
-			msgs = basicSetInstrumentationProfile(newInstrumentationProfile, msgs);
+			if (newExecutionProfile != null)
+				msgs = ((InternalEObject)newExecutionProfile).eInverseAdd(this, InputPackage.EXECUTION_PROFILE__DEFINED_LOGICAL_SETS, ExecutionProfile.class, msgs);
+			msgs = basicSetExecutionProfile(newExecutionProfile, msgs);
 			if (msgs != null) msgs.dispatch();
 		}
 		else if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, InputPackage.LOGICAL_SET__INSTRUMENTATION_PROFILE, newInstrumentationProfile, newInstrumentationProfile));
+			eNotify(new ENotificationImpl(this, Notification.SET, InputPackage.LOGICAL_SET__EXECUTION_PROFILE, newExecutionProfile, newExecutionProfile));
 	}
 
 	/**
@@ -134,10 +134,10 @@ public class LogicalSetImpl extends IdentifierImpl implements LogicalSet {
 	@Override
 	public NotificationChain eInverseAdd(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
 		switch (featureID) {
-			case InputPackage.LOGICAL_SET__INSTRUMENTATION_PROFILE:
+			case InputPackage.LOGICAL_SET__EXECUTION_PROFILE:
 				if (eInternalContainer() != null)
 					msgs = eBasicRemoveFromContainer(msgs);
-				return basicSetInstrumentationProfile((InstrumentationProfile)otherEnd, msgs);
+				return basicSetExecutionProfile((ExecutionProfile)otherEnd, msgs);
 		}
 		return super.eInverseAdd(otherEnd, featureID, msgs);
 	}
@@ -150,8 +150,8 @@ public class LogicalSetImpl extends IdentifierImpl implements LogicalSet {
 	@Override
 	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
 		switch (featureID) {
-			case InputPackage.LOGICAL_SET__INSTRUMENTATION_PROFILE:
-				return basicSetInstrumentationProfile(null, msgs);
+			case InputPackage.LOGICAL_SET__EXECUTION_PROFILE:
+				return basicSetExecutionProfile(null, msgs);
 		}
 		return super.eInverseRemove(otherEnd, featureID, msgs);
 	}
@@ -164,8 +164,8 @@ public class LogicalSetImpl extends IdentifierImpl implements LogicalSet {
 	@Override
 	public NotificationChain eBasicRemoveFromContainerFeature(NotificationChain msgs) {
 		switch (eContainerFeatureID()) {
-			case InputPackage.LOGICAL_SET__INSTRUMENTATION_PROFILE:
-				return eInternalContainer().eInverseRemove(this, InputPackage.INSTRUMENTATION_PROFILE__DEFINED_LOGICAL_SETS, InstrumentationProfile.class, msgs);
+			case InputPackage.LOGICAL_SET__EXECUTION_PROFILE:
+				return eInternalContainer().eInverseRemove(this, InputPackage.EXECUTION_PROFILE__DEFINED_LOGICAL_SETS, ExecutionProfile.class, msgs);
 		}
 		return super.eBasicRemoveFromContainerFeature(msgs);
 	}
@@ -180,8 +180,8 @@ public class LogicalSetImpl extends IdentifierImpl implements LogicalSet {
 		switch (featureID) {
 			case InputPackage.LOGICAL_SET__INTERNAL_CLASSES:
 				return getInternalClasses();
-			case InputPackage.LOGICAL_SET__INSTRUMENTATION_PROFILE:
-				return getInstrumentationProfile();
+			case InputPackage.LOGICAL_SET__EXECUTION_PROFILE:
+				return getExecutionProfile();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -199,8 +199,8 @@ public class LogicalSetImpl extends IdentifierImpl implements LogicalSet {
 				getInternalClasses().clear();
 				getInternalClasses().addAll((Collection<? extends GASTClass>)newValue);
 				return;
-			case InputPackage.LOGICAL_SET__INSTRUMENTATION_PROFILE:
-				setInstrumentationProfile((InstrumentationProfile)newValue);
+			case InputPackage.LOGICAL_SET__EXECUTION_PROFILE:
+				setExecutionProfile((ExecutionProfile)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -217,8 +217,8 @@ public class LogicalSetImpl extends IdentifierImpl implements LogicalSet {
 			case InputPackage.LOGICAL_SET__INTERNAL_CLASSES:
 				getInternalClasses().clear();
 				return;
-			case InputPackage.LOGICAL_SET__INSTRUMENTATION_PROFILE:
-				setInstrumentationProfile((InstrumentationProfile)null);
+			case InputPackage.LOGICAL_SET__EXECUTION_PROFILE:
+				setExecutionProfile((ExecutionProfile)null);
 				return;
 		}
 		super.eUnset(featureID);
@@ -234,8 +234,8 @@ public class LogicalSetImpl extends IdentifierImpl implements LogicalSet {
 		switch (featureID) {
 			case InputPackage.LOGICAL_SET__INTERNAL_CLASSES:
 				return internalClasses != null && !internalClasses.isEmpty();
-			case InputPackage.LOGICAL_SET__INSTRUMENTATION_PROFILE:
-				return getInstrumentationProfile() != null;
+			case InputPackage.LOGICAL_SET__EXECUTION_PROFILE:
+				return getExecutionProfile() != null;
 		}
 		return super.eIsSet(featureID);
 	}

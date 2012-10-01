@@ -99,29 +99,6 @@ public class InputItemProviderAdapterFactory extends InputAdapterFactory impleme
 	}
 
 	/**
-	 * This keeps track of the one adapter used for all {@link edu.kit.ipd.sdq.bycounter.input.LogicalSet} instances.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected LogicalSetItemProvider logicalSetItemProvider;
-
-	/**
-	 * This creates an adapter for a {@link edu.kit.ipd.sdq.bycounter.input.LogicalSet}.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public Adapter createLogicalSetAdapter() {
-		if (logicalSetItemProvider == null) {
-			logicalSetItemProvider = new LogicalSetItemProvider(this);
-		}
-
-		return logicalSetItemProvider;
-	}
-
-	/**
 	 * This keeps track of the one adapter used for all {@link edu.kit.ipd.sdq.bycounter.input.InstrumentationProfileRepository} instances.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -165,6 +142,29 @@ public class InputItemProviderAdapterFactory extends InputAdapterFactory impleme
 		}
 
 		return executionProfileItemProvider;
+	}
+
+	/**
+	 * This keeps track of the one adapter used for all {@link edu.kit.ipd.sdq.bycounter.input.LogicalSet} instances.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	protected LogicalSetItemProvider logicalSetItemProvider;
+
+	/**
+	 * This creates an adapter for a {@link edu.kit.ipd.sdq.bycounter.input.LogicalSet}.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public Adapter createLogicalSetAdapter() {
+		if (logicalSetItemProvider == null) {
+			logicalSetItemProvider = new LogicalSetItemProvider(this);
+		}
+
+		return logicalSetItemProvider;
 	}
 
 	/**
@@ -336,9 +336,9 @@ public class InputItemProviderAdapterFactory extends InputAdapterFactory impleme
 	 */
 	public void dispose() {
 		if (instrumentationProfileItemProvider != null) instrumentationProfileItemProvider.dispose();
-		if (logicalSetItemProvider != null) logicalSetItemProvider.dispose();
 		if (instrumentationProfileRepositoryItemProvider != null) instrumentationProfileRepositoryItemProvider.dispose();
 		if (executionProfileItemProvider != null) executionProfileItemProvider.dispose();
+		if (logicalSetItemProvider != null) logicalSetItemProvider.dispose();
 		if (instrumentedCodeAreaItemProvider != null) instrumentedCodeAreaItemProvider.dispose();
 		if (instrumentedMethodItemProvider != null) instrumentedMethodItemProvider.dispose();
 		if (instrumentedRegionItemProvider != null) instrumentedRegionItemProvider.dispose();

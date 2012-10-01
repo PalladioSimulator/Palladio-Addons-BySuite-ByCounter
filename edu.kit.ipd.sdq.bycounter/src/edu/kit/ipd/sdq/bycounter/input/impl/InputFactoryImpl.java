@@ -61,9 +61,9 @@ public class InputFactoryImpl extends EFactoryImpl implements InputFactory {
 	public EObject create(EClass eClass) {
 		switch (eClass.getClassifierID()) {
 			case InputPackage.INSTRUMENTATION_PROFILE: return createInstrumentationProfile();
-			case InputPackage.LOGICAL_SET: return createLogicalSet();
 			case InputPackage.INSTRUMENTATION_PROFILE_REPOSITORY: return createInstrumentationProfileRepository();
 			case InputPackage.EXECUTION_PROFILE: return createExecutionProfile();
+			case InputPackage.LOGICAL_SET: return createLogicalSet();
 			case InputPackage.INSTRUMENTED_CODE_AREA: return createInstrumentedCodeArea();
 			case InputPackage.INSTRUMENTED_METHOD: return createInstrumentedMethod();
 			case InputPackage.INSTRUMENTED_REGION: return createInstrumentedRegion();
@@ -87,16 +87,6 @@ public class InputFactoryImpl extends EFactoryImpl implements InputFactory {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public LogicalSet createLogicalSet() {
-		LogicalSetImpl logicalSet = new LogicalSetImpl();
-		return logicalSet;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
 	public InstrumentationProfileRepository createInstrumentationProfileRepository() {
 		InstrumentationProfileRepositoryImpl instrumentationProfileRepository = new InstrumentationProfileRepositoryImpl();
 		return instrumentationProfileRepository;
@@ -110,6 +100,16 @@ public class InputFactoryImpl extends EFactoryImpl implements InputFactory {
 	public ExecutionProfile createExecutionProfile() {
 		ExecutionProfileImpl executionProfile = new ExecutionProfileImpl();
 		return executionProfile;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public LogicalSet createLogicalSet() {
+		LogicalSetImpl logicalSet = new LogicalSetImpl();
+		return logicalSet;
 	}
 
 	/**

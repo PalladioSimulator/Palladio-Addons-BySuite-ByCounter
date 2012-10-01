@@ -73,7 +73,6 @@ public class InstrumentationProfileItemProvider
 			super.getPropertyDescriptors(object);
 
 			addInstrumentRecursivelyPropertyDescriptor(object);
-			addAggregateInternalCallsTransparentlyPropertyDescriptor(object);
 			addInstrumentUsingLongCountersPropertyDescriptor(object);
 			addInstrumentUsingBasicBlocksPropertyDescriptor(object);
 			addProvideJoinThreadsAbilityPropertyDescriptor(object);
@@ -98,28 +97,6 @@ public class InstrumentationProfileItemProvider
 				 getString("_UI_InstrumentationProfile_instrumentRecursively_feature"),
 				 getString("_UI_PropertyDescriptor_description", "_UI_InstrumentationProfile_instrumentRecursively_feature", "_UI_InstrumentationProfile_type"),
 				 InputPackage.Literals.INSTRUMENTATION_PROFILE__INSTRUMENT_RECURSIVELY,
-				 true,
-				 false,
-				 false,
-				 ItemPropertyDescriptor.BOOLEAN_VALUE_IMAGE,
-				 null,
-				 null));
-	}
-
-	/**
-	 * This adds a property descriptor for the Aggregate Internal Calls Transparently feature.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected void addAggregateInternalCallsTransparentlyPropertyDescriptor(Object object) {
-		itemPropertyDescriptors.add
-			(createItemPropertyDescriptor
-				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
-				 getResourceLocator(),
-				 getString("_UI_InstrumentationProfile_aggregateInternalCallsTransparently_feature"),
-				 getString("_UI_PropertyDescriptor_description", "_UI_InstrumentationProfile_aggregateInternalCallsTransparently_feature", "_UI_InstrumentationProfile_type"),
-				 InputPackage.Literals.INSTRUMENTATION_PROFILE__AGGREGATE_INTERNAL_CALLS_TRANSPARENTLY,
 				 true,
 				 false,
 				 false,
@@ -272,7 +249,6 @@ public class InstrumentationProfileItemProvider
 	public Collection<? extends EStructuralFeature> getChildrenFeatures(Object object) {
 		if (childrenFeatures == null) {
 			super.getChildrenFeatures(object);
-			childrenFeatures.add(InputPackage.Literals.INSTRUMENTATION_PROFILE__DEFINED_LOGICAL_SETS);
 			childrenFeatures.add(InputPackage.Literals.INSTRUMENTATION_PROFILE__AGGREGATION_EXCLUDES);
 			childrenFeatures.add(InputPackage.Literals.INSTRUMENTATION_PROFILE__ENTITIES_TO_INSTRUMENT);
 		}
@@ -330,7 +306,6 @@ public class InstrumentationProfileItemProvider
 
 		switch (notification.getFeatureID(InstrumentationProfile.class)) {
 			case InputPackage.INSTRUMENTATION_PROFILE__INSTRUMENT_RECURSIVELY:
-			case InputPackage.INSTRUMENTATION_PROFILE__AGGREGATE_INTERNAL_CALLS_TRANSPARENTLY:
 			case InputPackage.INSTRUMENTATION_PROFILE__INSTRUMENT_USING_LONG_COUNTERS:
 			case InputPackage.INSTRUMENTATION_PROFILE__INSTRUMENT_USING_BASIC_BLOCKS:
 			case InputPackage.INSTRUMENTATION_PROFILE__PROVIDE_JOIN_THREADS_ABILITY:
@@ -339,7 +314,6 @@ public class InstrumentationProfileItemProvider
 			case InputPackage.INSTRUMENTATION_PROFILE__TRACE_AND_IDENTIFY_REQUESTS:
 				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
 				return;
-			case InputPackage.INSTRUMENTATION_PROFILE__DEFINED_LOGICAL_SETS:
 			case InputPackage.INSTRUMENTATION_PROFILE__AGGREGATION_EXCLUDES:
 			case InputPackage.INSTRUMENTATION_PROFILE__ENTITIES_TO_INSTRUMENT:
 				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), true, false));
@@ -358,11 +332,6 @@ public class InstrumentationProfileItemProvider
 	@Override
 	protected void collectNewChildDescriptors(Collection<Object> newChildDescriptors, Object object) {
 		super.collectNewChildDescriptors(newChildDescriptors, object);
-
-		newChildDescriptors.add
-			(createChildParameter
-				(InputPackage.Literals.INSTRUMENTATION_PROFILE__DEFINED_LOGICAL_SETS,
-				 InputFactory.eINSTANCE.createLogicalSet()));
 
 		newChildDescriptors.add
 			(createChildParameter

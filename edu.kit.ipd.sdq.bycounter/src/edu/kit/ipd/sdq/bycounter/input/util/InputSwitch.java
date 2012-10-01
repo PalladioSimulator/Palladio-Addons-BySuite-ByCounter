@@ -79,13 +79,6 @@ public class InputSwitch<T> extends Switch<T> {
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case InputPackage.LOGICAL_SET: {
-				LogicalSet logicalSet = (LogicalSet)theEObject;
-				T result = caseLogicalSet(logicalSet);
-				if (result == null) result = caseIdentifier(logicalSet);
-				if (result == null) result = defaultCase(theEObject);
-				return result;
-			}
 			case InputPackage.INSTRUMENTATION_PROFILE_REPOSITORY: {
 				InstrumentationProfileRepository instrumentationProfileRepository = (InstrumentationProfileRepository)theEObject;
 				T result = caseInstrumentationProfileRepository(instrumentationProfileRepository);
@@ -96,6 +89,13 @@ public class InputSwitch<T> extends Switch<T> {
 			case InputPackage.EXECUTION_PROFILE: {
 				ExecutionProfile executionProfile = (ExecutionProfile)theEObject;
 				T result = caseExecutionProfile(executionProfile);
+				if (result == null) result = defaultCase(theEObject);
+				return result;
+			}
+			case InputPackage.LOGICAL_SET: {
+				LogicalSet logicalSet = (LogicalSet)theEObject;
+				T result = caseLogicalSet(logicalSet);
+				if (result == null) result = caseIdentifier(logicalSet);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
@@ -146,21 +146,6 @@ public class InputSwitch<T> extends Switch<T> {
 	}
 
 	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Logical Set</em>'.
-	 * <!-- begin-user-doc -->
-	 * This implementation returns null;
-	 * returning a non-null result will terminate the switch.
-	 * <!-- end-user-doc -->
-	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Logical Set</em>'.
-	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-	 * @generated
-	 */
-	public T caseLogicalSet(LogicalSet object) {
-		return null;
-	}
-
-	/**
 	 * Returns the result of interpreting the object as an instance of '<em>Instrumentation Profile Repository</em>'.
 	 * <!-- begin-user-doc -->
 	 * This implementation returns null;
@@ -187,6 +172,21 @@ public class InputSwitch<T> extends Switch<T> {
 	 * @generated
 	 */
 	public T caseExecutionProfile(ExecutionProfile object) {
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Logical Set</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Logical Set</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseLogicalSet(LogicalSet object) {
 		return null;
 	}
 

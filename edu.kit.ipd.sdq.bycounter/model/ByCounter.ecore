@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="bycounter" nsURI="http://sdq.ipd.kit.edu/ByCounterModels/0.3"
-    nsPrefix="ByCounter">
+<ecore:EPackage xmi:version="2.0"
+    xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="bycounter"
+    nsURI="http://sdq.ipd.kit.edu/ByCounterModels/0.3" nsPrefix="ByCounter">
   <eSubpackages name="output" nsURI="http://sdq.ipd.kit.edu/ByCounterModels/Output/0.3"
       nsPrefix="ByCounter.Output">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
@@ -134,8 +135,6 @@
   <eSubpackages name="input" nsURI="http://sdq.ipd.kit.edu/ByCounterModels/Input/0.3"
       nsPrefix="ByCounter.Input">
     <eClassifiers xsi:type="ecore:EClass" name="InstrumentationProfile" eSuperTypes="platform:/plugin/de.uka.ipd.sdq.identifier/model/identifier.ecore#//Identifier">
-      <eStructuralFeatures xsi:type="ecore:EReference" name="definedLogicalSets" ordered="false"
-          upperBound="-1" eType="#//input/LogicalSet" containment="true" eOpposite="#//input/LogicalSet/instrumentationProfile"/>
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="instrumentRecursively"
           ordered="false" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"
           defaultValueLiteral="true">
@@ -143,9 +142,6 @@
           <details key="documentation" value="When set, instruments methods called from the methods specified in &#xA;entitesToInstrument that  are not Java API methods (packages java.*, javax.* sun.*) and not  native methods."/>
         </eAnnotations>
       </eStructuralFeatures>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" name="aggregateInternalCallsTransparently"
-          ordered="false" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"
-          defaultValueLiteral="true"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="aggregationExcludes"
           ordered="false" upperBound="-1" eType="ecore:EClass platform:/plugin/de.fzi.gast/model/gast.ecore#//functions/Method"
           containment="true"/>
@@ -196,12 +192,6 @@
         </eAnnotations>
       </eStructuralFeatures>
     </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" name="LogicalSet" eSuperTypes="platform:/plugin/de.uka.ipd.sdq.identifier/model/identifier.ecore#//Identifier">
-      <eStructuralFeatures xsi:type="ecore:EReference" name="internalClasses" ordered="false"
-          upperBound="-1" eType="ecore:EClass platform:/plugin/de.fzi.gast/model/gast.ecore#//types/GASTClass"/>
-      <eStructuralFeatures xsi:type="ecore:EReference" name="instrumentationProfile"
-          ordered="false" lowerBound="1" eType="#//input/InstrumentationProfile" eOpposite="#//input/InstrumentationProfile/definedLogicalSets"/>
-    </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="InstrumentationProfileRepository"
         eSuperTypes="platform:/plugin/de.uka.ipd.sdq.identifier/model/identifier.ecore#//Identifier">
       <eStructuralFeatures xsi:type="ecore:EReference" name="executionProfile" ordered="false"
@@ -218,6 +208,9 @@
           <details key="documentation" value="True, when result retrieval adds up counting results recursively.&#xA;This means that results for methods that call other methods include the counts of these called methods, i.e. of the entire calling tree.&#xA;When false, only the counts for operations done in the method itself - not those by called methods - are returned."/>
         </eAnnotations>
       </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="aggregateInternalCallsTransparently"
+          ordered="false" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"
+          defaultValueLiteral="true"/>
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="waitForThreadsToFinnish"
           ordered="false" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"
           defaultValueLiteral="true">
@@ -225,8 +218,16 @@
           <details key="documentation" value="When true, execution tries to wait for all threads from instrumented methods to finish before returning."/>
         </eAnnotations>
       </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="definedLogicalSets" ordered="false"
+          upperBound="-1" eType="#//input/LogicalSet" containment="true" eOpposite="#//input/LogicalSet/executionProfile"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="instrumentationProfileRepository"
           ordered="false" eType="#//input/InstrumentationProfileRepository" eOpposite="#//input/InstrumentationProfileRepository/executionProfile"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="LogicalSet" eSuperTypes="platform:/plugin/de.uka.ipd.sdq.identifier/model/identifier.ecore#//Identifier">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="internalClasses" ordered="false"
+          upperBound="-1" eType="ecore:EClass platform:/plugin/de.fzi.gast/model/gast.ecore#//types/GASTClass"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="executionProfile" ordered="false"
+          lowerBound="1" eType="#//input/ExecutionProfile" eOpposite="#//input/ExecutionProfile/definedLogicalSets"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="InstrumentedCodeArea" eSuperTypes="#//input/EntityToInstrument">
       <eStructuralFeatures xsi:type="ecore:EReference" name="from" ordered="false"

@@ -6,6 +6,8 @@
  */
 package edu.kit.ipd.sdq.bycounter.input;
 
+import org.eclipse.emf.common.util.EList;
+
 import org.eclipse.emf.ecore.EObject;
 
 /**
@@ -17,7 +19,9 @@ import org.eclipse.emf.ecore.EObject;
  * The following features are supported:
  * <ul>
  *   <li>{@link edu.kit.ipd.sdq.bycounter.input.ExecutionProfile#isAddUpResultsRecursively <em>Add Up Results Recursively</em>}</li>
+ *   <li>{@link edu.kit.ipd.sdq.bycounter.input.ExecutionProfile#isAggregateInternalCallsTransparently <em>Aggregate Internal Calls Transparently</em>}</li>
  *   <li>{@link edu.kit.ipd.sdq.bycounter.input.ExecutionProfile#isWaitForThreadsToFinnish <em>Wait For Threads To Finnish</em>}</li>
+ *   <li>{@link edu.kit.ipd.sdq.bycounter.input.ExecutionProfile#getDefinedLogicalSets <em>Defined Logical Sets</em>}</li>
  *   <li>{@link edu.kit.ipd.sdq.bycounter.input.ExecutionProfile#getInstrumentationProfileRepository <em>Instrumentation Profile Repository</em>}</li>
  * </ul>
  * </p>
@@ -56,6 +60,33 @@ public interface ExecutionProfile extends EObject {
 	void setAddUpResultsRecursively(boolean value);
 
 	/**
+	 * Returns the value of the '<em><b>Aggregate Internal Calls Transparently</b></em>' attribute.
+	 * The default value is <code>"true"</code>.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Aggregate Internal Calls Transparently</em>' attribute isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Aggregate Internal Calls Transparently</em>' attribute.
+	 * @see #setAggregateInternalCallsTransparently(boolean)
+	 * @see edu.kit.ipd.sdq.bycounter.input.InputPackage#getExecutionProfile_AggregateInternalCallsTransparently()
+	 * @model default="true" required="true" ordered="false"
+	 * @generated
+	 */
+	boolean isAggregateInternalCallsTransparently();
+
+	/**
+	 * Sets the value of the '{@link edu.kit.ipd.sdq.bycounter.input.ExecutionProfile#isAggregateInternalCallsTransparently <em>Aggregate Internal Calls Transparently</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Aggregate Internal Calls Transparently</em>' attribute.
+	 * @see #isAggregateInternalCallsTransparently()
+	 * @generated
+	 */
+	void setAggregateInternalCallsTransparently(boolean value);
+
+	/**
 	 * Returns the value of the '<em><b>Wait For Threads To Finnish</b></em>' attribute.
 	 * The default value is <code>"true"</code>.
 	 * <!-- begin-user-doc -->
@@ -80,6 +111,24 @@ public interface ExecutionProfile extends EObject {
 	 * @generated
 	 */
 	void setWaitForThreadsToFinnish(boolean value);
+
+	/**
+	 * Returns the value of the '<em><b>Defined Logical Sets</b></em>' containment reference list.
+	 * The list contents are of type {@link edu.kit.ipd.sdq.bycounter.input.LogicalSet}.
+	 * It is bidirectional and its opposite is '{@link edu.kit.ipd.sdq.bycounter.input.LogicalSet#getExecutionProfile <em>Execution Profile</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Defined Logical Sets</em>' containment reference list isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Defined Logical Sets</em>' containment reference list.
+	 * @see edu.kit.ipd.sdq.bycounter.input.InputPackage#getExecutionProfile_DefinedLogicalSets()
+	 * @see edu.kit.ipd.sdq.bycounter.input.LogicalSet#getExecutionProfile
+	 * @model opposite="executionProfile" containment="true" ordered="false"
+	 * @generated
+	 */
+	EList<LogicalSet> getDefinedLogicalSets();
 
 	/**
 	 * Returns the value of the '<em><b>Instrumentation Profile Repository</b></em>' container reference.

@@ -14,7 +14,6 @@ import edu.kit.ipd.sdq.bycounter.input.EntityToInstrument;
 import edu.kit.ipd.sdq.bycounter.input.InputPackage;
 import edu.kit.ipd.sdq.bycounter.input.InstrumentationProfile;
 import edu.kit.ipd.sdq.bycounter.input.InstrumentationProfileRepository;
-import edu.kit.ipd.sdq.bycounter.input.LogicalSet;
 
 import java.util.Collection;
 
@@ -40,9 +39,7 @@ import org.eclipse.emf.ecore.util.InternalEList;
  * <p>
  * The following features are implemented:
  * <ul>
- *   <li>{@link edu.kit.ipd.sdq.bycounter.input.impl.InstrumentationProfileImpl#getDefinedLogicalSets <em>Defined Logical Sets</em>}</li>
  *   <li>{@link edu.kit.ipd.sdq.bycounter.input.impl.InstrumentationProfileImpl#isInstrumentRecursively <em>Instrument Recursively</em>}</li>
- *   <li>{@link edu.kit.ipd.sdq.bycounter.input.impl.InstrumentationProfileImpl#isAggregateInternalCallsTransparently <em>Aggregate Internal Calls Transparently</em>}</li>
  *   <li>{@link edu.kit.ipd.sdq.bycounter.input.impl.InstrumentationProfileImpl#getAggregationExcludes <em>Aggregation Excludes</em>}</li>
  *   <li>{@link edu.kit.ipd.sdq.bycounter.input.impl.InstrumentationProfileImpl#getEntitiesToInstrument <em>Entities To Instrument</em>}</li>
  *   <li>{@link edu.kit.ipd.sdq.bycounter.input.impl.InstrumentationProfileImpl#getIntrumentationProfileRepository <em>Intrumentation Profile Repository</em>}</li>
@@ -58,16 +55,6 @@ import org.eclipse.emf.ecore.util.InternalEList;
  * @generated
  */
 public class InstrumentationProfileImpl extends IdentifierImpl implements InstrumentationProfile {
-	/**
-	 * The cached value of the '{@link #getDefinedLogicalSets() <em>Defined Logical Sets</em>}' containment reference list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getDefinedLogicalSets()
-	 * @generated
-	 * @ordered
-	 */
-	protected EList<LogicalSet> definedLogicalSets;
-
 	/**
 	 * The default value of the '{@link #isInstrumentRecursively() <em>Instrument Recursively</em>}' attribute.
 	 * <!-- begin-user-doc -->
@@ -87,26 +74,6 @@ public class InstrumentationProfileImpl extends IdentifierImpl implements Instru
 	 * @ordered
 	 */
 	protected boolean instrumentRecursively = INSTRUMENT_RECURSIVELY_EDEFAULT;
-
-	/**
-	 * The default value of the '{@link #isAggregateInternalCallsTransparently() <em>Aggregate Internal Calls Transparently</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #isAggregateInternalCallsTransparently()
-	 * @generated
-	 * @ordered
-	 */
-	protected static final boolean AGGREGATE_INTERNAL_CALLS_TRANSPARENTLY_EDEFAULT = true;
-
-	/**
-	 * The cached value of the '{@link #isAggregateInternalCallsTransparently() <em>Aggregate Internal Calls Transparently</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #isAggregateInternalCallsTransparently()
-	 * @generated
-	 * @ordered
-	 */
-	protected boolean aggregateInternalCallsTransparently = AGGREGATE_INTERNAL_CALLS_TRANSPARENTLY_EDEFAULT;
 
 	/**
 	 * The cached value of the '{@link #getAggregationExcludes() <em>Aggregation Excludes</em>}' containment reference list.
@@ -272,18 +239,6 @@ public class InstrumentationProfileImpl extends IdentifierImpl implements Instru
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EList<LogicalSet> getDefinedLogicalSets() {
-		if (definedLogicalSets == null) {
-			definedLogicalSets = new EObjectContainmentWithInverseEList<LogicalSet>(LogicalSet.class, this, InputPackage.INSTRUMENTATION_PROFILE__DEFINED_LOGICAL_SETS, InputPackage.LOGICAL_SET__INSTRUMENTATION_PROFILE);
-		}
-		return definedLogicalSets;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
 	public boolean isInstrumentRecursively() {
 		return instrumentRecursively;
 	}
@@ -298,27 +253,6 @@ public class InstrumentationProfileImpl extends IdentifierImpl implements Instru
 		instrumentRecursively = newInstrumentRecursively;
 		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, InputPackage.INSTRUMENTATION_PROFILE__INSTRUMENT_RECURSIVELY, oldInstrumentRecursively, instrumentRecursively));
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public boolean isAggregateInternalCallsTransparently() {
-		return aggregateInternalCallsTransparently;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public void setAggregateInternalCallsTransparently(boolean newAggregateInternalCallsTransparently) {
-		boolean oldAggregateInternalCallsTransparently = aggregateInternalCallsTransparently;
-		aggregateInternalCallsTransparently = newAggregateInternalCallsTransparently;
-		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, InputPackage.INSTRUMENTATION_PROFILE__AGGREGATE_INTERNAL_CALLS_TRANSPARENTLY, oldAggregateInternalCallsTransparently, aggregateInternalCallsTransparently));
 	}
 
 	/**
@@ -521,8 +455,6 @@ public class InstrumentationProfileImpl extends IdentifierImpl implements Instru
 	@Override
 	public NotificationChain eInverseAdd(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
 		switch (featureID) {
-			case InputPackage.INSTRUMENTATION_PROFILE__DEFINED_LOGICAL_SETS:
-				return ((InternalEList<InternalEObject>)(InternalEList<?>)getDefinedLogicalSets()).basicAdd(otherEnd, msgs);
 			case InputPackage.INSTRUMENTATION_PROFILE__ENTITIES_TO_INSTRUMENT:
 				return ((InternalEList<InternalEObject>)(InternalEList<?>)getEntitiesToInstrument()).basicAdd(otherEnd, msgs);
 			case InputPackage.INSTRUMENTATION_PROFILE__INTRUMENTATION_PROFILE_REPOSITORY:
@@ -541,8 +473,6 @@ public class InstrumentationProfileImpl extends IdentifierImpl implements Instru
 	@Override
 	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
 		switch (featureID) {
-			case InputPackage.INSTRUMENTATION_PROFILE__DEFINED_LOGICAL_SETS:
-				return ((InternalEList<?>)getDefinedLogicalSets()).basicRemove(otherEnd, msgs);
 			case InputPackage.INSTRUMENTATION_PROFILE__AGGREGATION_EXCLUDES:
 				return ((InternalEList<?>)getAggregationExcludes()).basicRemove(otherEnd, msgs);
 			case InputPackage.INSTRUMENTATION_PROFILE__ENTITIES_TO_INSTRUMENT:
@@ -575,12 +505,8 @@ public class InstrumentationProfileImpl extends IdentifierImpl implements Instru
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
-			case InputPackage.INSTRUMENTATION_PROFILE__DEFINED_LOGICAL_SETS:
-				return getDefinedLogicalSets();
 			case InputPackage.INSTRUMENTATION_PROFILE__INSTRUMENT_RECURSIVELY:
 				return isInstrumentRecursively();
-			case InputPackage.INSTRUMENTATION_PROFILE__AGGREGATE_INTERNAL_CALLS_TRANSPARENTLY:
-				return isAggregateInternalCallsTransparently();
 			case InputPackage.INSTRUMENTATION_PROFILE__AGGREGATION_EXCLUDES:
 				return getAggregationExcludes();
 			case InputPackage.INSTRUMENTATION_PROFILE__ENTITIES_TO_INSTRUMENT:
@@ -612,15 +538,8 @@ public class InstrumentationProfileImpl extends IdentifierImpl implements Instru
 	@Override
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
-			case InputPackage.INSTRUMENTATION_PROFILE__DEFINED_LOGICAL_SETS:
-				getDefinedLogicalSets().clear();
-				getDefinedLogicalSets().addAll((Collection<? extends LogicalSet>)newValue);
-				return;
 			case InputPackage.INSTRUMENTATION_PROFILE__INSTRUMENT_RECURSIVELY:
 				setInstrumentRecursively((Boolean)newValue);
-				return;
-			case InputPackage.INSTRUMENTATION_PROFILE__AGGREGATE_INTERNAL_CALLS_TRANSPARENTLY:
-				setAggregateInternalCallsTransparently((Boolean)newValue);
 				return;
 			case InputPackage.INSTRUMENTATION_PROFILE__AGGREGATION_EXCLUDES:
 				getAggregationExcludes().clear();
@@ -663,14 +582,8 @@ public class InstrumentationProfileImpl extends IdentifierImpl implements Instru
 	@Override
 	public void eUnset(int featureID) {
 		switch (featureID) {
-			case InputPackage.INSTRUMENTATION_PROFILE__DEFINED_LOGICAL_SETS:
-				getDefinedLogicalSets().clear();
-				return;
 			case InputPackage.INSTRUMENTATION_PROFILE__INSTRUMENT_RECURSIVELY:
 				setInstrumentRecursively(INSTRUMENT_RECURSIVELY_EDEFAULT);
-				return;
-			case InputPackage.INSTRUMENTATION_PROFILE__AGGREGATE_INTERNAL_CALLS_TRANSPARENTLY:
-				setAggregateInternalCallsTransparently(AGGREGATE_INTERNAL_CALLS_TRANSPARENTLY_EDEFAULT);
 				return;
 			case InputPackage.INSTRUMENTATION_PROFILE__AGGREGATION_EXCLUDES:
 				getAggregationExcludes().clear();
@@ -711,12 +624,8 @@ public class InstrumentationProfileImpl extends IdentifierImpl implements Instru
 	@Override
 	public boolean eIsSet(int featureID) {
 		switch (featureID) {
-			case InputPackage.INSTRUMENTATION_PROFILE__DEFINED_LOGICAL_SETS:
-				return definedLogicalSets != null && !definedLogicalSets.isEmpty();
 			case InputPackage.INSTRUMENTATION_PROFILE__INSTRUMENT_RECURSIVELY:
 				return instrumentRecursively != INSTRUMENT_RECURSIVELY_EDEFAULT;
-			case InputPackage.INSTRUMENTATION_PROFILE__AGGREGATE_INTERNAL_CALLS_TRANSPARENTLY:
-				return aggregateInternalCallsTransparently != AGGREGATE_INTERNAL_CALLS_TRANSPARENTLY_EDEFAULT;
 			case InputPackage.INSTRUMENTATION_PROFILE__AGGREGATION_EXCLUDES:
 				return aggregationExcludes != null && !aggregationExcludes.isEmpty();
 			case InputPackage.INSTRUMENTATION_PROFILE__ENTITIES_TO_INSTRUMENT:
@@ -751,8 +660,6 @@ public class InstrumentationProfileImpl extends IdentifierImpl implements Instru
 		StringBuffer result = new StringBuffer(super.toString());
 		result.append(" (instrumentRecursively: ");
 		result.append(instrumentRecursively);
-		result.append(", aggregateInternalCallsTransparently: ");
-		result.append(aggregateInternalCallsTransparently);
 		result.append(", instrumentUsingLongCounters: ");
 		result.append(instrumentUsingLongCounters);
 		result.append(", instrumentUsingBasicBlocks: ");

@@ -21,7 +21,7 @@ import org.eclipse.emf.common.util.EList;
  * The following features are supported:
  * <ul>
  *   <li>{@link edu.kit.ipd.sdq.bycounter.input.LogicalSet#getInternalClasses <em>Internal Classes</em>}</li>
- *   <li>{@link edu.kit.ipd.sdq.bycounter.input.LogicalSet#getInstrumentationProfile <em>Instrumentation Profile</em>}</li>
+ *   <li>{@link edu.kit.ipd.sdq.bycounter.input.LogicalSet#getExecutionProfile <em>Execution Profile</em>}</li>
  * </ul>
  * </p>
  *
@@ -47,31 +47,31 @@ public interface LogicalSet extends Identifier {
 	EList<GASTClass> getInternalClasses();
 
 	/**
-	 * Returns the value of the '<em><b>Instrumentation Profile</b></em>' container reference.
-	 * It is bidirectional and its opposite is '{@link edu.kit.ipd.sdq.bycounter.input.InstrumentationProfile#getDefinedLogicalSets <em>Defined Logical Sets</em>}'.
+	 * Returns the value of the '<em><b>Execution Profile</b></em>' container reference.
+	 * It is bidirectional and its opposite is '{@link edu.kit.ipd.sdq.bycounter.input.ExecutionProfile#getDefinedLogicalSets <em>Defined Logical Sets</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <p>
-	 * If the meaning of the '<em>Instrumentation Profile</em>' container reference isn't clear,
+	 * If the meaning of the '<em>Execution Profile</em>' container reference isn't clear,
 	 * there really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Instrumentation Profile</em>' container reference.
-	 * @see #setInstrumentationProfile(InstrumentationProfile)
-	 * @see edu.kit.ipd.sdq.bycounter.input.InputPackage#getLogicalSet_InstrumentationProfile()
-	 * @see edu.kit.ipd.sdq.bycounter.input.InstrumentationProfile#getDefinedLogicalSets
+	 * @return the value of the '<em>Execution Profile</em>' container reference.
+	 * @see #setExecutionProfile(ExecutionProfile)
+	 * @see edu.kit.ipd.sdq.bycounter.input.InputPackage#getLogicalSet_ExecutionProfile()
+	 * @see edu.kit.ipd.sdq.bycounter.input.ExecutionProfile#getDefinedLogicalSets
 	 * @model opposite="definedLogicalSets" required="true" transient="false" ordered="false"
 	 * @generated
 	 */
-	InstrumentationProfile getInstrumentationProfile();
+	ExecutionProfile getExecutionProfile();
 
 	/**
-	 * Sets the value of the '{@link edu.kit.ipd.sdq.bycounter.input.LogicalSet#getInstrumentationProfile <em>Instrumentation Profile</em>}' container reference.
+	 * Sets the value of the '{@link edu.kit.ipd.sdq.bycounter.input.LogicalSet#getExecutionProfile <em>Execution Profile</em>}' container reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Instrumentation Profile</em>' container reference.
-	 * @see #getInstrumentationProfile()
+	 * @param value the new value of the '<em>Execution Profile</em>' container reference.
+	 * @see #getExecutionProfile()
 	 * @generated
 	 */
-	void setInstrumentationProfile(InstrumentationProfile value);
+	void setExecutionProfile(ExecutionProfile value);
 
 } // LogicalSet

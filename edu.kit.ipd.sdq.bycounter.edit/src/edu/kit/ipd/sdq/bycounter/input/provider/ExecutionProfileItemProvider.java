@@ -8,6 +8,7 @@ package edu.kit.ipd.sdq.bycounter.input.provider;
 
 
 import edu.kit.ipd.sdq.bycounter.input.ExecutionProfile;
+import edu.kit.ipd.sdq.bycounter.input.InputFactory;
 import edu.kit.ipd.sdq.bycounter.input.InputPackage;
 
 import edu.kit.ipd.sdq.bycounter.output.provider.ByCounterEditPlugin;
@@ -19,6 +20,8 @@ import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.common.notify.Notification;
 
 import org.eclipse.emf.common.util.ResourceLocator;
+
+import org.eclipse.emf.ecore.EStructuralFeature;
 
 import org.eclipse.emf.edit.provider.ComposeableAdapterFactory;
 import org.eclipse.emf.edit.provider.IEditingDomainItemProvider;
@@ -67,6 +70,7 @@ public class ExecutionProfileItemProvider
 			super.getPropertyDescriptors(object);
 
 			addAddUpResultsRecursivelyPropertyDescriptor(object);
+			addAggregateInternalCallsTransparentlyPropertyDescriptor(object);
 			addWaitForThreadsToFinnishPropertyDescriptor(object);
 		}
 		return itemPropertyDescriptors;
@@ -95,6 +99,28 @@ public class ExecutionProfileItemProvider
 	}
 
 	/**
+	 * This adds a property descriptor for the Aggregate Internal Calls Transparently feature.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	protected void addAggregateInternalCallsTransparentlyPropertyDescriptor(Object object) {
+		itemPropertyDescriptors.add
+			(createItemPropertyDescriptor
+				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
+				 getResourceLocator(),
+				 getString("_UI_ExecutionProfile_aggregateInternalCallsTransparently_feature"),
+				 getString("_UI_PropertyDescriptor_description", "_UI_ExecutionProfile_aggregateInternalCallsTransparently_feature", "_UI_ExecutionProfile_type"),
+				 InputPackage.Literals.EXECUTION_PROFILE__AGGREGATE_INTERNAL_CALLS_TRANSPARENTLY,
+				 true,
+				 false,
+				 false,
+				 ItemPropertyDescriptor.BOOLEAN_VALUE_IMAGE,
+				 null,
+				 null));
+	}
+
+	/**
 	 * This adds a property descriptor for the Wait For Threads To Finnish feature.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -114,6 +140,36 @@ public class ExecutionProfileItemProvider
 				 ItemPropertyDescriptor.BOOLEAN_VALUE_IMAGE,
 				 null,
 				 null));
+	}
+
+	/**
+	 * This specifies how to implement {@link #getChildren} and is used to deduce an appropriate feature for an
+	 * {@link org.eclipse.emf.edit.command.AddCommand}, {@link org.eclipse.emf.edit.command.RemoveCommand} or
+	 * {@link org.eclipse.emf.edit.command.MoveCommand} in {@link #createCommand}.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public Collection<? extends EStructuralFeature> getChildrenFeatures(Object object) {
+		if (childrenFeatures == null) {
+			super.getChildrenFeatures(object);
+			childrenFeatures.add(InputPackage.Literals.EXECUTION_PROFILE__DEFINED_LOGICAL_SETS);
+		}
+		return childrenFeatures;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	protected EStructuralFeature getChildFeature(Object object, Object child) {
+		// Check the type of the specified child object and return the proper feature to use for
+		// adding (see {@link AddCommand}) it as a child.
+
+		return super.getChildFeature(object, child);
 	}
 
 	/**
@@ -152,8 +208,12 @@ public class ExecutionProfileItemProvider
 
 		switch (notification.getFeatureID(ExecutionProfile.class)) {
 			case InputPackage.EXECUTION_PROFILE__ADD_UP_RESULTS_RECURSIVELY:
+			case InputPackage.EXECUTION_PROFILE__AGGREGATE_INTERNAL_CALLS_TRANSPARENTLY:
 			case InputPackage.EXECUTION_PROFILE__WAIT_FOR_THREADS_TO_FINNISH:
 				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
+				return;
+			case InputPackage.EXECUTION_PROFILE__DEFINED_LOGICAL_SETS:
+				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), true, false));
 				return;
 		}
 		super.notifyChanged(notification);
@@ -169,6 +229,11 @@ public class ExecutionProfileItemProvider
 	@Override
 	protected void collectNewChildDescriptors(Collection<Object> newChildDescriptors, Object object) {
 		super.collectNewChildDescriptors(newChildDescriptors, object);
+
+		newChildDescriptors.add
+			(createChildParameter
+				(InputPackage.Literals.EXECUTION_PROFILE__DEFINED_LOGICAL_SETS,
+				 InputFactory.eINSTANCE.createLogicalSet()));
 	}
 
 	/**

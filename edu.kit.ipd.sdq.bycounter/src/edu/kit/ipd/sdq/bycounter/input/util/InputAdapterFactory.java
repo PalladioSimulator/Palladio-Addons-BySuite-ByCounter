@@ -78,16 +78,16 @@ public class InputAdapterFactory extends AdapterFactoryImpl {
 				return createInstrumentationProfileAdapter();
 			}
 			@Override
-			public Adapter caseLogicalSet(LogicalSet object) {
-				return createLogicalSetAdapter();
-			}
-			@Override
 			public Adapter caseInstrumentationProfileRepository(InstrumentationProfileRepository object) {
 				return createInstrumentationProfileRepositoryAdapter();
 			}
 			@Override
 			public Adapter caseExecutionProfile(ExecutionProfile object) {
 				return createExecutionProfileAdapter();
+			}
+			@Override
+			public Adapter caseLogicalSet(LogicalSet object) {
+				return createLogicalSetAdapter();
 			}
 			@Override
 			public Adapter caseInstrumentedCodeArea(InstrumentedCodeArea object) {
@@ -144,20 +144,6 @@ public class InputAdapterFactory extends AdapterFactoryImpl {
 	}
 
 	/**
-	 * Creates a new adapter for an object of class '{@link edu.kit.ipd.sdq.bycounter.input.LogicalSet <em>Logical Set</em>}'.
-	 * <!-- begin-user-doc -->
-	 * This default implementation returns null so that we can easily ignore cases;
-	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
-	 * <!-- end-user-doc -->
-	 * @return the new adapter.
-	 * @see edu.kit.ipd.sdq.bycounter.input.LogicalSet
-	 * @generated
-	 */
-	public Adapter createLogicalSetAdapter() {
-		return null;
-	}
-
-	/**
 	 * Creates a new adapter for an object of class '{@link edu.kit.ipd.sdq.bycounter.input.InstrumentationProfileRepository <em>Instrumentation Profile Repository</em>}'.
 	 * <!-- begin-user-doc -->
 	 * This default implementation returns null so that we can easily ignore cases;
@@ -182,6 +168,20 @@ public class InputAdapterFactory extends AdapterFactoryImpl {
 	 * @generated
 	 */
 	public Adapter createExecutionProfileAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link edu.kit.ipd.sdq.bycounter.input.LogicalSet <em>Logical Set</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see edu.kit.ipd.sdq.bycounter.input.LogicalSet
+	 * @generated
+	 */
+	public Adapter createLogicalSetAdapter() {
 		return null;
 	}
 

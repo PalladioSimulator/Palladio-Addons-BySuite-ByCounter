@@ -35,15 +35,6 @@ public interface InputFactory extends EFactory {
 	InstrumentationProfile createInstrumentationProfile();
 
 	/**
-	 * Returns a new object of class '<em>Logical Set</em>'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Logical Set</em>'.
-	 * @generated
-	 */
-	LogicalSet createLogicalSet();
-
-	/**
 	 * Returns a new object of class '<em>Instrumentation Profile Repository</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -60,6 +51,15 @@ public interface InputFactory extends EFactory {
 	 * @generated
 	 */
 	ExecutionProfile createExecutionProfile();
+
+	/**
+	 * Returns a new object of class '<em>Logical Set</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Logical Set</em>'.
+	 * @generated
+	 */
+	LogicalSet createLogicalSet();
 
 	/**
 	 * Returns a new object of class '<em>Instrumented Code Area</em>'.
