@@ -167,6 +167,7 @@ public class ByCounterWrapper {
 	 * @return The configuration.
 	 */
 	public InstrumentationProfile getInstrumentationConfiguration() {
+		// TODO REname to Instrum.Profile 
 		return instrumentationProfile;
 	}
 	
@@ -333,6 +334,7 @@ public class ByCounterWrapper {
 	 * @param params Arguments of the method to execute.
 	 */
 	public Object execute(Method m, Object target, Object[] params) {
+		// TODO Check existence InstrumentationProfile -> Warning; ExecutionProfile -> Exception
 		MethodDescriptor methodToExecute = new MethodDescriptor(
 				m.getSurroundingClass().getQualifiedName(),
 				ByCounterWrapper.constructSignature(m));
@@ -345,6 +347,7 @@ public class ByCounterWrapper {
 	 * @return Instance of the class.
 	 */
 	public Object instantiate(Method m) {
+		// TODO Check existence InstrumentationProfile -> Exception
 		MethodDescriptor methodToExecute = new MethodDescriptor(
 				m.getSurroundingClass().getQualifiedName(),
 				ByCounterWrapper.constructSignature(m));
@@ -425,6 +428,7 @@ public class ByCounterWrapper {
 	 */
 	private edu.kit.ipd.sdq.bycounter.output.CountingResult mapCountingResult(
 			CountingResult cr, Map<java.util.UUID, EntityToInstrument> entitiesToInstrumentMap2) {
+		//TODO check static and entities map
 		edu.kit.ipd.sdq.bycounter.output.CountingResult result;
 		if(cr instanceof ThreadedCountingResult) {
 			final ThreadedCountingResult tcr = (ThreadedCountingResult)cr;
@@ -455,7 +459,7 @@ public class ByCounterWrapper {
 		result.setMethodId(mapUUID(cr.getMethodID()));
 		result.setMethodInvocationStartTime(cr.getMethodInvocationBeginning());
 		result.getOpcodeCounts().addAll(mapOpcodeCounts(cr.getOpcodeCounts()));
-		result.setObservedElement(mapEntityToInstrument(cr.getObservedElement(), entitiesToInstrumentMap2));
+		result.setObservedElement(entitiesToInstrumentMap2.get(cr.getObservedElement().getId()));
 		result.setQualifiedMethodName(cr.getQualifiedMethodName());
 		result.setReportingTime(cr.getReportingTime());
 		
@@ -463,19 +467,6 @@ public class ByCounterWrapper {
 		this.countingResultToEMFMap.put(cr, result);
 	
 		return result;
-	}
-
-	/**
-	 * Converts ByCounters {@link de.uka.ipd.sdq.ByCounter.instrumentation.EntityToInstrument}
-	 * to it's EMF model counterpart.
-	 * @param entityToInstrument Element that was instrumented to produce the result.
-	 * @param entitiesToInstrumentMap2 Maps from {@link de.uka.ipd.sdq.ByCounter.instrumentation.EntityToInstrument#getId()}
-	 * to the {@link EntityToInstrument} it was mapped to.
-	 * @return EMF {@link EntityToInstrument}.
-	 */
-	private static EntityToInstrument mapEntityToInstrument(de.uka.ipd.sdq.ByCounter.instrumentation.EntityToInstrument entityToInstrument, Map<java.util.UUID, EntityToInstrument> entitiesToInstrumentMap2) {
-		java.util.UUID id = entityToInstrument.getId();
-		return entitiesToInstrumentMap2.get(id);
 	}
 
 	/**
@@ -540,7 +531,7 @@ public class ByCounterWrapper {
 		} catch (InvalidQueryException e) {
 			throw new RuntimeException(e);
 		}
-		return mapEntityToInstrument(activeSection, entitiesToInstrumentIdMap);
+		return entitiesToInstrumentIdMap.get(activeSection.getId());
 	}
 
 	/**Returns the current result collection.
