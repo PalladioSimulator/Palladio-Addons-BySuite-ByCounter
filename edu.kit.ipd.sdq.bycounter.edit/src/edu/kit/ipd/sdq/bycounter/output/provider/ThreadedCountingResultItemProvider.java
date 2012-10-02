@@ -65,6 +65,7 @@ public class ThreadedCountingResultItemProvider
 			super.getPropertyDescriptors(object);
 
 			addThreadIdPropertyDescriptor(object);
+			addFinalPropertyDescriptor(object);
 		}
 		return itemPropertyDescriptors;
 	}
@@ -87,6 +88,28 @@ public class ThreadedCountingResultItemProvider
 				 false,
 				 false,
 				 ItemPropertyDescriptor.INTEGRAL_VALUE_IMAGE,
+				 null,
+				 null));
+	}
+
+	/**
+	 * This adds a property descriptor for the Final feature.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	protected void addFinalPropertyDescriptor(Object object) {
+		itemPropertyDescriptors.add
+			(createItemPropertyDescriptor
+				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
+				 getResourceLocator(),
+				 getString("_UI_ThreadedCountingResult_final_feature"),
+				 getString("_UI_PropertyDescriptor_description", "_UI_ThreadedCountingResult_final_feature", "_UI_ThreadedCountingResult_type"),
+				 OutputPackage.Literals.THREADED_COUNTING_RESULT__FINAL,
+				 true,
+				 false,
+				 false,
+				 ItemPropertyDescriptor.BOOLEAN_VALUE_IMAGE,
 				 null,
 				 null));
 	}
@@ -159,6 +182,7 @@ public class ThreadedCountingResultItemProvider
 
 		switch (notification.getFeatureID(ThreadedCountingResult.class)) {
 			case OutputPackage.THREADED_COUNTING_RESULT__THREAD_ID:
+			case OutputPackage.THREADED_COUNTING_RESULT__FINAL:
 				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
 				return;
 			case OutputPackage.THREADED_COUNTING_RESULT__SPAWNED_THREADED_COUNTING_RESULTS:

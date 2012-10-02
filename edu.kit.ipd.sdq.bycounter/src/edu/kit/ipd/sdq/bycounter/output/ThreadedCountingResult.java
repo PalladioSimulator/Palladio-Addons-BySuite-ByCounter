@@ -19,6 +19,7 @@ import org.eclipse.emf.common.util.EList;
  *   <li>{@link edu.kit.ipd.sdq.bycounter.output.ThreadedCountingResult#getSpawnedThreadedCountingResults <em>Spawned Threaded Counting Results</em>}</li>
  *   <li>{@link edu.kit.ipd.sdq.bycounter.output.ThreadedCountingResult#getThreadedCountingResult <em>Threaded Counting Result</em>}</li>
  *   <li>{@link edu.kit.ipd.sdq.bycounter.output.ThreadedCountingResult#getThreadId <em>Thread Id</em>}</li>
+ *   <li>{@link edu.kit.ipd.sdq.bycounter.output.ThreadedCountingResult#isFinal <em>Final</em>}</li>
  * </ul>
  * </p>
  *
@@ -98,5 +99,32 @@ public interface ThreadedCountingResult extends CountingResult {
 	 * @generated
 	 */
 	void setThreadId(long value);
+
+	/**
+	 * Returns the value of the '<em><b>Final</b></em>' attribute.
+	 * The default value is <code>"false"</code>.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * <!-- begin-model-doc -->
+	 * When true, the result is complete and all field have their final value.
+	 * When false, the result exists to allow for the correct result structure. The values of fields and references however are not all determined yet. In particular, counts for opcodes, method calls or array creations are subject to change.
+	 * <!-- end-model-doc -->
+	 * @return the value of the '<em>Final</em>' attribute.
+	 * @see #setFinal(boolean)
+	 * @see edu.kit.ipd.sdq.bycounter.output.OutputPackage#getThreadedCountingResult_Final()
+	 * @model default="false" required="true" ordered="false"
+	 * @generated
+	 */
+	boolean isFinal();
+
+	/**
+	 * Sets the value of the '{@link edu.kit.ipd.sdq.bycounter.output.ThreadedCountingResult#isFinal <em>Final</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Final</em>' attribute.
+	 * @see #isFinal()
+	 * @generated
+	 */
+	void setFinal(boolean value);
 
 } // ThreadedCountingResult

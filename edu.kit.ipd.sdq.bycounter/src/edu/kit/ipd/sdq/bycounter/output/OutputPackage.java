@@ -587,13 +587,22 @@ public interface OutputPackage extends EPackage {
 	int THREADED_COUNTING_RESULT__THREAD_ID = COUNTING_RESULT_FEATURE_COUNT + 2;
 
 	/**
+	 * The feature id for the '<em><b>Final</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int THREADED_COUNTING_RESULT__FINAL = COUNTING_RESULT_FEATURE_COUNT + 3;
+
+	/**
 	 * The number of structural features of the '<em>Threaded Counting Result</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int THREADED_COUNTING_RESULT_FEATURE_COUNT = COUNTING_RESULT_FEATURE_COUNT + 3;
+	int THREADED_COUNTING_RESULT_FEATURE_COUNT = COUNTING_RESULT_FEATURE_COUNT + 4;
 
 	/**
 	 * The meta object id for the '{@link edu.kit.ipd.sdq.bycounter.output.ArrayType <em>Array Type</em>}' enum.
@@ -1006,6 +1015,17 @@ public interface OutputPackage extends EPackage {
 	EAttribute getThreadedCountingResult_ThreadId();
 
 	/**
+	 * Returns the meta object for the attribute '{@link edu.kit.ipd.sdq.bycounter.output.ThreadedCountingResult#isFinal <em>Final</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Final</em>'.
+	 * @see edu.kit.ipd.sdq.bycounter.output.ThreadedCountingResult#isFinal()
+	 * @see #getThreadedCountingResult()
+	 * @generated
+	 */
+	EAttribute getThreadedCountingResult_Final();
+
+	/**
 	 * Returns the meta object for enum '{@link edu.kit.ipd.sdq.bycounter.output.ArrayType <em>Array Type</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -1348,6 +1368,14 @@ public interface OutputPackage extends EPackage {
 		 * @generated
 		 */
 		EAttribute THREADED_COUNTING_RESULT__THREAD_ID = eINSTANCE.getThreadedCountingResult_ThreadId();
+
+		/**
+		 * The meta object literal for the '<em><b>Final</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute THREADED_COUNTING_RESULT__FINAL = eINSTANCE.getThreadedCountingResult_Final();
 
 		/**
 		 * The meta object literal for the '{@link edu.kit.ipd.sdq.bycounter.output.ArrayType <em>Array Type</em>}' enum.

@@ -36,7 +36,6 @@ import org.eclipse.emf.ecore.util.InternalEList;
  * The following features are implemented:
  * <ul>
  *   <li>{@link edu.kit.ipd.sdq.bycounter.input.impl.ExecutionProfileImpl#isAddUpResultsRecursively <em>Add Up Results Recursively</em>}</li>
- *   <li>{@link edu.kit.ipd.sdq.bycounter.input.impl.ExecutionProfileImpl#isAggregateInternalCallsTransparently <em>Aggregate Internal Calls Transparently</em>}</li>
  *   <li>{@link edu.kit.ipd.sdq.bycounter.input.impl.ExecutionProfileImpl#isWaitForThreadsToFinnish <em>Wait For Threads To Finnish</em>}</li>
  *   <li>{@link edu.kit.ipd.sdq.bycounter.input.impl.ExecutionProfileImpl#getDefinedLogicalSets <em>Defined Logical Sets</em>}</li>
  *   <li>{@link edu.kit.ipd.sdq.bycounter.input.impl.ExecutionProfileImpl#getInstrumentationProfileRepository <em>Instrumentation Profile Repository</em>}</li>
@@ -65,26 +64,6 @@ public class ExecutionProfileImpl extends EObjectImpl implements ExecutionProfil
 	 * @ordered
 	 */
 	protected boolean addUpResultsRecursively = ADD_UP_RESULTS_RECURSIVELY_EDEFAULT;
-
-	/**
-	 * The default value of the '{@link #isAggregateInternalCallsTransparently() <em>Aggregate Internal Calls Transparently</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #isAggregateInternalCallsTransparently()
-	 * @generated
-	 * @ordered
-	 */
-	protected static final boolean AGGREGATE_INTERNAL_CALLS_TRANSPARENTLY_EDEFAULT = true;
-
-	/**
-	 * The cached value of the '{@link #isAggregateInternalCallsTransparently() <em>Aggregate Internal Calls Transparently</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #isAggregateInternalCallsTransparently()
-	 * @generated
-	 * @ordered
-	 */
-	protected boolean aggregateInternalCallsTransparently = AGGREGATE_INTERNAL_CALLS_TRANSPARENTLY_EDEFAULT;
 
 	/**
 	 * The default value of the '{@link #isWaitForThreadsToFinnish() <em>Wait For Threads To Finnish</em>}' attribute.
@@ -154,27 +133,6 @@ public class ExecutionProfileImpl extends EObjectImpl implements ExecutionProfil
 		addUpResultsRecursively = newAddUpResultsRecursively;
 		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, InputPackage.EXECUTION_PROFILE__ADD_UP_RESULTS_RECURSIVELY, oldAddUpResultsRecursively, addUpResultsRecursively));
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public boolean isAggregateInternalCallsTransparently() {
-		return aggregateInternalCallsTransparently;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public void setAggregateInternalCallsTransparently(boolean newAggregateInternalCallsTransparently) {
-		boolean oldAggregateInternalCallsTransparently = aggregateInternalCallsTransparently;
-		aggregateInternalCallsTransparently = newAggregateInternalCallsTransparently;
-		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, InputPackage.EXECUTION_PROFILE__AGGREGATE_INTERNAL_CALLS_TRANSPARENTLY, oldAggregateInternalCallsTransparently, aggregateInternalCallsTransparently));
 	}
 
 	/**
@@ -310,8 +268,6 @@ public class ExecutionProfileImpl extends EObjectImpl implements ExecutionProfil
 		switch (featureID) {
 			case InputPackage.EXECUTION_PROFILE__ADD_UP_RESULTS_RECURSIVELY:
 				return isAddUpResultsRecursively();
-			case InputPackage.EXECUTION_PROFILE__AGGREGATE_INTERNAL_CALLS_TRANSPARENTLY:
-				return isAggregateInternalCallsTransparently();
 			case InputPackage.EXECUTION_PROFILE__WAIT_FOR_THREADS_TO_FINNISH:
 				return isWaitForThreadsToFinnish();
 			case InputPackage.EXECUTION_PROFILE__DEFINED_LOGICAL_SETS:
@@ -333,9 +289,6 @@ public class ExecutionProfileImpl extends EObjectImpl implements ExecutionProfil
 		switch (featureID) {
 			case InputPackage.EXECUTION_PROFILE__ADD_UP_RESULTS_RECURSIVELY:
 				setAddUpResultsRecursively((Boolean)newValue);
-				return;
-			case InputPackage.EXECUTION_PROFILE__AGGREGATE_INTERNAL_CALLS_TRANSPARENTLY:
-				setAggregateInternalCallsTransparently((Boolean)newValue);
 				return;
 			case InputPackage.EXECUTION_PROFILE__WAIT_FOR_THREADS_TO_FINNISH:
 				setWaitForThreadsToFinnish((Boolean)newValue);
@@ -362,9 +315,6 @@ public class ExecutionProfileImpl extends EObjectImpl implements ExecutionProfil
 			case InputPackage.EXECUTION_PROFILE__ADD_UP_RESULTS_RECURSIVELY:
 				setAddUpResultsRecursively(ADD_UP_RESULTS_RECURSIVELY_EDEFAULT);
 				return;
-			case InputPackage.EXECUTION_PROFILE__AGGREGATE_INTERNAL_CALLS_TRANSPARENTLY:
-				setAggregateInternalCallsTransparently(AGGREGATE_INTERNAL_CALLS_TRANSPARENTLY_EDEFAULT);
-				return;
 			case InputPackage.EXECUTION_PROFILE__WAIT_FOR_THREADS_TO_FINNISH:
 				setWaitForThreadsToFinnish(WAIT_FOR_THREADS_TO_FINNISH_EDEFAULT);
 				return;
@@ -388,8 +338,6 @@ public class ExecutionProfileImpl extends EObjectImpl implements ExecutionProfil
 		switch (featureID) {
 			case InputPackage.EXECUTION_PROFILE__ADD_UP_RESULTS_RECURSIVELY:
 				return addUpResultsRecursively != ADD_UP_RESULTS_RECURSIVELY_EDEFAULT;
-			case InputPackage.EXECUTION_PROFILE__AGGREGATE_INTERNAL_CALLS_TRANSPARENTLY:
-				return aggregateInternalCallsTransparently != AGGREGATE_INTERNAL_CALLS_TRANSPARENTLY_EDEFAULT;
 			case InputPackage.EXECUTION_PROFILE__WAIT_FOR_THREADS_TO_FINNISH:
 				return waitForThreadsToFinnish != WAIT_FOR_THREADS_TO_FINNISH_EDEFAULT;
 			case InputPackage.EXECUTION_PROFILE__DEFINED_LOGICAL_SETS:
@@ -412,8 +360,6 @@ public class ExecutionProfileImpl extends EObjectImpl implements ExecutionProfil
 		StringBuffer result = new StringBuffer(super.toString());
 		result.append(" (addUpResultsRecursively: ");
 		result.append(addUpResultsRecursively);
-		result.append(", aggregateInternalCallsTransparently: ");
-		result.append(aggregateInternalCallsTransparently);
 		result.append(", waitForThreadsToFinnish: ");
 		result.append(waitForThreadsToFinnish);
 		result.append(')');

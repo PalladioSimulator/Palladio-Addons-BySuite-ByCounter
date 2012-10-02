@@ -35,6 +35,7 @@ import org.eclipse.emf.ecore.util.InternalEList;
  *   <li>{@link edu.kit.ipd.sdq.bycounter.output.impl.ThreadedCountingResultImpl#getSpawnedThreadedCountingResults <em>Spawned Threaded Counting Results</em>}</li>
  *   <li>{@link edu.kit.ipd.sdq.bycounter.output.impl.ThreadedCountingResultImpl#getThreadedCountingResult <em>Threaded Counting Result</em>}</li>
  *   <li>{@link edu.kit.ipd.sdq.bycounter.output.impl.ThreadedCountingResultImpl#getThreadId <em>Thread Id</em>}</li>
+ *   <li>{@link edu.kit.ipd.sdq.bycounter.output.impl.ThreadedCountingResultImpl#isFinal <em>Final</em>}</li>
  * </ul>
  * </p>
  *
@@ -70,6 +71,26 @@ public class ThreadedCountingResultImpl extends CountingResultImpl implements Th
 	 * @ordered
 	 */
 	protected long threadId = THREAD_ID_EDEFAULT;
+
+	/**
+	 * The default value of the '{@link #isFinal() <em>Final</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #isFinal()
+	 * @generated
+	 * @ordered
+	 */
+	protected static final boolean FINAL_EDEFAULT = false;
+
+	/**
+	 * The cached value of the '{@link #isFinal() <em>Final</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #isFinal()
+	 * @generated
+	 * @ordered
+	 */
+	protected boolean final_ = FINAL_EDEFAULT;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -169,6 +190,27 @@ public class ThreadedCountingResultImpl extends CountingResultImpl implements Th
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public boolean isFinal() {
+		return final_;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setFinal(boolean newFinal) {
+		boolean oldFinal = final_;
+		final_ = newFinal;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, OutputPackage.THREADED_COUNTING_RESULT__FINAL, oldFinal, final_));
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	@SuppressWarnings("unchecked")
 	@Override
 	public NotificationChain eInverseAdd(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
@@ -227,6 +269,8 @@ public class ThreadedCountingResultImpl extends CountingResultImpl implements Th
 				return getThreadedCountingResult();
 			case OutputPackage.THREADED_COUNTING_RESULT__THREAD_ID:
 				return getThreadId();
+			case OutputPackage.THREADED_COUNTING_RESULT__FINAL:
+				return isFinal();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -250,6 +294,9 @@ public class ThreadedCountingResultImpl extends CountingResultImpl implements Th
 			case OutputPackage.THREADED_COUNTING_RESULT__THREAD_ID:
 				setThreadId((Long)newValue);
 				return;
+			case OutputPackage.THREADED_COUNTING_RESULT__FINAL:
+				setFinal((Boolean)newValue);
+				return;
 		}
 		super.eSet(featureID, newValue);
 	}
@@ -271,6 +318,9 @@ public class ThreadedCountingResultImpl extends CountingResultImpl implements Th
 			case OutputPackage.THREADED_COUNTING_RESULT__THREAD_ID:
 				setThreadId(THREAD_ID_EDEFAULT);
 				return;
+			case OutputPackage.THREADED_COUNTING_RESULT__FINAL:
+				setFinal(FINAL_EDEFAULT);
+				return;
 		}
 		super.eUnset(featureID);
 	}
@@ -289,6 +339,8 @@ public class ThreadedCountingResultImpl extends CountingResultImpl implements Th
 				return getThreadedCountingResult() != null;
 			case OutputPackage.THREADED_COUNTING_RESULT__THREAD_ID:
 				return threadId != THREAD_ID_EDEFAULT;
+			case OutputPackage.THREADED_COUNTING_RESULT__FINAL:
+				return final_ != FINAL_EDEFAULT;
 		}
 		return super.eIsSet(featureID);
 	}
@@ -305,6 +357,8 @@ public class ThreadedCountingResultImpl extends CountingResultImpl implements Th
 		StringBuffer result = new StringBuffer(super.toString());
 		result.append(" (threadId: ");
 		result.append(threadId);
+		result.append(", final: ");
+		result.append(final_);
 		result.append(')');
 		return result.toString();
 	}

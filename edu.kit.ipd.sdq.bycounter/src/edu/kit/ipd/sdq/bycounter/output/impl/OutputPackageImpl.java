@@ -531,6 +531,15 @@ public class OutputPackageImpl extends EPackageImpl implements OutputPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public EAttribute getThreadedCountingResult_Final() {
+		return (EAttribute)threadedCountingResultEClass.getEStructuralFeatures().get(3);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	public EEnum getArrayType() {
 		return arrayTypeEEnum;
 	}
@@ -607,6 +616,7 @@ public class OutputPackageImpl extends EPackageImpl implements OutputPackage {
 		createEReference(threadedCountingResultEClass, THREADED_COUNTING_RESULT__SPAWNED_THREADED_COUNTING_RESULTS);
 		createEReference(threadedCountingResultEClass, THREADED_COUNTING_RESULT__THREADED_COUNTING_RESULT);
 		createEAttribute(threadedCountingResultEClass, THREADED_COUNTING_RESULT__THREAD_ID);
+		createEAttribute(threadedCountingResultEClass, THREADED_COUNTING_RESULT__FINAL);
 
 		// Create enums
 		arrayTypeEEnum = createEEnum(ARRAY_TYPE);
@@ -695,6 +705,7 @@ public class OutputPackageImpl extends EPackageImpl implements OutputPackage {
 		initEReference(getThreadedCountingResult_SpawnedThreadedCountingResults(), this.getThreadedCountingResult(), this.getThreadedCountingResult_ThreadedCountingResult(), "spawnedThreadedCountingResults", null, 0, -1, ThreadedCountingResult.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
 		initEReference(getThreadedCountingResult_ThreadedCountingResult(), this.getThreadedCountingResult(), this.getThreadedCountingResult_SpawnedThreadedCountingResults(), "threadedCountingResult", null, 0, 1, ThreadedCountingResult.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
 		initEAttribute(getThreadedCountingResult_ThreadId(), ecorePackage.getELong(), "threadId", null, 1, 1, ThreadedCountingResult.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+		initEAttribute(getThreadedCountingResult_Final(), ecorePackage.getEBoolean(), "final", "false", 1, 1, ThreadedCountingResult.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
 
 		// Initialize enums and add enum literals
 		initEEnum(arrayTypeEEnum, ArrayType.class, "ArrayType");

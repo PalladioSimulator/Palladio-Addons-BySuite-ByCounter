@@ -70,7 +70,6 @@ public class ExecutionProfileItemProvider
 			super.getPropertyDescriptors(object);
 
 			addAddUpResultsRecursivelyPropertyDescriptor(object);
-			addAggregateInternalCallsTransparentlyPropertyDescriptor(object);
 			addWaitForThreadsToFinnishPropertyDescriptor(object);
 		}
 		return itemPropertyDescriptors;
@@ -90,28 +89,6 @@ public class ExecutionProfileItemProvider
 				 getString("_UI_ExecutionProfile_addUpResultsRecursively_feature"),
 				 getString("_UI_PropertyDescriptor_description", "_UI_ExecutionProfile_addUpResultsRecursively_feature", "_UI_ExecutionProfile_type"),
 				 InputPackage.Literals.EXECUTION_PROFILE__ADD_UP_RESULTS_RECURSIVELY,
-				 true,
-				 false,
-				 false,
-				 ItemPropertyDescriptor.BOOLEAN_VALUE_IMAGE,
-				 null,
-				 null));
-	}
-
-	/**
-	 * This adds a property descriptor for the Aggregate Internal Calls Transparently feature.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected void addAggregateInternalCallsTransparentlyPropertyDescriptor(Object object) {
-		itemPropertyDescriptors.add
-			(createItemPropertyDescriptor
-				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
-				 getResourceLocator(),
-				 getString("_UI_ExecutionProfile_aggregateInternalCallsTransparently_feature"),
-				 getString("_UI_PropertyDescriptor_description", "_UI_ExecutionProfile_aggregateInternalCallsTransparently_feature", "_UI_ExecutionProfile_type"),
-				 InputPackage.Literals.EXECUTION_PROFILE__AGGREGATE_INTERNAL_CALLS_TRANSPARENTLY,
 				 true,
 				 false,
 				 false,
@@ -208,7 +185,6 @@ public class ExecutionProfileItemProvider
 
 		switch (notification.getFeatureID(ExecutionProfile.class)) {
 			case InputPackage.EXECUTION_PROFILE__ADD_UP_RESULTS_RECURSIVELY:
-			case InputPackage.EXECUTION_PROFILE__AGGREGATE_INTERNAL_CALLS_TRANSPARENTLY:
 			case InputPackage.EXECUTION_PROFILE__WAIT_FOR_THREADS_TO_FINNISH:
 				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
 				return;

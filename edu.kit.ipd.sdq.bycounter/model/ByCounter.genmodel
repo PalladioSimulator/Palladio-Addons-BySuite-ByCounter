@@ -95,6 +95,7 @@
         <genFeatures xsi:type="genmodel:GenFeature" property="None" notify="false"
             createChild="false" ecoreFeature="ecore:EReference ByCounter.ecore#//output/ThreadedCountingResult/threadedCountingResult"/>
         <genFeatures xsi:type="genmodel:GenFeature" createChild="false" ecoreFeature="ecore:EAttribute ByCounter.ecore#//output/ThreadedCountingResult/threadId"/>
+        <genFeatures xsi:type="genmodel:GenFeature" createChild="false" ecoreFeature="ecore:EAttribute ByCounter.ecore#//output/ThreadedCountingResult/final"/>
       </genClasses>
     </nestedGenPackages>
     <nestedGenPackages xsi:type="genmodel:GenPackage" prefix="Input" basePackage="edu.kit.ipd.sdq.bycounter"
@@ -122,7 +123,6 @@
       </genClasses>
       <genClasses xsi:type="genmodel:GenClass" ecoreClass="ByCounter.ecore#//input/ExecutionProfile">
         <genFeatures xsi:type="genmodel:GenFeature" createChild="false" ecoreFeature="ecore:EAttribute ByCounter.ecore#//input/ExecutionProfile/addUpResultsRecursively"/>
-        <genFeatures xsi:type="genmodel:GenFeature" createChild="false" ecoreFeature="ecore:EAttribute ByCounter.ecore#//input/ExecutionProfile/aggregateInternalCallsTransparently"/>
         <genFeatures xsi:type="genmodel:GenFeature" createChild="false" ecoreFeature="ecore:EAttribute ByCounter.ecore#//input/ExecutionProfile/waitForThreadsToFinnish"/>
         <genFeatures xsi:type="genmodel:GenFeature" property="None" children="true"
             createChild="true" ecoreFeature="ecore:EReference ByCounter.ecore#//input/ExecutionProfile/definedLogicalSets"/>

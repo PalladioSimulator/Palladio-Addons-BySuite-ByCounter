@@ -245,22 +245,13 @@ public interface InputPackage extends EPackage {
 	int EXECUTION_PROFILE__ADD_UP_RESULTS_RECURSIVELY = 0;
 
 	/**
-	 * The feature id for the '<em><b>Aggregate Internal Calls Transparently</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int EXECUTION_PROFILE__AGGREGATE_INTERNAL_CALLS_TRANSPARENTLY = 1;
-
-	/**
 	 * The feature id for the '<em><b>Wait For Threads To Finnish</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int EXECUTION_PROFILE__WAIT_FOR_THREADS_TO_FINNISH = 2;
+	int EXECUTION_PROFILE__WAIT_FOR_THREADS_TO_FINNISH = 1;
 
 	/**
 	 * The feature id for the '<em><b>Defined Logical Sets</b></em>' containment reference list.
@@ -269,7 +260,7 @@ public interface InputPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int EXECUTION_PROFILE__DEFINED_LOGICAL_SETS = 3;
+	int EXECUTION_PROFILE__DEFINED_LOGICAL_SETS = 2;
 
 	/**
 	 * The feature id for the '<em><b>Instrumentation Profile Repository</b></em>' container reference.
@@ -278,7 +269,7 @@ public interface InputPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int EXECUTION_PROFILE__INSTRUMENTATION_PROFILE_REPOSITORY = 4;
+	int EXECUTION_PROFILE__INSTRUMENTATION_PROFILE_REPOSITORY = 3;
 
 	/**
 	 * The number of structural features of the '<em>Execution Profile</em>' class.
@@ -287,7 +278,7 @@ public interface InputPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int EXECUTION_PROFILE_FEATURE_COUNT = 5;
+	int EXECUTION_PROFILE_FEATURE_COUNT = 4;
 
 	/**
 	 * The meta object id for the '{@link edu.kit.ipd.sdq.bycounter.input.impl.LogicalSetImpl <em>Logical Set</em>}' class.
@@ -712,17 +703,6 @@ public interface InputPackage extends EPackage {
 	EAttribute getExecutionProfile_AddUpResultsRecursively();
 
 	/**
-	 * Returns the meta object for the attribute '{@link edu.kit.ipd.sdq.bycounter.input.ExecutionProfile#isAggregateInternalCallsTransparently <em>Aggregate Internal Calls Transparently</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Aggregate Internal Calls Transparently</em>'.
-	 * @see edu.kit.ipd.sdq.bycounter.input.ExecutionProfile#isAggregateInternalCallsTransparently()
-	 * @see #getExecutionProfile()
-	 * @generated
-	 */
-	EAttribute getExecutionProfile_AggregateInternalCallsTransparently();
-
-	/**
 	 * Returns the meta object for the attribute '{@link edu.kit.ipd.sdq.bycounter.input.ExecutionProfile#isWaitForThreadsToFinnish <em>Wait For Threads To Finnish</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -1103,14 +1083,6 @@ public interface InputPackage extends EPackage {
 		 * @generated
 		 */
 		EAttribute EXECUTION_PROFILE__ADD_UP_RESULTS_RECURSIVELY = eINSTANCE.getExecutionProfile_AddUpResultsRecursively();
-
-		/**
-		 * The meta object literal for the '<em><b>Aggregate Internal Calls Transparently</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute EXECUTION_PROFILE__AGGREGATE_INTERNAL_CALLS_TRANSPARENTLY = eINSTANCE.getExecutionProfile_AggregateInternalCallsTransparently();
 
 		/**
 		 * The meta object literal for the '<em><b>Wait For Threads To Finnish</b></em>' attribute feature.

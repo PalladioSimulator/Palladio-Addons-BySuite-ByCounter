@@ -334,7 +334,7 @@ public class InputPackageImpl extends EPackageImpl implements InputPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getExecutionProfile_AggregateInternalCallsTransparently() {
+	public EAttribute getExecutionProfile_WaitForThreadsToFinnish() {
 		return (EAttribute)executionProfileEClass.getEStructuralFeatures().get(1);
 	}
 
@@ -343,17 +343,8 @@ public class InputPackageImpl extends EPackageImpl implements InputPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getExecutionProfile_WaitForThreadsToFinnish() {
-		return (EAttribute)executionProfileEClass.getEStructuralFeatures().get(2);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
 	public EReference getExecutionProfile_DefinedLogicalSets() {
-		return (EReference)executionProfileEClass.getEStructuralFeatures().get(3);
+		return (EReference)executionProfileEClass.getEStructuralFeatures().get(2);
 	}
 
 	/**
@@ -362,7 +353,7 @@ public class InputPackageImpl extends EPackageImpl implements InputPackage {
 	 * @generated
 	 */
 	public EReference getExecutionProfile_InstrumentationProfileRepository() {
-		return (EReference)executionProfileEClass.getEStructuralFeatures().get(4);
+		return (EReference)executionProfileEClass.getEStructuralFeatures().get(3);
 	}
 
 	/**
@@ -573,7 +564,6 @@ public class InputPackageImpl extends EPackageImpl implements InputPackage {
 
 		executionProfileEClass = createEClass(EXECUTION_PROFILE);
 		createEAttribute(executionProfileEClass, EXECUTION_PROFILE__ADD_UP_RESULTS_RECURSIVELY);
-		createEAttribute(executionProfileEClass, EXECUTION_PROFILE__AGGREGATE_INTERNAL_CALLS_TRANSPARENTLY);
 		createEAttribute(executionProfileEClass, EXECUTION_PROFILE__WAIT_FOR_THREADS_TO_FINNISH);
 		createEReference(executionProfileEClass, EXECUTION_PROFILE__DEFINED_LOGICAL_SETS);
 		createEReference(executionProfileEClass, EXECUTION_PROFILE__INSTRUMENTATION_PROFILE_REPOSITORY);
@@ -663,7 +653,6 @@ public class InputPackageImpl extends EPackageImpl implements InputPackage {
 
 		initEClass(executionProfileEClass, ExecutionProfile.class, "ExecutionProfile", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getExecutionProfile_AddUpResultsRecursively(), ecorePackage.getEBoolean(), "addUpResultsRecursively", "true", 1, 1, ExecutionProfile.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
-		initEAttribute(getExecutionProfile_AggregateInternalCallsTransparently(), ecorePackage.getEBoolean(), "aggregateInternalCallsTransparently", "true", 1, 1, ExecutionProfile.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
 		initEAttribute(getExecutionProfile_WaitForThreadsToFinnish(), ecorePackage.getEBoolean(), "waitForThreadsToFinnish", "true", 1, 1, ExecutionProfile.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
 		initEReference(getExecutionProfile_DefinedLogicalSets(), this.getLogicalSet(), this.getLogicalSet_ExecutionProfile(), "definedLogicalSets", null, 0, -1, ExecutionProfile.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
 		initEReference(getExecutionProfile_InstrumentationProfileRepository(), this.getInstrumentationProfileRepository(), this.getInstrumentationProfileRepository_ExecutionProfile(), "instrumentationProfileRepository", null, 0, 1, ExecutionProfile.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
