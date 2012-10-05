@@ -43,7 +43,8 @@ public class TestProxyClasses {
 
 
 		//3. now tell ByCounter to instrument the specified method
-		counter.instrument(myMethod);
+		counter.addEntityToInstrument(myMethod);
+		counter.instrument();
 		
 		// create an instance of the default implementation of ProxyDependeny
 		ProxyDependencyIssueInterface target0 = (ProxyDependencyIssueInterface) counter.instantiate(myMethod);

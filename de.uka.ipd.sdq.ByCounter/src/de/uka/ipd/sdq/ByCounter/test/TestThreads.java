@@ -87,7 +87,8 @@ public class TestThreads extends AbstractByCounterTest {
 		// initialize ByCounter
 		BytecodeCounter counter = this.setupByCounter();
 		
-		counter.instrument(methodRunnableForThreadingRun);
+		counter.addEntityToInstrument(methodRunnableForThreadingRun);
+		counter.instrument();
 		
 		// execute with ()
 		Object[] executionParameters = new Object[0];
@@ -219,7 +220,8 @@ public class TestThreads extends AbstractByCounterTest {
 		BytecodeCounter counter = setupByCounter();
 		counter.getInstrumentationParams().setInstrumentRecursively(true);
 		counter.getExecutionSettings().setAddUpResultsRecursively(true);
-		counter.instrument(methodRun);
+		counter.addEntityToInstrument(methodRun);
+		counter.instrument();
 		
 		Object[] executionParameters = new Object[0];
 		counter.execute(methodRun, executionParameters);
@@ -256,8 +258,9 @@ public class TestThreads extends AbstractByCounterTest {
 		MethodDescriptor runThreadsNoJoinMD = new MethodDescriptor(
 				ThreadedTestSubject.class.getCanonicalName(), 
 				"public void runThreadsNoJoin(long sleepBase)");
-		counter.instrument(runThreadsNoJoinMD);
-		counter.instrument(methodRunnableForThreadingRun);
+		counter.addEntityToInstrument(runThreadsNoJoinMD);
+		counter.addEntityToInstrument(methodRunnableForThreadingRun);
+		counter.instrument();
 		
         // define expectations
         Expectation e = new Expectation(true);
@@ -321,9 +324,10 @@ public class TestThreads extends AbstractByCounterTest {
     public void testThreadStructure() {
     	// initialize ByCounter
 		BytecodeCounter counter = setupByCounter();
-		counter.instrument(methodRun);
-		counter.instrument(methodRunnableForThreadingRun);
-		counter.instrument(methodRunnableIincRun);
+		counter.addEntityToInstrument(methodRun);
+		counter.addEntityToInstrument(methodRunnableForThreadingRun);
+		counter.addEntityToInstrument(methodRunnableIincRun);
+		counter.instrument();
 		
 		Object[] executionParameters = new Object[0];
 		counter.execute(methodRun, executionParameters);
@@ -361,7 +365,8 @@ public class TestThreads extends AbstractByCounterTest {
         entitiesToInstrument.add(new InstrumentedCodeArea(myMethodRun, new LineNumberRange(53, 58)));
         entitiesToInstrument.add(new InstrumentedMethod(methodRunnableForThreadingRun));
         entitiesToInstrument.add(new InstrumentedMethod(methodRunnableIincRun));
-		counter.instrument(entitiesToInstrument);
+        counter.addEntityToInstrument(entitiesToInstrument);
+		counter.instrument();
 		
 		Object[] executionParameters = new Object[0];
 		counter.execute(myMethodRun, executionParameters);
@@ -423,7 +428,8 @@ public class TestThreads extends AbstractByCounterTest {
 				// add lists of spawned results to the queue
 				if(cr instanceof ThreadedCountingResult) {
 					ThreadedCountingResult tcr = (ThreadedCountingResult) cr;
-					TreeSet<CountingResult> spawned = new TreeSet<CountingResult>(tcr.getSpawnedThreadedCountingResults());
+					SortedSet<ThreadedCountingResult> spawnedThreadedCountingResults = tcr.getSpawnedThreadedCountingResults();
+					TreeSet<CountingResult> spawned = new TreeSet<CountingResult>(spawnedThreadedCountingResults);
 					resultsQueue.add(spawned);
 				}
 			}

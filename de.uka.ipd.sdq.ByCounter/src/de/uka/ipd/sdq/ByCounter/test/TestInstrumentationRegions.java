@@ -188,7 +188,8 @@ public class TestInstrumentationRegions extends AbstractByCounterTest {
 		// try to instrument
 		boolean exceptionThrown = false;
 		try {
-			counter.instrument(methodRanged);
+			counter.addEntityToInstrument(methodRanged);
+			counter.instrument();
 		} catch(IllegalArgumentException iae) {
 			exceptionThrown = true;
 		}

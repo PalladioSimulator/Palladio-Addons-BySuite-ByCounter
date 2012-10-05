@@ -113,7 +113,6 @@ implements Serializable, Cloneable, IFullCountingResult, Comparable<IFullCountin
 				null,
 				null,
 				new String(""),
-				new String(""),
 				-1L,
 				-1L,
 				resultOpcodeCounts,
@@ -258,7 +257,6 @@ implements Serializable, Cloneable, IFullCountingResult, Comparable<IFullCountin
 				null, //ownID
 				null, //callerID
 				new String(""),
-				new String(""),
 				-1L,
 				-1L,
 				resultOpcodeCounts,
@@ -395,7 +393,7 @@ implements Serializable, Cloneable, IFullCountingResult, Comparable<IFullCountin
 
 	/**
 	 * A {@link UUID} that is linked to the method calling the method that
-	 * calls the protocol function. Used with {@link #methodID} to construct a CCT.
+	 * calls the protocol function. Used with {@link #methodExecutionID} to construct a CCT.
 	 */
 	private UUID callerID = null;
 
@@ -423,15 +421,6 @@ implements Serializable, Cloneable, IFullCountingResult, Comparable<IFullCountin
 	 * *after* forced inlining was switched on.
 	 */
 	public long forcedInlining_earliestStartOfInlinedMethod;
-
-	//idea: QualifyingMethodSignatureInclClassName+.+
-	//methodInvocationBeginning+.+
-	//methodReportingTime+_+<optional:ParamDescription>_.SCResult
-	/**
-	 * There are no strict rules for the ID. For SPECjvm2008, we are using the
-	 * file name of the file which is being compressed.
-	 */
-	private String ID;
 
 	private boolean invariantMethodsAreInlined = false;
 
@@ -464,7 +453,7 @@ implements Serializable, Cloneable, IFullCountingResult, Comparable<IFullCountin
 	 * A {@link UUID} that is linked to the method calling the protocol function.
 	 * Used with {@link #callerID} to construct a CCT.
 	 */
-	private UUID methodID;
+	private UUID methodExecutionID;
 
 	/**
 	 * The name of the method whose execution was counted.
@@ -494,7 +483,7 @@ implements Serializable, Cloneable, IFullCountingResult, Comparable<IFullCountin
 			long[] opcodeCounts,
 			SortedMap<String, Long> methodCallCounts) {
 		this(//TODO make sure the instructions are "full", even if some instruction counts are zero
-				null,null,null,null,
+				null,null,null,
 				qualifyingMethodName,
 				methodInvocationBeginning,
 				methodReportingTime,
@@ -510,16 +499,23 @@ implements Serializable, Cloneable, IFullCountingResult, Comparable<IFullCountin
 	 * in the construction of the new {@link CountingResultBase}.
 	 */
 	public CountingResultBase(final CountingResultBase src) {
+		this.set(src);
+	}
+
+	/**
+	 * Apply all properties from the given result to this result.
+	 * @param src Result to copy from.
+	 */
+	public void set(final CountingResultBase src) {
 		Map<ArrayCreation, Long> copyOfArrayCreationCounts = null;
 		
 		if(src.arrayCreationCounts != null) {
-			copyOfArrayCreationCounts = new TreeMap<ArrayCreation, Long>(src.arrayCreationCounts);
+			copyOfArrayCreationCounts = new HashMap<ArrayCreation, Long>(src.arrayCreationCounts);
 		}
 		
 		this.setRequestID(src.getRequestID());
-		this.setMethodID(src.getMethodID());
+		this.setMethodExecutionID(src.getMethodExecutionID());
 		this.setCallerID(src.getCallerID());
-		this.setID(src.getID());
 		this.setQualifiedMethodName(src.qualifiedMethodName);
 		this.methodInvocationBeginning = src.methodInvocationBeginning;
 		this.reportingTime = src.reportingTime;
@@ -561,7 +557,6 @@ implements Serializable, Cloneable, IFullCountingResult, Comparable<IFullCountin
 	 * @param requestID
 	 * @param ownID
 	 * @param callerID
-	 * @param ID
 	 * @param qualifyingMethodName
 	 * @param methodInvocationBeginning
 	 * @param methodReportingTime
@@ -574,7 +569,6 @@ implements Serializable, Cloneable, IFullCountingResult, Comparable<IFullCountin
 			UUID ownID,
 			UUID callerID,
 			
-			String ID,
 			String qualifyingMethodName,
 						
 			long methodInvocationBeginning,
@@ -585,9 +579,8 @@ implements Serializable, Cloneable, IFullCountingResult, Comparable<IFullCountin
 			
 			Map<ArrayCreation, Long> arrayCreationCounts) {
 		this.setRequestID(requestID);
-		this.setMethodID(ownID);
+		this.setMethodExecutionID(ownID);
 		this.setCallerID(callerID);
-		this.setID(ID);
 		this.setThreadId(-1);
 		
 		this.arrayCreationCounts = arrayCreationCounts;
@@ -613,9 +606,8 @@ implements Serializable, Cloneable, IFullCountingResult, Comparable<IFullCountin
 	 */
 	public CountingResultBase() {
 		this.setRequestID(null);
-		this.setMethodID(null);
+		this.setMethodExecutionID(null);
 		this.setCallerID(null);
-		this.setID(null);
 		this.setThreadId(-1);
 		
 		this.arrayCreationCounts = null;
@@ -704,9 +696,8 @@ implements Serializable, Cloneable, IFullCountingResult, Comparable<IFullCountin
 		}
 		
 		copy.setRequestID(this.getRequestID());
-		copy.setMethodID(this.getMethodID());
+		copy.setMethodExecutionID(this.getMethodExecutionID());
 		copy.setCallerID(this.getCallerID());
-		copy.setID(this.getID());
 		copy.setQualifiedMethodName(this.qualifiedMethodName);
 		copy.methodInvocationBeginning = this.methodInvocationBeginning;
 		copy.reportingTime = this.reportingTime;
@@ -758,7 +749,7 @@ implements Serializable, Cloneable, IFullCountingResult, Comparable<IFullCountin
 	
 	/**
 	 * @return A {@link UUID} that is linked to the method calling the method that
-	 * calls the protocol function. Used with {@link #getMethodID()} to construct a CCT.
+	 * calls the protocol function. Used with {@link #getMethodExecutionID()} to construct a CCT.
 	 */
 	public UUID getCallerID() {
 		return callerID;
@@ -786,13 +777,6 @@ implements Serializable, Cloneable, IFullCountingResult, Comparable<IFullCountin
 	 */
 	public List<Integer> getCharacterisationTypes() {
 		return characterisationTypes;
-	}
-
-	/**
-	 * @return the ID
-	 */
-	public String getID() {
-		return ID;
 	}
 
 	/**
@@ -890,8 +874,8 @@ implements Serializable, Cloneable, IFullCountingResult, Comparable<IFullCountin
 	/**
 	 * @return The ID of the method of the result.
 	 */
-	public UUID getMethodID() {
-		return methodID;
+	public UUID getMethodExecutionID() {
+		return methodExecutionID;
 	}
 
 	/** (non-Javadoc)
@@ -991,7 +975,7 @@ implements Serializable, Cloneable, IFullCountingResult, Comparable<IFullCountin
 
 	/**
 	 * @param callerID A {@link UUID} that is linked to the method calling the method that
-	 * calls the protocol function. Used with {@link #getMethodID()} to construct a CCT.
+	 * calls the protocol function. Used with {@link #getMethodExecutionID()} to construct a CCT.
 	 * @return The previously set caller id.
 	 */
 	public UUID setCallerID(UUID callerID) {
@@ -1025,13 +1009,6 @@ implements Serializable, Cloneable, IFullCountingResult, Comparable<IFullCountin
 	 */
 	public void setCharacterisationTypes(List<Integer> characterisationTypes) {
 		this.characterisationTypes = characterisationTypes;
-	}
-
-	/**
-	 * @param newID
-	 */
-	public void setID(String newID) {
-		ID = newID;
 	}
 
 	/**
@@ -1088,8 +1065,8 @@ implements Serializable, Cloneable, IFullCountingResult, Comparable<IFullCountin
 	/**
 	 * @param methodID The ID of the method of the result.
 	 */
-	public void setMethodID(UUID methodID) {
-		this.methodID = methodID;
+	public void setMethodExecutionID(UUID methodID) {
+		this.methodExecutionID = methodID;
 	}
 	
 	/**
@@ -1201,7 +1178,7 @@ implements Serializable, Cloneable, IFullCountingResult, Comparable<IFullCountin
 		StringBuffer sb = new StringBuffer();
 		sb.append("\n"+
 				  "      "+this.getClass().getSimpleName()+" (hash code: "+this.hashCode()+")\n");
-		sb.append("      > Method name     : "+this.qualifiedMethodName+ " (Own UUID: " + this.methodID + ", threadId: " + this.threadId + ")\n");
+		sb.append("      > Method name     : "+this.qualifiedMethodName+ " (Own UUID: " + this.methodExecutionID + ", threadId: " + this.threadId + ")\n");
 		sb.append("      > Method duration : "+(this.reportingTime-this.methodInvocationBeginning)+
 				"(start: "+this.methodInvocationBeginning+", end: "+this.reportingTime+")\n");
 		sb.append("      > Opcode counts   : "+Arrays.toString(this.opcodeCounts)+"\n");
@@ -1303,7 +1280,7 @@ implements Serializable, Cloneable, IFullCountingResult, Comparable<IFullCountin
 		sb.append("requestID: ");
 		sb.append(getRequestID());
 		sb.append(", ownID: ");
-		sb.append(getMethodID());
+		sb.append(getMethodExecutionID());
 		sb.append(", callerID: ");
 		sb.append(getCallerID());
 		sb.append(", threadId: ");
@@ -1544,7 +1521,6 @@ implements Serializable, Cloneable, IFullCountingResult, Comparable<IFullCountin
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((this.ID == null) ? 0 : this.ID.hashCode());
 		result = prime * result
 				+ ((this.callerID == null) ? 0 : this.callerID.hashCode());
 		result = prime
@@ -1565,7 +1541,7 @@ implements Serializable, Cloneable, IFullCountingResult, Comparable<IFullCountin
 				+ (int) (this.reportingTime ^ (this.reportingTime >>> 32));
 		result = prime * result + Arrays.hashCode(this.opcodeCounts);
 		result = prime * result
-				+ ((this.methodID == null) ? 0 : this.methodID.hashCode());
+				+ ((this.methodExecutionID == null) ? 0 : this.methodExecutionID.hashCode());
 		result = prime
 				* result
 				+ ((this.qualifiedMethodName == null) ? 0
@@ -1599,11 +1575,6 @@ implements Serializable, Cloneable, IFullCountingResult, Comparable<IFullCountin
 		if (getClass() != obj.getClass())
 			return false;
 		CountingResultBase other = (CountingResultBase) obj;
-		if (this.ID == null) {
-			if (other.ID != null)
-				return false;
-		} else if (!this.ID.equals(other.ID))
-			return false;
 		if (this.callerID == null) {
 			if (other.callerID != null)
 				return false;
@@ -1626,10 +1597,10 @@ implements Serializable, Cloneable, IFullCountingResult, Comparable<IFullCountin
 			return false;
 		if (!Arrays.equals(this.opcodeCounts, other.opcodeCounts))
 			return false;
-		if (this.methodID == null) {
-			if (other.methodID != null)
+		if (this.methodExecutionID == null) {
+			if (other.methodExecutionID != null)
 				return false;
-		} else if (!this.methodID.equals(other.methodID))
+		} else if (!this.methodExecutionID.equals(other.methodExecutionID))
 			return false;
 		if (this.qualifiedMethodName == null) {
 			if (other.qualifiedMethodName != null)

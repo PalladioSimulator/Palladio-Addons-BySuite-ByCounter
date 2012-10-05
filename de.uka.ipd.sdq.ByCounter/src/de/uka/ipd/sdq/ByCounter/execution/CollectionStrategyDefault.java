@@ -104,6 +104,21 @@ public class CollectionStrategyDefault extends AbstractCollectionStrategy {
 			currentResultCollection.getCountingResults().addAll(this.countingResultIndexing.retrieveRecursiveSum(lastMethodExecutionDetails));
 		}
 	}
+	
+	/**
+	 * Allocate a result.
+	 */
+	@Override
+	public void protocolFutureCount(final ProtocolFutureCountStructure futureCount) {
+		// TODO
+		ThreadedCountingResult cr = new ThreadedCountingResult();
+		cr.setQualifiedMethodName(futureCount.canonicalMethodName);
+		cr.setMethodExecutionID(futureCount.ownID);
+		cr.setObservedElement(parentResultCollector.instrumentationContext.getEntitiesToInstrument().get(futureCount.observedEntityID));
+		cr.setThreadId(Thread.currentThread().getId());
+		cr.setFinal(false);
+		cr = (ThreadedCountingResult) this.countingResultThreadIndexing.apply(cr, futureCount.spawnedThreads);
+	}
 
 	/** Add to counting results. */
 	@Override
@@ -160,9 +175,8 @@ public class CollectionStrategyDefault extends AbstractCollectionStrategy {
 				res = new ThreadedCountingResult();
 			}
 			res.setRequestID(result.requestID);
-			res.setMethodID(result.ownID);
+			res.setMethodExecutionID(result.ownID);
 			res.setCallerID(result.callerID);
-			res.setID(result.qualifyingMethodName); //TODO fix it --> Martin; vgl. javadocs zu CountingResult
 			res.setQualifiedMethodName(result.qualifyingMethodName);
 			res.setMethodInvocationBeginning(result.executionStart+ccountsNum);
 			res.setReportingTime(result.reportingStart);
@@ -171,6 +185,7 @@ public class CollectionStrategyDefault extends AbstractCollectionStrategy {
 			res.setArrayCreationCounts(arrayCreationCounts);
 			res.setThreadId(Thread.currentThread().getId());
 			res.setObservedElement(this.parentResultCollector.instrumentationContext.getEntitiesToInstrument().get(result.observedEntityID));
+			res.setFinal(true);
 			if(result.blockCountingMode == BlockCountingMode.RangeBlocks) {
 				// set the index of the range block, i.e. the number of the section as
 				// defined by the user in the instrumentation settings. This 

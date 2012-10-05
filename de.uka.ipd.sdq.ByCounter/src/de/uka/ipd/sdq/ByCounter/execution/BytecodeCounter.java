@@ -308,12 +308,25 @@ public final class BytecodeCounter {
 	}
 	
 	/**
-	 * Convenience method for calling {@link #instrument(EntityToInstrument)}
+	 * Convenience method for adding an {@link InstrumentedMethod} to
+	 * the entityToInstrument collection in {@link #getInstrumentationParams()}.
 	 * with a {@link InstrumentedMethod}.
+	 * {@link #instrument()} needs to be called seperately.
 	 * @param fullMethod Method to fully instrument.
 	 */
-	public void instrument(MethodDescriptor fullMethod) {
-		this.instrument(new InstrumentedMethod(fullMethod));
+	public void addEntityToInstrument(MethodDescriptor fullMethod) {
+		this.instrumentationParameters.getEntitiesToInstrument().add(new InstrumentedMethod(fullMethod));
+	}
+	
+	/**
+	 * Convenience method for adding {@link EntityToInstrument} to
+	 * the entityToInstrument collection in {@link #getInstrumentationParams()}.
+	 * with a {@link InstrumentedMethod}.
+	 * {@link #instrument()} needs to be called seperately.
+	 * @param entitiesToInstrument Method to fully instrument.
+	 */
+	public synchronized void addEntityToInstrument(List<EntityToInstrument> entitiesToInstrument) {
+		this.instrumentationParameters.getEntitiesToInstrument().addAll(entitiesToInstrument);
 	}
 
 	/**
@@ -323,7 +336,7 @@ public final class BytecodeCounter {
 	 * that will be instrumented.
 	 * @return True, if the instrumentation was successful, false otherwise.
 	 */
-	public synchronized boolean instrument(List<EntityToInstrument> entitiesToInstrument) {
+	protected synchronized boolean instrument(List<EntityToInstrument> entitiesToInstrument) {
 		// reset instrumentation state
 		this.instrumentationState = new InstrumentationState();
 		

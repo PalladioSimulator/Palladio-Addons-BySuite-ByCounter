@@ -53,7 +53,8 @@ public class TestClassLoader {
 		
 		
 		//3. now tell ByCounter to instrument the specified method
-		counter.instrument(myMethod);
+		counter.addEntityToInstrument(myMethod);
+		counter.instrument();
 		
 
 		byte[] bytes = counter.getInstrumentedBytes();

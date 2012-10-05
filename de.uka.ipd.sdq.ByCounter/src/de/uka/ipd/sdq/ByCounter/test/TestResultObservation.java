@@ -172,7 +172,8 @@ public class TestResultObservation extends AbstractByCounterTest {
         for(LineNumberRange r : ranges) {
         	entitiesToInstrument.add(new InstrumentedCodeArea(method1, r));
         }
-        counter.instrument(entitiesToInstrument);
+        counter.addEntityToInstrument(entitiesToInstrument);
+        counter.instrument();
 
         // setup the observer
         CountingResultCollector.getInstance().addObserver(new Observer() {
@@ -222,7 +223,8 @@ public class TestResultObservation extends AbstractByCounterTest {
         	entitiesToInstrument.add(new InstrumentedCodeArea(methodRanged, r));
         }
 
-        counter.instrument(entitiesToInstrument);
+        counter.addEntityToInstrument(entitiesToInstrument);
+        counter.instrument();
         // execute with (10)
         Object[] executionParameters = new Object[] { 10 };
         counter.execute(methodRanged, executionParameters);

@@ -71,7 +71,9 @@ public class TestQueryUpdates extends AbstractByCounterTest {
 			this.lock.lock();
 			BytecodeCounter counter;
 	        counter = setupQueryByCounter();
-	        counter.instrument(this.entities);
+
+	        counter.addEntityToInstrument(this.entities);
+	        counter.instrument();
 	        MethodDescriptor methodToExecute = this.entities.get(0).getMethodsToInstrument()[0];
 			this.classInstance = counter.instantiate(methodToExecute);
 	        this.bClassInstanceAvailable = true;

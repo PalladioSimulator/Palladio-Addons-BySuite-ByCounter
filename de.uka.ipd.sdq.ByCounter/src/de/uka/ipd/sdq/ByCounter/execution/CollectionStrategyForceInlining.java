@@ -106,9 +106,8 @@ public class CollectionStrategyForceInlining extends AbstractCollectionStrategy 
 	private synchronized CountingResult createNewForcedInlinedCountingResult() {
 		CountingResult res = new CountingResult();
 		res.setRequestID(UUID.randomUUID());
-		res.setMethodID(UUID.randomUUID());
+		res.setMethodExecutionID(UUID.randomUUID());
 		res.setCallerID(UUID.randomUUID());
-		res.setID("forcedInlined");
 		res.setQualifiedMethodName("______forcedInlined______");
 		res.setMethodInvocationBeginning(System.nanoTime/*currentTimeMillis*/());
 		res.setReportingTime(0L); //reporting time TODO use a Date-like class for this...

@@ -79,7 +79,8 @@ public class TestResultWriters extends AbstractByCounterTest {
 		// test with void method
 		MethodDescriptor methodDescriptor = new MethodDescriptor(
 				CLASS_TEST_SUBJECT, METHOD_METHOD_CALL_TEST);
-		counter.instrument(methodDescriptor);
+		counter.addEntityToInstrument(methodDescriptor);
+		counter.instrument();
 		counter.execute(methodDescriptor, new Object[]{});
 
 
@@ -142,7 +143,8 @@ public class TestResultWriters extends AbstractByCounterTest {
 		// test with void method
 		MethodDescriptor methodDescriptor = new MethodDescriptor(
 				CLASS_TEST_SUBJECT, METHOD_METHOD_CALL_TEST);
-		counter.instrument(methodDescriptor);
+		counter.addEntityToInstrument(methodDescriptor);
+		counter.instrument();
 		counter.execute(methodDescriptor, new Object[]{});
 
 
@@ -218,7 +220,8 @@ public class TestResultWriters extends AbstractByCounterTest {
 		// test with void method
 		MethodDescriptor methodDescriptor = new MethodDescriptor(
 				CLASS_TEST_SUBJECT, METHOD_METHOD_CALL_TEST);
-		counter.instrument(methodDescriptor);
+		counter.addEntityToInstrument(methodDescriptor);
+		counter.instrument();
 		counter.execute(methodDescriptor, new Object[]{});
 
 
@@ -269,7 +272,8 @@ public class TestResultWriters extends AbstractByCounterTest {
 		// test with void method
 		MethodDescriptor methodDescriptor = new MethodDescriptor(
 				CLASS_TEST_SUBJECT, METHOD_METHOD_CALL_TEST);
-		counter.instrument(methodDescriptor);
+		counter.addEntityToInstrument(methodDescriptor);
+		counter.instrument();
 		counter.execute(methodDescriptor, new Object[]{});
 
 		// check whether a file was written
@@ -279,7 +283,8 @@ public class TestResultWriters extends AbstractByCounterTest {
 		// test with boolean method
 		methodDescriptor = new MethodDescriptor(CLASS_TEST_SUBJECT,
 			METHOD_PARAMETER_TEST);
-		counter.instrument(methodDescriptor);
+		counter.addEntityToInstrument(methodDescriptor);
+		counter.instrument();
 		counter.execute(methodDescriptor,
 			new Object[]{2, 2, CLASS_TEST_SUBJECT});
 
@@ -292,7 +297,8 @@ public class TestResultWriters extends AbstractByCounterTest {
 		// test with boolean method
 		methodDescriptor = new MethodDescriptor(CLASS_TEST_SUBJECT,
 			METHOD_PARAMETER_TEST);
-		counter.instrument(methodDescriptor);
+		counter.addEntityToInstrument(methodDescriptor);
+		counter.instrument();
 		counter.execute(methodDescriptor,
 			new Object[]{2, 2, CLASS_TEST_SUBJECT});
 
@@ -319,7 +325,8 @@ public class TestResultWriters extends AbstractByCounterTest {
 		// test with void method
 		MethodDescriptor methodDescriptor = new MethodDescriptor(
 				CLASS_TEST_SUBJECT, METHOD_METHOD_CALL_TEST);
-		counter.instrument(methodDescriptor);
+		counter.addEntityToInstrument(methodDescriptor);
+		counter.instrument();
 		counter.execute(methodDescriptor, new Object[]{});
 
 

@@ -21,6 +21,7 @@ import de.uka.ipd.sdq.ByCounter.execution.CountingResultBase;
 import de.uka.ipd.sdq.ByCounter.execution.CountingResultCollector;
 import de.uka.ipd.sdq.ByCounter.execution.ProtocolCountStructure;
 import de.uka.ipd.sdq.ByCounter.execution.ProtocolCountUpdateStructure;
+import de.uka.ipd.sdq.ByCounter.execution.ProtocolFutureCountStructure;
 import de.uka.ipd.sdq.ByCounter.parsing.ArrayCreation;
 import de.uka.ipd.sdq.ByCounter.utils.JavaType;
 import de.uka.ipd.sdq.ByCounter.utils.JavaTypeEnum;
@@ -245,6 +246,12 @@ public final class MethodCountMethodAdapter extends MethodAdapter {
 	 * method.
 	 */
 	private List<EntityToInstrument> instrumentationEntities;
+
+	/**
+	 * This is set in {@link #visitLabel(Label)} to the currently relevant 
+	 * entity.
+	 */
+	private EntityToInstrument currentlyActiveEntity;
 
 	
 	/**
@@ -932,12 +939,39 @@ public final class MethodCountMethodAdapter extends MethodAdapter {
 
 		if(this.useRangeBlocks) {
 			// add active section number to arraylist
-			mv.visitVarInsn(Opcodes.ALOAD, threadSpawnArrayListVar);
+			mv.visitVarInsn(Opcodes.ALOAD, this.threadSpawnArrayListVar);
 			mv.visitVarInsn(Opcodes.LLOAD, this.currentActiveSectionVar);
 			mv.visitMethodInsn(Opcodes.INVOKESTATIC, "java/lang/Long", "valueOf", "(J)Ljava/lang/Long;");
 			mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "java/util/ArrayList", "add", "(Ljava/lang/Object;)Z");
 			mv.visitInsn(Opcodes.POP); // pop the return value of add
 		}
+		
+		insertProtocolFutureCount();
+	}
+
+	/**
+	 * Insert bytecode to invoke 
+	 * {@link CountingResultCollector#protocolFutureCount(ProtocolFutureCountStructure)}.
+	 */
+	protected void insertProtocolFutureCount() {
+		// put CountingResultCollector on the stack
+		mv.visitMethodInsn(Opcodes.INVOKESTATIC, 
+				COUNTINGRESULTCOLLECTOR_CANONICALNAME_DESCRIPTOR, 
+				"getInstance", 
+				"()Lde/uka/ipd/sdq/ByCounter/execution/CountingResultCollector;");
+		// construct the ProtocolFutureCountStructure
+		mv.visitTypeInsn(Opcodes.NEW, ProtocolFutureCountStructure.class.getCanonicalName().replace('.', '/'));
+		mv.visitInsn(Opcodes.DUP);
+		mv.visitLdcInsn(this.qualifyingMethodName); // canonicalMethodName
+		mv.visitVarInsn(Opcodes.ALOAD, this.ownIDLocalVarIndex); // ownID
+		mv.visitLdcInsn(this.currentlyActiveEntity.getId().toString()); // entityID
+		mv.visitVarInsn(Opcodes.ALOAD, this.threadSpawnArrayListVar);
+		mv.visitMethodInsn(Opcodes.INVOKESPECIAL, "de/uka/ipd/sdq/ByCounter/execution/ProtocolFutureCountStructure", "<init>", "(Ljava/lang/String;Ljava/util/UUID;Ljava/lang/String;Ljava/util/ArrayList;)V");
+		// invoke protocol method
+		mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL, 
+				COUNTINGRESULTCOLLECTOR_CANONICALNAME_DESCRIPTOR, 
+				"protocolFutureCount", 
+				CountingResultCollector.SIGNATURE_protocolFutureCount);
 	}
 
 	/**
@@ -1127,10 +1161,12 @@ public final class MethodCountMethodAdapter extends MethodAdapter {
 		List<EntityToInstrument> methodEntities = this.instrumentationState.getEntitiesToInstrumentByMethod().get(this.methodDescriptor.getCanonicalMethodName());
 		if(methodEntities != null) {
 			this.instrumentationEntities.addAll(methodEntities);
+			this.currentlyActiveEntity = methodEntities.get(0);
 		}
-		EntityToInstrument classEntities = this.instrumentationState.getFullyInstrumentedClasses().get(this.methodDescriptor.getCanonicalClassName());
-		if(classEntities != null) {
-			this.instrumentationEntities.add(classEntities);
+		EntityToInstrument classEntity = this.instrumentationState.getFullyInstrumentedClasses().get(this.methodDescriptor.getCanonicalClassName());
+		if(classEntity != null) {
+			this.instrumentationEntities.add(classEntity);
+			this.currentlyActiveEntity = classEntity;
 		}
 		
 	}
@@ -1276,7 +1312,6 @@ public final class MethodCountMethodAdapter extends MethodAdapter {
 				if(this.useRangeBlocks 
 						&& this.instrumentationParameters.getRecordBlockExecutionOrder()) {
 					Integer rangeBlockIndex = this.instrumentationState.getRangeBlockContainsLabels().get(label);
-					EntityToInstrument currentlyActiveEntity;
 					if(rangeBlockIndex != null) {
 						// label is part of a range block
 						insertAddIntegerToArrayList(mv,
@@ -1337,7 +1372,8 @@ public final class MethodCountMethodAdapter extends MethodAdapter {
 		recordParameters(this, instrumentationParameters, 
 				opcode, owner, name, desc);
 		// mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/Thread", "start", "()V");
-		if(owner.equals("java/lang/Thread") &&
+		if(this.currentlyActiveEntity != null 
+				&& owner.equals("java/lang/Thread") &&
 				name.equals("start") && desc.equals("()V")) {
 			// Thread.start() is called.
 			insertCountThreadStart();

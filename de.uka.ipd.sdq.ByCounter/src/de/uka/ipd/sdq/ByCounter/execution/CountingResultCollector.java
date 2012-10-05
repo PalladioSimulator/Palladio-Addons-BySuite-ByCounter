@@ -64,6 +64,12 @@ public final class CountingResultCollector extends Observable {
 	public static final String SIGNATURE_protocolSpawnedThread = "(Ljava/lang/Thread;)V";
 
 	/**
+	 * The bytecode parameter descriptor for 
+	 * {@link #protocolFutureCount(ProtocolFutureCountStructure)}.
+	 */
+	public static final String SIGNATURE_protocolFutureCount = "(Lde/uka/ipd/sdq/ByCounter/execution/ProtocolFutureCountStructure;)V";
+
+	/**
 	 * Public singleton accessor. Use this to get a reference
 	 * to the singleton instance.
 	 * @return The singleton instance of {@link CountingResultCollector}.
@@ -109,19 +115,19 @@ public final class CountingResultCollector extends Observable {
 	private MethodExecutionRecord lastMethodExecutionDetails;
 
 	/** Forced inlining result collection strategy. */
-	private AbstractCollectionStrategy inliningStrategyForced;
+	private ICollectionStrategy inliningStrategyForced;
 
 	/** Inlining result collection strategy for methods requesting inlining. */
-	private AbstractCollectionStrategy inliningStrategyWished;
+	private ICollectionStrategy inliningStrategyWished;
 	
 	/** Spawned threads as reported from instrumented methods. */
 	private List<Thread> spawnedThreads;
 
 	/** Default result collection Strategy */
-	private AbstractCollectionStrategy strategyDefault;
+	private ICollectionStrategy strategyDefault;
 	
 	/** List of all used result collection strategies */
-	private List<AbstractCollectionStrategy> collectionStrategies;
+	private List<ICollectionStrategy> collectionStrategies;
 
 	/**
 	 * When {@link InstrumentationParameters#getProvideOnlineSectionActiveUpdates()}
@@ -140,7 +146,7 @@ public final class CountingResultCollector extends Observable {
 		this.resultWriters = new ArrayList<ICountingResultWriter>();
 		this.instrumentationContext = null;
 		
-		this.collectionStrategies = new LinkedList<AbstractCollectionStrategy>();
+		this.collectionStrategies = new LinkedList<ICollectionStrategy>();
 		this.strategyDefault = new CollectionStrategyDefault(this);
 		this.inliningStrategyForced = new CollectionStrategyForceInlining(this);
 		this.inliningStrategyWished = new CollectionStrategyWishedInlining(this);
@@ -232,7 +238,7 @@ public final class CountingResultCollector extends Observable {
 	 * @param result The result reported by an instrumented method.
 	 * @return True when the result was accepted, false when it is ignored.
 	 */
-	public synchronized boolean protocolCount(ProtocolCountStructure result) {
+	public synchronized boolean protocolCount(final ProtocolCountStructure result) {
 		result.reportingStart = System.nanoTime();//TODO make this configurable and clear, move to an interface/class that is accessed
 		boolean handledResult = false;
 		if(this.mode==CountingResultCollectorMode.DiscardAllIncomingCountingResults){
@@ -290,6 +296,15 @@ public final class CountingResultCollector extends Observable {
 			entity = instrumentationContext.getEntitiesToInstrument().get(UUID.fromString(activeEntityUUID));
 		}
 		this.activeEntity.put(Thread.currentThread().getId(), entity);
+	}
+	
+	/**
+	 * Preallocate a CountingResult in the result collector so that the 
+	 * structure of ThreadedCountingResults can be correctly constructed.
+	 * @param futureCount {@link ProtocolFutureCountStructure}.
+	 */
+	public void protocolFutureCount(final ProtocolFutureCountStructure futureCount) {
+		this.strategyDefault.protocolFutureCount(futureCount);
 	}
 	
 	/**

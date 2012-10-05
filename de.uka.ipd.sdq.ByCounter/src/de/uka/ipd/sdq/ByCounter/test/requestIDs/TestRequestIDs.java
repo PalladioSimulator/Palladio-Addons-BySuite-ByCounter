@@ -92,17 +92,19 @@ public class TestRequestIDs extends AbstractByCounterTest {
 		
 		long start = System.nanoTime();
 		log.fine("(NOT INITIALISED)" + this.counter.getInstrumentationParams().toString());
-		List<EntityToInstrument> methDescs = new ArrayList<EntityToInstrument>();
+		List<EntityToInstrument> entitiesToInstrument = new ArrayList<EntityToInstrument>();
 		// the order of adding the methods is used further down for checking the results
-		methDescs.add(new InstrumentedMethod(methDescMethodA));
-		methDescs.add(new InstrumentedMethod(methDescMethodB));
-		methDescs.add(new InstrumentedMethod(methDescDoSth));
-		methDescs.add(new InstrumentedMethod(methDescDoSthElse));
-		methDescs.add(new InstrumentedMethod(methDescDoSthDifferent));
-		methDescs.add(new InstrumentedMethod(methDescDoSthStatic));
-		methDescs.add(new InstrumentedMethod(methDesc7));
-		methDescs.add(new InstrumentedMethod(methDesc8));
-		this.counter.instrument(methDescs);
+		entitiesToInstrument.add(new InstrumentedMethod(methDescMethodA));
+		entitiesToInstrument.add(new InstrumentedMethod(methDescMethodB));
+		entitiesToInstrument.add(new InstrumentedMethod(methDescDoSth));
+		entitiesToInstrument.add(new InstrumentedMethod(methDescDoSthElse));
+		entitiesToInstrument.add(new InstrumentedMethod(methDescDoSthDifferent));
+		entitiesToInstrument.add(new InstrumentedMethod(methDescDoSthStatic));
+		entitiesToInstrument.add(new InstrumentedMethod(methDesc7));
+		entitiesToInstrument.add(new InstrumentedMethod(methDesc8));
+
+        counter.addEntityToInstrument(entitiesToInstrument);
+        counter.instrument();
 		this.counter.execute(this.methodToExecute, 
 				this.executionParameters);
 		long stop = System.nanoTime();

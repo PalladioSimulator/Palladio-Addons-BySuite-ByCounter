@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.SortedSet;
+import java.util.UUID;
 
 import de.uka.ipd.sdq.ByCounter.results.CountingResult;
 import de.uka.ipd.sdq.ByCounter.results.ThreadedCountingResult;
@@ -14,6 +16,62 @@ import de.uka.ipd.sdq.ByCounter.results.ThreadedCountingResult;
  * @author Martin Krogmann
  */
 public class CountingResultThreadIndexing {
+	/**
+	 * Class used to correctly hash incomplete results.
+	 * @author Martin Krogmann
+	 *
+	 */
+	private static class ResultHash {
+		private UUID ownID;
+		private UUID observedID;
+
+		public ResultHash(CountingResult r) {
+			this.ownID = r.getMethodExecutionID();
+			this.observedID = r.getObservedElement().getId();
+		}
+
+		/* (non-Javadoc)
+		 * @see java.lang.Object#hashCode()
+		 */
+		@Override
+		public int hashCode() {
+			final int prime = 31;
+			int result = 1;
+			result = prime
+					* result
+					+ ((this.observedID == null) ? 0 : this.observedID
+							.hashCode());
+			result = prime * result
+					+ ((this.ownID == null) ? 0 : this.ownID.hashCode());
+			return result;
+		}
+
+		/* (non-Javadoc)
+		 * @see java.lang.Object#equals(java.lang.Object)
+		 */
+		@Override
+		public boolean equals(Object obj) {
+			if (this == obj)
+				return true;
+			if (obj == null)
+				return false;
+			if (getClass() != obj.getClass())
+				return false;
+			ResultHash other = (ResultHash) obj;
+			if (this.observedID == null) {
+				if (other.observedID != null)
+					return false;
+			} else if (!this.observedID.equals(other.observedID))
+				return false;
+			if (this.ownID == null) {
+				if (other.ownID != null)
+					return false;
+			} else if (!this.ownID.equals(other.ownID))
+				return false;
+			return true;
+		}
+		
+	}
 	
 	/**
 	 * For each {@link ThreadedCountingResult} a list of thread ids for spawned threads.
@@ -33,12 +91,18 @@ public class CountingResultThreadIndexing {
 	Map<Long, List<CountingResult>> rootThreadsByThreadId;
 	
 	/**
+	 * All incomplete results reported when spawning threads are gathered here.
+	 */
+	Map<ResultHash, ThreadedCountingResult> incompleteResults;
+	
+	/**
 	 * Construct the empty infrastructure.
 	 */
 	public CountingResultThreadIndexing() {
 		this.resultsSpawnedThreads = new HashMap<ThreadedCountingResult, ArrayList<Long>>();
 		this.spawningThreadForThreadId = new HashMap<Long, ThreadedCountingResult>();
 		this.rootThreadsByThreadId = new HashMap<Long, List<CountingResult>>();
+		this.incompleteResults = new HashMap<ResultHash, ThreadedCountingResult>();
 	}
 
 	/**
@@ -48,46 +112,46 @@ public class CountingResultThreadIndexing {
 	 */
 	public CountingResult apply(final CountingResult res, final ArrayList<Long> spawnedThreadsIds) {
 		CountingResult result = res;
+		ThreadedCountingResult tcr = getThreadedCountingResult(result);
+		boolean existingResultStubFound = false;
 		
+		// use existing stubs if possible to ensure object equality
+		ThreadedCountingResult resultStub = this.incompleteResults.get(new ResultHash(result));
+		if(resultStub != null) {
+			existingResultStubFound = true;
+			tcr = resultStub;
+			result = resultStub;
+			if(res.getFinal() == true) {
+				// copy from complete result
+				SortedSet<ThreadedCountingResult> savedSpawns = resultStub.getSpawnedThreadedCountingResults();
+				ThreadedCountingResult savedSource = resultStub.getThreadedCountingResultSource();
+				resultStub.set(res);	// use res instead of result because result == resultStaub!
+				resultStub.setSpawnedThreadedCountingResults(savedSpawns);
+				resultStub.setThreadedCountingResultSource(savedSource);
+			}
+		} else if(res.getFinal() == false) {
+			this.incompleteResults.put(new ResultHash(tcr), tcr);
+		}
+
+		// handle child threads
 		if(spawnedThreadsIds != null && !spawnedThreadsIds.isEmpty()) {
-			// when spawning threads, the CountingResult should already be of 
-			// type ThreadedCountingResult.
-			final ThreadedCountingResult tcr = getThreadedCountingResult(result);
-			result = tcr;
-			
 			final ArrayList<Long> threadSpawns = interpretSpawnedList(spawnedThreadsIds,
 					result);
-			// look for threads that could have been spawned by this result
-			for(long threadId : threadSpawns) {
-				List<CountingResult> spawnedThreads = rootThreadsByThreadId.get(threadId);
-				if(spawnedThreads != null) {
-					for(CountingResult stResult : spawnedThreads) {
-						ThreadedCountingResult threadedCountingResult = getThreadedCountingResult(stResult);
-						tcr.getSpawnedThreadedCountingResults().add(threadedCountingResult);
-						threadedCountingResult.setThreadedCountingResultSource(tcr);
-						// since stResult is no longer a root node, remove it from the collection
-						stResult.getResultCollection().getCountingResults().remove(stResult);
-						stResult.getResultCollection().getRequestResults().remove(stResult);
-					}
-					spawnedThreads.clear();
-				}
-			}
-			this.resultsSpawnedThreads.put(tcr, threadSpawns);
-
 			// for each spawned thread id, save this result as the spawning thread
-			for(long id : threadSpawns) {
-				this.spawningThreadForThreadId.put(id, tcr);
+			for(final long id : threadSpawns) {
+				if(!this.spawningThreadForThreadId.containsKey(id)) {
+					this.spawningThreadForThreadId.put(id, tcr);
+				}
 			}
 		}
 
-
-		ThreadedCountingResult spawningThread = spawningThreadForThreadId.get(res.getThreadId());
+		// handle parent threads
+		ThreadedCountingResult spawningThread = spawningThreadForThreadId.get(result.getThreadId());
 		if(spawningThread != null) {
-			ThreadedCountingResult tcr = getThreadedCountingResult(res);
 			result = tcr;
 			tcr.setThreadedCountingResultSource(spawningThread);
 			spawningThread.getSpawnedThreadedCountingResults().add(tcr);
-		} else {
+		} else if(!existingResultStubFound) {
 			// add result to root nodes; maybe a parent is found later
 			long threadId = result.getThreadId();
 			List<CountingResult> resultList = this.rootThreadsByThreadId.get(threadId);
@@ -108,8 +172,9 @@ public class CountingResultThreadIndexing {
 	 * @param result The relevant counting result.
 	 * @return List that only contains thread ids.
 	 */
-	private ArrayList<Long> interpretSpawnedList(final ArrayList<Long> spawnedThreadsIds,
-			CountingResult result) {
+	private ArrayList<Long> interpretSpawnedList(
+			final ArrayList<Long> spawnedThreadsIds,
+			final CountingResult result) {
 		final int indexOfRangeBlock = result.getIndexOfRangeBlock();
 		final ArrayList<Long> threadSpawns = new ArrayList<Long>();
 		if(indexOfRangeBlock >= 0) {
@@ -155,5 +220,6 @@ public class CountingResultThreadIndexing {
 		this.resultsSpawnedThreads.clear();
 		this.spawningThreadForThreadId.clear();
 		this.rootThreadsByThreadId.clear();
+		this.incompleteResults.clear();
 	}
 }

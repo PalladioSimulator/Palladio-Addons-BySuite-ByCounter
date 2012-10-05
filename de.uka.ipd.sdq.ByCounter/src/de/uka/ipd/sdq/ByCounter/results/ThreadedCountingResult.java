@@ -55,11 +55,23 @@ public class ThreadedCountingResult extends CountingResult {
 	 * @param src {@link CountingResult} to copy attributes from.
 	 */
 	public ThreadedCountingResult(final CountingResult src) {
-		super(src);
-		this.spawnedThreadedCountingResults = new TreeSet<ThreadedCountingResult>();
-		this.threadedCountingResultSource = null;
+		this.set(src);
 	}
 	
+	/** {@inheritDoc} */
+	@Override
+	public void set(CountingResultBase src) {
+		super.set(src);
+		if(src instanceof ThreadedCountingResult) {
+			ThreadedCountingResult tcrSrc = (ThreadedCountingResult) src;
+			this.spawnedThreadedCountingResults = new TreeSet<ThreadedCountingResult>(tcrSrc.getSpawnedThreadedCountingResults());
+			this.threadedCountingResultSource = tcrSrc.threadedCountingResultSource;
+		} else {
+			this.spawnedThreadedCountingResults = new TreeSet<ThreadedCountingResult>();
+			this.threadedCountingResultSource = null;
+		}
+	}
+
 	/* (non-Javadoc)
 	 * @see java.lang.Object#clone()
 	 */
@@ -157,7 +169,7 @@ public class ThreadedCountingResult extends CountingResult {
 		StringBuffer sb = new StringBuffer();
 		sb.append("\n"+
 				  "      "+this.getClass().getSimpleName()+" (hash code: "+this.hashCode()+")\n");
-		sb.append("      > Method name     : "+this.getQualifiedMethodName()+ " (Own UUID: " + this.getMethodID() + ", threadId: " + this.threadId + ")\n");
+		sb.append("      > Method name     : "+this.getQualifiedMethodName()+ " (Own UUID: " + this.getMethodExecutionID() + ", threadId: " + this.threadId + ")\n");
 		sb.append("      > Method duration : "+(this.getReportingTime()-this.getMethodInvocationBeginning())+
 				"(start: "+this.getMethodInvocationBeginning()+", end: "+this.getReportingTime()+")\n");
 		sb.append("      > Opcode counts   : "+Arrays.toString(this.getOpcodeCounts())+"\n");

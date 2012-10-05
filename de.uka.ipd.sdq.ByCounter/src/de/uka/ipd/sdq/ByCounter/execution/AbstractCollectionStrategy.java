@@ -34,4 +34,11 @@ public abstract class AbstractCollectionStrategy implements ICollectionStrategy 
 	public void setResultCollection(ResultCollection resultCollection) {
 		this.currentResultCollection = resultCollection;
 	}
+
+	/**
+	 * Default implementation does nothing.
+	 */
+	@Override
+	public void protocolFutureCount(ProtocolFutureCountStructure futureCount) {
+	}
 }

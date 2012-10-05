@@ -46,7 +46,7 @@ public class CountingResultUpdateIndexing {
 	 * @param result The calculated counting result for the update.
 	 */
 	public void add(CountingResult result) {
-		final UUID methodID = result.getMethodID();
+		final UUID methodID = result.getMethodExecutionID();
 		if(!methodID.equals(lastUpdatedMethod)) {
 			// we entered a new method
 			// provide an update for the previous method

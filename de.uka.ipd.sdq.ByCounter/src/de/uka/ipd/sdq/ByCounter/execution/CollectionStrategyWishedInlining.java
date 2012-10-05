@@ -43,9 +43,8 @@ public class CollectionStrategyWishedInlining extends
 		super(parent);
 		this.inlined_countingResult = new CountingResult();
 		this.inlined_countingResult.setRequestID(UUID.randomUUID());
-		this.inlined_countingResult.setMethodID(UUID.randomUUID());
+		this.inlined_countingResult.setMethodExecutionID(UUID.randomUUID());
 		this.inlined_countingResult.setCallerID(UUID.randomUUID());
-		this.inlined_countingResult.setID("inlined");
 		this.inlined_countingResult.setQualifiedMethodName("______inlined______");
 		this.inlined_countingResult.setMethodInvocationBeginning(System.nanoTime/*currentTimeMillis*/());
 		this.inlined_countingResult.setReportingTime(0L); //reporting time TODO use a Date-like class for this...

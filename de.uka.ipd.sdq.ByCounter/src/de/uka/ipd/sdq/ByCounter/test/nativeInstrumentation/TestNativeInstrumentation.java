@@ -105,7 +105,8 @@ public class TestNativeInstrumentation {
 		long start = System.nanoTime();
 		log.fine("(NOT INITIALISED)" + this.counter.getInstrumentationParams().toString());
 		this.counter.getInstrumentationParams().setCounterPrecision(InstrumentationCounterPrecision.Integer);
-		this.counter.instrument(methDesc);
+		this.counter.addEntityToInstrument(methDesc);
+		counter.instrument();
 		if(EXECUTE) {
 			this.counter.execute(this.methodToExecute, 
 					this.executionParameters);

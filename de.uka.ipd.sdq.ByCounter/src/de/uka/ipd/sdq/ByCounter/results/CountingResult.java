@@ -32,6 +32,12 @@ public class CountingResult extends CountingResultBase implements Cloneable {
 	private static final long serialVersionUID = 1L;
 	
 	/**
+	 * When true, all fields in the result have complete values.
+	 * When false, some values have not yet been set.
+	 */
+	private boolean isFinal;
+	
+	/**
 	 * The parent {@link ResultCollection} that this {@link CountingResult} 
 	 * is a part of.
 	 */
@@ -55,6 +61,7 @@ public class CountingResult extends CountingResultBase implements Cloneable {
 		this.observedElement = null;
 		this.resultCollection = null;
 		this.requestResult = null;
+		this.isFinal = false;
 	}
 	
 	/**
@@ -62,10 +69,7 @@ public class CountingResult extends CountingResultBase implements Cloneable {
 	 * @param src Source to copy attributes from.
 	 */
 	public CountingResult(final CountingResult src) {
-		super(src);
-		this.observedElement = src.observedElement;
-		this.resultCollection = src.resultCollection;
-		this.requestResult = src.requestResult;
+		this.set(src);
 	}
 	
 	/**
@@ -98,7 +102,26 @@ public class CountingResult extends CountingResultBase implements Cloneable {
 		copy.setResultCollection(this.resultCollection);
 		copy.setRequestResult(this.requestResult);
 		copy.setObservedElement(this.observedElement);
+		copy.setFinal(this.isFinal);
 		return copy;
+	}
+	
+	/** {@inheritDoc} */
+	@Override
+	public void set(CountingResultBase src) {
+		super.set(src);
+		if(src instanceof CountingResult) {
+			CountingResult crSrc = (CountingResult) src;
+			this.observedElement = crSrc.observedElement;
+			this.resultCollection = crSrc.resultCollection;
+			this.requestResult = crSrc.requestResult;
+			this.isFinal = crSrc.isFinal;
+		} else {
+			this.observedElement = null;
+			this.resultCollection = null;
+			this.requestResult = null;
+			this.isFinal = false;
+		}
 	}
 
 	/**
@@ -147,6 +170,22 @@ public class CountingResult extends CountingResultBase implements Cloneable {
 	public void setObservedElement(EntityToInstrument observedElement) {
 		this.observedElement = observedElement;
 	}
+	
+	/**
+	 * @return True, when all fields in the result have complete values.
+	 * False, when some values have not yet been set.
+	 */
+	public boolean getFinal() {
+		return this.isFinal;
+	}
+	
+	/**
+	 * @param isFinal When true, all fields in the result have complete values.
+	 * When false, some values have not yet been set.
+	 */
+	public void setFinal(boolean isFinal) {
+		this.isFinal = isFinal;
+	}
 
 	/* (non-Javadoc)
 	 * @see java.lang.Object#hashCode()
@@ -154,7 +193,8 @@ public class CountingResult extends CountingResultBase implements Cloneable {
 	@Override
 	public int hashCode() {
 		final int prime = 31;
-		int result = 1;
+		int result = super.hashCode();
+		result = prime * result + (this.isFinal ? 1231 : 1237);
 		result = prime
 				* result
 				+ ((this.observedElement == null) ? 0 : this.observedElement
@@ -182,6 +222,8 @@ public class CountingResult extends CountingResultBase implements Cloneable {
 		if (getClass() != obj.getClass())
 			return false;
 		CountingResult other = (CountingResult) obj;
+		if (this.isFinal != other.isFinal)
+			return false;
 		if (this.observedElement == null) {
 			if (other.observedElement != null)
 				return false;

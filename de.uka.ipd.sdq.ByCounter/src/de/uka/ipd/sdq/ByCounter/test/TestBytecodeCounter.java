@@ -245,7 +245,8 @@ public class TestBytecodeCounter extends AbstractByCounterTest {
 		counter.getInstrumentationParams().setInstrumentRecursively(true);
 		
 		//3. now tell ByCounter to instrument the specified method
-		counter.instrument(myMethod);
+		counter.addEntityToInstrument(myMethod);
+		counter.instrument();
 		// enable recursive result counting
 		counter.getExecutionSettings().setAddUpResultsRecursively(true);
 		counter.execute(myMethod, new Object[0]);
@@ -315,8 +316,9 @@ public class TestBytecodeCounter extends AbstractByCounterTest {
 		
 		// do the de.uka.ipd.sdq.ByCount
 		// let the counter do its work on a method
-		counter.instrument(
+		counter.addEntityToInstrument(
 				new MethodDescriptor(((Class<?>) ASMBytecodeOccurences.class).getCanonicalName(), METHOD_SIGNATURE));
+		counter.instrument();
 		
 		byte[] instrumentedBytes = counter.getInstrumentedBytes();
 		Assert.assertNotNull(instrumentedBytes);
@@ -325,8 +327,9 @@ public class TestBytecodeCounter extends AbstractByCounterTest {
 	
 		boolean exceptionThrown = false;
 		try {
-		counter.instrument(
+		counter.addEntityToInstrument(
 				new MethodDescriptor(((Class<?>) ASMBytecodeOccurences.class).getCanonicalName(), METHOD_SIGNATURE));
+		counter.instrument();
 		} catch(AlreadyInstrumentedException e) {
 			exceptionThrown = true;
 		}
@@ -396,7 +399,8 @@ public class TestBytecodeCounter extends AbstractByCounterTest {
 		counter.getInstrumentationParams().setInstrumentRecursively(true);
 		
 		//3. now tell ByCounter to instrument the specified method
-		counter.instrument(myMethod);
+		counter.addEntityToInstrument(myMethod);
+		counter.instrument();
 		counter.getExecutionSettings().setAddUpResultsRecursively(true);
 		counter.execute(myMethod, new Object[0]);
 
@@ -428,7 +432,8 @@ public class TestBytecodeCounter extends AbstractByCounterTest {
 				"public static void main(java.lang.String[] args)");
 		
 		//3. now tell ByCounter to instrument the specified method
-		counter.instrument(myMethod);
+		counter.addEntityToInstrument(myMethod);
+		counter.instrument();
 		counter.getExecutionSettings().setAddUpResultsRecursively(true);
 		counter.execute(myMethod, new Object[]{new String[0]});
 
@@ -457,7 +462,8 @@ public class TestBytecodeCounter extends AbstractByCounterTest {
 		
 		
 		//3. now tell ByCounter to instrument the specified method
-		counter.instrument(myMethod);
+		counter.addEntityToInstrument(myMethod);
+		counter.instrument();
 		
 
 		byte[] bytes = counter.getInstrumentedBytes();

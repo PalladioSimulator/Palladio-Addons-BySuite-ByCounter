@@ -116,7 +116,8 @@ public class TestInternalClassDefinition extends AbstractByCounterTest {
 		counter.getInstrumentationParams().setInstrumentRecursively(true);
 		
 		//3. now tell ByCounter to instrument the specified method
-		counter.instrument(myMethod);
+		counter.addEntityToInstrument(myMethod);
+		counter.instrument();
 
 		counter.getExecutionSettings().setAddUpResultsRecursively(true);
 		counter.execute(myMethod, new Object[0]);

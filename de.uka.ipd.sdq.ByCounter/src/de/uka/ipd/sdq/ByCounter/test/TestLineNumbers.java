@@ -222,7 +222,8 @@ public class TestLineNumbers extends AbstractByCounterTest {
         counter.setInstrumentationParams(this.instrumentationParameters);
         counter.getInstrumentationParams().setUseBasicBlocks(false);
         MethodDescriptor methodNormalise = new MethodDescriptor(DEFAULT_SUBJECT_CANONICAL, SIGNATURE_BASIC_BLOCK);
-        counter.instrument(methodNormalise);
+        counter.addEntityToInstrument(methodNormalise);
+		counter.instrument();
         Object[] executionParameters = new Object[] { 5 };
         counter.execute(methodNormalise, executionParameters);
 
@@ -234,7 +235,8 @@ public class TestLineNumbers extends AbstractByCounterTest {
         counter.getInstrumentationParams().setUseBasicBlocks(true);
         counter.getInstrumentationParams().setRecordBlockExecutionOrder(false);
         counter.getInstrumentationParams().setWriteClassesToDisk(true);
-        counter.instrument(methodNormalise);
+        counter.addEntityToInstrument(methodNormalise);
+		counter.instrument();
         counter.execute(methodNormalise, executionParameters);
 
         CountingResult newResult = Utils.getAssertedResult();
@@ -295,7 +297,8 @@ public class TestLineNumbers extends AbstractByCounterTest {
         for(LineNumberRange r : e.getRanges()) {
         	entitiesToInstrument.add(new InstrumentedCodeArea(methodRanged, r));
         }
-        counter.instrument(entitiesToInstrument);
+        counter.addEntityToInstrument(entitiesToInstrument);
+        counter.instrument();
         // execute with (10)
         Object[] executionParameters = new Object[] { 10 };
         counter.execute(methodRanged, executionParameters);
@@ -392,7 +395,8 @@ public class TestLineNumbers extends AbstractByCounterTest {
         for(LineNumberRange r : e.getRanges()) {
         	entitiesToInstrument.add(new InstrumentedCodeArea(methodForeach, r));
         }
-        counter.instrument(entitiesToInstrument);
+        counter.addEntityToInstrument(entitiesToInstrument);
+        counter.instrument();
         // execute
         Object[] executionParameters = new Object[] {};
         counter.execute(methodForeach, executionParameters);
@@ -441,7 +445,8 @@ public class TestLineNumbers extends AbstractByCounterTest {
     public void testLabelAndLineNumbers() {
         BytecodeCounter counter = new BytecodeCounter();
         MethodDescriptor d = new MethodDescriptor(DEFAULT_SUBJECT_CANONICAL, SIGNATURE_LINE_NUMBERS);
-        counter.instrument(d);
+        counter.addEntityToInstrument(d);
+		counter.instrument();
         counter.execute(d, new Object[0]);
     }
 
@@ -466,7 +471,8 @@ public class TestLineNumbers extends AbstractByCounterTest {
         for(LineNumberRange r : e.getRanges()) {
         	entitiesToInstrument.add(new InstrumentedCodeArea(methodRanged, r));
         }
-        counter.instrument(entitiesToInstrument);
+        counter.addEntityToInstrument(entitiesToInstrument);
+        counter.instrument();
         // execute with ()
         Object[] executionParameters = new Object[] {  };
         counter.execute(methodRanged, executionParameters);
@@ -566,7 +572,8 @@ public class TestLineNumbers extends AbstractByCounterTest {
         for(LineNumberRange r : codeAreasToInstrument) {
         	entitiesToInstrument.add(new InstrumentedCodeArea(methodRanged, r));
         }
-        counter.instrument(entitiesToInstrument);
+        counter.addEntityToInstrument(entitiesToInstrument);
+        counter.instrument();
         counter.execute(methodRanged, executionParameters);
 
         return CountingResultCollector.getInstance().retrieveAllCountingResults().getCountingResults().toArray(new CountingResult[0]);
@@ -593,7 +600,8 @@ public class TestLineNumbers extends AbstractByCounterTest {
         for(LineNumberRange r : lnrs.toArray(new LineNumberRange[0])) {
         	entitiesToInstrument.add(new InstrumentedCodeArea(methodRanged, r));
         }
-		counter.instrument(entitiesToInstrument);
+        counter.addEntityToInstrument(entitiesToInstrument);
+        counter.instrument();
 		// execute
 		Object[] executionParameters = new Object[1];
 		executionParameters[0] = new Integer(inputValue);
