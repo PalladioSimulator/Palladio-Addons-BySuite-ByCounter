@@ -74,7 +74,7 @@ public class ByCounterWrapper {
 
 				// convert result
 				edu.kit.ipd.sdq.bycounter.output.CountingResult cr;
-				cr = mapCountingResult(observation, entitiesToInstrumentIdMap);
+				cr = mapCountingResult(observation);
 				cr.setResultCollection(currentRun);
 
 				if(observation instanceof ThreadedCountingResult) {
@@ -108,7 +108,7 @@ public class ByCounterWrapper {
 					RequestResult requestResult = observation.getRequestResult();
 					// convert request result
 					edu.kit.ipd.sdq.bycounter.output.RequestResult req = 
-							mapRequestResult(requestResult, entitiesToInstrumentIdMap);
+							mapRequestResult(requestResult);
 					req.setResultCollection(currentRun);
 					currentRun.getRequestResults().add(req);
 				}
@@ -166,8 +166,7 @@ public class ByCounterWrapper {
 	/**Gets the current configuration for the instrumentation.
 	 * @return The configuration.
 	 */
-	public InstrumentationProfile getInstrumentationConfiguration() {
-		// TODO REname to Instrum.Profile 
+	public InstrumentationProfile getInstrumentationProfile() {
 		return instrumentationProfile;
 	}
 	
@@ -176,7 +175,7 @@ public class ByCounterWrapper {
 	 * The configuration is applied to the wrapped {@link BytecodeCounter} instance.
 	 * @param input The configuration.
 	 */
-	public void setInstrumentationConfiguration(InstrumentationProfile input) {
+	public void setInstrumentationProfile(InstrumentationProfile input) {
 		if (input == null) {
 			throw new IllegalArgumentException("input must not be null.");
 		}
@@ -220,7 +219,6 @@ public class ByCounterWrapper {
 		ExecutionSettings executionSettings = new ExecutionSettings();
 		executionSettings.setAddUpResultsRecursively(executionProfile.isAddUpResultsRecursively());
 		executionSettings.setWaitForThreadsToFinnish(executionProfile.isWaitForThreadsToFinnish());
-//		executionProfile.isAggregateInternalCallsTransparently(); // TODO: implement aggregateInterncalCallsTransparently
 		handleInternalClassesDefinition(executionSettings, executionProfile.getDefinedLogicalSets());
 		
 		// update execution parameters
@@ -327,14 +325,22 @@ public class ByCounterWrapper {
 
 	/**
 	 * Uses ByCounter as setup using 
-	 * {@link #setInstrumentationConfiguration(InstrumentationProfile)} to execute 
+	 * {@link #setInstrumentationProfile(InstrumentationProfile)} to execute 
 	 * the specified method. The observed results can be accessed via {@link #getResultCollection()}.
 	 * @param m Method to execute.
 	 * @param target Object on which the method is executed.
 	 * @param params Arguments of the method to execute.
 	 */
 	public Object execute(Method m, Object target, Object[] params) {
-		// TODO Check existence InstrumentationProfile -> Warning; ExecutionProfile -> Exception
+		// check state
+		if(this.instrumentationProfile == null) {
+			log.warning("Execute: instrumentation profile is null. Is this usage of ByCounterWrapper.execute intended?");
+		}
+		// an execution profile should be specified
+		if(this.executionProfile == null) {
+			throw new IllegalStateException("ExecutionProfile must not be null when calling execute.");
+		}
+		// specify the method and execute
 		MethodDescriptor methodToExecute = new MethodDescriptor(
 				m.getSurroundingClass().getQualifiedName(),
 				ByCounterWrapper.constructSignature(m));
@@ -347,7 +353,10 @@ public class ByCounterWrapper {
 	 * @return Instance of the class.
 	 */
 	public Object instantiate(Method m) {
-		// TODO Check existence InstrumentationProfile -> Exception
+		// an instrumentation profile should be specified
+		if(this.instrumentationProfile == null) {
+			throw new IllegalStateException("InstrumentationProfile must not be null when calling execute.");
+		}
 		MethodDescriptor methodToExecute = new MethodDescriptor(
 				m.getSurroundingClass().getQualifiedName(),
 				ByCounterWrapper.constructSignature(m));
@@ -366,7 +375,7 @@ public class ByCounterWrapper {
 		final SortedSet<RequestResult> requestResults;
 		requestResults = resultCollection.getRequestResults();
 		for(RequestResult rr : requestResults) {
-			edu.kit.ipd.sdq.bycounter.output.RequestResult req = mapRequestResult(rr, entitiesToInstrumentIdMap);
+			edu.kit.ipd.sdq.bycounter.output.RequestResult req = mapRequestResult(rr);
 			req.setResultCollection(copy);
 			copy.getRequestResults().add(req);
 		}
@@ -377,7 +386,7 @@ public class ByCounterWrapper {
 
 		edu.kit.ipd.sdq.bycounter.output.CountingResult cr;
 		for(CountingResult result : results)  { 
-			cr = mapCountingResult(result, entitiesToInstrumentIdMap);
+			cr = mapCountingResult(result);
 			cr.setResultCollection(copy);
 			copy.getCountingResults().add(cr);
 		}
@@ -395,12 +404,12 @@ public class ByCounterWrapper {
 	 * from rr.
 	 */
 	private edu.kit.ipd.sdq.bycounter.output.RequestResult mapRequestResult(
-			RequestResult rr, Map<java.util.UUID, EntityToInstrument> entitiesToInstrumentMap2) {
+			RequestResult rr) {
 		edu.kit.ipd.sdq.bycounter.output.RequestResult req = 
 				outputFactory.createRequestResult();
 		req.setId(mapUUID(rr.getRequestId()).toString());
 		for(CountingResult cr : rr.getCountingResults()) {
-			req.getCountingResults().add(mapCountingResult(cr, entitiesToInstrumentMap2));
+			req.getCountingResults().add(mapCountingResult(cr));
 		}
 		return req;
 	}
@@ -427,7 +436,7 @@ public class ByCounterWrapper {
 	 * @return EMF {@link edu.kit.ipd.sdq.bycounter.output.CountingResult}.
 	 */
 	private edu.kit.ipd.sdq.bycounter.output.CountingResult mapCountingResult(
-			CountingResult cr, Map<java.util.UUID, EntityToInstrument> entitiesToInstrumentMap2) {
+			CountingResult cr) {
 		//TODO check static and entities map
 		edu.kit.ipd.sdq.bycounter.output.CountingResult result;
 		if(cr instanceof ThreadedCountingResult) {
@@ -439,7 +448,7 @@ public class ByCounterWrapper {
 			for(ThreadedCountingResult tcrr : tcr.getSpawnedThreadedCountingResults()) {
 				// map spawned result
 				edu.kit.ipd.sdq.bycounter.output.ThreadedCountingResult mappedTcrr = 
-						(edu.kit.ipd.sdq.bycounter.output.ThreadedCountingResult)mapCountingResult(tcrr, entitiesToInstrumentMap2);
+						(edu.kit.ipd.sdq.bycounter.output.ThreadedCountingResult)mapCountingResult(tcrr);
 				tResult.getSpawnedThreadedCountingResults().add(mappedTcrr);
 				mappedTcrr.setThreadedCountingResult(tResult);
 			}
@@ -456,10 +465,10 @@ public class ByCounterWrapper {
 		result.getArrayCreationCounts().addAll(mapArrayCreationCounts(cr.getArrayCreationCounts()));
 		result.setCallerId(mapUUID(cr.getCallerID()));
 		result.getMethodCallCounts().addAll(mapMethodCallCounts(cr.getMethodCallCounts()));
-		result.setMethodId(mapUUID(cr.getMethodID()));
+		result.setMethodId(mapUUID(cr.getMethodExecutionID()));
 		result.setMethodInvocationStartTime(cr.getMethodInvocationBeginning());
 		result.getOpcodeCounts().addAll(mapOpcodeCounts(cr.getOpcodeCounts()));
-		result.setObservedElement(entitiesToInstrumentMap2.get(cr.getObservedElement().getId()));
+		result.setObservedElement(entitiesToInstrumentIdMap.get(cr.getObservedElement().getId()));
 		result.setQualifiedMethodName(cr.getQualifiedMethodName());
 		result.setReportingTime(cr.getReportingTime());
 		
