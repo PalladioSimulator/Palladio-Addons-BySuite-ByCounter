@@ -437,7 +437,6 @@ public class ByCounterWrapper {
 	 */
 	private edu.kit.ipd.sdq.bycounter.output.CountingResult mapCountingResult(
 			CountingResult cr) {
-		//TODO check static and entities map
 		edu.kit.ipd.sdq.bycounter.output.CountingResult result;
 		if(cr instanceof ThreadedCountingResult) {
 			final ThreadedCountingResult tcr = (ThreadedCountingResult)cr;
@@ -445,6 +444,7 @@ public class ByCounterWrapper {
 					outputFactory.createThreadedCountingResult();
 			// map properties specific to threaded counting result
 			tResult.setThreadId(tcr.getThreadId());
+			tResult.setFinal(tcr.getFinal());
 			for(ThreadedCountingResult tcrr : tcr.getSpawnedThreadedCountingResults()) {
 				// map spawned result
 				edu.kit.ipd.sdq.bycounter.output.ThreadedCountingResult mappedTcrr = 
