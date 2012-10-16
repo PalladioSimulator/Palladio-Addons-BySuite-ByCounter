@@ -1,6 +1,8 @@
 package de.uka.ipd.sdq.ByCounter.results;
 
 import java.io.Serializable;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import de.uka.ipd.sdq.ByCounter.execution.BytecodeCounter;
 import de.uka.ipd.sdq.ByCounter.execution.CountingResultBase;
@@ -55,6 +57,19 @@ public class CountingResult extends CountingResultBase implements Cloneable {
 	private EntityToInstrument observedElement;
 
 	/**
+	 * A {@link SortedSet} of {@link CountingResult} from threads that
+	 * where spawned from the thread of this result.
+	 */
+	protected SortedSet<CountingResult> spawnedThreadedCountingResults;
+
+	/**
+	 * The {@link CountingResult} that contains this 
+	 * {@link CountingResult} as part of 
+	 * {@link CountingResult#getSpawnedThreadedCountingResults()}.
+	 */
+	protected CountingResult threadedCountingResultSource;
+
+	/**
 	 * Set fields to null.
 	 */
 	public CountingResult() {
@@ -62,6 +77,9 @@ public class CountingResult extends CountingResultBase implements Cloneable {
 		this.resultCollection = null;
 		this.requestResult = null;
 		this.isFinal = false;
+		this.spawnedThreadedCountingResults = new TreeSet<CountingResult>();
+		this.threadedCountingResultSource = null;
+		this.threadId = -1;
 	}
 	
 	/**
@@ -103,6 +121,11 @@ public class CountingResult extends CountingResultBase implements Cloneable {
 		copy.setRequestResult(this.requestResult);
 		copy.setObservedElement(this.observedElement);
 		copy.setFinal(this.isFinal);
+		copy.setThreadId(this.threadId);
+		copy.setSpawnedThreadedCountingResults(
+				new TreeSet<CountingResult>(this.spawnedThreadedCountingResults));
+		copy.setThreadedCountingResultSource(this.threadedCountingResultSource);
+
 		return copy;
 	}
 	
@@ -116,6 +139,8 @@ public class CountingResult extends CountingResultBase implements Cloneable {
 			this.resultCollection = crSrc.resultCollection;
 			this.requestResult = crSrc.requestResult;
 			this.isFinal = crSrc.isFinal;
+			this.spawnedThreadedCountingResults = new TreeSet<CountingResult>(crSrc.getSpawnedThreadedCountingResults());
+			this.threadedCountingResultSource = crSrc.threadedCountingResultSource;
 		} else {
 			this.observedElement = null;
 			this.resultCollection = null;
@@ -187,9 +212,6 @@ public class CountingResult extends CountingResultBase implements Cloneable {
 		this.isFinal = isFinal;
 	}
 
-	/* (non-Javadoc)
-	 * @see java.lang.Object#hashCode()
-	 */
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -207,12 +229,17 @@ public class CountingResult extends CountingResultBase implements Cloneable {
 				* result
 				+ ((this.resultCollection == null) ? 0 : this.resultCollection
 						.hashCode());
+		result = prime
+				* result
+				+ ((this.spawnedThreadedCountingResults == null) ? 0
+						: this.spawnedThreadedCountingResults.hashCode());
+		result = prime
+				* result
+				+ ((this.threadedCountingResultSource == null) ? 0
+						: this.threadedCountingResultSource.hashCode());
 		return result;
 	}
 
-	/* (non-Javadoc)
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -239,6 +266,71 @@ public class CountingResult extends CountingResultBase implements Cloneable {
 				return false;
 		} else if (!this.resultCollection.equals(other.resultCollection))
 			return false;
+		if (this.spawnedThreadedCountingResults == null) {
+			if (other.spawnedThreadedCountingResults != null)
+				return false;
+		} else if (!this.spawnedThreadedCountingResults
+				.equals(other.spawnedThreadedCountingResults))
+			return false;
+		if (this.threadedCountingResultSource == null) {
+			if (other.threadedCountingResultSource != null)
+				return false;
+		} else if (!this.threadedCountingResultSource
+				.equals(other.threadedCountingResultSource))
+			return false;
 		return true;
+	}
+
+	/**
+	 * 
+	 * @return Id of the thread from which the result was reported.
+	 * @see Thread#getId()
+	 */
+	public long getThreadId() {
+		return threadId;
+	}
+
+	/**
+	 * 
+	 * @param threadId Id of the thread from which the result was reported.
+	 * @see Thread#getId()
+	 */
+	public void setThreadId(long threadId) {
+		this.threadId = threadId;
+	}
+
+	/**
+	 * @return A {@link SortedSet} of {@link CountingResult} from threads that
+	 * where spawned from the thread of this result.
+	 */
+	public SortedSet<CountingResult> getSpawnedThreadedCountingResults() {
+		return spawnedThreadedCountingResults;
+	}
+
+	/**
+	 * @param spawnedThreadedCountingResults A {@link SortedSet} of {@link CountingResult} from threads that
+	 * where spawned from the thread of this result.
+	 */
+	public void setSpawnedThreadedCountingResults(SortedSet<CountingResult> spawnedThreadedCountingResults) {
+		this.spawnedThreadedCountingResults = spawnedThreadedCountingResults;
+	}
+
+	/**
+	 * @return The {@link CountingResult} that contains this 
+	 * {@link CountingResult} as part of 
+	 * {@link CountingResult#getSpawnedThreadedCountingResults()}.
+	 */
+	public CountingResult getThreadedCountingResultSource() {
+		return threadedCountingResultSource;
+	}
+
+	/**
+	 * @param threadedCountingResultSource The {@link CountingResult} that contains this 
+	 * {@link CountingResult} as part of 
+	 * {@link CountingResult#getSpawnedThreadedCountingResults()}.
+	 */
+	public void setThreadedCountingResultSource(
+			CountingResult threadedCountingResultSource) {
+		this.threadedCountingResultSource = threadedCountingResultSource;
 	}
 }

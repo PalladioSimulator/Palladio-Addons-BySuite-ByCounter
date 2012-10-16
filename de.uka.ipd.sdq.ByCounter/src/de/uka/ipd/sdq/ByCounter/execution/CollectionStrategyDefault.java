@@ -14,7 +14,6 @@ import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentedRegion;
 import de.uka.ipd.sdq.ByCounter.parsing.ArrayCreation;
 import de.uka.ipd.sdq.ByCounter.results.CountingResult;
 import de.uka.ipd.sdq.ByCounter.results.RequestResult;
-import de.uka.ipd.sdq.ByCounter.results.ThreadedCountingResult;
 
 /**
  * This class is used in {@link CountingResultCollector} in 
@@ -110,14 +109,13 @@ public class CollectionStrategyDefault extends AbstractCollectionStrategy {
 	 */
 	@Override
 	public void protocolFutureCount(final ProtocolFutureCountStructure futureCount) {
-		// TODO
-		ThreadedCountingResult cr = new ThreadedCountingResult();
+		CountingResult cr = new CountingResult();
 		cr.setQualifiedMethodName(futureCount.canonicalMethodName);
 		cr.setMethodExecutionID(futureCount.ownID);
 		cr.setObservedElement(parentResultCollector.instrumentationContext.getEntitiesToInstrument().get(futureCount.observedEntityID));
 		cr.setThreadId(Thread.currentThread().getId());
 		cr.setFinal(false);
-		cr = (ThreadedCountingResult) this.countingResultThreadIndexing.apply(cr, futureCount.spawnedThreads);
+		cr = (CountingResult) this.countingResultThreadIndexing.apply(cr, futureCount.spawnedThreads);
 	}
 
 	/** Add to counting results. */
@@ -168,12 +166,7 @@ public class CollectionStrategyDefault extends AbstractCollectionStrategy {
 					arrayCreationCounts.put(creations.get(i), count);
 				}
 			}
-			CountingResult res;
-			if(result.spawnedThreads.isEmpty()) {
-				res = new CountingResult();
-			} else {
-				res = new ThreadedCountingResult();
-			}
+			CountingResult res = new CountingResult();
 			res.setRequestID(result.requestID);
 			res.setMethodExecutionID(result.ownID);
 			res.setCallerID(result.callerID);
@@ -290,8 +283,8 @@ public class CollectionStrategyDefault extends AbstractCollectionStrategy {
 			requestResult.getCountingResults().add(res);
 			res.setRequestResult(requestResult);
 		} else {
-			if(res instanceof ThreadedCountingResult) {
-				if(((ThreadedCountingResult) res).getThreadedCountingResultSource() == null) {
+			if(res.getSpawnedThreadedCountingResults().isEmpty()) {
+				if(res.getThreadedCountingResultSource() == null) {
 					this.currentResultCollection.getCountingResults().add(res);
 				} else {
 					// the parent result is already added, do nothing.

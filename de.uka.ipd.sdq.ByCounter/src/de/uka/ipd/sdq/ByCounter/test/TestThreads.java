@@ -21,7 +21,6 @@ import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentedCodeArea;
 import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentedMethod;
 import de.uka.ipd.sdq.ByCounter.parsing.LineNumberRange;
 import de.uka.ipd.sdq.ByCounter.results.CountingResult;
-import de.uka.ipd.sdq.ByCounter.results.ThreadedCountingResult;
 import de.uka.ipd.sdq.ByCounter.test.framework.expectations.Expectation;
 import de.uka.ipd.sdq.ByCounter.test.framework.expectations.SectionExpectation;
 import de.uka.ipd.sdq.ByCounter.test.helpers.RunnableForThreading;
@@ -73,8 +72,8 @@ public class TestThreads extends AbstractByCounterTest {
      * Tests the counting of user defined line number ranges while recording 
      * the order of execution.
      * This test case does not instrument the method that spawns the threads
-     * (using Thread.start()). Therefore results are not expected as 
-     * {@link ThreadedCountingResult}.
+     * (using Thread.start()). Therefore results are not expected in a thread 
+     * structure.
      */
     @Test
     public void testInstrumentRunnable() {
@@ -426,9 +425,8 @@ public class TestThreads extends AbstractByCounterTest {
 					cr.getMethodCallCounts().remove(m);
 				}
 				// add lists of spawned results to the queue
-				if(cr instanceof ThreadedCountingResult) {
-					ThreadedCountingResult tcr = (ThreadedCountingResult) cr;
-					SortedSet<ThreadedCountingResult> spawnedThreadedCountingResults = tcr.getSpawnedThreadedCountingResults();
+				SortedSet<CountingResult> spawnedThreadedCountingResults = cr.getSpawnedThreadedCountingResults();
+				if(!spawnedThreadedCountingResults.isEmpty()) {
 					TreeSet<CountingResult> spawned = new TreeSet<CountingResult>(spawnedThreadedCountingResults);
 					resultsQueue.add(spawned);
 				}

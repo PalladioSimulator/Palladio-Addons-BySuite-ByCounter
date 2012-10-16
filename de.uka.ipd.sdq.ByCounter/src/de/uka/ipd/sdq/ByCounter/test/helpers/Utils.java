@@ -56,7 +56,8 @@ public class Utils {
 	public static CountingResult getCountingResultForTest(BytecodeCounter c, 
 			MethodDescriptor methodToInstrument,
 			MethodDescriptor methodToExecute) {
-		c.instrument(new InstrumentedMethod(methodToInstrument));
+		c.getInstrumentationParams().getEntitiesToInstrument().add(new InstrumentedMethod(methodToInstrument));
+		c.instrument();
 		c.execute(methodToExecute, new Object[0]);
 	
 		CountingResult r = getAssertedResult();

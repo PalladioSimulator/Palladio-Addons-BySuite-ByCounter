@@ -5,7 +5,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 import de.uka.ipd.sdq.ByCounter.execution.CountingResultCollector;
-import de.uka.ipd.sdq.ByCounter.parsing.LineNumberRange;
 import de.uka.ipd.sdq.ByCounter.utils.MethodDescriptor;
 
 /**
@@ -51,9 +50,6 @@ public final class InstrumentationParameters implements Cloneable {
 	 * {@value #RECORD_BLOCK_EXECUTION_ORDER_DEFAULT}
 	 */
 	public static final boolean RECORD_BLOCK_EXECUTION_ORDER_DEFAULT = true;
-
-	/** Default value for {@link #getEntitiesToInstrument()}. */
-	private static final LinkedList<EntityToInstrument> ENTITIES_TO_INSTRUMENT_DEFAULT = new LinkedList<EntityToInstrument>();
 
 	/** Default value for {@link #getInstrumentationScopeOverrideClassLevel()}. */
 	public static final InstrumentationScopeModeEnum INSTRUMENTATION_SCOPE_OVERRIDE_CLASS_LEVEL_DEFAULT = InstrumentationScopeModeEnum.InstrumentAsSpecified;
@@ -173,11 +169,6 @@ public final class InstrumentationParameters implements Cloneable {
 	 * to the "bin_instrumented" directory.
 	 */
 	private boolean writeClassesToDisk;
-
-	/**
-	 * @see #getRangeBlocks()
-	 */
-	private LineNumberRange[] rangeBlocks;
 	
 	/**
 	 * @see #getRecordBlockExecutionOrder()
@@ -231,7 +222,7 @@ public final class InstrumentationParameters implements Cloneable {
 	 */
 	@SuppressWarnings("dep-ann")
 	public InstrumentationParameters() {
-		this(	ENTITIES_TO_INSTRUMENT_DEFAULT,
+		this(	new LinkedList<EntityToInstrument>(),
 				USE_HIGH_REGISTERS_FOR_COUNTING_DEFAULT,
 				USE_RESULT_COLLECTOR_DEFAULT,	// use CountingResultCollector instead of result log
 				USE_ARRAY_PARAMETER_RECORDING,
@@ -311,13 +302,15 @@ public final class InstrumentationParameters implements Cloneable {
 		// copy all fields
 		copy.counterPrecision = this.counterPrecision;
 		copy.countStatically = this.countStatically;
+		copy.entitiesToInstrument = new LinkedList<EntityToInstrument>();
+		copy.entitiesToInstrument.addAll(this.entitiesToInstrument);
+		copy.ignoredPackagePrefixes = this.ignoredPackagePrefixes.clone();
 		copy.instrumentationScopeOverrideClassLevel = this.instrumentationScopeOverrideClassLevel;
 		copy.instrumentationScopeOverrideMethodLevel = this.instrumentationScopeOverrideMethodLevel;
 		copy.instrumentRecursively = this.instrumentRecursively;
 		copy.provideJoinThreadsAbility = this.provideJoinThreadsAbility;
 		copy.provideOnlineSectionActiveUpdates = this.provideOnlineSectionActiveUpdates;
 		copy.provideOnlineSectionExecutionUpdates = this.provideOnlineSectionExecutionUpdates;
-		copy.rangeBlocks = this.rangeBlocks;
 		copy.recordBlockExecutionOrder = this.recordBlockExecutionOrder;
 		copy.resultLogFileName = this.resultLogFileName;
 		copy.traceAndIdentifyRequests = this.traceAndIdentifyRequests;
@@ -328,7 +321,6 @@ public final class InstrumentationParameters implements Cloneable {
 		copy.useResultLogWriter = this.useResultLogWriter;
 		copy.writeClassesToDisk = this.writeClassesToDisk;
 		copy.writeClassesToDiskDirectory = this.writeClassesToDiskDirectory;
-		copy.entitiesToInstrument = new LinkedList<EntityToInstrument>(this.entitiesToInstrument);
 		
 		return copy;
 	}
@@ -502,7 +494,6 @@ public final class InstrumentationParameters implements Cloneable {
 		b.append("provideJoinThreadsAbility:          " + this.provideJoinThreadsAbility + ", \n");
 		b.append("provideOnlineActiveEntityUpdates:   " + this.provideOnlineSectionActiveUpdates + ", \n");
 		b.append("provideOnlineSectionExecutionUpdates:" + this.provideOnlineSectionExecutionUpdates + ", \n");
-		b.append("rangeBlocks:                        " + this.rangeBlocks + ", \n");
 		b.append("recordBlockExecutionOrder:          " + this.recordBlockExecutionOrder + ", \n");
 		b.append("resultLogFileName:                  " + this.resultLogFileName + ", \n");
 		b.append("traceAndIdentifyRequests:           " + this.traceAndIdentifyRequests + ", \n");

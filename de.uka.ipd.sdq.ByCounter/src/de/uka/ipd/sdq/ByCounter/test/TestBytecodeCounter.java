@@ -6,6 +6,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.SortedSet;
 import java.util.logging.Logger;
 
@@ -18,6 +20,7 @@ import org.junit.runners.Parameterized;
 import de.uka.ipd.sdq.ByCounter.execution.BytecodeCounter;
 import de.uka.ipd.sdq.ByCounter.execution.CountingResultCollector;
 import de.uka.ipd.sdq.ByCounter.instrumentation.AlreadyInstrumentedException;
+import de.uka.ipd.sdq.ByCounter.instrumentation.EntityToInstrument;
 import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentationParameters;
 import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentationScopeModeEnum;
 import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentedClass;
@@ -86,28 +89,34 @@ public class TestBytecodeCounter extends AbstractByCounterTest {
 		// create a file stream for the .class data
 		try {
 			fs = new FileInputStream(file);
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-			return null;
-		}
-		
-		// get the data into a Byte[] array.
-		ArrayList<Byte> bytelist = new ArrayList<Byte>();
-		try {
-			while(fs.available() > 0) {
-				bytelist.add((byte)fs.read());
+
+			// get the data into a Byte[] array.
+			ArrayList<Byte> bytelist = new ArrayList<Byte>();
+			try {
+				while(fs.available() > 0) {
+					bytelist.add((byte)fs.read());
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
 			}
-		} catch (IOException e) {
-			e.printStackTrace();
+			Byte[] bytesBig = bytelist.toArray(new Byte[bytelist.size()]);
+			
+			// get the data from the Byte[] array into the byte[] array.
+			byte[] bytes = new byte[bytelist.size()];
+			for(int i = 0; i < bytesBig.length; i++) {
+				bytes[i] = bytesBig[i].byteValue();
+			}
+			
+			return bytes;
+		} catch (FileNotFoundException e) {
+			throw new RuntimeException(e);
+		} finally {
+			try {
+				fs.close();
+			} catch (IOException e) {
+				throw new RuntimeException(e);
+			}
 		}
-		Byte[] bytesBig = bytelist.toArray(new Byte[bytelist.size()]);
-	
-		// get the data from the Byte[] array into the byte[] array.
-		byte[] bytes = new byte[bytelist.size()];
-		for(int i = 0; i < bytesBig.length; i++) {
-			bytes[i] = bytesBig[i].byteValue();
-		}
-		return bytes;
 	}
 
 	/**
@@ -133,7 +142,8 @@ public class TestBytecodeCounter extends AbstractByCounterTest {
 		// do the de.uka.ipd.sdq.ByCount
 		// let the counter do its work on a method
 		MethodDescriptor methodToInstrument = new MethodDescriptor(ASMBytecodeOccurences.class.getCanonicalName(), METHOD_SIGNATURE);
-		counter.instrument(new InstrumentedMethod(methodToInstrument));
+		counter.addEntityToInstrument(methodToInstrument);
+		counter.instrument();
 
 		counter.execute(methodToInstrument, new Object[0]);
 		
@@ -213,7 +223,8 @@ public class TestBytecodeCounter extends AbstractByCounterTest {
 		// test with void method
 		MethodDescriptor methodDescriptor = new MethodDescriptor(
 				testClass.getCanonicalName(), "public void methodCallTest()");
-		counter.instrument(new InstrumentedMethod(methodDescriptor));
+		counter.addEntityToInstrument(methodDescriptor);
+		counter.instrument();
 		counter.execute(methodDescriptor, new Object[]{});
 		
 		// The log file name is dynamic and cannot be checked
@@ -222,7 +233,8 @@ public class TestBytecodeCounter extends AbstractByCounterTest {
 		// test with boolean method
 		methodDescriptor = new MethodDescriptor(testClass.getCanonicalName(), 
 			"public boolean parameterTest(int i, float f, java.lang.String s)");
-		counter.instrument(new InstrumentedMethod(methodDescriptor));
+		counter.addEntityToInstrument(methodDescriptor);
+		counter.instrument();
 		counter.execute(methodDescriptor, 
 			new Object[]{2, 2, TestSubject.class.getCanonicalName()});
 	}
@@ -269,7 +281,10 @@ public class TestBytecodeCounter extends AbstractByCounterTest {
 		
 		//2. now tell ByCounter to instrument all methods
 		counter.getInstrumentationParams().setInstrumentationScopeOverrideClassLevel(InstrumentationScopeModeEnum.InstrumentEverything);
-		counter.instrument(new InstrumentedClass(TestSubject.class.getCanonicalName()));
+		List<EntityToInstrument> entitiesToInstrument = new LinkedList<EntityToInstrument>();
+		entitiesToInstrument.add(new InstrumentedClass(TestSubject.class.getCanonicalName()));
+		counter.addEntityToInstrument(entitiesToInstrument);
+		counter.instrument();
 
 		//3. Specify the method to be executed
 		MethodDescriptor myMethod = new MethodDescriptor(

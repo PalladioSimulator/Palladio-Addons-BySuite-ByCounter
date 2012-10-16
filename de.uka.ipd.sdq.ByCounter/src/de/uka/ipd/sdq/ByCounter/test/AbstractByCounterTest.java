@@ -67,6 +67,9 @@ public abstract class AbstractByCounterTest {
 	 */
 	@After
 	public void cleanResults() {
+		if(!this.instrumentationParametersTemplate.getEntitiesToInstrument().isEmpty()) {
+			throw new RuntimeException("EMAPDM");
+		}
 	    // clear all collected results
 	    CountingResultCollector.getInstance().clearResults();
 	}

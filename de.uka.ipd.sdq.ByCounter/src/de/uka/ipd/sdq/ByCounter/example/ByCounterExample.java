@@ -6,7 +6,6 @@ import java.util.SortedSet;
 import de.uka.ipd.sdq.ByCounter.execution.BytecodeCounter;
 import de.uka.ipd.sdq.ByCounter.execution.CountingResultBase;
 import de.uka.ipd.sdq.ByCounter.execution.CountingResultCollector;
-import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentedMethod;
 import de.uka.ipd.sdq.ByCounter.results.CountingResult;
 import de.uka.ipd.sdq.ByCounter.utils.MethodDescriptor;
 
@@ -59,7 +58,8 @@ public class ByCounterExample {
 				"public static int dummyMethodToBeInstrumented(java.lang.String str, float f)"); //$NON-NLS-1$
 		
 		//3. now tell ByCounter to instrument the specified method
-		counter.instrument(new InstrumentedMethod(myMethod));
+		counter.addEntityToInstrument(myMethod);
+		counter.instrument();
 
 		//4. If the class which contains the method that we want to execute 
 		// has no default constructor and the method is non-static, we need to 
@@ -127,7 +127,8 @@ public class ByCounterExample {
 				"public static int dummyMethodToBeInstrumented(java.lang.String str, float f)");
 		
 		//7. ... we tell ByCounter to instrument the specified method
-		counter.instrument(new InstrumentedMethod(myMethod));
+		counter.addEntityToInstrument(myMethod);
+		counter.instrument();
 		
 		//8. ... make ByCounter execute the method (note that this class must be reloaded! TODO check)
 		counter.execute(myMethod, new Object[] {"Hello world!", 0.0f});

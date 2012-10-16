@@ -287,25 +287,6 @@ public final class BytecodeCounter {
 		}
 		return this.instrumentedClassBytes;
 	}
-
-	/**
-	 * Instrument the methods specified in the 
-	 * {@link InstrumentationParameters} of this BytecodeCounter.
-	 * The {@link InstrumentationParameters} can be accessed using 
-	 * get- or setInstrumentationParameters().
-	 * Make sure you set the methodsToInstrument or this call will fail with 
-	 * an error.
-	 * @return True, if the instrumentation was successful, false otherwise.
-	 */
-	public synchronized boolean instrument() {
-		List<EntityToInstrument> entitiesToInstrument = 
-				new LinkedList<EntityToInstrument>(
-						this.instrumentationParameters.getEntitiesToInstrument());
-		if(entitiesToInstrument == null || entitiesToInstrument.isEmpty()) {
-			log.severe("Trying to instrument but no entities to instrument were specified.");
-		}
-		return this.instrument(entitiesToInstrument);
-	}
 	
 	/**
 	 * Convenience method for adding an {@link InstrumentedMethod} to
@@ -330,39 +311,28 @@ public final class BytecodeCounter {
 	}
 
 	/**
-	 * Instrument the specified methods with ByCounter instructions for 
-	 * counting, reporting etc.
-	 * @param entitiesToInstrument A {@link List} of {@link EntityToInstrument} 
-	 * that will be instrumented.
+	 * Instrument the methods specified in the 
+	 * {@link InstrumentationParameters} of this BytecodeCounter.
+	 * The {@link InstrumentationParameters} can be accessed using 
+	 * get- or setInstrumentationParameters().
+	 * Make sure you set the methodsToInstrument or this call will fail with 
+	 * an error.
 	 * @return True, if the instrumentation was successful, false otherwise.
 	 */
-	protected synchronized boolean instrument(List<EntityToInstrument> entitiesToInstrument) {
+	public synchronized boolean instrument() {
+		List<EntityToInstrument> entitiesToInstrument = 
+				new LinkedList<EntityToInstrument>(
+						this.instrumentationParameters.getEntitiesToInstrument());
+		// check the supplied list
+		if(entitiesToInstrument == null || entitiesToInstrument.isEmpty()) {
+			log.severe("Trying to instrument but no entities to instrument were specified.");
+		}
 		// reset instrumentation state
 		this.instrumentationState = new InstrumentationState();
-		
-		// check the supplied list
-		if(entitiesToInstrument == null) {
-			log.severe("passed entitiesToInstrument list is null; nothing to instrument");
-			return false;
-		}
-		if(entitiesToInstrument.isEmpty()) {
-			log.warning("Empty list of entities to instrument. Nothing to do.");
-			return true;
-		}
 
 		// finally do the instrumentation on the classes
 		boolean success = true;
 		
-		// set the instrumentationParameters to match
-		//TODO make clear this is non-additive!
-		List<EntityToInstrument> entitiesCurrent = this.instrumentationParameters.getEntitiesToInstrument();
-		if(entitiesCurrent!=null && entitiesCurrent.size()>0){
-			log.severe("Overwriting entitiesToInstrument in instrumentationParameters: "+
-					"was "+entitiesCurrent+", will be "+entitiesToInstrument);
-		}
-		this.instrumentationParameters.getEntitiesToInstrument().clear();
-		this.instrumentationParameters.getEntitiesToInstrument().addAll(entitiesToInstrument);
-
 		// a map that holds the set of all method definitions for each class
 		Map<String, ClassMethodImplementations> classMethodDefinitions = 
 			new HashMap<String, ClassMethodImplementations>();
@@ -639,17 +609,6 @@ public final class BytecodeCounter {
 			}
 			roots = newRoots;
 		}
-	}
-
-	/**
-	 * Instrument the specified method with ByCounter instructions for 
-	 * counting, reporting etc.
-	 * @param entityToInstrument An {@link EntityToInstrument}.
-	 */
-	public synchronized void instrument(EntityToInstrument entityToInstrument) {
-		List<EntityToInstrument> entities = new ArrayList<EntityToInstrument>(1);
-		entities.add(entityToInstrument);
-		this.instrument(entities);
 	}
 
 	/**

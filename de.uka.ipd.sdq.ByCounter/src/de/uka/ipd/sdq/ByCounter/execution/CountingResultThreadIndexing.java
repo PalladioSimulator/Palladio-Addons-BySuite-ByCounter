@@ -9,7 +9,6 @@ import java.util.SortedSet;
 import java.util.UUID;
 
 import de.uka.ipd.sdq.ByCounter.results.CountingResult;
-import de.uka.ipd.sdq.ByCounter.results.ThreadedCountingResult;
 
 /**
  * Indexing for the thread hierarchy of counting results.
@@ -74,15 +73,15 @@ public class CountingResultThreadIndexing {
 	}
 	
 	/**
-	 * For each {@link ThreadedCountingResult} a list of thread ids for spawned threads.
+	 * For each {@link CountingResult} a list of thread ids for spawned threads.
 	 */
-	Map<ThreadedCountingResult, ArrayList<Long>> resultsSpawnedThreads;
+	Map<CountingResult, ArrayList<Long>> resultsSpawnedThreads;
 	
 	/**
 	 * For a thread <i>t</i> with the key == id, this map contains the counting result for 
 	 * the thread that spawned <i>t</i> if such a result exists.
 	 */
-	Map<Long, ThreadedCountingResult> spawningThreadForThreadId;
+	Map<Long, CountingResult> spawningThreadForThreadId;
 	
 	/**
 	 * For threads <i>t</i> with key == t.id, this map contains the entry
@@ -93,44 +92,41 @@ public class CountingResultThreadIndexing {
 	/**
 	 * All incomplete results reported when spawning threads are gathered here.
 	 */
-	Map<ResultHash, ThreadedCountingResult> incompleteResults;
+	Map<ResultHash, CountingResult> incompleteResults;
 	
 	/**
 	 * Construct the empty infrastructure.
 	 */
 	public CountingResultThreadIndexing() {
-		this.resultsSpawnedThreads = new HashMap<ThreadedCountingResult, ArrayList<Long>>();
-		this.spawningThreadForThreadId = new HashMap<Long, ThreadedCountingResult>();
+		this.resultsSpawnedThreads = new HashMap<CountingResult, ArrayList<Long>>();
+		this.spawningThreadForThreadId = new HashMap<Long, CountingResult>();
 		this.rootThreadsByThreadId = new HashMap<Long, List<CountingResult>>();
-		this.incompleteResults = new HashMap<ResultHash, ThreadedCountingResult>();
+		this.incompleteResults = new HashMap<ResultHash, CountingResult>();
 	}
 
 	/**
-	 * @param res Partial counting result. This assumes that result that have 
-	 * spawned threads are of the type {@link ThreadedCountingResult}.
+	 * @param res Partial counting result.
 	 * @param spawnedThreadsIds Threads spawned by the result elements thread.
 	 */
 	public CountingResult apply(final CountingResult res, final ArrayList<Long> spawnedThreadsIds) {
 		CountingResult result = res;
-		ThreadedCountingResult tcr = getThreadedCountingResult(result);
 		boolean existingResultStubFound = false;
 		
 		// use existing stubs if possible to ensure object equality
-		ThreadedCountingResult resultStub = this.incompleteResults.get(new ResultHash(result));
+		CountingResult resultStub = this.incompleteResults.get(new ResultHash(result));
 		if(resultStub != null) {
 			existingResultStubFound = true;
-			tcr = resultStub;
 			result = resultStub;
 			if(res.getFinal() == true) {
 				// copy from complete result
-				SortedSet<ThreadedCountingResult> savedSpawns = resultStub.getSpawnedThreadedCountingResults();
-				ThreadedCountingResult savedSource = resultStub.getThreadedCountingResultSource();
+				SortedSet<CountingResult> savedSpawns = resultStub.getSpawnedThreadedCountingResults();
+				CountingResult savedSource = resultStub.getThreadedCountingResultSource();
 				resultStub.set(res);	// use res instead of result because result == resultStaub!
 				resultStub.setSpawnedThreadedCountingResults(savedSpawns);
 				resultStub.setThreadedCountingResultSource(savedSource);
 			}
 		} else if(res.getFinal() == false) {
-			this.incompleteResults.put(new ResultHash(tcr), tcr);
+			this.incompleteResults.put(new ResultHash(result), result);
 		}
 
 		// handle child threads
@@ -140,17 +136,16 @@ public class CountingResultThreadIndexing {
 			// for each spawned thread id, save this result as the spawning thread
 			for(final long id : threadSpawns) {
 				if(!this.spawningThreadForThreadId.containsKey(id)) {
-					this.spawningThreadForThreadId.put(id, tcr);
+					this.spawningThreadForThreadId.put(id, result);
 				}
 			}
 		}
 
 		// handle parent threads
-		ThreadedCountingResult spawningThread = spawningThreadForThreadId.get(result.getThreadId());
+		CountingResult spawningThread = spawningThreadForThreadId.get(result.getThreadId());
 		if(spawningThread != null) {
-			result = tcr;
-			tcr.setThreadedCountingResultSource(spawningThread);
-			spawningThread.getSpawnedThreadedCountingResults().add(tcr);
+			result.setThreadedCountingResultSource(spawningThread);
+			spawningThread.getSpawnedThreadedCountingResults().add(result);
 		} else if(!existingResultStubFound) {
 			// add result to root nodes; maybe a parent is found later
 			long threadId = result.getThreadId();
@@ -197,22 +192,6 @@ public class CountingResultThreadIndexing {
 		return threadSpawns;
 	}
 	
-	/**
-	 * This method checks if the given result is of the type 
-	 * {@link ThreadedCountingResult}. If that is the case, the type casted 
-	 * object is returned. Otherwise a new {@link ThreadedCountingResult} is 
-	 * created for the result.
-	 * @param result The result to possibly convert.
-	 * @return For the given counting result a threaded counting result.
-	 */
-	private ThreadedCountingResult getThreadedCountingResult(final CountingResult result) {
-		if(!(result instanceof ThreadedCountingResult)) {
-			return new ThreadedCountingResult(result);
-		} else { 
-			return (ThreadedCountingResult) result;
-		}
-	}
-
 	/**
 	 * Remove all results from the indexing infrastructure.
 	 */

@@ -12,7 +12,6 @@ import org.junit.Assert;
 
 import de.uka.ipd.sdq.ByCounter.parsing.LineNumberRange;
 import de.uka.ipd.sdq.ByCounter.results.CountingResult;
-import de.uka.ipd.sdq.ByCounter.results.ThreadedCountingResult;
 import de.uka.ipd.sdq.ByCounter.utils.FullOpcodeMapper;
 import de.uka.ipd.sdq.ByCounter.utils.MethodDescriptor;
 
@@ -290,19 +289,15 @@ public class SectionExpectation {
 	protected void compare_parallel(CountingResult observation, final int round) {
 		if(this.parallelExpectations == null || this.parallelExpectations.isEmpty()) {
 			// no parallel expectations exist
-			if(observation instanceof ThreadedCountingResult) {
-				Assert.assertEquals(message("Unexpected spawnded threads", round), 0, ((ThreadedCountingResult)observation).getSpawnedThreadedCountingResults().size());
-			}
+			Assert.assertEquals(message("Unexpected spawnded threads", round), 0, observation.getSpawnedThreadedCountingResults().size());
 			return;
 		}
-		Assert.assertTrue(message("ThreadedCountingResult", round), observation instanceof ThreadedCountingResult);
-		ThreadedCountingResult threadedObservation = (ThreadedCountingResult) observation;
-		final SortedSet<ThreadedCountingResult> observedThreads = 
-				threadedObservation.getSpawnedThreadedCountingResults();
+		final SortedSet<CountingResult> observedThreads = 
+				observation.getSpawnedThreadedCountingResults();
 		// ensure that results from spawned threads are correct
 		Assert.assertEquals("Wrong number of threads and parallel expectations.", this.parallelExpectations.size(), observedThreads.size());
-		for(ThreadedCountingResult spawn : observedThreads) {
-			Assert.assertEquals("The observed thread was not spawned wihtin the observed section.", threadedObservation, spawn.getThreadedCountingResultSource());
+		for(CountingResult spawn : observedThreads) {
+			Assert.assertEquals("The observed thread was not spawned wihtin the observed section.", observation, spawn.getThreadedCountingResultSource());
 		}
 		if(this.parallelExpectations.size() == 1
 				&& observedThreads.size() == 1) {
@@ -315,12 +310,12 @@ public class SectionExpectation {
 			 * it matches an expectation. Only if all SectionExpectations are successfully matched, the
 			 * comparison itself is successful.
 			 */
-			List<ThreadedCountingResult> unmatchedResults = new LinkedList<ThreadedCountingResult>(observedThreads);
+			List<CountingResult> unmatchedResults = new LinkedList<CountingResult>(observedThreads);
 			List<SectionExpectation> unmatchedExpectations = new LinkedList<SectionExpectation>();
 			boolean matchFound;
 			for(SectionExpectation ex : this.parallelExpectations) {
 				matchFound = false;
-				for(ThreadedCountingResult tcr : unmatchedResults) {
+				for(CountingResult tcr : unmatchedResults) {
 					if(ex.matches(tcr)) {
 						unmatchedResults.remove(tcr);
 						matchFound = true;
@@ -356,13 +351,13 @@ public class SectionExpectation {
 	 * This method is similar to {@link #compare(CountingResult, int)} but 
 	 * instead of throwing {@link AssertionError}s, it returns the result of the 
 	 * comparison.
-	 * @param tcr {@link ThreadedCountingResult} to compare this expectation to.
-	 * @return True, if the given {@link ThreadedCountingResult} matches this 
+	 * @param cr {@link CountingResult} to compare this expectation to.
+	 * @return True, if the given {@link CountingResult} matches this 
 	 * expectation. False otherwise.
 	 */
-	private boolean matches(final ThreadedCountingResult tcr) {
+	private boolean matches(final CountingResult cr) {
 		try {
-			this.compare(tcr, -1);
+			this.compare(cr, -1);
 			return true;
 		} catch(AssertionError ae) {
 			return false;
