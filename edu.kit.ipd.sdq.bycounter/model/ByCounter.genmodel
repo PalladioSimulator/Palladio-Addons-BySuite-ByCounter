@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<genmodel:GenModel xmi:version="2.0"
-    xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" xmlns:genmodel="http://www.eclipse.org/uml2/2.2.0/GenModel" modelDirectory="/edu.kit.ipd.sdq.bycounter/src"
-    modelPluginID="edu.kit.ipd.sdq.bycounter" modelName="ByCounter" importerID="org.eclipse.uml2.uml.ecore.importer"
-    complianceLevel="6.0" copyrightFields="false" usedGenPackages="platform:/plugin/org.eclipse.emf.ecore/model/Ecore.genmodel#//ecore platform:/plugin/de.uka.ipd.sdq.identifier/model/identifier.genmodel#//identifier platform:/plugin/de.fzi.gast/model/SissyModel.genmodel#//gast">
+<genmodel:GenModel xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" xmlns:genmodel="http://www.eclipse.org/uml2/2.2.0/GenModel"
+    modelDirectory="/edu.kit.ipd.sdq.bycounter/src" modelPluginID="edu.kit.ipd.sdq.bycounter"
+    modelName="ByCounter" importerID="org.eclipse.uml2.uml.ecore.importer" complianceLevel="6.0"
+    copyrightFields="false" usedGenPackages="platform:/plugin/org.eclipse.emf.ecore/model/Ecore.genmodel#//ecore platform:/plugin/de.uka.ipd.sdq.identifier/model/identifier.genmodel#//identifier platform:/plugin/de.fzi.gast/model/SissyModel.genmodel#//gast">
   <genAnnotations source="http://www.eclipse.org/emf/2002/GenModel/importer/org.eclipse.uml2.uml.ecore.importer">
     <details key="ECORE_TAGGED_VALUES" value="PROCESS"/>
     <details key="UNION_PROPERTIES" value="REPORT"/>
@@ -67,6 +67,12 @@
             createChild="false" ecoreFeature="ecore:EReference ByCounter.ecore#//output/CountingResult/resultCollection"/>
         <genFeatures xsi:type="genmodel:GenFeature" createChild="false" ecoreFeature="ecore:EReference ByCounter.ecore#//output/CountingResult/arrayCreationCounts"/>
         <genFeatures xsi:type="genmodel:GenFeature" createChild="false" ecoreFeature="ecore:EReference ByCounter.ecore#//output/CountingResult/methodCallCounts"/>
+        <genFeatures xsi:type="genmodel:GenFeature" createChild="false" ecoreFeature="ecore:EAttribute ByCounter.ecore#//output/CountingResult/threadId"/>
+        <genFeatures xsi:type="genmodel:GenFeature" createChild="false" ecoreFeature="ecore:EAttribute ByCounter.ecore#//output/CountingResult/final"/>
+        <genFeatures xsi:type="genmodel:GenFeature" property="None" children="true"
+            createChild="true" ecoreFeature="ecore:EReference ByCounter.ecore#//output/CountingResult/spawnedThreadedCountingResults"/>
+        <genFeatures xsi:type="genmodel:GenFeature" property="None" notify="false"
+            createChild="false" ecoreFeature="ecore:EReference ByCounter.ecore#//output/CountingResult/threadedCountingResult"/>
         <genFeatures xsi:type="genmodel:GenFeature" property="None" notify="false"
             createChild="false" ecoreFeature="ecore:EReference ByCounter.ecore#//output/CountingResult/requestResult"/>
       </genClasses>
@@ -88,14 +94,6 @@
             propertySortChoices="true" ecoreFeature="ecore:EReference ByCounter.ecore#//output/MethodCallCount/function"/>
         <genFeatures xsi:type="genmodel:GenFeature" property="None" notify="false"
             createChild="false" ecoreFeature="ecore:EReference ByCounter.ecore#//output/MethodCallCount/countingResult"/>
-      </genClasses>
-      <genClasses xsi:type="genmodel:GenClass" ecoreClass="ByCounter.ecore#//output/ThreadedCountingResult">
-        <genFeatures xsi:type="genmodel:GenFeature" property="None" children="true"
-            createChild="true" ecoreFeature="ecore:EReference ByCounter.ecore#//output/ThreadedCountingResult/spawnedThreadedCountingResults"/>
-        <genFeatures xsi:type="genmodel:GenFeature" property="None" notify="false"
-            createChild="false" ecoreFeature="ecore:EReference ByCounter.ecore#//output/ThreadedCountingResult/threadedCountingResult"/>
-        <genFeatures xsi:type="genmodel:GenFeature" createChild="false" ecoreFeature="ecore:EAttribute ByCounter.ecore#//output/ThreadedCountingResult/threadId"/>
-        <genFeatures xsi:type="genmodel:GenFeature" createChild="false" ecoreFeature="ecore:EAttribute ByCounter.ecore#//output/ThreadedCountingResult/final"/>
       </genClasses>
     </nestedGenPackages>
     <nestedGenPackages xsi:type="genmodel:GenPackage" prefix="Input" basePackage="edu.kit.ipd.sdq.bycounter"
@@ -163,5 +161,13 @@
             createChild="false" ecoreFeature="ecore:EReference ByCounter.ecore#//input/EntityToInstrument/instrumentationProfile"/>
       </genClasses>
     </nestedGenPackages>
+  </genPackages>
+  <genPackages xsi:type="genmodel:GenPackage" prefix="Types" disposableProviderFactory="true"
+      ecorePackage="types.ecore#/">
+    <genDataTypes xsi:type="genmodel:GenDataType" ecoreDataType="types.ecore#//Boolean"/>
+    <genDataTypes xsi:type="genmodel:GenDataType" ecoreDataType="types.ecore#//Integer"/>
+    <genDataTypes xsi:type="genmodel:GenDataType" ecoreDataType="types.ecore#//Real"/>
+    <genDataTypes xsi:type="genmodel:GenDataType" ecoreDataType="types.ecore#//UnlimitedNatural"/>
+    <genDataTypes xsi:type="genmodel:GenDataType" ecoreDataType="types.ecore#//String"/>
   </genPackages>
 </genmodel:GenModel>

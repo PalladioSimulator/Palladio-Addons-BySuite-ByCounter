@@ -233,29 +233,6 @@ public class OutputItemProviderAdapterFactory extends OutputAdapterFactory imple
 	}
 
 	/**
-	 * This keeps track of the one adapter used for all {@link edu.kit.ipd.sdq.bycounter.output.ThreadedCountingResult} instances.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected ThreadedCountingResultItemProvider threadedCountingResultItemProvider;
-
-	/**
-	 * This creates an adapter for a {@link edu.kit.ipd.sdq.bycounter.output.ThreadedCountingResult}.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public Adapter createThreadedCountingResultAdapter() {
-		if (threadedCountingResultItemProvider == null) {
-			threadedCountingResultItemProvider = new ThreadedCountingResultItemProvider(this);
-		}
-
-		return threadedCountingResultItemProvider;
-	}
-
-	/**
 	 * This returns the root adapter factory that contains this factory.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -361,7 +338,6 @@ public class OutputItemProviderAdapterFactory extends OutputAdapterFactory imple
 		if (uuidItemProvider != null) uuidItemProvider.dispose();
 		if (arrayCreationCountItemProvider != null) arrayCreationCountItemProvider.dispose();
 		if (methodCallCountItemProvider != null) methodCallCountItemProvider.dispose();
-		if (threadedCountingResultItemProvider != null) threadedCountingResultItemProvider.dispose();
 	}
 
 }

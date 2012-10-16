@@ -47,6 +47,10 @@ import org.eclipse.emf.ecore.util.InternalEList;
  *   <li>{@link edu.kit.ipd.sdq.bycounter.output.impl.CountingResultImpl#getResultCollection <em>Result Collection</em>}</li>
  *   <li>{@link edu.kit.ipd.sdq.bycounter.output.impl.CountingResultImpl#getArrayCreationCounts <em>Array Creation Counts</em>}</li>
  *   <li>{@link edu.kit.ipd.sdq.bycounter.output.impl.CountingResultImpl#getMethodCallCounts <em>Method Call Counts</em>}</li>
+ *   <li>{@link edu.kit.ipd.sdq.bycounter.output.impl.CountingResultImpl#getThreadId <em>Thread Id</em>}</li>
+ *   <li>{@link edu.kit.ipd.sdq.bycounter.output.impl.CountingResultImpl#isFinal <em>Final</em>}</li>
+ *   <li>{@link edu.kit.ipd.sdq.bycounter.output.impl.CountingResultImpl#getSpawnedThreadedCountingResults <em>Spawned Threaded Counting Results</em>}</li>
+ *   <li>{@link edu.kit.ipd.sdq.bycounter.output.impl.CountingResultImpl#getThreadedCountingResult <em>Threaded Counting Result</em>}</li>
  *   <li>{@link edu.kit.ipd.sdq.bycounter.output.impl.CountingResultImpl#getRequestResult <em>Request Result</em>}</li>
  * </ul>
  * </p>
@@ -173,6 +177,56 @@ public class CountingResultImpl extends EObjectImpl implements CountingResult {
 	 * @ordered
 	 */
 	protected EList<MethodCallCount> methodCallCounts;
+
+	/**
+	 * The default value of the '{@link #getThreadId() <em>Thread Id</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getThreadId()
+	 * @generated
+	 * @ordered
+	 */
+	protected static final long THREAD_ID_EDEFAULT = 0L;
+
+	/**
+	 * The cached value of the '{@link #getThreadId() <em>Thread Id</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getThreadId()
+	 * @generated
+	 * @ordered
+	 */
+	protected long threadId = THREAD_ID_EDEFAULT;
+
+	/**
+	 * The default value of the '{@link #isFinal() <em>Final</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #isFinal()
+	 * @generated
+	 * @ordered
+	 */
+	protected static final boolean FINAL_EDEFAULT = false;
+
+	/**
+	 * The cached value of the '{@link #isFinal() <em>Final</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #isFinal()
+	 * @generated
+	 * @ordered
+	 */
+	protected boolean final_ = FINAL_EDEFAULT;
+
+	/**
+	 * The cached value of the '{@link #getSpawnedThreadedCountingResults() <em>Spawned Threaded Counting Results</em>}' containment reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getSpawnedThreadedCountingResults()
+	 * @generated
+	 * @ordered
+	 */
+	protected EList<CountingResult> spawnedThreadedCountingResults;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -462,6 +516,101 @@ public class CountingResultImpl extends EObjectImpl implements CountingResult {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public long getThreadId() {
+		return threadId;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setThreadId(long newThreadId) {
+		long oldThreadId = threadId;
+		threadId = newThreadId;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, OutputPackage.COUNTING_RESULT__THREAD_ID, oldThreadId, threadId));
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public boolean isFinal() {
+		return final_;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setFinal(boolean newFinal) {
+		boolean oldFinal = final_;
+		final_ = newFinal;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, OutputPackage.COUNTING_RESULT__FINAL, oldFinal, final_));
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EList<CountingResult> getSpawnedThreadedCountingResults() {
+		if (spawnedThreadedCountingResults == null) {
+			spawnedThreadedCountingResults = new EObjectContainmentWithInverseEList<CountingResult>(CountingResult.class, this, OutputPackage.COUNTING_RESULT__SPAWNED_THREADED_COUNTING_RESULTS, OutputPackage.COUNTING_RESULT__THREADED_COUNTING_RESULT);
+		}
+		return spawnedThreadedCountingResults;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public CountingResult getThreadedCountingResult() {
+		if (eContainerFeatureID() != OutputPackage.COUNTING_RESULT__THREADED_COUNTING_RESULT) return null;
+		return (CountingResult)eContainer();
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public NotificationChain basicSetThreadedCountingResult(CountingResult newThreadedCountingResult, NotificationChain msgs) {
+		msgs = eBasicSetContainer((InternalEObject)newThreadedCountingResult, OutputPackage.COUNTING_RESULT__THREADED_COUNTING_RESULT, msgs);
+		return msgs;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setThreadedCountingResult(CountingResult newThreadedCountingResult) {
+		if (newThreadedCountingResult != eInternalContainer() || (eContainerFeatureID() != OutputPackage.COUNTING_RESULT__THREADED_COUNTING_RESULT && newThreadedCountingResult != null)) {
+			if (EcoreUtil.isAncestor(this, newThreadedCountingResult))
+				throw new IllegalArgumentException("Recursive containment not allowed for " + toString());
+			NotificationChain msgs = null;
+			if (eInternalContainer() != null)
+				msgs = eBasicRemoveFromContainer(msgs);
+			if (newThreadedCountingResult != null)
+				msgs = ((InternalEObject)newThreadedCountingResult).eInverseAdd(this, OutputPackage.COUNTING_RESULT__SPAWNED_THREADED_COUNTING_RESULTS, CountingResult.class, msgs);
+			msgs = basicSetThreadedCountingResult(newThreadedCountingResult, msgs);
+			if (msgs != null) msgs.dispatch();
+		}
+		else if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, OutputPackage.COUNTING_RESULT__THREADED_COUNTING_RESULT, newThreadedCountingResult, newThreadedCountingResult));
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	public RequestResult getRequestResult() {
 		if (eContainerFeatureID() != OutputPackage.COUNTING_RESULT__REQUEST_RESULT) return null;
 		return (RequestResult)eContainer();
@@ -515,6 +664,12 @@ public class CountingResultImpl extends EObjectImpl implements CountingResult {
 				return ((InternalEList<InternalEObject>)(InternalEList<?>)getArrayCreationCounts()).basicAdd(otherEnd, msgs);
 			case OutputPackage.COUNTING_RESULT__METHOD_CALL_COUNTS:
 				return ((InternalEList<InternalEObject>)(InternalEList<?>)getMethodCallCounts()).basicAdd(otherEnd, msgs);
+			case OutputPackage.COUNTING_RESULT__SPAWNED_THREADED_COUNTING_RESULTS:
+				return ((InternalEList<InternalEObject>)(InternalEList<?>)getSpawnedThreadedCountingResults()).basicAdd(otherEnd, msgs);
+			case OutputPackage.COUNTING_RESULT__THREADED_COUNTING_RESULT:
+				if (eInternalContainer() != null)
+					msgs = eBasicRemoveFromContainer(msgs);
+				return basicSetThreadedCountingResult((CountingResult)otherEnd, msgs);
 			case OutputPackage.COUNTING_RESULT__REQUEST_RESULT:
 				if (eInternalContainer() != null)
 					msgs = eBasicRemoveFromContainer(msgs);
@@ -541,6 +696,10 @@ public class CountingResultImpl extends EObjectImpl implements CountingResult {
 				return ((InternalEList<?>)getArrayCreationCounts()).basicRemove(otherEnd, msgs);
 			case OutputPackage.COUNTING_RESULT__METHOD_CALL_COUNTS:
 				return ((InternalEList<?>)getMethodCallCounts()).basicRemove(otherEnd, msgs);
+			case OutputPackage.COUNTING_RESULT__SPAWNED_THREADED_COUNTING_RESULTS:
+				return ((InternalEList<?>)getSpawnedThreadedCountingResults()).basicRemove(otherEnd, msgs);
+			case OutputPackage.COUNTING_RESULT__THREADED_COUNTING_RESULT:
+				return basicSetThreadedCountingResult(null, msgs);
 			case OutputPackage.COUNTING_RESULT__REQUEST_RESULT:
 				return basicSetRequestResult(null, msgs);
 		}
@@ -557,6 +716,8 @@ public class CountingResultImpl extends EObjectImpl implements CountingResult {
 		switch (eContainerFeatureID()) {
 			case OutputPackage.COUNTING_RESULT__RESULT_COLLECTION:
 				return eInternalContainer().eInverseRemove(this, OutputPackage.RESULT_COLLECTION__COUNTING_RESULTS, ResultCollection.class, msgs);
+			case OutputPackage.COUNTING_RESULT__THREADED_COUNTING_RESULT:
+				return eInternalContainer().eInverseRemove(this, OutputPackage.COUNTING_RESULT__SPAWNED_THREADED_COUNTING_RESULTS, CountingResult.class, msgs);
 			case OutputPackage.COUNTING_RESULT__REQUEST_RESULT:
 				return eInternalContainer().eInverseRemove(this, OutputPackage.REQUEST_RESULT__COUNTING_RESULTS, RequestResult.class, msgs);
 		}
@@ -592,6 +753,14 @@ public class CountingResultImpl extends EObjectImpl implements CountingResult {
 				return getArrayCreationCounts();
 			case OutputPackage.COUNTING_RESULT__METHOD_CALL_COUNTS:
 				return getMethodCallCounts();
+			case OutputPackage.COUNTING_RESULT__THREAD_ID:
+				return getThreadId();
+			case OutputPackage.COUNTING_RESULT__FINAL:
+				return isFinal();
+			case OutputPackage.COUNTING_RESULT__SPAWNED_THREADED_COUNTING_RESULTS:
+				return getSpawnedThreadedCountingResults();
+			case OutputPackage.COUNTING_RESULT__THREADED_COUNTING_RESULT:
+				return getThreadedCountingResult();
 			case OutputPackage.COUNTING_RESULT__REQUEST_RESULT:
 				return getRequestResult();
 		}
@@ -640,6 +809,19 @@ public class CountingResultImpl extends EObjectImpl implements CountingResult {
 				getMethodCallCounts().clear();
 				getMethodCallCounts().addAll((Collection<? extends MethodCallCount>)newValue);
 				return;
+			case OutputPackage.COUNTING_RESULT__THREAD_ID:
+				setThreadId((Long)newValue);
+				return;
+			case OutputPackage.COUNTING_RESULT__FINAL:
+				setFinal((Boolean)newValue);
+				return;
+			case OutputPackage.COUNTING_RESULT__SPAWNED_THREADED_COUNTING_RESULTS:
+				getSpawnedThreadedCountingResults().clear();
+				getSpawnedThreadedCountingResults().addAll((Collection<? extends CountingResult>)newValue);
+				return;
+			case OutputPackage.COUNTING_RESULT__THREADED_COUNTING_RESULT:
+				setThreadedCountingResult((CountingResult)newValue);
+				return;
 			case OutputPackage.COUNTING_RESULT__REQUEST_RESULT:
 				setRequestResult((RequestResult)newValue);
 				return;
@@ -685,6 +867,18 @@ public class CountingResultImpl extends EObjectImpl implements CountingResult {
 			case OutputPackage.COUNTING_RESULT__METHOD_CALL_COUNTS:
 				getMethodCallCounts().clear();
 				return;
+			case OutputPackage.COUNTING_RESULT__THREAD_ID:
+				setThreadId(THREAD_ID_EDEFAULT);
+				return;
+			case OutputPackage.COUNTING_RESULT__FINAL:
+				setFinal(FINAL_EDEFAULT);
+				return;
+			case OutputPackage.COUNTING_RESULT__SPAWNED_THREADED_COUNTING_RESULTS:
+				getSpawnedThreadedCountingResults().clear();
+				return;
+			case OutputPackage.COUNTING_RESULT__THREADED_COUNTING_RESULT:
+				setThreadedCountingResult((CountingResult)null);
+				return;
 			case OutputPackage.COUNTING_RESULT__REQUEST_RESULT:
 				setRequestResult((RequestResult)null);
 				return;
@@ -720,6 +914,14 @@ public class CountingResultImpl extends EObjectImpl implements CountingResult {
 				return arrayCreationCounts != null && !arrayCreationCounts.isEmpty();
 			case OutputPackage.COUNTING_RESULT__METHOD_CALL_COUNTS:
 				return methodCallCounts != null && !methodCallCounts.isEmpty();
+			case OutputPackage.COUNTING_RESULT__THREAD_ID:
+				return threadId != THREAD_ID_EDEFAULT;
+			case OutputPackage.COUNTING_RESULT__FINAL:
+				return final_ != FINAL_EDEFAULT;
+			case OutputPackage.COUNTING_RESULT__SPAWNED_THREADED_COUNTING_RESULTS:
+				return spawnedThreadedCountingResults != null && !spawnedThreadedCountingResults.isEmpty();
+			case OutputPackage.COUNTING_RESULT__THREADED_COUNTING_RESULT:
+				return getThreadedCountingResult() != null;
 			case OutputPackage.COUNTING_RESULT__REQUEST_RESULT:
 				return getRequestResult() != null;
 		}
@@ -744,6 +946,10 @@ public class CountingResultImpl extends EObjectImpl implements CountingResult {
 		result.append(opcodeCounts);
 		result.append(", qualifiedMethodName: ");
 		result.append(qualifiedMethodName);
+		result.append(", threadId: ");
+		result.append(threadId);
+		result.append(", final: ");
+		result.append(final_);
 		result.append(')');
 		return result.toString();
 	}

@@ -26,6 +26,10 @@ import org.eclipse.emf.ecore.EObject;
  *   <li>{@link edu.kit.ipd.sdq.bycounter.output.CountingResult#getResultCollection <em>Result Collection</em>}</li>
  *   <li>{@link edu.kit.ipd.sdq.bycounter.output.CountingResult#getArrayCreationCounts <em>Array Creation Counts</em>}</li>
  *   <li>{@link edu.kit.ipd.sdq.bycounter.output.CountingResult#getMethodCallCounts <em>Method Call Counts</em>}</li>
+ *   <li>{@link edu.kit.ipd.sdq.bycounter.output.CountingResult#getThreadId <em>Thread Id</em>}</li>
+ *   <li>{@link edu.kit.ipd.sdq.bycounter.output.CountingResult#isFinal <em>Final</em>}</li>
+ *   <li>{@link edu.kit.ipd.sdq.bycounter.output.CountingResult#getSpawnedThreadedCountingResults <em>Spawned Threaded Counting Results</em>}</li>
+ *   <li>{@link edu.kit.ipd.sdq.bycounter.output.CountingResult#getThreadedCountingResult <em>Threaded Counting Result</em>}</li>
  *   <li>{@link edu.kit.ipd.sdq.bycounter.output.CountingResult#getRequestResult <em>Request Result</em>}</li>
  * </ul>
  * </p>
@@ -265,6 +269,106 @@ public interface CountingResult extends EObject {
 	 * @generated
 	 */
 	EList<MethodCallCount> getMethodCallCounts();
+
+	/**
+	 * Returns the value of the '<em><b>Thread Id</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Thread Id</em>' attribute isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Thread Id</em>' attribute.
+	 * @see #setThreadId(long)
+	 * @see edu.kit.ipd.sdq.bycounter.output.OutputPackage#getCountingResult_ThreadId()
+	 * @model required="true" ordered="false"
+	 * @generated
+	 */
+	long getThreadId();
+
+	/**
+	 * Sets the value of the '{@link edu.kit.ipd.sdq.bycounter.output.CountingResult#getThreadId <em>Thread Id</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Thread Id</em>' attribute.
+	 * @see #getThreadId()
+	 * @generated
+	 */
+	void setThreadId(long value);
+
+	/**
+	 * Returns the value of the '<em><b>Final</b></em>' attribute.
+	 * The default value is <code>"false"</code>.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * <!-- begin-model-doc -->
+	 * When true, the result is complete and all field have their final value.
+	 * When false, the result exists to allow for the correct result structure. The values of fields and references however are not all determined yet. In particular, counts for opcodes, method calls or array creations are subject to change.
+	 * An instance in which final is used is a result for code which spawns threads. In order to correctly create a parent->child thread result relationship, an incomplete result (i.e. final=false) is created that correctly references the spawned result but is incomplete until the entirety of the instrumented element is executed.
+	 * <!-- end-model-doc -->
+	 * @return the value of the '<em>Final</em>' attribute.
+	 * @see #setFinal(boolean)
+	 * @see edu.kit.ipd.sdq.bycounter.output.OutputPackage#getCountingResult_Final()
+	 * @model default="false" required="true" ordered="false"
+	 * @generated
+	 */
+	boolean isFinal();
+
+	/**
+	 * Sets the value of the '{@link edu.kit.ipd.sdq.bycounter.output.CountingResult#isFinal <em>Final</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Final</em>' attribute.
+	 * @see #isFinal()
+	 * @generated
+	 */
+	void setFinal(boolean value);
+
+	/**
+	 * Returns the value of the '<em><b>Spawned Threaded Counting Results</b></em>' containment reference list.
+	 * The list contents are of type {@link edu.kit.ipd.sdq.bycounter.output.CountingResult}.
+	 * It is bidirectional and its opposite is '{@link edu.kit.ipd.sdq.bycounter.output.CountingResult#getThreadedCountingResult <em>Threaded Counting Result</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Spawned Threaded Counting Results</em>' containment reference list isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Spawned Threaded Counting Results</em>' containment reference list.
+	 * @see edu.kit.ipd.sdq.bycounter.output.OutputPackage#getCountingResult_SpawnedThreadedCountingResults()
+	 * @see edu.kit.ipd.sdq.bycounter.output.CountingResult#getThreadedCountingResult
+	 * @model opposite="threadedCountingResult" containment="true" ordered="false"
+	 * @generated
+	 */
+	EList<CountingResult> getSpawnedThreadedCountingResults();
+
+	/**
+	 * Returns the value of the '<em><b>Threaded Counting Result</b></em>' container reference.
+	 * It is bidirectional and its opposite is '{@link edu.kit.ipd.sdq.bycounter.output.CountingResult#getSpawnedThreadedCountingResults <em>Spawned Threaded Counting Results</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Threaded Counting Result</em>' container reference isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Threaded Counting Result</em>' container reference.
+	 * @see #setThreadedCountingResult(CountingResult)
+	 * @see edu.kit.ipd.sdq.bycounter.output.OutputPackage#getCountingResult_ThreadedCountingResult()
+	 * @see edu.kit.ipd.sdq.bycounter.output.CountingResult#getSpawnedThreadedCountingResults
+	 * @model opposite="spawnedThreadedCountingResults" transient="false" ordered="false"
+	 * @generated
+	 */
+	CountingResult getThreadedCountingResult();
+
+	/**
+	 * Sets the value of the '{@link edu.kit.ipd.sdq.bycounter.output.CountingResult#getThreadedCountingResult <em>Threaded Counting Result</em>}' container reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Threaded Counting Result</em>' container reference.
+	 * @see #getThreadedCountingResult()
+	 * @generated
+	 */
+	void setThreadedCountingResult(CountingResult value);
 
 	/**
 	 * Returns the value of the '<em><b>Request Result</b></em>' container reference.

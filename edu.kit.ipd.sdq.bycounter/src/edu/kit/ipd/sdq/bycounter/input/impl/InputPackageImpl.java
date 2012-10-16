@@ -41,6 +41,10 @@ import org.eclipse.emf.ecore.EcorePackage;
 
 import org.eclipse.emf.ecore.impl.EPackageImpl;
 
+import types.TypesPackage;
+
+import types.impl.TypesPackageImpl;
+
 /**
  * <!-- begin-user-doc -->
  * An implementation of the model <b>Package</b>.
@@ -163,14 +167,17 @@ public class InputPackageImpl extends EPackageImpl implements InputPackage {
 
 		// Obtain or create and register interdependencies
 		OutputPackageImpl theOutputPackage = (OutputPackageImpl)(EPackage.Registry.INSTANCE.getEPackage(OutputPackage.eNS_URI) instanceof OutputPackageImpl ? EPackage.Registry.INSTANCE.getEPackage(OutputPackage.eNS_URI) : OutputPackage.eINSTANCE);
+		TypesPackageImpl theTypesPackage = (TypesPackageImpl)(EPackage.Registry.INSTANCE.getEPackage(TypesPackage.eNS_URI) instanceof TypesPackageImpl ? EPackage.Registry.INSTANCE.getEPackage(TypesPackage.eNS_URI) : TypesPackage.eINSTANCE);
 
 		// Create package meta-data objects
 		theInputPackage.createPackageContents();
 		theOutputPackage.createPackageContents();
+		theTypesPackage.createPackageContents();
 
 		// Initialize created meta-data
 		theInputPackage.initializePackageContents();
 		theOutputPackage.initializePackageContents();
+		theTypesPackage.initializePackageContents();
 
 		// Mark meta-data to indicate it can't be changed
 		theInputPackage.freeze();

@@ -160,11 +160,6 @@ public class RequestResultItemProvider
 
 		newChildDescriptors.add
 			(createChildParameter
-				(OutputPackage.Literals.REQUEST_RESULT__COUNTING_RESULTS,
-				 OutputFactory.eINSTANCE.createThreadedCountingResult()));
-
-		newChildDescriptors.add
-			(createChildParameter
 				(OutputPackage.Literals.REQUEST_RESULT__RESULT_COLLECTION,
 				 OutputFactory.eINSTANCE.createResultCollection()));
 	}

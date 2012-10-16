@@ -158,11 +158,6 @@ public class ResultCollectionItemProvider
 			(createChildParameter
 				(OutputPackage.Literals.RESULT_COLLECTION__COUNTING_RESULTS,
 				 OutputFactory.eINSTANCE.createCountingResult()));
-
-		newChildDescriptors.add
-			(createChildParameter
-				(OutputPackage.Literals.RESULT_COLLECTION__COUNTING_RESULTS,
-				 OutputFactory.eINSTANCE.createThreadedCountingResult()));
 	}
 
 	/**

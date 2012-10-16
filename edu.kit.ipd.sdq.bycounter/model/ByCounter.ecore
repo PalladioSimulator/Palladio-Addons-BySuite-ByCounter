@@ -7,7 +7,7 @@
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
       <details key="documentation" value="Decorator&amp;nbsp;models&amp;nbsp;which&amp;nbsp;annotate&amp;nbsp;raw&amp;nbsp;resource&amp;nbsp;demands&amp;nbsp;to&amp;nbsp;AbstractInternalControlFlowActions."/>
     </eAnnotations>
-    <eClassifiers xsi:type="ecore:EClass" name="OutputModelRepository" eSuperTypes="../../de.uka.ipd.sdq.identifier/model/identifier.ecore#//Identifier">
+    <eClassifiers xsi:type="ecore:EClass" name="OutputModelRepository" eSuperTypes="platform:/plugin/de.uka.ipd.sdq.identifier/model/identifier.ecore#//Identifier">
       <eStructuralFeatures xsi:type="ecore:EReference" name="resultCollection" ordered="false"
           upperBound="-1" eType="#//output/ResultCollection" containment="true"/>
     </eClassifiers>
@@ -17,7 +17,7 @@
       <eStructuralFeatures xsi:type="ecore:EReference" name="countingResults" ordered="false"
           upperBound="-1" eType="#//output/CountingResult" containment="true" eOpposite="#//output/CountingResult/resultCollection"/>
     </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" name="RequestResult" eSuperTypes="../../de.uka.ipd.sdq.identifier/model/identifier.ecore#//Identifier">
+    <eClassifiers xsi:type="ecore:EClass" name="RequestResult" eSuperTypes="platform:/plugin/de.uka.ipd.sdq.identifier/model/identifier.ecore#//Identifier">
       <eStructuralFeatures xsi:type="ecore:EReference" name="countingResults" ordered="false"
           upperBound="-1" eType="#//output/CountingResult" containment="true" eOpposite="#//output/CountingResult/requestResult"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="resultCollection" ordered="false"
@@ -65,6 +65,20 @@
           eOpposite="#//output/ArrayCreationCount/countingResult"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="methodCallCounts" ordered="false"
           upperBound="-1" eType="#//output/MethodCallCount" containment="true" eOpposite="#//output/MethodCallCount/countingResult"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="threadId" ordered="false"
+          lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//ELong"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="final" ordered="false"
+          lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"
+          defaultValueLiteral="false">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="When true, the result is complete and all field have their final value.&#xA;When false, the result exists to allow for the correct result structure. The values of fields and references however are not all determined yet. In particular, counts for opcodes, method calls or array creations are subject to change.&#xA;An instance in which final is used is a result for code which spawns threads. In order to correctly create a parent->child thread result relationship, an incomplete result (i.e. final=false) is created that correctly references the spawned result but is incomplete until the entirety of the instrumented element is executed."/>
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="spawnedThreadedCountingResults"
+          ordered="false" upperBound="-1" eType="#//output/CountingResult" containment="true"
+          eOpposite="#//output/CountingResult/threadedCountingResult"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="threadedCountingResult"
+          ordered="false" eType="#//output/CountingResult" eOpposite="#//output/CountingResult/spawnedThreadedCountingResults"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="requestResult" ordered="false"
           eType="#//output/RequestResult" eOpposite="#//output/RequestResult/countingResults"/>
     </eClassifiers>
@@ -121,26 +135,10 @@
       <eStructuralFeatures xsi:type="ecore:EReference" name="countingResult" ordered="false"
           lowerBound="1" eType="#//output/CountingResult" eOpposite="#//output/CountingResult/methodCallCounts"/>
     </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" name="ThreadedCountingResult" eSuperTypes="#//output/CountingResult">
-      <eStructuralFeatures xsi:type="ecore:EReference" name="spawnedThreadedCountingResults"
-          ordered="false" upperBound="-1" eType="#//output/ThreadedCountingResult"
-          containment="true" eOpposite="#//output/ThreadedCountingResult/threadedCountingResult"/>
-      <eStructuralFeatures xsi:type="ecore:EReference" name="threadedCountingResult"
-          ordered="false" eType="#//output/ThreadedCountingResult" eOpposite="#//output/ThreadedCountingResult/spawnedThreadedCountingResults"/>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" name="threadId" ordered="false"
-          lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//ELong"/>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" name="final" ordered="false"
-          lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"
-          defaultValueLiteral="false">
-        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-          <details key="documentation" value="When true, the result is complete and all field have their final value.&#xA;When false, the result exists to allow for the correct result structure. The values of fields and references however are not all determined yet. In particular, counts for opcodes, method calls or array creations are subject to change."/>
-        </eAnnotations>
-      </eStructuralFeatures>
-    </eClassifiers>
   </eSubpackages>
   <eSubpackages name="input" nsURI="http://sdq.ipd.kit.edu/ByCounterModels/Input/0.3"
       nsPrefix="ByCounter.Input">
-    <eClassifiers xsi:type="ecore:EClass" name="InstrumentationProfile" eSuperTypes="../../de.uka.ipd.sdq.identifier/model/identifier.ecore#//Identifier">
+    <eClassifiers xsi:type="ecore:EClass" name="InstrumentationProfile" eSuperTypes="platform:/plugin/de.uka.ipd.sdq.identifier/model/identifier.ecore#//Identifier">
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="instrumentRecursively"
           ordered="false" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"
           defaultValueLiteral="true">
@@ -199,7 +197,7 @@
       </eStructuralFeatures>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="InstrumentationProfileRepository"
-        eSuperTypes="../../de.uka.ipd.sdq.identifier/model/identifier.ecore#//Identifier">
+        eSuperTypes="platform:/plugin/de.uka.ipd.sdq.identifier/model/identifier.ecore#//Identifier">
       <eStructuralFeatures xsi:type="ecore:EReference" name="executionProfile" ordered="false"
           upperBound="-1" eType="#//input/ExecutionProfile" containment="true" eOpposite="#//input/ExecutionProfile/instrumentationProfileRepository"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="instrumentationProfile"
@@ -226,7 +224,7 @@
       <eStructuralFeatures xsi:type="ecore:EReference" name="instrumentationProfileRepository"
           ordered="false" eType="#//input/InstrumentationProfileRepository" eOpposite="#//input/InstrumentationProfileRepository/executionProfile"/>
     </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" name="LogicalSet" eSuperTypes="../../de.uka.ipd.sdq.identifier/model/identifier.ecore#//Identifier">
+    <eClassifiers xsi:type="ecore:EClass" name="LogicalSet" eSuperTypes="platform:/plugin/de.uka.ipd.sdq.identifier/model/identifier.ecore#//Identifier">
       <eStructuralFeatures xsi:type="ecore:EReference" name="internalClasses" ordered="false"
           upperBound="-1" eType="ecore:EClass platform:/plugin/de.fzi.gast/model/gast.ecore#//types/GASTClass"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="executionProfile" ordered="false"

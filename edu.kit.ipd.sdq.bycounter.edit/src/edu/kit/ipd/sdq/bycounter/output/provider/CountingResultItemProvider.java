@@ -4,6 +4,7 @@ package edu.kit.ipd.sdq.bycounter.output.provider;
 
 
 import edu.kit.ipd.sdq.bycounter.output.CountingResult;
+import edu.kit.ipd.sdq.bycounter.output.OutputFactory;
 import edu.kit.ipd.sdq.bycounter.output.OutputPackage;
 
 import java.util.Collection;
@@ -13,6 +14,8 @@ import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.common.notify.Notification;
 
 import org.eclipse.emf.common.util.ResourceLocator;
+
+import org.eclipse.emf.ecore.EStructuralFeature;
 
 import org.eclipse.emf.edit.provider.ComposeableAdapterFactory;
 import org.eclipse.emf.edit.provider.IEditingDomainItemProvider;
@@ -69,6 +72,8 @@ public class CountingResultItemProvider
 			addQualifiedMethodNamePropertyDescriptor(object);
 			addArrayCreationCountsPropertyDescriptor(object);
 			addMethodCallCountsPropertyDescriptor(object);
+			addThreadIdPropertyDescriptor(object);
+			addFinalPropertyDescriptor(object);
 		}
 		return itemPropertyDescriptors;
 	}
@@ -272,6 +277,80 @@ public class CountingResultItemProvider
 	}
 
 	/**
+	 * This adds a property descriptor for the Thread Id feature.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	protected void addThreadIdPropertyDescriptor(Object object) {
+		itemPropertyDescriptors.add
+			(createItemPropertyDescriptor
+				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
+				 getResourceLocator(),
+				 getString("_UI_CountingResult_threadId_feature"),
+				 getString("_UI_PropertyDescriptor_description", "_UI_CountingResult_threadId_feature", "_UI_CountingResult_type"),
+				 OutputPackage.Literals.COUNTING_RESULT__THREAD_ID,
+				 true,
+				 false,
+				 false,
+				 ItemPropertyDescriptor.INTEGRAL_VALUE_IMAGE,
+				 null,
+				 null));
+	}
+
+	/**
+	 * This adds a property descriptor for the Final feature.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	protected void addFinalPropertyDescriptor(Object object) {
+		itemPropertyDescriptors.add
+			(createItemPropertyDescriptor
+				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
+				 getResourceLocator(),
+				 getString("_UI_CountingResult_final_feature"),
+				 getString("_UI_PropertyDescriptor_description", "_UI_CountingResult_final_feature", "_UI_CountingResult_type"),
+				 OutputPackage.Literals.COUNTING_RESULT__FINAL,
+				 true,
+				 false,
+				 false,
+				 ItemPropertyDescriptor.BOOLEAN_VALUE_IMAGE,
+				 null,
+				 null));
+	}
+
+	/**
+	 * This specifies how to implement {@link #getChildren} and is used to deduce an appropriate feature for an
+	 * {@link org.eclipse.emf.edit.command.AddCommand}, {@link org.eclipse.emf.edit.command.RemoveCommand} or
+	 * {@link org.eclipse.emf.edit.command.MoveCommand} in {@link #createCommand}.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public Collection<? extends EStructuralFeature> getChildrenFeatures(Object object) {
+		if (childrenFeatures == null) {
+			super.getChildrenFeatures(object);
+			childrenFeatures.add(OutputPackage.Literals.COUNTING_RESULT__SPAWNED_THREADED_COUNTING_RESULTS);
+		}
+		return childrenFeatures;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	protected EStructuralFeature getChildFeature(Object object, Object child) {
+		// Check the type of the specified child object and return the proper feature to use for
+		// adding (see {@link AddCommand}) it as a child.
+
+		return super.getChildFeature(object, child);
+	}
+
+	/**
 	 * This returns CountingResult.gif.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -316,7 +395,12 @@ public class CountingResultItemProvider
 			case OutputPackage.COUNTING_RESULT__QUALIFIED_METHOD_NAME:
 			case OutputPackage.COUNTING_RESULT__ARRAY_CREATION_COUNTS:
 			case OutputPackage.COUNTING_RESULT__METHOD_CALL_COUNTS:
+			case OutputPackage.COUNTING_RESULT__THREAD_ID:
+			case OutputPackage.COUNTING_RESULT__FINAL:
 				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
+				return;
+			case OutputPackage.COUNTING_RESULT__SPAWNED_THREADED_COUNTING_RESULTS:
+				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), true, false));
 				return;
 		}
 		super.notifyChanged(notification);
@@ -332,6 +416,11 @@ public class CountingResultItemProvider
 	@Override
 	protected void collectNewChildDescriptors(Collection<Object> newChildDescriptors, Object object) {
 		super.collectNewChildDescriptors(newChildDescriptors, object);
+
+		newChildDescriptors.add
+			(createChildParameter
+				(OutputPackage.Literals.COUNTING_RESULT__SPAWNED_THREADED_COUNTING_RESULTS,
+				 OutputFactory.eINSTANCE.createCountingResult()));
 	}
 
 	/**

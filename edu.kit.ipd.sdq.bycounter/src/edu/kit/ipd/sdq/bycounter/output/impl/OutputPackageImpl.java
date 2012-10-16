@@ -31,7 +31,6 @@ import edu.kit.ipd.sdq.bycounter.output.OutputModelRepository;
 import edu.kit.ipd.sdq.bycounter.output.OutputPackage;
 import edu.kit.ipd.sdq.bycounter.output.RequestResult;
 import edu.kit.ipd.sdq.bycounter.output.ResultCollection;
-import edu.kit.ipd.sdq.bycounter.output.ThreadedCountingResult;
 
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
@@ -41,6 +40,10 @@ import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EcorePackage;
 
 import org.eclipse.emf.ecore.impl.EPackageImpl;
+
+import types.TypesPackage;
+
+import types.impl.TypesPackageImpl;
 
 /**
  * <!-- begin-user-doc -->
@@ -97,13 +100,6 @@ public class OutputPackageImpl extends EPackageImpl implements OutputPackage {
 	 * @generated
 	 */
 	private EClass methodCallCountEClass = null;
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	private EClass threadedCountingResultEClass = null;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -171,14 +167,17 @@ public class OutputPackageImpl extends EPackageImpl implements OutputPackage {
 
 		// Obtain or create and register interdependencies
 		InputPackageImpl theInputPackage = (InputPackageImpl)(EPackage.Registry.INSTANCE.getEPackage(InputPackage.eNS_URI) instanceof InputPackageImpl ? EPackage.Registry.INSTANCE.getEPackage(InputPackage.eNS_URI) : InputPackage.eINSTANCE);
+		TypesPackageImpl theTypesPackage = (TypesPackageImpl)(EPackage.Registry.INSTANCE.getEPackage(TypesPackage.eNS_URI) instanceof TypesPackageImpl ? EPackage.Registry.INSTANCE.getEPackage(TypesPackage.eNS_URI) : TypesPackage.eINSTANCE);
 
 		// Create package meta-data objects
 		theOutputPackage.createPackageContents();
 		theInputPackage.createPackageContents();
+		theTypesPackage.createPackageContents();
 
 		// Initialize created meta-data
 		theOutputPackage.initializePackageContents();
 		theInputPackage.initializePackageContents();
+		theTypesPackage.initializePackageContents();
 
 		// Mark meta-data to indicate it can't be changed
 		theOutputPackage.freeze();
@@ -365,8 +364,44 @@ public class OutputPackageImpl extends EPackageImpl implements OutputPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public EAttribute getCountingResult_ThreadId() {
+		return (EAttribute)countingResultEClass.getEStructuralFeatures().get(10);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getCountingResult_Final() {
+		return (EAttribute)countingResultEClass.getEStructuralFeatures().get(11);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EReference getCountingResult_SpawnedThreadedCountingResults() {
+		return (EReference)countingResultEClass.getEStructuralFeatures().get(12);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EReference getCountingResult_ThreadedCountingResult() {
+		return (EReference)countingResultEClass.getEStructuralFeatures().get(13);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	public EReference getCountingResult_RequestResult() {
-		return (EReference)countingResultEClass.getEStructuralFeatures().get(10);
+		return (EReference)countingResultEClass.getEStructuralFeatures().get(14);
 	}
 
 	/**
@@ -491,51 +526,6 @@ public class OutputPackageImpl extends EPackageImpl implements OutputPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EClass getThreadedCountingResult() {
-		return threadedCountingResultEClass;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public EReference getThreadedCountingResult_SpawnedThreadedCountingResults() {
-		return (EReference)threadedCountingResultEClass.getEStructuralFeatures().get(0);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public EReference getThreadedCountingResult_ThreadedCountingResult() {
-		return (EReference)threadedCountingResultEClass.getEStructuralFeatures().get(1);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public EAttribute getThreadedCountingResult_ThreadId() {
-		return (EAttribute)threadedCountingResultEClass.getEStructuralFeatures().get(2);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public EAttribute getThreadedCountingResult_Final() {
-		return (EAttribute)threadedCountingResultEClass.getEStructuralFeatures().get(3);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
 	public EEnum getArrayType() {
 		return arrayTypeEEnum;
 	}
@@ -590,6 +580,10 @@ public class OutputPackageImpl extends EPackageImpl implements OutputPackage {
 		createEReference(countingResultEClass, COUNTING_RESULT__RESULT_COLLECTION);
 		createEReference(countingResultEClass, COUNTING_RESULT__ARRAY_CREATION_COUNTS);
 		createEReference(countingResultEClass, COUNTING_RESULT__METHOD_CALL_COUNTS);
+		createEAttribute(countingResultEClass, COUNTING_RESULT__THREAD_ID);
+		createEAttribute(countingResultEClass, COUNTING_RESULT__FINAL);
+		createEReference(countingResultEClass, COUNTING_RESULT__SPAWNED_THREADED_COUNTING_RESULTS);
+		createEReference(countingResultEClass, COUNTING_RESULT__THREADED_COUNTING_RESULT);
 		createEReference(countingResultEClass, COUNTING_RESULT__REQUEST_RESULT);
 
 		uuidEClass = createEClass(UUID);
@@ -607,12 +601,6 @@ public class OutputPackageImpl extends EPackageImpl implements OutputPackage {
 		createEAttribute(methodCallCountEClass, METHOD_CALL_COUNT__COUNT);
 		createEReference(methodCallCountEClass, METHOD_CALL_COUNT__FUNCTION);
 		createEReference(methodCallCountEClass, METHOD_CALL_COUNT__COUNTING_RESULT);
-
-		threadedCountingResultEClass = createEClass(THREADED_COUNTING_RESULT);
-		createEReference(threadedCountingResultEClass, THREADED_COUNTING_RESULT__SPAWNED_THREADED_COUNTING_RESULTS);
-		createEReference(threadedCountingResultEClass, THREADED_COUNTING_RESULT__THREADED_COUNTING_RESULT);
-		createEAttribute(threadedCountingResultEClass, THREADED_COUNTING_RESULT__THREAD_ID);
-		createEAttribute(threadedCountingResultEClass, THREADED_COUNTING_RESULT__FINAL);
 
 		// Create enums
 		arrayTypeEEnum = createEEnum(ARRAY_TYPE);
@@ -654,7 +642,6 @@ public class OutputPackageImpl extends EPackageImpl implements OutputPackage {
 		// Add supertypes to classes
 		outputModelRepositoryEClass.getESuperTypes().add(theIdentifierPackage.getIdentifier());
 		requestResultEClass.getESuperTypes().add(theIdentifierPackage.getIdentifier());
-		threadedCountingResultEClass.getESuperTypes().add(this.getCountingResult());
 
 		// Initialize classes and features; add operations and parameters
 		initEClass(outputModelRepositoryEClass, OutputModelRepository.class, "OutputModelRepository", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
@@ -679,6 +666,10 @@ public class OutputPackageImpl extends EPackageImpl implements OutputPackage {
 		initEReference(getCountingResult_ResultCollection(), this.getResultCollection(), this.getResultCollection_CountingResults(), "resultCollection", null, 0, 1, CountingResult.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
 		initEReference(getCountingResult_ArrayCreationCounts(), this.getArrayCreationCount(), this.getArrayCreationCount_CountingResult(), "arrayCreationCounts", null, 0, -1, CountingResult.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
 		initEReference(getCountingResult_MethodCallCounts(), this.getMethodCallCount(), this.getMethodCallCount_CountingResult(), "methodCallCounts", null, 0, -1, CountingResult.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+		initEAttribute(getCountingResult_ThreadId(), ecorePackage.getELong(), "threadId", null, 1, 1, CountingResult.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+		initEAttribute(getCountingResult_Final(), ecorePackage.getEBoolean(), "final", "false", 1, 1, CountingResult.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+		initEReference(getCountingResult_SpawnedThreadedCountingResults(), this.getCountingResult(), this.getCountingResult_ThreadedCountingResult(), "spawnedThreadedCountingResults", null, 0, -1, CountingResult.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+		initEReference(getCountingResult_ThreadedCountingResult(), this.getCountingResult(), this.getCountingResult_SpawnedThreadedCountingResults(), "threadedCountingResult", null, 0, 1, CountingResult.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
 		initEReference(getCountingResult_RequestResult(), this.getRequestResult(), this.getRequestResult_CountingResults(), "requestResult", null, 0, 1, CountingResult.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
 
 		initEClass(uuidEClass, edu.kit.ipd.sdq.bycounter.output.UUID.class, "UUID", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
@@ -696,12 +687,6 @@ public class OutputPackageImpl extends EPackageImpl implements OutputPackage {
 		initEAttribute(getMethodCallCount_Count(), theEcorePackage.getELong(), "count", null, 1, 1, MethodCallCount.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
 		initEReference(getMethodCallCount_Function(), thefunctionsPackage.getFunction(), null, "function", null, 0, 1, MethodCallCount.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
 		initEReference(getMethodCallCount_CountingResult(), this.getCountingResult(), this.getCountingResult_MethodCallCounts(), "countingResult", null, 1, 1, MethodCallCount.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
-
-		initEClass(threadedCountingResultEClass, ThreadedCountingResult.class, "ThreadedCountingResult", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEReference(getThreadedCountingResult_SpawnedThreadedCountingResults(), this.getThreadedCountingResult(), this.getThreadedCountingResult_ThreadedCountingResult(), "spawnedThreadedCountingResults", null, 0, -1, ThreadedCountingResult.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
-		initEReference(getThreadedCountingResult_ThreadedCountingResult(), this.getThreadedCountingResult(), this.getThreadedCountingResult_SpawnedThreadedCountingResults(), "threadedCountingResult", null, 0, 1, ThreadedCountingResult.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
-		initEAttribute(getThreadedCountingResult_ThreadId(), ecorePackage.getELong(), "threadId", null, 1, 1, ThreadedCountingResult.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
-		initEAttribute(getThreadedCountingResult_Final(), ecorePackage.getEBoolean(), "final", "false", 1, 1, ThreadedCountingResult.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
 
 		// Initialize enums and add enum literals
 		initEEnum(arrayTypeEEnum, ArrayType.class, "ArrayType");

@@ -64,7 +64,6 @@ public class OutputFactoryImpl extends EFactoryImpl implements OutputFactory {
 			case OutputPackage.UUID: return createUUID();
 			case OutputPackage.ARRAY_CREATION_COUNT: return createArrayCreationCount();
 			case OutputPackage.METHOD_CALL_COUNT: return createMethodCallCount();
-			case OutputPackage.THREADED_COUNTING_RESULT: return createThreadedCountingResult();
 			default:
 				throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
 		}
@@ -168,16 +167,6 @@ public class OutputFactoryImpl extends EFactoryImpl implements OutputFactory {
 	public MethodCallCount createMethodCallCount() {
 		MethodCallCountImpl methodCallCount = new MethodCallCountImpl();
 		return methodCallCount;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public ThreadedCountingResult createThreadedCountingResult() {
-		ThreadedCountingResultImpl threadedCountingResult = new ThreadedCountingResultImpl();
-		return threadedCountingResult;
 	}
 
 	/**

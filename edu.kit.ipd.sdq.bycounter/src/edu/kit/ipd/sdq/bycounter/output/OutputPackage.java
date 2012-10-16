@@ -282,13 +282,49 @@ public interface OutputPackage extends EPackage {
 	int COUNTING_RESULT__METHOD_CALL_COUNTS = 9;
 
 	/**
+	 * The feature id for the '<em><b>Thread Id</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int COUNTING_RESULT__THREAD_ID = 10;
+
+	/**
+	 * The feature id for the '<em><b>Final</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int COUNTING_RESULT__FINAL = 11;
+
+	/**
+	 * The feature id for the '<em><b>Spawned Threaded Counting Results</b></em>' containment reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int COUNTING_RESULT__SPAWNED_THREADED_COUNTING_RESULTS = 12;
+
+	/**
+	 * The feature id for the '<em><b>Threaded Counting Result</b></em>' container reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int COUNTING_RESULT__THREADED_COUNTING_RESULT = 13;
+
+	/**
 	 * The feature id for the '<em><b>Request Result</b></em>' container reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int COUNTING_RESULT__REQUEST_RESULT = 10;
+	int COUNTING_RESULT__REQUEST_RESULT = 14;
 
 	/**
 	 * The number of structural features of the '<em>Counting Result</em>' class.
@@ -297,7 +333,7 @@ public interface OutputPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int COUNTING_RESULT_FEATURE_COUNT = 11;
+	int COUNTING_RESULT_FEATURE_COUNT = 15;
 
 	/**
 	 * The meta object id for the '{@link edu.kit.ipd.sdq.bycounter.output.impl.UUIDImpl <em>UUID</em>}' class.
@@ -447,160 +483,6 @@ public interface OutputPackage extends EPackage {
 	int METHOD_CALL_COUNT_FEATURE_COUNT = 4;
 
 	/**
-	 * The meta object id for the '{@link edu.kit.ipd.sdq.bycounter.output.impl.ThreadedCountingResultImpl <em>Threaded Counting Result</em>}' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see edu.kit.ipd.sdq.bycounter.output.impl.ThreadedCountingResultImpl
-	 * @see edu.kit.ipd.sdq.bycounter.output.impl.OutputPackageImpl#getThreadedCountingResult()
-	 * @generated
-	 */
-	int THREADED_COUNTING_RESULT = 7;
-
-	/**
-	 * The feature id for the '<em><b>Caller Id</b></em>' containment reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int THREADED_COUNTING_RESULT__CALLER_ID = COUNTING_RESULT__CALLER_ID;
-
-	/**
-	 * The feature id for the '<em><b>Method Invocation Start Time</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int THREADED_COUNTING_RESULT__METHOD_INVOCATION_START_TIME = COUNTING_RESULT__METHOD_INVOCATION_START_TIME;
-
-	/**
-	 * The feature id for the '<em><b>Reporting Time</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int THREADED_COUNTING_RESULT__REPORTING_TIME = COUNTING_RESULT__REPORTING_TIME;
-
-	/**
-	 * The feature id for the '<em><b>Observed Element</b></em>' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int THREADED_COUNTING_RESULT__OBSERVED_ELEMENT = COUNTING_RESULT__OBSERVED_ELEMENT;
-
-	/**
-	 * The feature id for the '<em><b>Opcode Counts</b></em>' attribute list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int THREADED_COUNTING_RESULT__OPCODE_COUNTS = COUNTING_RESULT__OPCODE_COUNTS;
-
-	/**
-	 * The feature id for the '<em><b>Method Id</b></em>' containment reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int THREADED_COUNTING_RESULT__METHOD_ID = COUNTING_RESULT__METHOD_ID;
-
-	/**
-	 * The feature id for the '<em><b>Qualified Method Name</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int THREADED_COUNTING_RESULT__QUALIFIED_METHOD_NAME = COUNTING_RESULT__QUALIFIED_METHOD_NAME;
-
-	/**
-	 * The feature id for the '<em><b>Result Collection</b></em>' container reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int THREADED_COUNTING_RESULT__RESULT_COLLECTION = COUNTING_RESULT__RESULT_COLLECTION;
-
-	/**
-	 * The feature id for the '<em><b>Array Creation Counts</b></em>' containment reference list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int THREADED_COUNTING_RESULT__ARRAY_CREATION_COUNTS = COUNTING_RESULT__ARRAY_CREATION_COUNTS;
-
-	/**
-	 * The feature id for the '<em><b>Method Call Counts</b></em>' containment reference list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int THREADED_COUNTING_RESULT__METHOD_CALL_COUNTS = COUNTING_RESULT__METHOD_CALL_COUNTS;
-
-	/**
-	 * The feature id for the '<em><b>Request Result</b></em>' container reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int THREADED_COUNTING_RESULT__REQUEST_RESULT = COUNTING_RESULT__REQUEST_RESULT;
-
-	/**
-	 * The feature id for the '<em><b>Spawned Threaded Counting Results</b></em>' containment reference list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int THREADED_COUNTING_RESULT__SPAWNED_THREADED_COUNTING_RESULTS = COUNTING_RESULT_FEATURE_COUNT + 0;
-
-	/**
-	 * The feature id for the '<em><b>Threaded Counting Result</b></em>' container reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int THREADED_COUNTING_RESULT__THREADED_COUNTING_RESULT = COUNTING_RESULT_FEATURE_COUNT + 1;
-
-	/**
-	 * The feature id for the '<em><b>Thread Id</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int THREADED_COUNTING_RESULT__THREAD_ID = COUNTING_RESULT_FEATURE_COUNT + 2;
-
-	/**
-	 * The feature id for the '<em><b>Final</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int THREADED_COUNTING_RESULT__FINAL = COUNTING_RESULT_FEATURE_COUNT + 3;
-
-	/**
-	 * The number of structural features of the '<em>Threaded Counting Result</em>' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int THREADED_COUNTING_RESULT_FEATURE_COUNT = COUNTING_RESULT_FEATURE_COUNT + 4;
-
-	/**
 	 * The meta object id for the '{@link edu.kit.ipd.sdq.bycounter.output.ArrayType <em>Array Type</em>}' enum.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -608,7 +490,7 @@ public interface OutputPackage extends EPackage {
 	 * @see edu.kit.ipd.sdq.bycounter.output.impl.OutputPackageImpl#getArrayType()
 	 * @generated
 	 */
-	int ARRAY_TYPE = 8;
+	int ARRAY_TYPE = 7;
 
 
 	/**
@@ -817,6 +699,50 @@ public interface OutputPackage extends EPackage {
 	EReference getCountingResult_MethodCallCounts();
 
 	/**
+	 * Returns the meta object for the attribute '{@link edu.kit.ipd.sdq.bycounter.output.CountingResult#getThreadId <em>Thread Id</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Thread Id</em>'.
+	 * @see edu.kit.ipd.sdq.bycounter.output.CountingResult#getThreadId()
+	 * @see #getCountingResult()
+	 * @generated
+	 */
+	EAttribute getCountingResult_ThreadId();
+
+	/**
+	 * Returns the meta object for the attribute '{@link edu.kit.ipd.sdq.bycounter.output.CountingResult#isFinal <em>Final</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Final</em>'.
+	 * @see edu.kit.ipd.sdq.bycounter.output.CountingResult#isFinal()
+	 * @see #getCountingResult()
+	 * @generated
+	 */
+	EAttribute getCountingResult_Final();
+
+	/**
+	 * Returns the meta object for the containment reference list '{@link edu.kit.ipd.sdq.bycounter.output.CountingResult#getSpawnedThreadedCountingResults <em>Spawned Threaded Counting Results</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the containment reference list '<em>Spawned Threaded Counting Results</em>'.
+	 * @see edu.kit.ipd.sdq.bycounter.output.CountingResult#getSpawnedThreadedCountingResults()
+	 * @see #getCountingResult()
+	 * @generated
+	 */
+	EReference getCountingResult_SpawnedThreadedCountingResults();
+
+	/**
+	 * Returns the meta object for the container reference '{@link edu.kit.ipd.sdq.bycounter.output.CountingResult#getThreadedCountingResult <em>Threaded Counting Result</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the container reference '<em>Threaded Counting Result</em>'.
+	 * @see edu.kit.ipd.sdq.bycounter.output.CountingResult#getThreadedCountingResult()
+	 * @see #getCountingResult()
+	 * @generated
+	 */
+	EReference getCountingResult_ThreadedCountingResult();
+
+	/**
 	 * Returns the meta object for the container reference '{@link edu.kit.ipd.sdq.bycounter.output.CountingResult#getRequestResult <em>Request Result</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -966,60 +892,6 @@ public interface OutputPackage extends EPackage {
 	 * @generated
 	 */
 	EReference getMethodCallCount_CountingResult();
-
-	/**
-	 * Returns the meta object for class '{@link edu.kit.ipd.sdq.bycounter.output.ThreadedCountingResult <em>Threaded Counting Result</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for class '<em>Threaded Counting Result</em>'.
-	 * @see edu.kit.ipd.sdq.bycounter.output.ThreadedCountingResult
-	 * @generated
-	 */
-	EClass getThreadedCountingResult();
-
-	/**
-	 * Returns the meta object for the containment reference list '{@link edu.kit.ipd.sdq.bycounter.output.ThreadedCountingResult#getSpawnedThreadedCountingResults <em>Spawned Threaded Counting Results</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the containment reference list '<em>Spawned Threaded Counting Results</em>'.
-	 * @see edu.kit.ipd.sdq.bycounter.output.ThreadedCountingResult#getSpawnedThreadedCountingResults()
-	 * @see #getThreadedCountingResult()
-	 * @generated
-	 */
-	EReference getThreadedCountingResult_SpawnedThreadedCountingResults();
-
-	/**
-	 * Returns the meta object for the container reference '{@link edu.kit.ipd.sdq.bycounter.output.ThreadedCountingResult#getThreadedCountingResult <em>Threaded Counting Result</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the container reference '<em>Threaded Counting Result</em>'.
-	 * @see edu.kit.ipd.sdq.bycounter.output.ThreadedCountingResult#getThreadedCountingResult()
-	 * @see #getThreadedCountingResult()
-	 * @generated
-	 */
-	EReference getThreadedCountingResult_ThreadedCountingResult();
-
-	/**
-	 * Returns the meta object for the attribute '{@link edu.kit.ipd.sdq.bycounter.output.ThreadedCountingResult#getThreadId <em>Thread Id</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Thread Id</em>'.
-	 * @see edu.kit.ipd.sdq.bycounter.output.ThreadedCountingResult#getThreadId()
-	 * @see #getThreadedCountingResult()
-	 * @generated
-	 */
-	EAttribute getThreadedCountingResult_ThreadId();
-
-	/**
-	 * Returns the meta object for the attribute '{@link edu.kit.ipd.sdq.bycounter.output.ThreadedCountingResult#isFinal <em>Final</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Final</em>'.
-	 * @see edu.kit.ipd.sdq.bycounter.output.ThreadedCountingResult#isFinal()
-	 * @see #getThreadedCountingResult()
-	 * @generated
-	 */
-	EAttribute getThreadedCountingResult_Final();
 
 	/**
 	 * Returns the meta object for enum '{@link edu.kit.ipd.sdq.bycounter.output.ArrayType <em>Array Type</em>}'.
@@ -1214,6 +1086,38 @@ public interface OutputPackage extends EPackage {
 		EReference COUNTING_RESULT__METHOD_CALL_COUNTS = eINSTANCE.getCountingResult_MethodCallCounts();
 
 		/**
+		 * The meta object literal for the '<em><b>Thread Id</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute COUNTING_RESULT__THREAD_ID = eINSTANCE.getCountingResult_ThreadId();
+
+		/**
+		 * The meta object literal for the '<em><b>Final</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute COUNTING_RESULT__FINAL = eINSTANCE.getCountingResult_Final();
+
+		/**
+		 * The meta object literal for the '<em><b>Spawned Threaded Counting Results</b></em>' containment reference list feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference COUNTING_RESULT__SPAWNED_THREADED_COUNTING_RESULTS = eINSTANCE.getCountingResult_SpawnedThreadedCountingResults();
+
+		/**
+		 * The meta object literal for the '<em><b>Threaded Counting Result</b></em>' container reference feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference COUNTING_RESULT__THREADED_COUNTING_RESULT = eINSTANCE.getCountingResult_ThreadedCountingResult();
+
+		/**
 		 * The meta object literal for the '<em><b>Request Result</b></em>' container reference feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
@@ -1330,48 +1234,6 @@ public interface OutputPackage extends EPackage {
 		 * @generated
 		 */
 		EReference METHOD_CALL_COUNT__COUNTING_RESULT = eINSTANCE.getMethodCallCount_CountingResult();
-
-		/**
-		 * The meta object literal for the '{@link edu.kit.ipd.sdq.bycounter.output.impl.ThreadedCountingResultImpl <em>Threaded Counting Result</em>}' class.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @see edu.kit.ipd.sdq.bycounter.output.impl.ThreadedCountingResultImpl
-		 * @see edu.kit.ipd.sdq.bycounter.output.impl.OutputPackageImpl#getThreadedCountingResult()
-		 * @generated
-		 */
-		EClass THREADED_COUNTING_RESULT = eINSTANCE.getThreadedCountingResult();
-
-		/**
-		 * The meta object literal for the '<em><b>Spawned Threaded Counting Results</b></em>' containment reference list feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EReference THREADED_COUNTING_RESULT__SPAWNED_THREADED_COUNTING_RESULTS = eINSTANCE.getThreadedCountingResult_SpawnedThreadedCountingResults();
-
-		/**
-		 * The meta object literal for the '<em><b>Threaded Counting Result</b></em>' container reference feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EReference THREADED_COUNTING_RESULT__THREADED_COUNTING_RESULT = eINSTANCE.getThreadedCountingResult_ThreadedCountingResult();
-
-		/**
-		 * The meta object literal for the '<em><b>Thread Id</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute THREADED_COUNTING_RESULT__THREAD_ID = eINSTANCE.getThreadedCountingResult_ThreadId();
-
-		/**
-		 * The meta object literal for the '<em><b>Final</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute THREADED_COUNTING_RESULT__FINAL = eINSTANCE.getThreadedCountingResult_Final();
 
 		/**
 		 * The meta object literal for the '{@link edu.kit.ipd.sdq.bycounter.output.ArrayType <em>Array Type</em>}' enum.

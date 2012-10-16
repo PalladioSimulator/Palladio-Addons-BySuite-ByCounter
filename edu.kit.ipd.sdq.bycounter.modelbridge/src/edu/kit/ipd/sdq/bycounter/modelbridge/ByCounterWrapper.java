@@ -34,7 +34,6 @@ import de.uka.ipd.sdq.ByCounter.parsing.ArrayCreation;
 import de.uka.ipd.sdq.ByCounter.parsing.LineNumberRange;
 import de.uka.ipd.sdq.ByCounter.results.CountingResult;
 import de.uka.ipd.sdq.ByCounter.results.RequestResult;
-import de.uka.ipd.sdq.ByCounter.results.ThreadedCountingResult;
 import de.uka.ipd.sdq.ByCounter.utils.MethodDescriptor;
 import edu.kit.ipd.sdq.bycounter.input.EntityToInstrument;
 import edu.kit.ipd.sdq.bycounter.input.ExecutionProfile;
@@ -77,26 +76,22 @@ public class ByCounterWrapper {
 				cr = mapCountingResult(observation);
 				cr.setResultCollection(currentRun);
 
-				if(observation instanceof ThreadedCountingResult) {
-					// for threaded results, parent/child relationships need to be mapped.
-					edu.kit.ipd.sdq.bycounter.output.ThreadedCountingResult tcr = 
-							(edu.kit.ipd.sdq.bycounter.output.ThreadedCountingResult)cr;
-					ThreadedCountingResult threadedCountingResult = (ThreadedCountingResult) observation;
-					// is there a parent?
-					ThreadedCountingResult source = threadedCountingResult.getThreadedCountingResultSource();
-					if(source != null) {
-						edu.kit.ipd.sdq.bycounter.output.ThreadedCountingResult tcrSource = 
-								(edu.kit.ipd.sdq.bycounter.output.ThreadedCountingResult) countingResultToEMFMap.get(source);
-						tcr.setThreadedCountingResult(tcrSource);
-						tcrSource.getSpawnedThreadedCountingResults().add(tcr);
-					}
-					// are there children?
-					for(ThreadedCountingResult spawn : threadedCountingResult.getSpawnedThreadedCountingResults()) {
-						edu.kit.ipd.sdq.bycounter.output.ThreadedCountingResult mappedSpawn = 
-								(edu.kit.ipd.sdq.bycounter.output.ThreadedCountingResult) countingResultToEMFMap.get(spawn);
-						if(mappedSpawn != null) {
-							tcr.getSpawnedThreadedCountingResults().add(mappedSpawn);
-						}
+				// for threaded results, parent/child relationships need to be mapped.
+				CountingResult threadedCountingResult = observation;
+				// is there a parent?
+				CountingResult source = threadedCountingResult.getThreadedCountingResultSource();
+				if(source != null) {
+					edu.kit.ipd.sdq.bycounter.output.CountingResult tcrSource = 
+							countingResultToEMFMap.get(source);
+					cr.setThreadedCountingResult(tcrSource);
+					tcrSource.getSpawnedThreadedCountingResults().add(cr);
+				}
+				// are there children?
+				for(CountingResult spawn : threadedCountingResult.getSpawnedThreadedCountingResults()) {
+					edu.kit.ipd.sdq.bycounter.output.CountingResult mappedSpawn = 
+							countingResultToEMFMap.get(spawn);
+					if(mappedSpawn != null) {
+						cr.getSpawnedThreadedCountingResults().add(mappedSpawn);
 					}
 				}
 				
@@ -438,29 +433,8 @@ public class ByCounterWrapper {
 	private edu.kit.ipd.sdq.bycounter.output.CountingResult mapCountingResult(
 			CountingResult cr) {
 		edu.kit.ipd.sdq.bycounter.output.CountingResult result;
-		if(cr instanceof ThreadedCountingResult) {
-			final ThreadedCountingResult tcr = (ThreadedCountingResult)cr;
-			edu.kit.ipd.sdq.bycounter.output.ThreadedCountingResult tResult = 
-					outputFactory.createThreadedCountingResult();
-			// map properties specific to threaded counting result
-			tResult.setThreadId(tcr.getThreadId());
-			tResult.setFinal(tcr.getFinal());
-			for(ThreadedCountingResult tcrr : tcr.getSpawnedThreadedCountingResults()) {
-				// map spawned result
-				edu.kit.ipd.sdq.bycounter.output.ThreadedCountingResult mappedTcrr = 
-						(edu.kit.ipd.sdq.bycounter.output.ThreadedCountingResult)mapCountingResult(tcrr);
-				tResult.getSpawnedThreadedCountingResults().add(mappedTcrr);
-				mappedTcrr.setThreadedCountingResult(tResult);
-			}
-			// map parent/source
-			ThreadedCountingResult tcrSource = tcr.getThreadedCountingResultSource();
-			if(tcrSource != null) {
-				tResult.setThreadedCountingResult((edu.kit.ipd.sdq.bycounter.output.ThreadedCountingResult) this.countingResultToEMFMap.get(tcrSource));
-			}
-			result = tResult;
-		} else {
-			result = outputFactory.createCountingResult();
-		}
+		result = outputFactory.createCountingResult();
+		
 		// map the properies of the base class
 		result.getArrayCreationCounts().addAll(mapArrayCreationCounts(cr.getArrayCreationCounts()));
 		result.setCallerId(mapUUID(cr.getCallerID()));
@@ -471,6 +445,22 @@ public class ByCounterWrapper {
 		result.setObservedElement(entitiesToInstrumentIdMap.get(cr.getObservedElement().getId()));
 		result.setQualifiedMethodName(cr.getQualifiedMethodName());
 		result.setReportingTime(cr.getReportingTime());
+
+		// map properties specific to threaded counting result
+		result.setThreadId(cr.getThreadId());
+		result.setFinal(cr.getFinal());
+		for(CountingResult tcrr : cr.getSpawnedThreadedCountingResults()) {
+			// map spawned result
+			edu.kit.ipd.sdq.bycounter.output.CountingResult mappedTcrr = 
+					mapCountingResult(tcrr);
+			result.getSpawnedThreadedCountingResults().add(mappedTcrr);
+			mappedTcrr.setThreadedCountingResult(result);
+		}
+		// map parent/source
+		CountingResult tcrSource = cr.getThreadedCountingResultSource();
+		if(tcrSource != null) {
+			result.setThreadedCountingResult(this.countingResultToEMFMap.get(tcrSource));
+		}
 		
 		// save mapping
 		this.countingResultToEMFMap.put(cr, result);

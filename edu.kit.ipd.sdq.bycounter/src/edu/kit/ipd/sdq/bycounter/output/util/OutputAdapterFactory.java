@@ -98,10 +98,6 @@ public class OutputAdapterFactory extends AdapterFactoryImpl {
 				return createMethodCallCountAdapter();
 			}
 			@Override
-			public Adapter caseThreadedCountingResult(ThreadedCountingResult object) {
-				return createThreadedCountingResultAdapter();
-			}
-			@Override
 			public Adapter caseIdentifier(Identifier object) {
 				return createIdentifierAdapter();
 			}
@@ -220,20 +216,6 @@ public class OutputAdapterFactory extends AdapterFactoryImpl {
 	 * @generated
 	 */
 	public Adapter createMethodCallCountAdapter() {
-		return null;
-	}
-
-	/**
-	 * Creates a new adapter for an object of class '{@link edu.kit.ipd.sdq.bycounter.output.ThreadedCountingResult <em>Threaded Counting Result</em>}'.
-	 * <!-- begin-user-doc -->
-	 * This default implementation returns null so that we can easily ignore cases;
-	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
-	 * <!-- end-user-doc -->
-	 * @return the new adapter.
-	 * @see edu.kit.ipd.sdq.bycounter.output.ThreadedCountingResult
-	 * @generated
-	 */
-	public Adapter createThreadedCountingResultAdapter() {
 		return null;
 	}
 
