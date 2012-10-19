@@ -53,9 +53,8 @@ public class StatementToLineNumberRangeSwitch extends
 					// Start line of the stop condition of the loop
 					firstLine = object.getBreakConditionExpression().getPosition().getStartLine();
 				} else {
-					// Start line of the body
-					LineNumberRange subRange = this.doSwitch(object.getBody());
-					firstLine = subRange.firstLine;
+					// Start line of the loop
+					firstLine = object.getPosition().getStartLine();
 				}
 			}
 		}
@@ -64,12 +63,15 @@ public class StatementToLineNumberRangeSwitch extends
 			lastLine = object.getIncrementExpression().getPosition().getEndLine();
 		} else if (object.getBreakConditionExpression() != null) {
 			// Start line of the stop condition of the loop
-			lastLine = object.getBreakConditionExpression().getPosition().getEndLine();
+			if(object.getKind().equals(LoopStatementKind.FOREACH)) {
+				// breakconditionexpr has no position for foreach; assume firstLine
+				lastLine = firstLine;
+			} else {
+				lastLine = object.getBreakConditionExpression().getPosition().getEndLine();
+			}
 		} else {
-			// TODO LoopStatement: Insert proper start and end line number range 
-			// last line of the body
-			LineNumberRange subRange = this.doSwitch(object);
-			lastLine = subRange.lastLine;
+			// Start line of the loop
+			lastLine = object.getPosition().getStartLine();
 		}
 		return generateLNR(firstLine, lastLine, object);
 	}
