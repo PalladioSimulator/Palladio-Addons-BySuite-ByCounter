@@ -2,22 +2,22 @@
  */
 package edu.kit.ipd.sdq.bycounter.input.impl;
 
+import org.eclipse.emf.ecore.EAttribute;
+import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.EPackage;
+import org.eclipse.emf.ecore.EReference;
+import org.eclipse.emf.ecore.EcorePackage;
+import org.eclipse.emf.ecore.impl.EPackageImpl;
+import org.eclipse.uml2.types.TypesPackage;
+
 import de.fzi.gast.accesses.accessesPackage;
-
 import de.fzi.gast.annotations.annotationsPackage;
-
 import de.fzi.gast.core.corePackage;
-
 import de.fzi.gast.functions.functionsPackage;
-
 import de.fzi.gast.statements.statementsPackage;
-
 import de.fzi.gast.types.typesPackage;
-
 import de.fzi.gast.variables.variablesPackage;
-
 import de.uka.ipd.sdq.identifier.IdentifierPackage;
-
 import edu.kit.ipd.sdq.bycounter.input.EntityToInstrument;
 import edu.kit.ipd.sdq.bycounter.input.ExecutionProfile;
 import edu.kit.ipd.sdq.bycounter.input.InputFactory;
@@ -28,22 +28,8 @@ import edu.kit.ipd.sdq.bycounter.input.InstrumentedCodeArea;
 import edu.kit.ipd.sdq.bycounter.input.InstrumentedMethod;
 import edu.kit.ipd.sdq.bycounter.input.InstrumentedRegion;
 import edu.kit.ipd.sdq.bycounter.input.LogicalSet;
-
 import edu.kit.ipd.sdq.bycounter.output.OutputPackage;
-
 import edu.kit.ipd.sdq.bycounter.output.impl.OutputPackageImpl;
-
-import org.eclipse.emf.ecore.EAttribute;
-import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.EPackage;
-import org.eclipse.emf.ecore.EReference;
-import org.eclipse.emf.ecore.EcorePackage;
-
-import org.eclipse.emf.ecore.impl.EPackageImpl;
-
-import types.TypesPackage;
-
-import types.impl.TypesPackageImpl;
 
 /**
  * <!-- begin-user-doc -->
@@ -164,20 +150,18 @@ public class InputPackageImpl extends EPackageImpl implements InputPackage {
 		accessesPackage.eINSTANCE.eClass();
 		functionsPackage.eINSTANCE.eClass();
 		variablesPackage.eINSTANCE.eClass();
+		TypesPackage.eINSTANCE.eClass();
 
 		// Obtain or create and register interdependencies
 		OutputPackageImpl theOutputPackage = (OutputPackageImpl)(EPackage.Registry.INSTANCE.getEPackage(OutputPackage.eNS_URI) instanceof OutputPackageImpl ? EPackage.Registry.INSTANCE.getEPackage(OutputPackage.eNS_URI) : OutputPackage.eINSTANCE);
-		TypesPackageImpl theTypesPackage = (TypesPackageImpl)(EPackage.Registry.INSTANCE.getEPackage(TypesPackage.eNS_URI) instanceof TypesPackageImpl ? EPackage.Registry.INSTANCE.getEPackage(TypesPackage.eNS_URI) : TypesPackage.eINSTANCE);
 
 		// Create package meta-data objects
 		theInputPackage.createPackageContents();
 		theOutputPackage.createPackageContents();
-		theTypesPackage.createPackageContents();
 
 		// Initialize created meta-data
 		theInputPackage.initializePackageContents();
 		theOutputPackage.initializePackageContents();
-		theTypesPackage.initializePackageContents();
 
 		// Mark meta-data to indicate it can't be changed
 		theInputPackage.freeze();
