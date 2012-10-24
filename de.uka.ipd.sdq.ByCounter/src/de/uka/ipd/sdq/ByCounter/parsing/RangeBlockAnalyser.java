@@ -241,12 +241,21 @@ public final class RangeBlockAnalyser extends LabelBlockAnalyser {
 		// Check whether all specified line numbers exist in this method
 		if(!this.lineNumbersNotYetFound.isEmpty()) {
 			log.severe("Could not find specified line numbers in " + this.methodDescriptorString);
+			final String errorMessage = "This can happen if no information for that specific "
+					+ "line number is available in bytecode. Examples where this "
+					+ "can happen are loop declarations that contain line breaks. "
+					+ "For instance in the case of foreach loops, the line number "
+					+ "to specify can either be the line of the loop variable "
+					+ "or the line of the ':' token. If possible, look up the line "
+					+ "numbers in bytecode or try variations on your line number "
+					+ "specifications.";
 			StringBuilder exceptionText = new StringBuilder();
 			exceptionText.append("The following " + this.lineNumbersNotYetFound.size() 
 					+ " source code line numbers should be instrumented, but do not exist in the Bytecode: ");
 			for(int lineNr : this.lineNumbersNotYetFound) {
 				exceptionText.append(lineNr + ";");
 			}
+			exceptionText.append(errorMessage);
 			IllegalArgumentException iae = new IllegalArgumentException(exceptionText.toString());
 			log.log(Level.SEVERE, "", iae);
 			throw iae; 
