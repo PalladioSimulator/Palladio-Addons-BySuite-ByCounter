@@ -212,6 +212,12 @@ public class CountingResult extends CountingResultBase implements Cloneable {
 		this.isFinal = isFinal;
 	}
 
+	/* Don't consider spawned results in the hash code creation so that the 
+	 * stack doesn't blow up. */
+	/*
+	 * (non-Javadoc)
+	 * @see de.uka.ipd.sdq.ByCounter.execution.CountingResultBase#hashCode()
+	 */
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -229,10 +235,6 @@ public class CountingResult extends CountingResultBase implements Cloneable {
 				* result
 				+ ((this.resultCollection == null) ? 0 : this.resultCollection
 						.hashCode());
-		result = prime
-				* result
-				+ ((this.spawnedThreadedCountingResults == null) ? 0
-						: this.spawnedThreadedCountingResults.hashCode());
 		result = prime
 				* result
 				+ ((this.threadedCountingResultSource == null) ? 0
