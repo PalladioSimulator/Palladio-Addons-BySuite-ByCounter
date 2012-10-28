@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -53,7 +54,7 @@ public class TestBytecodeCounter extends AbstractByCounterTest {
 						File.separatorChar + "helpers" + 
 						File.separatorChar;
 
-	private static final String METHOD_SIGNATURE = "public static void arrayInstructions()";
+	private static final String METHOD_SIGNATURE_ARRAY_INSTUCTIONS = "public static void arrayInstructions()";
 	
 	private static String nestedClassMethodSig1 = "public TestSubject$InnerClass$InnerClassLevel2()";
 	
@@ -62,10 +63,6 @@ public class TestBytecodeCounter extends AbstractByCounterTest {
 	private static String nestedClassRunMethodSig = "public void useInnerClassLevel2()";
 
 	private static final String resultLogFileName = "output" + File.separatorChar +"tmpLogFile.log";
-
-	private static String testCallingTreeMethodSignature = "public void methodCallTest()";
-
-	private static Class<?> testClass = TestSubject.class;
 	
 	private static String testClassMethodCallTest = "public void methodCallTest()";
 	
@@ -141,7 +138,7 @@ public class TestBytecodeCounter extends AbstractByCounterTest {
 		
 		// do the de.uka.ipd.sdq.ByCount
 		// let the counter do its work on a method
-		MethodDescriptor methodToInstrument = new MethodDescriptor(ASMBytecodeOccurences.class.getCanonicalName(), METHOD_SIGNATURE);
+		MethodDescriptor methodToInstrument = new MethodDescriptor(ASMBytecodeOccurences.class.getCanonicalName(), METHOD_SIGNATURE_ARRAY_INSTUCTIONS);
 		counter.addEntityToInstrument(methodToInstrument);
 		counter.instrument();
 
@@ -169,7 +166,7 @@ public class TestBytecodeCounter extends AbstractByCounterTest {
 		// flat results
 		MethodDescriptor methodDescriptorMCT = 
 			new MethodDescriptor(TestSubject.class.getCanonicalName(), 
-				testCallingTreeMethodSignature);
+				testClassMethodCallTest);
 		MethodDescriptor methodDescriptorLT = 
 			new MethodDescriptor(TestSubject.class.getCanonicalName(), 
 					"public int loopTest()");
@@ -222,7 +219,7 @@ public class TestBytecodeCounter extends AbstractByCounterTest {
 
 		// test with void method
 		MethodDescriptor methodDescriptor = new MethodDescriptor(
-				testClass.getCanonicalName(), "public void methodCallTest()");
+				TestSubject.class.getCanonicalName(), "public void methodCallTest()");
 		counter.addEntityToInstrument(methodDescriptor);
 		counter.instrument();
 		counter.execute(methodDescriptor, new Object[]{});
@@ -231,7 +228,7 @@ public class TestBytecodeCounter extends AbstractByCounterTest {
 		cleanResults();
 
 		// test with boolean method
-		methodDescriptor = new MethodDescriptor(testClass.getCanonicalName(), 
+		methodDescriptor = new MethodDescriptor(TestSubject.class.getCanonicalName(), 
 			"public boolean parameterTest(int i, float f, java.lang.String s)");
 		counter.addEntityToInstrument(methodDescriptor);
 		counter.instrument();
@@ -251,7 +248,7 @@ public class TestBytecodeCounter extends AbstractByCounterTest {
 
 		//2. Specify the method to be instrumented (several methods are supported as well)
 		MethodDescriptor myMethod = new MethodDescriptor(
-				testClass.getCanonicalName(),
+				TestSubject.class.getCanonicalName(),
 				testClassMethodCallTest); //$NON-NLS-1$
 		
 		counter.getInstrumentationParams().setInstrumentRecursively(true);
@@ -288,7 +285,7 @@ public class TestBytecodeCounter extends AbstractByCounterTest {
 
 		//3. Specify the method to be executed
 		MethodDescriptor myMethod = new MethodDescriptor(
-				testClass.getCanonicalName(),
+				TestSubject.class.getCanonicalName(),
 				testClassMethodCallTest);
 		counter.getExecutionSettings().setAddUpResultsRecursively(false);
 		counter.execute(myMethod, new Object[0]);
@@ -332,7 +329,7 @@ public class TestBytecodeCounter extends AbstractByCounterTest {
 		// do the de.uka.ipd.sdq.ByCount
 		// let the counter do its work on a method
 		counter.addEntityToInstrument(
-				new MethodDescriptor(((Class<?>) ASMBytecodeOccurences.class).getCanonicalName(), METHOD_SIGNATURE));
+				new MethodDescriptor(((Class<?>) ASMBytecodeOccurences.class).getCanonicalName(), METHOD_SIGNATURE_ARRAY_INSTUCTIONS));
 		counter.instrument();
 		
 		byte[] instrumentedBytes = counter.getInstrumentedBytes();
@@ -343,7 +340,7 @@ public class TestBytecodeCounter extends AbstractByCounterTest {
 		boolean exceptionThrown = false;
 		try {
 		counter.addEntityToInstrument(
-				new MethodDescriptor(((Class<?>) ASMBytecodeOccurences.class).getCanonicalName(), METHOD_SIGNATURE));
+				new MethodDescriptor(((Class<?>) ASMBytecodeOccurences.class).getCanonicalName(), METHOD_SIGNATURE_ARRAY_INSTUCTIONS));
 		counter.instrument();
 		} catch(AlreadyInstrumentedException e) {
 			exceptionThrown = true;
@@ -357,6 +354,43 @@ public class TestBytecodeCounter extends AbstractByCounterTest {
 //			resultColl.logResult(r, true, true);
 //		}
 
+	}
+	
+
+	/**
+	 * This unit test tries to instruments {@link TestSubject}
+	 * and instantiates it. Then it instruments differently and tries to 
+	 * instantiate again.
+	 * @throws SecurityException 
+	 * @throws InvocationTargetException 
+	 * @throws IllegalArgumentException 
+	 * @throws IllegalAccessException 
+	 */
+	@Test
+	public void testInstantiateTwice() throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, SecurityException {
+		// create a BytecodeCounter
+		BytecodeCounter counter = setupByCounter();
+		Assert.assertNotNull(counter);
+		
+		// instrument a method
+		counter.addEntityToInstrument(
+				new MethodDescriptor(TestSubject.class.getCanonicalName(), "public void methodCallTest()"));
+		counter.instrument();
+		MethodDescriptor methodToExecute = new MethodDescriptor(TestSubject.class.getCanonicalName(), "public void printTest()");
+		Object instObject = counter.instantiate(methodToExecute);
+		Object[] params = new String[0];
+		instObject.getClass().getDeclaredMethods();
+		counter.execute(methodToExecute, params);
+		
+		
+//		counter.addEntityToInstrument(
+//				new MethodDescriptor(TestSubject.class.getCanonicalName(), "public int loopTest()"));
+//		counter.instrument();
+		methodToExecute = new MethodDescriptor(TestSubject.class.getCanonicalName(), "public void printTest()");
+		instObject.getClass().getDeclaredMethods();
+		instObject = counter.instantiate(methodToExecute);
+		instObject.getClass().getDeclaredMethods();
+		counter.execute(methodToExecute, params);
 	}
 	
 	/**

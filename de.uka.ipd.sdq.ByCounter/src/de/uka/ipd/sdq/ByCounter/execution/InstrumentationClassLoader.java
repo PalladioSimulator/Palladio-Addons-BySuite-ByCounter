@@ -4,8 +4,10 @@ import java.io.DataInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import javassist.ByteArrayClassPath;
@@ -54,6 +56,8 @@ public class InstrumentationClassLoader extends java.lang.ClassLoader {
 	 * {@link #updateClassInClassPool(String, byte[])}.
 	 */
 	private List<String> classesInClassPool;
+
+	private Map<CtClass, Class<?>> ctClassCache;
 		
 	/**
 	 * Construct the class loader with a default class pool.
@@ -68,6 +72,7 @@ public class InstrumentationClassLoader extends java.lang.ClassLoader {
 		this.classPool = new ClassPool();
 		this.classPool.appendSystemPath();
 		this.classesInClassPool = new LinkedList<String>();
+		this.ctClassCache = new HashMap<CtClass, Class<?>>();
 		log = Logger.getLogger(this.getClass().getCanonicalName());
 	}
 	
@@ -87,6 +92,16 @@ public class InstrumentationClassLoader extends java.lang.ClassLoader {
 			throw new RuntimeException(
 				new ClassNotFoundException("Cannot update class pool as the given byte[] for the class"
 					+ "was null."));
+		}
+		if(this.classesInClassPool.contains(className)) {
+			try {
+				// remove the previous definition from the class pool
+				log.info("Removing previous definition of '" + className 
+						+ "' from the class pool to allow for a new definition.");
+				this.classPool.get(className).detach();
+			} catch (NotFoundException e) {
+				throw new RuntimeException(e);
+			}
 		}
 		// make the class known to the class pool
 		this.classPool.insertClassPath(new ByteArrayClassPath(className, bytes));
@@ -135,12 +150,16 @@ public class InstrumentationClassLoader extends java.lang.ClassLoader {
 		// use the ClassLoader loader to get the Class<?> object
 		// use a standard protection domain
 		try {
-			return ctClassToExecute.toClass(
-					loader, 
-					Class.class.getProtectionDomain()
-					);
+			Class<?> rClass = ctClassCache.get(ctClassToExecute);
+			if(rClass == null) {
+				rClass = ctClassToExecute.toClass(
+						loader, 
+						Class.class.getProtectionDomain()
+						);
+				ctClassCache.put(ctClassToExecute, rClass);
+			}
+			return rClass;
 		} catch (CannotCompileException e) {
-			System.out.println("cannotCompile");
 			throw new RuntimeException(e);
 		}
 	}

@@ -123,7 +123,7 @@ public final class MethodInvocationHelper {
 								if(ei.getCause().getClass() == StackOverflowError.class) {
 									String msg = "Stack overflow on method execution. " 
 										+ "Please try to increase the stack size"
-										+ "(VM option: \"-Xss1M\")"; 
+										+ "(VM option: \"-Xss10M\")"; 
 									log.log(Level.SEVERE, msg, ei);
 									throw new InvocationTargetException(ei, msg);
 								} else {

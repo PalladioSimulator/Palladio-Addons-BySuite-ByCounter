@@ -218,7 +218,7 @@ public final class BytecodeCounter {
 			// we have a static method
 			try {
 				// use the class loader to get the class
-				targetClass = this.getClassUsingLoader(methodToExecute);
+				targetClass = this.classLoader.loadClass(methodToExecute.getCanonicalClassName());
 			} catch (Exception e) {
 				throw new RuntimeException(e);
 			}
@@ -914,7 +914,7 @@ public final class BytecodeCounter {
 		try {
 			// Load the class from the bytecode
 			log.fine("+ Getting class from class pool.");
-			Class<?> classToExecute = getClassUsingLoader(methodToExecute);
+			Class<?> classToExecute = this.classLoader.loadClass(methodToExecute.getCanonicalClassName());
 			
 			if(!methodToExecute.getMethodIsStatic()) {
 
@@ -966,18 +966,5 @@ public final class BytecodeCounter {
 			throw new RuntimeException(e);
 		}
 		return objInstance;
-	}
-	
-	/**
-	 * Uses the ClassLoader configured for ByCounter to find the class of 
-	 * the specified method.
-	 * @param m Method to find the class of.
-	 * @return The {@link Class} of the specified method.
-	 * @throws NotFoundException Thrown if the specified class cannot be found.
-	 * @throws CannotCompileException Thrown if the class cannot be loaded.
-	 * @throws ClassNotFoundException Thrown if the specified class cannot be found.
-	 */
-	private Class<?> getClassUsingLoader(MethodDescriptor m) throws ClassNotFoundException {
-		return this.classLoader.loadClass(m.getCanonicalClassName());
 	}
 }
