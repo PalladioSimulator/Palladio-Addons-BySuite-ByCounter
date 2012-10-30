@@ -1,9 +1,22 @@
 package edu.kit.ipd.sdq.bycounter.modelbridge.util;
 
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.Map;
 
+import org.eclipse.emf.common.util.EList;
+
+import de.fzi.gast.accesses.DeclarationTypeAccess;
+import de.fzi.gast.core.Root;
+import de.fzi.gast.functions.Constructor;
+import de.fzi.gast.functions.Function;
+import de.fzi.gast.functions.Method;
+import de.fzi.gast.types.GASTClass;
+import de.fzi.gast.types.GASTType;
+import de.fzi.gast.variables.FormalParameter;
+import de.uka.ipd.sdq.ByCounter.utils.JavaType;
 import de.uka.ipd.sdq.ByCounter.utils.JavaTypeEnum;
+import de.uka.ipd.sdq.ByCounter.utils.MethodDescriptor;
 import edu.kit.ipd.sdq.bycounter.output.ArrayType;
 
 /**
@@ -81,4 +94,165 @@ public class TypeMapping {
 		}
 	}
 
+	/**Find the Function which belongs to the provided BytecodeCounter output string.
+	 * @param bcName BytecodeCounter representation of the function name.
+	 * @param availableGastRootNodes GAST root nodes to search for the name.
+	 * @return GAST Function referenced by the name.
+	 */
+	public static Function findFunctionForString(String bcName, LinkedList<Root> availableGastRootNodes) {
+		int sigStartIndex = bcName.indexOf('(');
+		String fqmn = bcName.substring(0, sigStartIndex); // fully qualified method name
+		String sig = bcName.substring(sigStartIndex);	  // signature part including parameters in braces and return type (== desc)
+		
+		String fqcn = fqmn.substring(0, fqmn.lastIndexOf('.'));	// FullyQualifiedClassName (== owner)
+		String fn = fqmn.substring(fqmn.lastIndexOf('.') + 1, fqmn.length()).replace('/', '.'); // FunctionName (== name)
+		// use the MethodDescriptor class to consider the details
+		MethodDescriptor methodDesc = MethodDescriptor._constructMethodDescriptorFromASM(fqcn, fn, sig); 
+		String fqpn = methodDesc.getPackageName(); // FullyQualifiedPackageName 
+		
+		for (Root node : availableGastRootNodes) {
+			// find Package
+			de.fzi.gast.core.Package pkg = node.getPackageByQualifiedName(fqpn);
+			if (pkg != null) {
+				for (GASTClass clazz : pkg.getClasses()) {
+					// find Class
+					if (clazz.getQualifiedName().equals(fqcn)) {
+						// TODO @Martin: Check which native classes need special handling 
+						if (fqcn.startsWith("java.lang")) {
+							return null;
+						}
+						// find and return Method/Constructor
+						for (Constructor constructor : clazz.getConstructors()) {
+							if (methodDesc.getSimpleMethodName().equals(constructor.getSimpleName())) {
+								if(doSignaturesMatch(constructor, sig)) {
+									return constructor;
+								}
+							}
+						}
+						for (Method method : clazz.getMethods()) {
+							if (methodDesc.getSimpleMethodName().equals(method.getSimpleName())) {
+								if(doSignaturesMatch(method, sig)) {
+									return method;
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		throw new IllegalArgumentException("Could not find a method for the given BytecodeCounter name '" + bcName + "'. ");
+	}
+
+	/**
+	 * @param fn GAST function to check.
+	 * @param sig Signature of a method as given by ByCounter. This starts 
+	 * with '(' and ends with the return type. Example: <code>()V<code> for a 
+	 * method without parameters and a void return type.
+	 * @return When the formal parameters and the return type of fn match the 
+	 * description of sig, true is returned. False in all other cases.
+	 */
+	public static boolean doSignaturesMatch(Function fn, String sig) {
+		EList<FormalParameter> formalParams = fn.getFormalParameters();
+		DeclarationTypeAccess retTypeDec = fn.getReturnTypeDeclaration();
+		JavaType retType = MethodDescriptor.getReturnTypeFromDesc(sig);
+		JavaType[] paramTypes = MethodDescriptor.getParametersTypesFromDesc(sig);
+		
+		// compare return type
+		if(retTypeDec == null) { // TODO: verify null==void?
+			if(retType.getType() != JavaTypeEnum.Void) {
+				return false;
+			} else {
+				// return types match; continue with parameter tests
+			}
+		} else {
+			if(!doTypesMatch(retTypeDec.getTargetType(), retType)) {
+				return false;
+			} else {
+				// return types match; continue with parameter tests
+			}
+		}
+		
+		// compare parameters
+		if(formalParams.size() != paramTypes.length) {
+			return false;
+		}		
+		if(paramTypes.length == 0) {
+			// no parameters: no need to do more tests
+			return true;
+		} else {
+			// compare all parameters
+			int i = 0;
+			for(FormalParameter p : formalParams) {
+				if(doTypesMatch(p.getType(), paramTypes[i])) {
+					i++;
+					continue;
+				} else {
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+
+	/**
+	 * @param type GAST type
+	 * @param javaType Java type as parsed by ByCounter
+	 * @return True when the types match. False otherwise.
+	 */
+	public static boolean doTypesMatch(GASTType type, JavaType javaType) {
+		String typeName = type.getQualifiedName();
+		if(gastTypeJavaTypeMap.containsKey(typeName)) {
+			// we have a simple java type
+			if(gastTypeJavaTypeMap.get(typeName).equals(javaType.getType())) {
+				return true;
+			} else {
+				return false;
+			}
+		} else {
+			// gast array types are identical to the Java notation, ie. int[][]
+			int arrayDim = 0;	// the dimension of the array if type is an array type.
+			int ind = typeName.indexOf("[");
+			String innerTypeFQCN = "";
+			if(ind >= 0) {
+				innerTypeFQCN = typeName.substring(0, ind);
+				do {
+					ind = typeName.indexOf("[", ind+2);
+					arrayDim++;
+				} while(ind >= 0);
+				
+				// check all dimensions of the array
+				JavaType currentType = javaType;
+				for(int i = 0; i < arrayDim; i++) {
+					if(!currentType.getType().equals(JavaTypeEnum.Array)) {
+						return false;
+					}
+					currentType = currentType.getChildElementType();
+				}
+				// check the inner type (int for the example above)
+				if(currentType.getType().equals(JavaTypeEnum.Object)) {
+					return currentType.getCanonicalClassName().equals(innerTypeFQCN);
+				} else {
+					if(gastTypeJavaTypeMap.containsKey(innerTypeFQCN)) {
+						// we have a simple java type
+						if(gastTypeJavaTypeMap.get(innerTypeFQCN).equals(currentType.getType())) {
+							return true;
+						} else {
+							return false;
+						}
+					}
+					throw new RuntimeException("Unknown type: " + innerTypeFQCN);
+				}
+			} else if(javaType.getType().equals(JavaTypeEnum.Object)) {
+				if(typeName.contains("$")) {
+					// assume a generic type
+					return javaType.getCanonicalClassName().equals(Object.class.getCanonicalName());
+				} else {
+					// object type
+					return typeName.equals(javaType.getCanonicalClassName());
+				}
+			}
+			throw new RuntimeException("The type matching for this type ('" 
+					+ type.getQualifiedName() + "') is not implemented yet.");
+		}
+	}
 }

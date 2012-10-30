@@ -19,6 +19,7 @@ import java.util.logging.Logger;
 import org.eclipse.emf.common.util.EList;
 
 import de.fzi.gast.core.Root;
+import de.fzi.gast.functions.Function;
 import de.fzi.gast.functions.Method;
 import de.fzi.gast.types.GASTClass;
 import de.fzi.gast.variables.FormalParameter;
@@ -438,7 +439,7 @@ public class ByCounterWrapper {
 		// map the properies of the base class
 		result.getArrayCreationCounts().addAll(mapArrayCreationCounts(cr.getArrayCreationCounts()));
 		result.setCallerId(mapUUID(cr.getCallerID()));
-		result.getMethodCallCounts().addAll(mapMethodCallCounts(cr.getMethodCallCounts()));
+		result.getMethodCallCounts().addAll(mapMethodCallCounts(result, cr.getMethodCallCounts()));
 		result.setMethodId(mapUUID(cr.getMethodExecutionID()));
 		result.setMethodInvocationStartTime(cr.getMethodInvocationBeginning());
 		result.getOpcodeCounts().addAll(mapOpcodeCounts(cr.getOpcodeCounts()));
@@ -469,20 +470,24 @@ public class ByCounterWrapper {
 	}
 
 	/**
+	 * @param cr Reference to the containing CountingResult
 	 * @param methodCallCounts Map from a qualified method name to a count.
 	 * @return List of {@link MethodCallCount}s.
 	 */
-	private static Collection<? extends MethodCallCount> mapMethodCallCounts(
-			SortedMap<String, Long> methodCallCounts) {
+	private Collection<? extends MethodCallCount> mapMethodCallCounts(
+			final edu.kit.ipd.sdq.bycounter.output.CountingResult cr, final SortedMap<String, Long> methodCallCounts) {
 		List<MethodCallCount> result = new LinkedList<MethodCallCount>();
 		for(Entry<String, Long> e : methodCallCounts.entrySet()) {
 			MethodCallCount mcc = outputFactory.createMethodCallCount();
 			mcc.setQualifiedFunctionName(e.getKey());
+			mcc.setFunction(TypeMapping.findFunctionForString(e.getKey(), availableGastRootNodes));
 			mcc.setCount(e.getValue());
+			mcc.setCountingResult(cr);
 			result.add(mcc);
 		}
 		return result;
 	}
+	
 
 	/**
 	 * @param opcodeCounts Opcode counts indexed by the opcode. Value is the count.
