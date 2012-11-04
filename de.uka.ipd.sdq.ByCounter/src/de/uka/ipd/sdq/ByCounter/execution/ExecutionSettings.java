@@ -1,5 +1,6 @@
 package de.uka.ipd.sdq.ByCounter.execution;
 
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -19,17 +20,12 @@ public class ExecutionSettings implements Cloneable {
 	 */
 	public static final char INTERNAL_CLASSES_DEFINITION_WILDCARD_CHAR = '*';
 
-	/** Default value of {@link #getInternalClassesDefinition()}. */
-	public static final Set<String> INTERNAL_CLASSES_DEFINITION_DEFAULT = null;
 	
 	/** Default value of {@link #getCountingResultCollectorMode()}. */
 	private static final CountingResultCollectorMode COUNTING_RESULT_COLLECTOR_MODE_DEFAULT = CountingResultCollectorMode.UseReportingMethodChoiceByInstrumentedMethods;
 
 	/** Default value of {@link #getAddUpResultsRecursively()}. */
 	private static final boolean ADD_UP_RESULTS_RECURSIVELY_DEFAULT = false;
-
-	/** Default value for {@link #getParentClassLoader()}. */
-	public static final InstrumentationClassLoader PARENT_CLASS_LOADER_DEFAULT = null;
 
 	/** Default value for {@link #getWaitForThreadsToFinnish()}. */
 	private static final boolean WAIT_FOR_THREADS_TO_FINNISH_DEFAULT = true;
@@ -72,9 +68,9 @@ public class ExecutionSettings implements Cloneable {
 	 */
 	public ExecutionSettings() {
 		this.countingResultCollectorMode = COUNTING_RESULT_COLLECTOR_MODE_DEFAULT;
-		this.internalClassesDefinition = INTERNAL_CLASSES_DEFINITION_DEFAULT;
+		this.internalClassesDefinition = new HashSet<String>();
 		this.addUpResultsRecursively = ADD_UP_RESULTS_RECURSIVELY_DEFAULT;
-		this.setParentClassLoader(PARENT_CLASS_LOADER_DEFAULT);
+		this.setParentClassLoader(null);
 		this.waitForThreadsToFinnish = WAIT_FOR_THREADS_TO_FINNISH_DEFAULT;
 	}
 	

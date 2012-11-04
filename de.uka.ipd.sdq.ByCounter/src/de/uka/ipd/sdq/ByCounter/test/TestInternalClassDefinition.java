@@ -18,6 +18,7 @@ import de.uka.ipd.sdq.ByCounter.execution.ExecutionSettings;
 import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentationParameters;
 import de.uka.ipd.sdq.ByCounter.results.CountingResult;
 import de.uka.ipd.sdq.ByCounter.test.framework.expectations.Expectation;
+import de.uka.ipd.sdq.ByCounter.test.framework.expectations.SectionExpectation;
 import de.uka.ipd.sdq.ByCounter.test.helpers.ClassZ;
 import de.uka.ipd.sdq.ByCounter.test.helpers.InterfaceX;
 import de.uka.ipd.sdq.ByCounter.test.helpers.TestSubjectInterfaceMethods;
@@ -37,7 +38,7 @@ public class TestInternalClassDefinition extends AbstractByCounterTest {
 		super(params);
 	}
 
-	private static final String SIGNATURE_METHOD = "public void methodA1()";
+	private static final String SIGNATURE_METHODA1 = "public void methodA1()";
 	
 	/** This logger is used to log all kinds of messages of this test suite. */
 	private static final Logger LOG = Logger.getLogger(TestInternalClassDefinition.class.getCanonicalName());
@@ -83,44 +84,39 @@ public class TestInternalClassDefinition extends AbstractByCounterTest {
 	
 
 	/**
-	 * This unit test tries to instrument a class that is given as byte[].
-	 * In this case the .class file of ASMBytecodeOccurences is used.
+	 * This unit test instruments {@link TestSubjectInterfaceMethods}.
+	 * First {@link TestSubjectInterfaceMethods#methodA1()} is executed without
+	 * specifying internal classes. Then, in a second run, internal classes are
+	 * specified and the class method is executed again. The classes defined 
+	 * as internal are {@link TestSubjectInterfaceMethods} and {@link ClassZ}.
 	 */
 	@Test
-	public void testRetriveInternalResults() {
+	public void testRetrieveInternalResults() {
 		// define expectations (the external call to ClassY should not be inlined)
 		// the comments behind add() state where the opcode comes from
-		Expectation e = new Expectation(true);
-		e.add().add(Opcodes.ALOAD, 4) // 1x ClassZ(), 3x methodA1()
-			   .add(Opcodes.DUP, 1) // 1x methodA1()
-			   .add(Opcodes.GETFIELD, 2) // 2x methodA1()
-			   .add(Opcodes.GETSTATIC, 2) // 1x ClassY.mexthodX1(), 1x ClassZ.mexthodX1()
-			   .add(Opcodes.INVOKEINTERFACE, 2) // 2x methodA1()
-			   .add(Opcodes.INVOKESPECIAL, 2) // 1x ClassZ(), 1x methodA1()
-			   .add(Opcodes.INVOKEVIRTUAL, 2) // 1x ClassY.mexthodX1(), 1x ClassZ.mexthodX1()
-			   .add(Opcodes.LDC, 2) // 1x ClassZ.mexthodX1(), 1x ClassY.methodX1()
-			   .add(Opcodes.NEW, 1) // 1x methodA1()
-			   .add(Opcodes.PUTFIELD, 1) // 1x mexthodA1()
-			   .add(Opcodes.RETURN, 4) // 1x ClassY.mexthodX1(), 1x ClassZ.mexthodX1(), 1x ClassZ(), 1x methodA1()
-			   .add("de.uka.ipd.sdq.ByCounter.test.helpers.ClassZ.ClassZ()V", 1) // 1x methodA1()
-			   .add("java.lang.Object.Object()V", 1) // 1x ClassZ()
-			   .add(InterfaceX.class.getCanonicalName(), "void methodX1()", 2) // 2x methodA1()
-			   .add(PrintStream.class.getCanonicalName(), "public void println(java.lang.String x)", 2); // 1x ClassY.methodX1(), 1x ClassZ.methodX1()
+		Expectation e = constructMethodA1Expectations(false);
 		
 		//1. Set up a BytecodeCounter instance to use ByCounter, using a parameterless constructor. 
 		BytecodeCounter counter = setupByCounter();
 
 		//2. Specify the method to be instrumented (several methods are supported as well)
-		MethodDescriptor myMethod = new MethodDescriptor(TestSubjectInterfaceMethods.class.getCanonicalName(), SIGNATURE_METHOD);
+		MethodDescriptor methodA1Descriptor = new MethodDescriptor(TestSubjectInterfaceMethods.class.getCanonicalName(), SIGNATURE_METHODA1);
 		
 		counter.getInstrumentationParams().setInstrumentRecursively(true);
 		
 		//3. now tell ByCounter to instrument the specified method
-		counter.addEntityToInstrument(myMethod);
+		counter.addEntityToInstrument(methodA1Descriptor);
 		counter.instrument();
 
 		counter.getExecutionSettings().setAddUpResultsRecursively(true);
-		counter.execute(myMethod, new Object[0]);
+		// define internal classes
+		{
+		Set<String> internalClassesDefinition = new HashSet<String>();
+		internalClassesDefinition.add(TestSubjectInterfaceMethods.class.getCanonicalName());
+		counter.getExecutionSettings().setInternalClassesDefinition(internalClassesDefinition);
+		}
+
+		counter.execute(methodA1Descriptor, new Object[0]);
 
 		// retrieve results
 		CountingResult[] results = CountingResultCollector.getInstance().retrieveAllCountingResults().getCountingResults().toArray(new CountingResult[0]);
@@ -134,10 +130,11 @@ public class TestInternalClassDefinition extends AbstractByCounterTest {
 		internalClassesDefinition.add(ClassZ.class.getCanonicalName());
 		counter.getExecutionSettings().setInternalClassesDefinition(internalClassesDefinition);
 
-		counter.execute(myMethod, new Object[0]);
+		counter.execute(methodA1Descriptor, new Object[0]);
 		
 		// try retrieving results again and make sure they still match
 		results = CountingResultCollector.getInstance().retrieveAllCountingResults().getCountingResults().toArray(new CountingResult[0]);
+		e = constructMethodA1Expectations(true);
 		e.compare(results);
 
 		Assert.assertNotNull(results);
@@ -145,6 +142,36 @@ public class TestInternalClassDefinition extends AbstractByCounterTest {
 		for(CountingResult newResult: results) {
 			newResult.logResult(false, true);
 		}
+	}
+
+
+	/**
+	 * Helper method for {@link #testRetrieveInternalResults()}.
+	 * @param internalClassesDefinition2 When true, use the second definition.
+	 * @return expectations.
+	 */
+	private Expectation constructMethodA1Expectations(boolean internalClassesDefinition2) {
+		Expectation e = new Expectation(true);
+		SectionExpectation foo = e.add().add(Opcodes.ALOAD, 4) // 1x ClassZ(), 3x methodA1()
+			   .add(Opcodes.DUP, 1) // 1x methodA1()
+			   .add(Opcodes.GETFIELD, 2) // 2x methodA1()
+			   .add(Opcodes.GETSTATIC, 2) // 1x ClassY.mexthodX1(), 1x ClassZ.mexthodX1()
+			   .add(Opcodes.INVOKEINTERFACE, 2) // 2x methodA1()
+			   .add(Opcodes.INVOKESPECIAL, 2) // 1x ClassZ(), 1x methodA1()
+			   .add(Opcodes.INVOKEVIRTUAL, 2) // 1x ClassY.mexthodX1(), 1x ClassZ.mexthodX1()
+			   .add(Opcodes.LDC, 2) // 1x ClassZ.mexthodX1(), 1x ClassY.methodX1()
+			   .add(Opcodes.NEW, 1) // 1x methodA1()
+			   .add(Opcodes.PUTFIELD, 1) // 1x mexthodA1()
+			   .add(Opcodes.RETURN, 4) // 1x ClassY.mexthodX1(), 1x ClassZ.mexthodX1(), 1x ClassZ(), 1x methodA1()
+			   .add(InterfaceX.class.getCanonicalName(), "void methodX1()", 2) // 2x methodA1()
+			   .add(PrintStream.class.getCanonicalName(), "public void println(java.lang.String x)", 2) // 1x ClassY.methodX1(), 1x ClassZ.methodX1()
+			   .add("java.lang.Object.Object()V", 1) // 1x ClassZ()
+			   ;
+		if(!internalClassesDefinition2) {
+			   foo.add("de.uka.ipd.sdq.ByCounter.test.helpers.ClassZ.ClassZ()V", 1) // 1x methodA1()
+			   ;
+		}
+		return e;
 	}
 
 }

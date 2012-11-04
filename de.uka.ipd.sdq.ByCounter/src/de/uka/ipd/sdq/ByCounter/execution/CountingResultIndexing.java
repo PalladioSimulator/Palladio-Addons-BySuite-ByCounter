@@ -301,6 +301,19 @@ public class CountingResultIndexing {
 			if(lastMethodExecutionDetails == null
 					|| lastMethodExecutionDetails.executionSettings.isInternalClass(
 					crSum.getQualifiedMethodName())) {
+				// remove listing of calls to methods that are defined as internal (the invoke* opcodes are still counted!)
+				List<String> methodCallsToRemove = new LinkedList<String>();
+				for(String methodCall : crSum.getMethodCallCounts().keySet()) {
+					if(lastMethodExecutionDetails.executionSettings.isInternalClass(methodCall)) {
+						// found internal call
+						methodCallsToRemove.add(methodCall);
+					}
+				}
+				for(String methodCall : methodCallsToRemove) {
+					// remove call
+					crSum.getMethodCallCounts().remove(methodCall);
+				}
+				// add the calculated recursive result to the list of results
 				ret.add(crSum);
 				prevCallerReportTime = callerReportTime;
 			}
