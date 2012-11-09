@@ -1,6 +1,5 @@
 package de.uka.ipd.sdq.ByCounter.execution;
 
-import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -68,7 +67,7 @@ public class ExecutionSettings implements Cloneable {
 	 */
 	public ExecutionSettings() {
 		this.countingResultCollectorMode = COUNTING_RESULT_COLLECTOR_MODE_DEFAULT;
-		this.internalClassesDefinition = new HashSet<String>();
+		this.internalClassesDefinition = null; // this in not initialised with an empty set intentionally because the semantics of null are used!
 		this.addUpResultsRecursively = ADD_UP_RESULTS_RECURSIVELY_DEFAULT;
 		this.setParentClassLoader(null);
 		this.waitForThreadsToFinnish = WAIT_FOR_THREADS_TO_FINNISH_DEFAULT;
