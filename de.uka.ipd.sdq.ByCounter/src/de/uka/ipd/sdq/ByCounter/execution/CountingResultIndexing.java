@@ -301,18 +301,7 @@ public class CountingResultIndexing {
 			if(lastMethodExecutionDetails == null
 					|| lastMethodExecutionDetails.executionSettings.isInternalClass(
 					crSum.getQualifiedMethodName())) {
-				// remove listing of calls to methods that are defined as internal (the invoke* opcodes are still counted!)
-				List<String> methodCallsToRemove = new LinkedList<String>();
-				for(String methodCall : crSum.getMethodCallCounts().keySet()) {
-					if(lastMethodExecutionDetails.executionSettings.isInternalClass(methodCall)) {
-						// found internal call
-						methodCallsToRemove.add(methodCall);
-					}
-				}
-				for(String methodCall : methodCallsToRemove) {
-					// remove call
-					crSum.getMethodCallCounts().remove(methodCall);
-				}
+				removeInternalCalls(lastMethodExecutionDetails, crSum);
 				// add the calculated recursive result to the list of results
 				ret.add(crSum);
 				prevCallerReportTime = callerReportTime;
@@ -320,5 +309,28 @@ public class CountingResultIndexing {
 		}
 		
 		return ret;
+	}
+
+	/**
+	 * Remove listing of calls to methods that are defined as internal 
+	 * (the invoke* opcodes are still counted!). 
+	 * @param lastMethodExecutionDetails {@link MethodExecutionRecord} used to
+	 * find internal class definitions.
+	 * @param countingResult Result that is modified to exclude internal calls.
+	 */
+	protected static void removeInternalCalls(
+			final MethodExecutionRecord lastMethodExecutionDetails,
+			CountingResult countingResult) {
+		List<String> methodCallsToRemove = new LinkedList<String>();
+		for(String methodCall : countingResult.getMethodCallCounts().keySet()) {
+			if(lastMethodExecutionDetails.executionSettings.isInternalClass(methodCall)) {
+				// found internal call
+				methodCallsToRemove.add(methodCall);
+			}
+		}
+		for(String methodCall : methodCallsToRemove) {
+			// remove call
+			countingResult.getMethodCallCounts().remove(methodCall);
+		}
 	}
 }
