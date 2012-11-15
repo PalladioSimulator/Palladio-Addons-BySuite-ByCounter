@@ -17,6 +17,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.objectweb.asm.ClassReader;
+import org.objectweb.asm.ClassWriter;
 
 import de.uka.ipd.sdq.ByCounter.instrumentation.EntityToInstrument;
 import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentationContext;
@@ -77,13 +78,7 @@ public final class BytecodeCounter {
 	 * This is null otherwise.
 	 */
 	private byte[] classBytesToInstrument; 
-	
-	/**
-	 * The name of the class to count, if <code>classAsBytes</code> is false.
-	 * This is null otherwise.
-	 */
-	private String classToInstrument;
-		
+			
 	/**
 	 * Descriptors for the constructors that correspond to the 
 	 * constructionParameters.
@@ -624,7 +619,6 @@ public final class BytecodeCounter {
 	private synchronized boolean instrumentSingleClass(
 			List<MethodDescriptor> methodsToInstrument, 
 			String className) {
-		this.setClassToInstrument(className);
 		// instrument the method
 		Instrumenter instr = null;
 		// make sure parameters are set
@@ -640,7 +634,7 @@ public final class BytecodeCounter {
 						this.instrumentationState);
 			} else {
 				log.fine("Getting instrumenter over class name");
-				instr = new Instrumenter(this.classToInstrument, 
+				instr = new Instrumenter(className, 
 						this.instrumentationParameters,
 						this.instrumentationState);
 			}
@@ -689,7 +683,7 @@ public final class BytecodeCounter {
 //			log.fine("\n\t\t("+instrBytesize+" instrumented, " +
 //					""+uninstrBytesize+" uninstrumented)");
  
-			this.classLoader.updateClassInClassPool(this.classToInstrument, b);
+			this.classLoader.updateClassInClassPool(className, b);
 			
 			// write context
 			try {		
@@ -786,18 +780,6 @@ public final class BytecodeCounter {
 		this.classAsBytes = true;
 	}
 
-	/**
-	 * Specifies (changes) the class to instrument.
-	 * @param classToInstrument Qualified class name of the class to instrument, 
-	 * e.g. "mypackage.Test" (i.e., without the ".class" extension)
-	 */
-	private synchronized void setClassToInstrument(String classToInstrument) {
-		this.classToInstrument = classToInstrument;
-		/* The following does not belong here because it is 
-		** also called for classes given as bytes! */
-		// this.classAsBytes = false;
-	}
-	
 	/**
 	 * Parameters for class construction are needed when execute is called 
 	 * on a class with no default constructor.

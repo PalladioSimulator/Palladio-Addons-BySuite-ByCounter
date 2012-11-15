@@ -57,8 +57,8 @@ public class InstrumentationClassLoader extends java.lang.ClassLoader {
 	 */
 	private List<String> classesInClassPool;
 
-	private Map<CtClass, Class<?>> ctClassCache;
-		
+	private Map<String, Class<?>> ctClassCache;
+	
 	/**
 	 * Construct the class loader with a default class pool.
 	 * This constructor is defined so the class loader can be used as the 
@@ -72,7 +72,7 @@ public class InstrumentationClassLoader extends java.lang.ClassLoader {
 		this.classPool = new ClassPool();
 		this.classPool.appendSystemPath();
 		this.classesInClassPool = new LinkedList<String>();
-		this.ctClassCache = new HashMap<CtClass, Class<?>>();
+		this.ctClassCache = new HashMap<String, Class<?>>();
 		log = Logger.getLogger(this.getClass().getCanonicalName());
 	}
 	
@@ -113,12 +113,7 @@ public class InstrumentationClassLoader extends java.lang.ClassLoader {
 	 * @param canonicalClassName Canonical class name.
 	 */
 	public Class<?> loadClass(String canonicalClassName) throws ClassNotFoundException {
-		// check if we have the class in the pool
-//		if(!this.classesInClassPool.contains(canonicalClassName)) {
-//			// use standard classloader instead
-//			return super.loadClass(canonicalClassName);
-//		}
-				
+			
 		CtClass ctClassToExecute = null;
 		// get the CtClass from the pool
 		try {
@@ -127,7 +122,7 @@ public class InstrumentationClassLoader extends java.lang.ClassLoader {
 			throw new ClassNotFoundException("Class pool cannot find the class " + canonicalClassName + ".", e);
 		}
 		
-		// use the supplied classloader if necessary (i.e. for eclipse plugin)
+		// use the supplied class loader if necessary (i.e. for eclipse plugin)
 		Loader loader;
 		if(parentClassLoader == null) {
 			loader = new Loader(this.classPool);
@@ -138,25 +133,16 @@ public class InstrumentationClassLoader extends java.lang.ClassLoader {
 		// ByCounter classes do not get reloaded.
 		loader.delegateLoadingOf("de.uka.ipd.sdq.ByCounter.execution.");
 		
-		// delegate interfaces as well
-		try {
-			for(CtClass iFace : ctClassToExecute.getInterfaces()) {
-				delegateLoadingOfInterfaces(loader, iFace);
-			}
-		} catch (NotFoundException e1) {
-			throw new RuntimeException(e1);
-		}
-		
 		// use the ClassLoader loader to get the Class<?> object
 		// use a standard protection domain
 		try {
-			Class<?> rClass = ctClassCache.get(ctClassToExecute);
+			Class<?> rClass = ctClassCache.get(canonicalClassName);
 			if(rClass == null) {
 				rClass = ctClassToExecute.toClass(
 						loader, 
 						Class.class.getProtectionDomain()
 						);
-				ctClassCache.put(ctClassToExecute, rClass);
+				ctClassCache.put(canonicalClassName, rClass);
 			}
 			return rClass;
 		} catch (CannotCompileException e) {
@@ -170,6 +156,8 @@ public class InstrumentationClassLoader extends java.lang.ClassLoader {
 	 */
 	@Override
 	protected Class<?> findClass(String name) throws ClassNotFoundException {
+		
+		// TODO: try to find a test if a parent class loader has a definition for an instrumented class in order to provide a useful error message
 		String file = name.replace('.', File.separatorChar) + ".class";
 		byte[] b = null;
 		try {

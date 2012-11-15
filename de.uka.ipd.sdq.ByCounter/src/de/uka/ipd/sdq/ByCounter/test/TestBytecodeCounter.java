@@ -194,6 +194,7 @@ public class TestBytecodeCounter extends AbstractByCounterTest {
 		counter.execute(methodDescriptorMCT, new Object[0]);
 		
 		countingResults = CountingResultCollector.getInstance().retrieveAllCountingResults().getCountingResults().toArray(new CountingResult[0]);
+		Assert.assertTrue("Could not get any counting results.", countingResults.length > 0);
 		CountingResult r2 = countingResults[countingResults.length-1];
 		r2.logResult(false, true);
 	}
