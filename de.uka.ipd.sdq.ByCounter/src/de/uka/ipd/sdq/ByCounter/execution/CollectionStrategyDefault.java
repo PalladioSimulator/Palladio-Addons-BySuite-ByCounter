@@ -39,8 +39,8 @@ public class CollectionStrategyDefault extends AbstractCollectionStrategy {
 	/** Indexing infrastructure for counting thread structures. */
 	private CountingResultThreadIndexing countingResultThreadIndexing;
 	
-	/** For each method: Last length of execution sequence. For updates. */
-	private Map<UUID, Integer> blockExecutionSequenceLengthByMethod;
+	/** For each method: Last execution sequence. For updates. */
+	private Map<UUID,List<Integer>> lastBlockExecutionSequenceByMethod;
 
 	/** Region that is currently counted. Is null when no region is 
 	 * active. */
@@ -69,7 +69,7 @@ public class CollectionStrategyDefault extends AbstractCollectionStrategy {
 		this.countingResultUpdateIndexing = new CountingResultUpdateIndexing();
 		this.countingResultRegionIndexing = new CountingResultRegionIndexing();
 		this.countingResultThreadIndexing = new CountingResultThreadIndexing();
-		this.blockExecutionSequenceLengthByMethod = new HashMap<UUID, Integer>();
+		this.lastBlockExecutionSequenceByMethod = new HashMap<UUID, List<Integer>>();
 		this.currentRegion = null;
 		this.regionEnd = null;
 		this.requestMap = new HashMap<UUID, RequestResult>();
@@ -82,7 +82,7 @@ public class CollectionStrategyDefault extends AbstractCollectionStrategy {
 		this.countingResultUpdateIndexing.clearResults();
 		this.countingResultRegionIndexing.clearResults();
 		this.countingResultThreadIndexing.clearResults();
-		this.blockExecutionSequenceLengthByMethod.clear();
+		this.lastBlockExecutionSequenceByMethod.clear();
 		this.requestMap.clear();
 	}
 
@@ -128,23 +128,29 @@ public class CollectionStrategyDefault extends AbstractCollectionStrategy {
 		} else if(result.blockExecutionSequence != null) {
 			// This is an update. Replace the block execution sequence with 
 			// the part of the sequence that is new since the last update.
-			Integer lastExSeqLength = blockExecutionSequenceLengthByMethod.get(result.ownID);
-			Integer newExSeqLength = result.blockExecutionSequence.size();
-			if(lastExSeqLength != null && lastExSeqLength != newExSeqLength) {
-				ArrayList<Integer> newSequence = new ArrayList<Integer>();
-				for(int i = lastExSeqLength; i < newExSeqLength; i++) {
-					newSequence.add(result.blockExecutionSequence.get(i));
+			List<Integer> lastExSeq = lastBlockExecutionSequenceByMethod.get(result.ownID);
+			if(lastExSeq != null) {
+				Integer lastExSeqLength = lastExSeq.size();
+				Integer newExSeqLength = result.blockExecutionSequence.size();
+				if(lastExSeqLength != null && lastExSeqLength != newExSeqLength) {
+					ArrayList<Integer> newSequence = new ArrayList<Integer>();
+					for(int i = lastExSeqLength; i < newExSeqLength; i++) {
+						newSequence.add(result.blockExecutionSequence.get(i));
+					}
+					// update execution sequence
+					lastBlockExecutionSequenceByMethod.put(result.ownID, new ArrayList<Integer>(result.blockExecutionSequence));
+					result.blockExecutionSequence = newSequence;
+					if(result.blockCountingMode == BlockCountingMode.RangeBlocks) {
+						// consider only the last entered range block?
+						int rangeBlockIndex = result.rangeBlockExecutionSequence.get(result.rangeBlockExecutionSequence.size()-1);
+						result.rangeBlockExecutionSequence = new ArrayList<Integer>();
+						result.rangeBlockExecutionSequence.add(rangeBlockIndex);
+					}
 				}
-				result.blockExecutionSequence = newSequence;
-				if(result.blockCountingMode == BlockCountingMode.RangeBlocks) {
-					// consider only the last entered range block?
-					int rangeBlockIndex = result.rangeBlockExecutionSequence.get(result.rangeBlockExecutionSequence.size()-1);
-					result.rangeBlockExecutionSequence = new ArrayList<Integer>();
-					result.rangeBlockExecutionSequence.add(rangeBlockIndex);
-				}
+			} else {
+				// update execution sequence
+				lastBlockExecutionSequenceByMethod.put(result.ownID, new ArrayList<Integer>(result.blockExecutionSequence));
 			}
-			// update length of execution sequence
-			blockExecutionSequenceLengthByMethod.put(result.ownID, newExSeqLength);
 		}
 
 		MethodExecutionRecord lastMethodExecutionDetails = parentResultCollector.getLastMethodExecutionDetails();
@@ -256,7 +262,7 @@ public class CollectionStrategyDefault extends AbstractCollectionStrategy {
 					CountingResultCollector.getInstance().notifyObservers(update);
 				} else {
 					res = this.countingResultThreadIndexing.apply(res, result.spawnedThreads);
-					this.countingResultUpdateIndexing.add(res, result.blockExecutionSequence);
+					this.countingResultUpdateIndexing.add(res, lastBlockExecutionSequenceByMethod.get(result.ownID));
 				}
 			}
 
