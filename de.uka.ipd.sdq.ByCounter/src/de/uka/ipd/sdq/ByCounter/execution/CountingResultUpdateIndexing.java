@@ -1,5 +1,6 @@
 package de.uka.ipd.sdq.ByCounter.execution;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
@@ -23,12 +24,15 @@ public class CountingResultUpdateIndexing {
 	private Map<UUID, Integer> lastUpdatedSectionIndex;
 	
 	/**
-	 * Map that holds counting results by method.
+	 * Map that holds counting results by method execution id.
 	 */
 	private Map<UUID, Queue<CountingResult>> sectionUpdatesByMethod;
 	
 	/** The method for which the last update was provided. */
 	private UUID lastUpdatedMethod;
+	
+	/** The last basic block execution sequence of a result. */
+	private Map<UUID, ArrayList<Integer>> lastBlockExecutionSequenceByMethod;
 	
 	/**
 	 * Construct the indexing structure.
@@ -37,6 +41,7 @@ public class CountingResultUpdateIndexing {
 		lastUpdatedSectionIndex = new HashMap<UUID, Integer>();
 		sectionUpdatesByMethod = new HashMap<UUID, Queue<CountingResult>>();
 		lastUpdatedMethod = null;
+		lastBlockExecutionSequenceByMethod = new HashMap<UUID, ArrayList<Integer>>();
 	}
 
 
@@ -44,10 +49,12 @@ public class CountingResultUpdateIndexing {
 	 * This handles updates reported for individual section when online 
 	 * updates are enabled.
 	 * @param result The calculated counting result for the update.
+	 * @param blockExecutionSequence Basic block execution sequence used to 
+	 * see if consecutive results contain new information.
 	 */
-	public void add(CountingResult result) {
+	public void add(CountingResult result, ArrayList<Integer> blockExecutionSequence) {
 		final UUID methodID = result.getMethodExecutionID();
-		if(!methodID.equals(lastUpdatedMethod)) {
+		if(lastUpdatedMethod != null && !methodID.equals(lastUpdatedMethod)) {
 			// we entered a new method
 			// provide an update for the previous method
 			setMethodDone(lastUpdatedMethod);
@@ -68,11 +75,18 @@ public class CountingResultUpdateIndexing {
 			// a new section is being executed
 			updateObserversWithSection(resultQueue);
 		}
-		resultQueue.add(result);
+		
+		if(lastBlockExecutionSequenceByMethod.get(methodID) == null
+				|| blockExecutionSequence != null
+				&& !lastBlockExecutionSequenceByMethod.get(methodID).equals(blockExecutionSequence)) {
+			// This is new information, so add it to the queue
+			resultQueue.add(result);
+		}
 
 		// update last section index for the method
 		lastUpdatedMethod = methodID;
-		lastUpdatedSectionIndex.put(methodID, result.getIndexOfRangeBlock());		
+		lastUpdatedSectionIndex.put(methodID, result.getIndexOfRangeBlock());
+		lastBlockExecutionSequenceByMethod.put(methodID, blockExecutionSequence);
 	}
 
 

@@ -256,7 +256,7 @@ public class CollectionStrategyDefault extends AbstractCollectionStrategy {
 					CountingResultCollector.getInstance().notifyObservers(update);
 				} else {
 					res = this.countingResultThreadIndexing.apply(res, result.spawnedThreads);
-					this.countingResultUpdateIndexing.add(res);
+					this.countingResultUpdateIndexing.add(res, result.blockExecutionSequence);
 				}
 			}
 
