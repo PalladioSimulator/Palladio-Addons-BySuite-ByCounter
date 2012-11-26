@@ -19,7 +19,6 @@ import java.util.logging.Logger;
 import org.eclipse.emf.common.util.EList;
 
 import de.fzi.gast.core.Root;
-import de.fzi.gast.functions.Function;
 import de.fzi.gast.functions.Method;
 import de.fzi.gast.types.GASTClass;
 import de.fzi.gast.variables.FormalParameter;
@@ -192,6 +191,7 @@ public class ByCounterWrapper {
 		// update instrumentation parameters and instrument
 		this.instrumentationProfile = input;
 		this.bycounter.setInstrumentationParams(instrumentationParams);
+		this.bycounter.getInstrumentationParams().setInstrumentRecursively(true);
 		this.bycounter.instrument();
 	}
 	
@@ -215,7 +215,8 @@ public class ByCounterWrapper {
 		ExecutionSettings executionSettings = new ExecutionSettings();
 		executionSettings.setAddUpResultsRecursively(executionProfile.isAddUpResultsRecursively());
 		executionSettings.setWaitForThreadsToFinnish(executionProfile.isWaitForThreadsToFinnish());
-		handleInternalClassesDefinition(executionSettings, executionProfile.getDefinedLogicalSets());
+		executionSettings.setInternalClassesDefinition(mapLogicalSet(executionProfile.getDefinedLogicalSets()));
+		executionSettings.setExternalToClassLoaderClassesDefinition(mapLogicalSet(executionProfile.getLogicalSetExternalToClassLoader()));
 		
 		// update execution parameters
 		this.executionProfile = executionProfile;
@@ -223,12 +224,11 @@ public class ByCounterWrapper {
 	}
 
 	/**
-	 * @param executionSettings ByCounters {@link ExecutionSettings}.
 	 * @param definedLogicalSets Definition of class sets in the instrumentation 
 	 * profile.
+	 * @return Set of Strings that ByCounter recognises as class patterns.
 	 */
-	private void handleInternalClassesDefinition(ExecutionSettings executionSettings,
-			EList<LogicalSet> definedLogicalSets) {
+	private Set<String> mapLogicalSet(EList<LogicalSet> definedLogicalSets) {
 		Set<String> bcSet = new HashSet<String>();
 		for(LogicalSet lSet : definedLogicalSets) {
 			for(GASTClass iClass : lSet.getInternalClasses()) {
@@ -236,7 +236,7 @@ public class ByCounterWrapper {
 				bcSet.add(s);
 			}
 		}
-		executionSettings.setInternalClassesDefinition(bcSet);
+		return bcSet;
 	}
 
 	/**Handles updates of the input model regarding all {@link EntityToInstrument}.
