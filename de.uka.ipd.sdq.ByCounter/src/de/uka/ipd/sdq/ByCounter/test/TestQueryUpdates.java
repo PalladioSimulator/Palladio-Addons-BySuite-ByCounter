@@ -125,9 +125,9 @@ public class TestQueryUpdates extends AbstractByCounterTest {
     	// section 1
         LineNumberRange rangeS1 = new LineNumberRange(32, 34);
         // section 2
-        LineNumberRange rangeS2 = new LineNumberRange(37, 42);
+        LineNumberRange rangeS2 = new LineNumberRange(37, 43);
         // section 3
-        LineNumberRange rangeS3 = new LineNumberRange(46, 48);
+        LineNumberRange rangeS3 = new LineNumberRange(47, 50);
 
         // instrument all ranges
         LinkedList<LineNumberRange> ranges = new LinkedList<LineNumberRange>();

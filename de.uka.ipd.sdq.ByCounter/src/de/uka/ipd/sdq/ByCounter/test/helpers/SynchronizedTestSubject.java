@@ -40,12 +40,14 @@ public class SynchronizedTestSubject implements StatefulRunnable {
 			i = j;
 			j = k;
 			k--;
+			Thread.yield();
 		}
 		// 42: End of section 2
 		// 46: Start of section 3
 		while(stateCounter < 2) {
 			currentState = 3;
 			k -= i*j;
+			Thread.yield();
 		}
 		// 48: End of section 3
 	}
