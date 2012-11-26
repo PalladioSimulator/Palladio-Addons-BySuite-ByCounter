@@ -63,7 +63,7 @@ public class TestLineNumbers extends AbstractByCounterTest {
     private static final String SIGNATURE_LINE_NUMBERS = "public void testLabelAndLineNumbers()";
 
     /**
-     * This constructor is used by the Parametrized runner for running tests with different
+     * This constructor is used by the Parameterized runner for running tests with different
      * parameters.
      * 
      * @param params

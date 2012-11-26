@@ -132,7 +132,7 @@ public final class MethodInvocationHelper {
 							}
 							long stopMethod = System.nanoTime();
 							invocationResult.duration = stopMethod - startMethod;
-							log.info("MethodInvocationHelper: Calling method "+m.getName()+" over reflection. Duration: "+ invocationResult.duration +" ns");
+							log.info("MethodInvocationHelper: Called method "+m.getName()+" over reflection. Duration: "+ invocationResult.duration +" ns");
 							matchFound = true;
 							break;
 						}

@@ -8,13 +8,13 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Logger;
 
 import javassist.ByteArrayClassPath;
 import javassist.CannotCompileException;
 import javassist.ClassPool;
 import javassist.CtClass;
-import javassist.CtMethod;
 import javassist.Loader;
 import javassist.NotFoundException;
 
@@ -58,6 +58,8 @@ public class InstrumentationClassLoader extends java.lang.ClassLoader {
 	private List<String> classesInClassPool;
 
 	private Map<String, Class<?>> ctClassCache;
+
+	private Set<String> externalClassesDefinition;
 	
 	/**
 	 * Construct the class loader with a default class pool.
@@ -73,6 +75,7 @@ public class InstrumentationClassLoader extends java.lang.ClassLoader {
 		this.classPool.appendSystemPath();
 		this.classesInClassPool = new LinkedList<String>();
 		this.ctClassCache = new HashMap<String, Class<?>>();
+		this.externalClassesDefinition = null;
 		log = Logger.getLogger(this.getClass().getCanonicalName());
 	}
 	
@@ -132,6 +135,17 @@ public class InstrumentationClassLoader extends java.lang.ClassLoader {
 		// make sure that the CountingResultCollector (important!) and all other 
 		// ByCounter classes do not get reloaded.
 		loader.delegateLoadingOf("de.uka.ipd.sdq.ByCounter.execution.");
+		if(this.externalClassesDefinition != null) {
+			for(String external : this.externalClassesDefinition) {
+				// Javassist uses '.' as a wild card.
+				if(external.charAt(external.length()-1) == ExecutionSettings.CLASSES_DEFINITION_WILDCARD_CHAR) {
+					String externalName = external.substring(0, external.length()-2)+'.';
+					loader.delegateLoadingOf(externalName);
+				} else {
+					loader.delegateLoadingOf(external);
+				}
+			}
+		}
 		
 		// use the ClassLoader loader to get the Class<?> object
 		// use a standard protection domain
@@ -187,28 +201,19 @@ public class InstrumentationClassLoader extends java.lang.ClassLoader {
 	}
 
 	/**
-	 * Delegate the loading of the given interface and all interfaces that
-	 * are referenced in the interface recursively.
-	 * @param loader {@link Loader} instance used for class loading.
-	 * @param iFace Interface class to delegate the loading of.
-	 * @throws NotFoundException
-	 */
-	private void delegateLoadingOfInterfaces(Loader loader, CtClass iFace)
-			throws NotFoundException {
-		loader.delegateLoadingOf(iFace.getName());
-		for(CtMethod iMethod : iFace.getMethods()) {
-			for(CtClass pType : iMethod.getParameterTypes()) {
-				if(pType.isInterface()) {
-					loader.delegateLoadingOf(pType.getName());
-				}
-			}
-		}
-	}
-	
-	/**
 	 * @param parentClassLoader2 The parent class loader to use.
 	 */
 	public void setParentClassLoader(ClassLoader parentClassLoader2) {
 		this.parentClassLoader = parentClassLoader2;
+	}
+
+	/**
+	 * @param externalToClassLoaderClassesDefinition Definition of classes 
+	 * that are not to be delegated by this class loader.
+	 * @see ExecutionSettings#setExternalToClassLoaderClassesDefinition(Set)
+	 */
+	public void setExternalClassesDefinition(
+			Set<String> externalToClassLoaderClassesDefinition) {
+		this.externalClassesDefinition = externalToClassLoaderClassesDefinition;
 	}
 }

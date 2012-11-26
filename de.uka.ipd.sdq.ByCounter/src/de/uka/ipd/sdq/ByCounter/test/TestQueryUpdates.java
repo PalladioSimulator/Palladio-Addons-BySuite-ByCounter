@@ -89,7 +89,7 @@ public class TestQueryUpdates extends AbstractByCounterTest {
 	}
 	
     /**
-     * This constructor is used by the Parametrized runner for running tests with different
+     * This constructor is used by the Parameterized runner for running tests with different
      * parameters.
      *
      * @param params

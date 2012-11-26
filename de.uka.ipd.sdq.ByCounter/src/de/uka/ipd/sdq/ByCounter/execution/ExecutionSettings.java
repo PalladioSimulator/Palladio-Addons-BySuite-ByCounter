@@ -13,11 +13,12 @@ import java.util.Set;
 public class ExecutionSettings implements Cloneable {
 
 	/**
-	 * This character ('{@value #INTERNAL_CLASSES_DEFINITION_WILDCARD_CHAR}') is
-	 * used in the definition of internal classes.
+	 * This character ('{@value #CLASSES_DEFINITION_WILDCARD_CHAR}') is
+	 * used in the definition of internal/external classes.
 	 * @see #setInternalClassesDefinition(Set) 
+	 * @see #setExternalToClassLoaderClassesDefinition(Set)
 	 */
-	public static final char INTERNAL_CLASSES_DEFINITION_WILDCARD_CHAR = '*';
+	public static final char CLASSES_DEFINITION_WILDCARD_CHAR = '*';
 
 	
 	/** Default value of {@link #getCountingResultCollectorMode()}. */
@@ -28,6 +29,12 @@ public class ExecutionSettings implements Cloneable {
 
 	/** Default value for {@link #getWaitForThreadsToFinnish()}. */
 	private static final boolean WAIT_FOR_THREADS_TO_FINNISH_DEFAULT = true;
+
+
+	/**
+	 * @see #setExternalClassesDefinition(Set)
+	 */
+	private Set<String> externalToClassLoaderClassesDefinition;
 
 
 	/**
@@ -68,6 +75,7 @@ public class ExecutionSettings implements Cloneable {
 	public ExecutionSettings() {
 		this.countingResultCollectorMode = COUNTING_RESULT_COLLECTOR_MODE_DEFAULT;
 		this.internalClassesDefinition = null; // this in not initialised with an empty set intentionally because the semantics of null are used!
+		this.externalToClassLoaderClassesDefinition = null;
 		this.addUpResultsRecursively = ADD_UP_RESULTS_RECURSIVELY_DEFAULT;
 		this.setParentClassLoader(null);
 		this.waitForThreadsToFinnish = WAIT_FOR_THREADS_TO_FINNISH_DEFAULT;
@@ -88,6 +96,7 @@ public class ExecutionSettings implements Cloneable {
 		}
 		// copy fields
 		copy.internalClassesDefinition = this.internalClassesDefinition;
+		copy.externalToClassLoaderClassesDefinition = this.externalToClassLoaderClassesDefinition;
 		copy.countingResultCollectorMode = this.countingResultCollectorMode;
 		copy.parentClassLoader = this.parentClassLoader;
 		copy.addUpResultsRecursively = this.addUpResultsRecursively;
@@ -95,15 +104,38 @@ public class ExecutionSettings implements Cloneable {
 		
 		return copy;
 	}
+	
 
 	/**
-	 * Uses {@link #getInternalClassesDefinition()} to decide whether the given 
+	 * Uses the {@link #getInternalClassesDefinition()} to decide whether the given 
 	 * name is considered an internal class.
-	 * @param qualifyingMethodName Name of the class to check.
+	 * @param qualifyingMethodName Name of the class to check. 
 	 * @return True when the class is internal.
 	 */
 	public boolean isInternalClass(String qualifyingMethodName) {
-		if(this.internalClassesDefinition == null) {
+		return isInClassesDefinition(qualifyingMethodName, this.internalClassesDefinition);
+	}
+
+	/**
+	 * Uses the {@link #getExternalToClassLoaderClassesDefinition()} to decide whether the given 
+	 * name is considered an external class.
+	 * @param qualifyingMethodName Name of the class to check. 
+	 * @return True when the class is external.
+	 */
+	public boolean isExternalToClassLoaderClass(String qualifyingMethodName) {
+		return isInClassesDefinition(qualifyingMethodName, this.externalToClassLoaderClassesDefinition);
+	}
+
+	/**
+	 * Uses the given definition of classes to decide whether the given 
+	 * name is included.
+	 * @param qualifyingMethodName Name of the class to check.
+	 * @param classesDefinition Definition of class set. The syntax is 
+	 * described in {@link #setInternalClassesDefinition(Set)}.
+	 * @return True when the class is internal.
+	 */
+	public static boolean isInClassesDefinition(final String qualifyingMethodName, final Set<String> classesDefinition) {
+		if(classesDefinition == null) {
 			return true;
 		}
 		// find public parent class in case of internal class
@@ -117,8 +149,8 @@ public class ExecutionSettings implements Cloneable {
 			className = className.substring(0, i);
 		}
 		
-		for(String s : this.internalClassesDefinition) {
-			if(s.charAt(s.length() - 1) == INTERNAL_CLASSES_DEFINITION_WILDCARD_CHAR) {
+		for(String s : classesDefinition) {
+			if(s.charAt(s.length() - 1) == CLASSES_DEFINITION_WILDCARD_CHAR) {
 				final String prefix = s.substring(0, s.length() - 1);
 				// prefix matching
 				if(qualifyingMethodName.startsWith(prefix)) {
@@ -133,6 +165,39 @@ public class ExecutionSettings implements Cloneable {
 		}
 		return false;
 	}
+
+	/**
+	 * When using ByCounter to execute code, it uses a special class loader 
+	 * to load all needed classes in order to be able to select instrumented 
+	 * versions if necessary. If you need to use classes used (referenced) 
+	 * in the executed code, there will be two definitions of the class. One 
+	 * definition by the ByCounter {@link ClassLoader} and one by the 
+	 * ClassLoader used by your code. Java considers these different classes 
+	 * that cannot interoperate.
+	 * <p>
+	 * In order to enable some interoperability, this definition of external 
+	 * classes can be used to tell ByCounter to never load the specified 
+	 * classes. Note that once a class is not loaded by ByCounters 
+	 * {@link ClassLoader}, none of the classes referenced or executed from 
+	 * that class are known to ByCounter. This means that no instrumented 
+	 * classes can be selected at that point.
+	 * </p>
+	 * @param externalClasses The definition of external classes. The syntax is 
+	 * identical to {@link #setInternalClassesDefinition(Set)}.
+	 * @see #setInternalClassesDefinition(Set)
+	 */
+	public void setExternalToClassLoaderClassesDefinition(Set<String> externalClasses) {
+		this.externalToClassLoaderClassesDefinition = externalClasses;
+	}
+	
+	/**
+	 * @return The currently defined set of classes not loaded by ByCounters
+	 * {@link ClassLoader}.
+	 * @see #getExternalToClassLoaderClassesDefinition()
+	 */
+	public Set<String> getExternalToClassLoaderClassesDefinition() {
+		return this.externalToClassLoaderClassesDefinition;
+	}
 	
 	/**
 	 * @param internalClassesDefinition The definition of internal classes.
@@ -141,7 +206,7 @@ public class ExecutionSettings implements Cloneable {
 	 * internal. A value of null means all classes are considered internal.
 	 * <p>
 	 * For each string, specifying a 
-	 * '{@value #INTERNAL_CLASSES_DEFINITION_WILDCARD_CHAR}' at the end enables 
+	 * '{@value #CLASSES_DEFINITION_WILDCARD_CHAR}' at the end enables 
 	 * prefix matching, 
 	 * i.e. all classes with the prefix are matched. If a string specifies a 
 	 * class name, non-public/internal classes are also considered internal.
@@ -150,7 +215,7 @@ public class ExecutionSettings implements Cloneable {
 	 * Examples:
 	 * <code>
 	 * <list>
-	 * <li>de.uka{@value #INTERNAL_CLASSES_DEFINITION_WILDCARD_CHAR} matches de.ukap.Test, de.uka.ipd, ...</li>
+	 * <li>de.uka{@value #CLASSES_DEFINITION_WILDCARD_CHAR} matches de.ukap.Test, de.uka.ipd, ...</li>
 	 * <li>de.uka.Test matches de.uka.Test, de.uka.Test$XXX, de.uka.Test$XXX$YYY, ...</li>
 	 * <li>de.uka.Test matches de.uka.Test, but not de.uka.Test.{ENUM Y}</li>
 	 * </list>

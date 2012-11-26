@@ -48,7 +48,7 @@ public class TestNativeInstrumentation {
 	private InstrumentationParameters instrumentationParameters;
 
 	/**
-	 * This constructor is used by the Parametrized runner 
+	 * This constructor is used by the Parameterized runner 
 	 * for running tests with different parameters.
 	 * @param params {@link InstrumentationParameters} for the counting setup.
 	 */

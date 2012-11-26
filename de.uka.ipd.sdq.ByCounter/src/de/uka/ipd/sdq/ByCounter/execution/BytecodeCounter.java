@@ -304,6 +304,80 @@ public final class BytecodeCounter {
 		this.instrumentationParameters.getEntitiesToInstrument().addAll(entitiesToInstrument);
 	}
 
+	/**Creates an instance of the class which contains the provided method.
+	 * @param methodToExecute Method (which will later be executed on the created instance).
+	 * @return Class instance.
+	 */
+	public Object instantiate(MethodDescriptor methodToExecute) {
+		log.fine("Instantiating class for method " + methodToExecute);
+		// load the context, basic/range block serialisations in the result collector
+		CountingResultCollector.getInstance().instrumentationContext = InstrumentationContext.loadFromDefaultPath();
+		
+		if(this.executionSettings.getParentClassLoader() != null) {
+			this.classLoader.setParentClassLoader(this.executionSettings.getParentClassLoader());
+		}
+		// specify classes to delegate to the system class loader
+		this.classLoader.setExternalClassesDefinition(this.executionSettings.getExternalToClassLoaderClassesDefinition());
+	
+		// create a class instance
+		Object objInstance = null;	// class instance
+		try {
+			// Load the class from the bytecode
+			log.fine("+ Getting class from class pool.");
+			Class<?> classToExecute = this.classLoader.loadClass(methodToExecute.getCanonicalClassName());
+			
+			if(!methodToExecute.getMethodIsStatic()) {
+	
+				// supply CountingResultCollector with details on how execute was called (for reporting purposes)
+				MethodExecutionRecord lastMethodExecutionDetails = new MethodExecutionRecord();
+				lastMethodExecutionDetails.executionSettings = this.executionSettings.clone();
+				CountingResultCollector.getInstance().setLastMethodExecutionDetails(lastMethodExecutionDetails);
+				
+				if(methodToExecute.isConstructor()) {
+					// look for constructors for the class
+					for(MethodDescriptor constD : this.constructionDescriptors) {
+						if (constD.getCanonicalClassName().equals(methodToExecute.getCanonicalClassName())) {
+							// we found a matching constructor
+							// now use the parameters to construct the instance
+							Constructor<?>[] constructors = classToExecute.getDeclaredConstructors();
+							for(int i = 0; i < constructors.length; i++ ) {
+								Constructor<?> c = constructors[i];
+								if((new MethodDescriptor(c)).getDescriptor().equals(constD.getDescriptor())) {
+									try {
+										objInstance = c.newInstance(this.constructionParameters.get(i));
+									} catch (Exception e) {
+										throw new RuntimeException("Could not call constructor with the given arguments.", e);
+									}
+									break;
+								}
+							}
+							break;
+						}
+					}
+				}
+	
+				// instantiate the class; this only works for Classes without 
+				// constructors or parameterless constructors
+				if(objInstance == null) {
+					try{
+						objInstance = classToExecute.newInstance();
+					} catch (InstantiationException e) {
+						throw new RuntimeException("Could not instantiate class. " 
+								+ "Please make sure that "
+								+ "valid construction parameters are available.");
+					} catch (IllegalAccessException e2) {
+						throw new RuntimeException("Access denied to create a " 
+								+ "new instance of the class to execute.", e2);
+					}
+				}
+				log.fine("Instantiating class FINISHED.");
+			}
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+		return objInstance;
+	}
+
 	/**
 	 * Instrument the methods specified in the 
 	 * {@link InstrumentationParameters} of this BytecodeCounter.
@@ -875,77 +949,5 @@ public final class BytecodeCounter {
 				e.printStackTrace();
 			}
 		}
-	}
-
-	/**Creates an instance of the class which contains the provided method.
-	 * @param methodToExecute Method (which will later be executed on the created instance).
-	 * @return Class instance.
-	 */
-	public Object instantiate(MethodDescriptor methodToExecute) {
-		log.fine("Instantiating class for method " + methodToExecute);
-		// load the context, basic/range block serialisations in the result collector
-		CountingResultCollector.getInstance().instrumentationContext = InstrumentationContext.loadFromDefaultPath();
-		
-		if(this.executionSettings.getParentClassLoader() != null) {
-			this.classLoader.setParentClassLoader(this.executionSettings.getParentClassLoader());
-		}
-
-		// create a class instance
-		Object objInstance = null;	// class instance
-		try {
-			// Load the class from the bytecode
-			log.fine("+ Getting class from class pool.");
-			Class<?> classToExecute = this.classLoader.loadClass(methodToExecute.getCanonicalClassName());
-			
-			if(!methodToExecute.getMethodIsStatic()) {
-
-				// supply CountingResultCollector with details on how execute was called (for reporting purposes)
-				MethodExecutionRecord lastMethodExecutionDetails = new MethodExecutionRecord();
-				lastMethodExecutionDetails.executionSettings = this.executionSettings.clone();
-				CountingResultCollector.getInstance().setLastMethodExecutionDetails(lastMethodExecutionDetails);
-				
-				if(methodToExecute.isConstructor()) {
-					// look for constructors for the class
-					for(MethodDescriptor constD : this.constructionDescriptors) {
-						if (constD.getCanonicalClassName().equals(methodToExecute.getCanonicalClassName())) {
-							// we found a matching constructor
-							// now use the parameters to construct the instance
-							Constructor<?>[] constructors = classToExecute.getDeclaredConstructors();
-							for(int i = 0; i < constructors.length; i++ ) {
-								Constructor<?> c = constructors[i];
-								if((new MethodDescriptor(c)).getDescriptor().equals(constD.getDescriptor())) {
-									try {
-										objInstance = c.newInstance(this.constructionParameters.get(i));
-									} catch (Exception e) {
-										throw new RuntimeException("Could not call constructor with the given arguments.", e);
-									}
-									break;
-								}
-							}
-							break;
-						}
-					}
-				}
-	
-				// instantiate the class; this only works for Classes without 
-				// constructors or parameterless constructors
-				if(objInstance == null) {
-					try{
-						objInstance = classToExecute.newInstance();
-					} catch (InstantiationException e) {
-						throw new RuntimeException("Could not instantiate class. " 
-								+ "Please make sure that "
-								+ "valid construction parameters are available.");
-					} catch (IllegalAccessException e2) {
-						throw new RuntimeException("Access denied to create a " 
-								+ "new instance of the class to execute.", e2);
-					}
-				}
-				log.fine("Instantiating class FINISHED.");
-			}
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-		return objInstance;
 	}
 }

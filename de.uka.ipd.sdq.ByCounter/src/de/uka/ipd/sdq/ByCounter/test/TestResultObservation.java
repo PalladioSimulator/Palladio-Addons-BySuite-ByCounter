@@ -53,7 +53,7 @@ public class TestResultObservation extends AbstractByCounterTest {
 	private static Logger log = Logger.getLogger(TestResultObservation.class.getCanonicalName());
 
     /**
-     * This constructor is used by the Parametrized runner for running tests with different
+     * This constructor is used by the Parameterized runner for running tests with different
      * parameters.
      *
      * @param params

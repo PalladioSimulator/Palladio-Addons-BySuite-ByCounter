@@ -49,7 +49,7 @@ public class TestResultWriters extends AbstractByCounterTest {
 	private static final String METHOD_PARAMETER_TEST = "public boolean parameterTest(int i, float f, java.lang.String s)";
 
 	/**
-	 * This constructor is used by the Parametrized runner
+	 * This constructor is used by the Parameterized runner
 	 * for running tests with different parameters.
 	 * @param params {@link InstrumentationParameters} for the counting setup.
 	 */

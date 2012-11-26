@@ -67,7 +67,7 @@ public class TestBytecodeCounter extends AbstractByCounterTest {
 	private static String testClassMethodCallTest = "public void methodCallTest()";
 	
 	/**
-	 * This constructor is used by the Parametrized runner 
+	 * This constructor is used by the Parameterized runner 
 	 * for running tests with different parameters.
 	 * @param params {@link InstrumentationParameters} template for the counting setup.
 	 */
