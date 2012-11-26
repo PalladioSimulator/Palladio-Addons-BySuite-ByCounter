@@ -35,6 +35,7 @@ public class AllTestsSuite {
 		suite.addTest(new JUnit4TestAdapter(TestMethodDescriptor.class));
 		suite.addTest(new JUnit4TestAdapter(TestResultWriters.class));
 		suite.addTest(new JUnit4TestAdapter(TestLineNumbers.class));
+		suite.addTest(new JUnit4TestAdapter(TestExternalClassDefinition.class));
 		suite.addTest(new JUnit4TestAdapter(TestInternalClassDefinition.class));
 		suite.addTest(new JUnit4TestAdapter(TestResultObservation.class));
 		suite.addTest(new JUnit4TestAdapter(TestInstrumentationRegions.class));

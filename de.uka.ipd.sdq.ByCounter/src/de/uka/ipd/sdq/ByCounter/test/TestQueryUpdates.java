@@ -1,7 +1,9 @@
 package de.uka.ipd.sdq.ByCounter.test;
 
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -56,6 +58,7 @@ public class TestQueryUpdates extends AbstractByCounterTest {
 		 */
 		public Condition classInstanceAvailable;
 		private boolean bClassInstanceAvailable;
+		public BytecodeCounter counter;
 
 		public InstrumentAndExecuteEntity(final List<EntityToInstrument> entitiesToInstrument) {
 			this.entities = entitiesToInstrument;
@@ -63,14 +66,13 @@ public class TestQueryUpdates extends AbstractByCounterTest {
 			this.lock = new ReentrantLock();
 			this.bClassInstanceAvailable = false;
 			this.classInstanceAvailable = lock.newCondition();
+			this.counter = setupQueryByCounter();
 		}
 
 		@Override
 		public void run() {
 			// initialize ByCounter
 			this.lock.lock();
-			BytecodeCounter counter;
-	        counter = setupQueryByCounter();
 
 	        counter.addEntityToInstrument(this.entities);
 	        counter.instrument();
@@ -142,6 +144,9 @@ public class TestQueryUpdates extends AbstractByCounterTest {
         }
         
         InstrumentAndExecuteEntity iaem = new InstrumentAndExecuteEntity(entitiesToInstrument);
+        Set<String> externalClasses = new HashSet<String>();
+        externalClasses.add(StatefulRunnable.class.getCanonicalName());
+		iaem.counter.getExecutionSettings().setExternalToClassLoaderClassesDefinition(externalClasses);
         final Thread executeThread = new Thread(iaem);
         executeThread.start();
         System.out.println("exec started");
