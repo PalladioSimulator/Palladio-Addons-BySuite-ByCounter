@@ -16,6 +16,7 @@ import org.eclipse.emf.ecore.EObject;
  * <ul>
  *   <li>{@link edu.kit.ipd.sdq.bycounter.input.ExecutionProfile#isAddUpResultsRecursively <em>Add Up Results Recursively</em>}</li>
  *   <li>{@link edu.kit.ipd.sdq.bycounter.input.ExecutionProfile#isWaitForThreadsToFinnish <em>Wait For Threads To Finnish</em>}</li>
+ *   <li>{@link edu.kit.ipd.sdq.bycounter.input.ExecutionProfile#getDefinedLogicalSets <em>Defined Logical Sets</em>}</li>
  *   <li>{@link edu.kit.ipd.sdq.bycounter.input.ExecutionProfile#getLogicalSetExternalToClassLoader <em>Logical Set External To Class Loader</em>}</li>
  *   <li>{@link edu.kit.ipd.sdq.bycounter.input.ExecutionProfile#getInstrumentationProfileRepository <em>Instrumentation Profile Repository</em>}</li>
  * </ul>
@@ -81,9 +82,26 @@ public interface ExecutionProfile extends EObject {
 	void setWaitForThreadsToFinnish(boolean value);
 
 	/**
-	 * Returns the value of the '<em><b>Logical Set External To Class Loader</b></em>' containment reference list.
+	 * Returns the value of the '<em><b>Defined Logical Sets</b></em>' containment reference list.
 	 * The list contents are of type {@link edu.kit.ipd.sdq.bycounter.input.LogicalSet}.
 	 * It is bidirectional and its opposite is '{@link edu.kit.ipd.sdq.bycounter.input.LogicalSet#getExecutionProfile <em>Execution Profile</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Defined Logical Sets</em>' containment reference list isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Defined Logical Sets</em>' containment reference list.
+	 * @see edu.kit.ipd.sdq.bycounter.input.InputPackage#getExecutionProfile_DefinedLogicalSets()
+	 * @see edu.kit.ipd.sdq.bycounter.input.LogicalSet#getExecutionProfile
+	 * @model opposite="executionProfile" containment="true" ordered="false"
+	 * @generated
+	 */
+	EList<LogicalSet> getDefinedLogicalSets();
+
+	/**
+	 * Returns the value of the '<em><b>Logical Set External To Class Loader</b></em>' containment reference list.
+	 * The list contents are of type {@link edu.kit.ipd.sdq.bycounter.input.LogicalSet}.
 	 * <!-- begin-user-doc -->
 	 * <p>
 	 * If the meaning of the '<em>Logical Set External To Class Loader</em>' containment reference list isn't clear,
@@ -92,8 +110,7 @@ public interface ExecutionProfile extends EObject {
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Logical Set External To Class Loader</em>' containment reference list.
 	 * @see edu.kit.ipd.sdq.bycounter.input.InputPackage#getExecutionProfile_LogicalSetExternalToClassLoader()
-	 * @see edu.kit.ipd.sdq.bycounter.input.LogicalSet#getExecutionProfile
-	 * @model opposite="executionProfile" containment="true" ordered="false"
+	 * @model containment="true" ordered="false"
 	 * @generated
 	 */
 	EList<LogicalSet> getLogicalSetExternalToClassLoader();

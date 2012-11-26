@@ -44,7 +44,7 @@ public interface LogicalSet extends Identifier {
 
 	/**
 	 * Returns the value of the '<em><b>Execution Profile</b></em>' container reference.
-	 * It is bidirectional and its opposite is '{@link edu.kit.ipd.sdq.bycounter.input.ExecutionProfile#getLogicalSetExternalToClassLoader <em>Logical Set External To Class Loader</em>}'.
+	 * It is bidirectional and its opposite is '{@link edu.kit.ipd.sdq.bycounter.input.ExecutionProfile#getDefinedLogicalSets <em>Defined Logical Sets</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <p>
 	 * If the meaning of the '<em>Execution Profile</em>' container reference isn't clear,
@@ -54,8 +54,8 @@ public interface LogicalSet extends Identifier {
 	 * @return the value of the '<em>Execution Profile</em>' container reference.
 	 * @see #setExecutionProfile(ExecutionProfile)
 	 * @see edu.kit.ipd.sdq.bycounter.input.InputPackage#getLogicalSet_ExecutionProfile()
-	 * @see edu.kit.ipd.sdq.bycounter.input.ExecutionProfile#getLogicalSetExternalToClassLoader
-	 * @model opposite="logicalSetExternalToClassLoader" required="true" transient="false" ordered="false"
+	 * @see edu.kit.ipd.sdq.bycounter.input.ExecutionProfile#getDefinedLogicalSets
+	 * @model opposite="definedLogicalSets" required="true" transient="false" ordered="false"
 	 * @generated
 	 */
 	ExecutionProfile getExecutionProfile();

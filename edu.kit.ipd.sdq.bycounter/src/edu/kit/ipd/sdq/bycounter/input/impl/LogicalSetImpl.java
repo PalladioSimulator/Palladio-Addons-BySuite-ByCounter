@@ -114,7 +114,7 @@ public class LogicalSetImpl extends IdentifierImpl implements LogicalSet {
 			if (eInternalContainer() != null)
 				msgs = eBasicRemoveFromContainer(msgs);
 			if (newExecutionProfile != null)
-				msgs = ((InternalEObject)newExecutionProfile).eInverseAdd(this, InputPackage.EXECUTION_PROFILE__LOGICAL_SET_EXTERNAL_TO_CLASS_LOADER, ExecutionProfile.class, msgs);
+				msgs = ((InternalEObject)newExecutionProfile).eInverseAdd(this, InputPackage.EXECUTION_PROFILE__DEFINED_LOGICAL_SETS, ExecutionProfile.class, msgs);
 			msgs = basicSetExecutionProfile(newExecutionProfile, msgs);
 			if (msgs != null) msgs.dispatch();
 		}
@@ -161,7 +161,7 @@ public class LogicalSetImpl extends IdentifierImpl implements LogicalSet {
 	public NotificationChain eBasicRemoveFromContainerFeature(NotificationChain msgs) {
 		switch (eContainerFeatureID()) {
 			case InputPackage.LOGICAL_SET__EXECUTION_PROFILE:
-				return eInternalContainer().eInverseRemove(this, InputPackage.EXECUTION_PROFILE__LOGICAL_SET_EXTERNAL_TO_CLASS_LOADER, ExecutionProfile.class, msgs);
+				return eInternalContainer().eInverseRemove(this, InputPackage.EXECUTION_PROFILE__DEFINED_LOGICAL_SETS, ExecutionProfile.class, msgs);
 		}
 		return super.eBasicRemoveFromContainerFeature(msgs);
 	}

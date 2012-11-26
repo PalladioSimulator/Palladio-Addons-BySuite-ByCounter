@@ -250,13 +250,22 @@ public interface InputPackage extends EPackage {
 	int EXECUTION_PROFILE__WAIT_FOR_THREADS_TO_FINNISH = 1;
 
 	/**
+	 * The feature id for the '<em><b>Defined Logical Sets</b></em>' containment reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int EXECUTION_PROFILE__DEFINED_LOGICAL_SETS = 2;
+
+	/**
 	 * The feature id for the '<em><b>Logical Set External To Class Loader</b></em>' containment reference list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int EXECUTION_PROFILE__LOGICAL_SET_EXTERNAL_TO_CLASS_LOADER = 2;
+	int EXECUTION_PROFILE__LOGICAL_SET_EXTERNAL_TO_CLASS_LOADER = 3;
 
 	/**
 	 * The feature id for the '<em><b>Instrumentation Profile Repository</b></em>' container reference.
@@ -265,7 +274,7 @@ public interface InputPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int EXECUTION_PROFILE__INSTRUMENTATION_PROFILE_REPOSITORY = 3;
+	int EXECUTION_PROFILE__INSTRUMENTATION_PROFILE_REPOSITORY = 4;
 
 	/**
 	 * The number of structural features of the '<em>Execution Profile</em>' class.
@@ -274,7 +283,7 @@ public interface InputPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int EXECUTION_PROFILE_FEATURE_COUNT = 4;
+	int EXECUTION_PROFILE_FEATURE_COUNT = 5;
 
 	/**
 	 * The meta object id for the '{@link edu.kit.ipd.sdq.bycounter.input.impl.LogicalSetImpl <em>Logical Set</em>}' class.
@@ -710,6 +719,17 @@ public interface InputPackage extends EPackage {
 	EAttribute getExecutionProfile_WaitForThreadsToFinnish();
 
 	/**
+	 * Returns the meta object for the containment reference list '{@link edu.kit.ipd.sdq.bycounter.input.ExecutionProfile#getDefinedLogicalSets <em>Defined Logical Sets</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the containment reference list '<em>Defined Logical Sets</em>'.
+	 * @see edu.kit.ipd.sdq.bycounter.input.ExecutionProfile#getDefinedLogicalSets()
+	 * @see #getExecutionProfile()
+	 * @generated
+	 */
+	EReference getExecutionProfile_DefinedLogicalSets();
+
+	/**
 	 * Returns the meta object for the containment reference list '{@link edu.kit.ipd.sdq.bycounter.input.ExecutionProfile#getLogicalSetExternalToClassLoader <em>Logical Set External To Class Loader</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -1087,6 +1107,14 @@ public interface InputPackage extends EPackage {
 		 * @generated
 		 */
 		EAttribute EXECUTION_PROFILE__WAIT_FOR_THREADS_TO_FINNISH = eINSTANCE.getExecutionProfile_WaitForThreadsToFinnish();
+
+		/**
+		 * The meta object literal for the '<em><b>Defined Logical Sets</b></em>' containment reference list feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference EXECUTION_PROFILE__DEFINED_LOGICAL_SETS = eINSTANCE.getExecutionProfile_DefinedLogicalSets();
 
 		/**
 		 * The meta object literal for the '<em><b>Logical Set External To Class Loader</b></em>' containment reference list feature.

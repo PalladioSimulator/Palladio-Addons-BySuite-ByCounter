@@ -313,10 +313,6 @@ entitesToInstrument that  are not Java API methods (packages java.*, javax.* sun
           <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_wmdDEDveEd-PZ70lu-zpYg" value="1"/>
           <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_wmccADveEd-PZ70lu-zpYg" value="1"/>
         </ownedAttribute>
-        <ownedAttribute xmi:id="_hVKhwDfwEeKlhsE4mwL0FQ" name="executionProfile" visibility="private" type="_cJTAAPXoEeGJyMxspERnIw" association="_hUmhEDfwEeKlhsE4mwL0FQ">
-          <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_hVLv4DfwEeKlhsE4mwL0FQ" value="1"/>
-          <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_hVLI0DfwEeKlhsE4mwL0FQ" value="1"/>
-        </ownedAttribute>
       </packagedElement>
       <packagedElement xmi:type="uml:Association" xmi:id="_-vze8EZIEd-sOu4vtdvMEA" memberEnd="_-v17MEZIEd-sOu4vtdvMEA _-v4-gEZIEd-sOu4vtdvMEA">
         <ownedEnd xmi:id="_-v4-gEZIEd-sOu4vtdvMEA" name="logicalarea" visibility="public" type="_2KvtoEZIEd-sOu4vtdvMEA" association="_-vze8EZIEd-sOu4vtdvMEA">
@@ -444,7 +440,12 @@ When false, only the counts for operations done in the method itself - not those
         </ownedAttribute>
       </packagedElement>
       <packagedElement xmi:type="uml:Association" xmi:id="_hkXhkPXoEeGJyMxspERnIw" memberEnd="_hkYvsPXoEeGJyMxspERnIw _hkak4PXoEeGJyMxspERnIw"/>
-      <packagedElement xmi:type="uml:Association" xmi:id="_hUmhEDfwEeKlhsE4mwL0FQ" memberEnd="_hVD0EDfwEeKlhsE4mwL0FQ _hVKhwDfwEeKlhsE4mwL0FQ"/>
+      <packagedElement xmi:type="uml:Association" xmi:id="_hUmhEDfwEeKlhsE4mwL0FQ" memberEnd="_hVD0EDfwEeKlhsE4mwL0FQ _hVKhwDfwEeKlhsE4mwL0FQ">
+        <ownedEnd xmi:id="_hVKhwDfwEeKlhsE4mwL0FQ" name="executionProfile" visibility="private" type="_cJTAAPXoEeGJyMxspERnIw" association="_hUmhEDfwEeKlhsE4mwL0FQ">
+          <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_hVLv4DfwEeKlhsE4mwL0FQ" value="1"/>
+          <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_hVLI0DfwEeKlhsE4mwL0FQ" value="1"/>
+        </ownedEnd>
+      </packagedElement>
     </packagedElement>
     <profileApplication xmi:id="_LYmHtTwSEd-Dc9Rw_97E5Q">
       <eAnnotations xmi:id="_LYmHtjwSEd-Dc9Rw_97E5Q" source="http://www.eclipse.org/uml2/2.0.0/UML">
