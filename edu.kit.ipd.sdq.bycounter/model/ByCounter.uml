@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xmi:XMI xmi:version="2.1" xmlns:xmi="http://schema.omg.org/spec/XMI/2.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:Default="http:///schemas/Default/_fNm3AAqoEd6-N_NOT9vsCA/2" xmlns:Ecore="http://www.eclipse.org/uml2/schemas/Ecore/5" xmlns:Ecore_1="http://www.eclipse.org/uml2/schemas/Ecore/3" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" xmlns:uml="http://www.eclipse.org/uml2/3.0.0/UML" xsi:schemaLocation="http:///schemas/Default/_fNm3AAqoEd6-N_NOT9vsCA/2 Default.profile.uml#_fNwoAAqoEd6-N_NOT9vsCA http://www.eclipse.org/uml2/schemas/Ecore/5 pathmap://UML_PROFILES/Ecore.profile.uml#_z1OFcHjqEdy8S4Cr8Rc_NA http://www.eclipse.org/uml2/schemas/Ecore/3 pathmap://UML_PROFILES/Ecore.profile.uml#_vy-HUYinEdqtvbnfB2L_5w">
+<xmi:XMI xmi:version="2.1" xmlns:xmi="http://schema.omg.org/spec/XMI/2.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:Ecore="http://www.eclipse.org/uml2/schemas/Ecore/5" xmlns:Ecore_1="http://www.eclipse.org/uml2/schemas/Ecore/3" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" xmlns:uml="http://www.eclipse.org/uml2/3.0.0/UML" xsi:schemaLocation="http://www.eclipse.org/uml2/schemas/Ecore/5 pathmap://UML_PROFILES/Ecore.profile.uml#_z1OFcHjqEdy8S4Cr8Rc_NA http://www.eclipse.org/uml2/schemas/Ecore/3 pathmap://UML_PROFILES/Ecore.profile.uml#_vy-HUYinEdqtvbnfB2L_5w">
   <uml:Package xmi:id="_LYmHsDwSEd-Dc9Rw_97E5Q" name="ByCounter">
     <packagedElement xmi:type="uml:Package" xmi:id="_25y60DDlEd-tfvT1lh6RMw" name="Output">
       <ownedComment xmi:id="_wTytgDm0Ed-OBL1WdoxzBQ" annotatedElement="_25y60DDlEd-tfvT1lh6RMw">
@@ -313,6 +313,10 @@ entitesToInstrument that  are not Java API methods (packages java.*, javax.* sun
           <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_wmdDEDveEd-PZ70lu-zpYg" value="1"/>
           <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_wmccADveEd-PZ70lu-zpYg" value="1"/>
         </ownedAttribute>
+        <ownedAttribute xmi:id="_hVKhwDfwEeKlhsE4mwL0FQ" name="executionProfile" visibility="private" type="_cJTAAPXoEeGJyMxspERnIw" association="_hUmhEDfwEeKlhsE4mwL0FQ">
+          <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_hVLv4DfwEeKlhsE4mwL0FQ" value="1"/>
+          <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_hVLI0DfwEeKlhsE4mwL0FQ" value="1"/>
+        </ownedAttribute>
       </packagedElement>
       <packagedElement xmi:type="uml:Association" xmi:id="_-vze8EZIEd-sOu4vtdvMEA" memberEnd="_-v17MEZIEd-sOu4vtdvMEA _-v4-gEZIEd-sOu4vtdvMEA">
         <ownedEnd xmi:id="_-v4-gEZIEd-sOu4vtdvMEA" name="logicalarea" visibility="public" type="_2KvtoEZIEd-sOu4vtdvMEA" association="_-vze8EZIEd-sOu4vtdvMEA">
@@ -434,26 +438,19 @@ When false, only the counts for operations done in the method itself - not those
           <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_wmbN4DveEd-PZ70lu-zpYg" value="*"/>
           <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_wmam0DveEd-PZ70lu-zpYg"/>
         </ownedAttribute>
+        <ownedAttribute xmi:id="_hVD0EDfwEeKlhsE4mwL0FQ" name="logicalSetExternalToClassLoader" visibility="public" type="_2KvtoEZIEd-sOu4vtdvMEA" aggregation="composite" association="_hUmhEDfwEeKlhsE4mwL0FQ">
+          <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_hVJToTfwEeKlhsE4mwL0FQ" value="*"/>
+          <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_hVJToDfwEeKlhsE4mwL0FQ"/>
+        </ownedAttribute>
       </packagedElement>
       <packagedElement xmi:type="uml:Association" xmi:id="_hkXhkPXoEeGJyMxspERnIw" memberEnd="_hkYvsPXoEeGJyMxspERnIw _hkak4PXoEeGJyMxspERnIw"/>
+      <packagedElement xmi:type="uml:Association" xmi:id="_hUmhEDfwEeKlhsE4mwL0FQ" memberEnd="_hVD0EDfwEeKlhsE4mwL0FQ _hVKhwDfwEeKlhsE4mwL0FQ"/>
     </packagedElement>
     <profileApplication xmi:id="_LYmHtTwSEd-Dc9Rw_97E5Q">
       <eAnnotations xmi:id="_LYmHtjwSEd-Dc9Rw_97E5Q" source="http://www.eclipse.org/uml2/2.0.0/UML">
         <references xmi:type="ecore:EPackage" href="pathmap://UML_PROFILES/Standard.profile.uml#_yzU58YinEdqtvbnfB2L_5w"/>
       </eAnnotations>
       <appliedProfile href="pathmap://UML_PROFILES/Standard.profile.uml#_0"/>
-    </profileApplication>
-    <profileApplication xmi:id="_LYmHtzwSEd-Dc9Rw_97E5Q">
-      <eAnnotations xmi:id="_LYmHuDwSEd-Dc9Rw_97E5Q" source="http://www.eclipse.org/uml2/2.0.0/UML">
-        <references xmi:type="ecore:EPackage" href="Default.profile.uml#_fNwoAAqoEd6-N_NOT9vsCA"/>
-      </eAnnotations>
-      <appliedProfile href="Default.profile.uml#_a_S3wNWLEdiy4IqP8whjFA"/>
-    </profileApplication>
-    <profileApplication xmi:id="_LYmHuTwSEd-Dc9Rw_97E5Q">
-      <eAnnotations xmi:id="_LYmHujwSEd-Dc9Rw_97E5Q" source="http://www.eclipse.org/uml2/2.0.0/UML">
-        <references xmi:type="ecore:EPackage" href="Deployment.profile.uml#_IrdAUMmBEdqBcN1R6EvWUw"/>
-      </eAnnotations>
-      <appliedProfile href="Deployment.profile.uml#_vjbuwOvHEdiDX5bji0iVSA"/>
     </profileApplication>
     <profileApplication xmi:id="_N-X3IDwSEd-Dc9Rw_97E5Q">
       <eAnnotations xmi:id="_N-ZFQDwSEd-Dc9Rw_97E5Q" source="http://www.eclipse.org/uml2/2.0.0/UML">
@@ -464,29 +461,5 @@ When false, only the counts for operations done in the method itself - not those
   </uml:Package>
   <Ecore:EPackage xmi:id="_Tq2RwDwSEd-Dc9Rw_97E5Q" base_Package="_LYmHsDwSEd-Dc9Rw_97E5Q" packageName="bycounter" nsPrefix="ByCounter" nsURI="http://sdq.ipd.kit.edu/ByCounterModels/0.3" basePackage="edu.kit.ipd.sdq" prefix="Bycounter"/>
   <Ecore_1:EPackage xmi:id="_VkR2MDveEd-PZ70lu-zpYg" base_Package="_SuIvgDveEd-PZ70lu-zpYg" packageName="input" nsPrefix="ByCounter.Input" nsURI="http://sdq.ipd.kit.edu/ByCounterModels/Input/0.3" prefix="Input"/>
-  <Default:Documentation xmi:id="_wT73cDm0Ed-OBL1WdoxzBQ" base_Comment="_wTytgDm0Ed-OBL1WdoxzBQ"/>
   <Ecore_1:EPackage xmi:id="_SeAL0DDoEd-tfvT1lh6RMw" base_Package="_25y60DDlEd-tfvT1lh6RMw" packageName="output" nsPrefix="ByCounter.Output" nsURI="http://sdq.ipd.kit.edu/ByCounterModels/Output/0.3" prefix="Output"/>
-  <Default:Documentation xmi:id="_3IszUPKTEeGXcrz1WV8dqw" base_Comment="_3EDj4PKTEeGXcrz1WV8dqw"/>
-  <Default:Documentation xmi:id="_I7Z_8PKUEeGXcrz1WV8dqw" base_Comment="_I7FP0PKUEeGXcrz1WV8dqw"/>
-  <Default:Documentation xmi:id="_g4dHkPKXEeGXcrz1WV8dqw" base_Comment="_g4bSYPKXEeGXcrz1WV8dqw"/>
-  <Default:Documentation xmi:id="_4eryAPKXEeGXcrz1WV8dqw" base_Comment="_4engkPKXEeGXcrz1WV8dqw"/>
-  <Default:Documentation xmi:id="_SxD5oPKYEeGXcrz1WV8dqw" base_Comment="_SxAPQPKYEeGXcrz1WV8dqw"/>
-  <Default:Documentation xmi:id="_xDA4YPKcEeGXcrz1WV8dqw" base_Comment="_xC9OAPKcEeGXcrz1WV8dqw"/>
-  <Default:Documentation xmi:id="_z3EUYPKcEeGXcrz1WV8dqw" base_Comment="_z3AqAPKcEeGXcrz1WV8dqw"/>
-  <Default:Documentation xmi:id="_Qwm1EPKpEeGXcrz1WV8dqw" base_Comment="_QwjxwPKpEeGXcrz1WV8dqw"/>
-  <Default:Documentation xmi:id="_Rt2gcPKpEeGXcrz1WV8dqw" base_Comment="_Rt0rQPKpEeGXcrz1WV8dqw"/>
-  <Default:Documentation xmi:id="_HXNNkPWaEeGCw7rrCTZ13A" base_Comment="_HXC1gPWaEeGCw7rrCTZ13A"/>
-  <Default:Documentation xmi:id="_tthswPXdEeGJyMxspERnIw" base_Comment="_tqCT4PXdEeGJyMxspERnIw"/>
-  <Default:Documentation xmi:id="_F80BoPXmEeGJyMxspERnIw" base_Comment="_F8tT8PXmEeGJyMxspERnIw"/>
-  <Default:Documentation xmi:id="_Hdct8PXmEeGJyMxspERnIw" base_Comment="_HdZDkPXmEeGJyMxspERnIw"/>
-  <Default:Documentation xmi:id="_41WxQPXnEeGJyMxspERnIw" base_Comment="_41Tt8PXnEeGJyMxspERnIw"/>
-  <Default:Documentation xmi:id="_V2Q7sPXoEeGJyMxspERnIw" base_Comment="_V2PGgPXoEeGJyMxspERnIw"/>
-  <Default:Documentation xmi:id="_HJV-0PXpEeGJyMxspERnIw" base_Comment="_HJSUcPXpEeGJyMxspERnIw"/>
-  <Default:Documentation xmi:id="_bXSe0PXpEeGJyMxspERnIw" base_Comment="_bXPbgPXpEeGJyMxspERnIw"/>
-  <Default:Documentation xmi:id="_7FcSoPXpEeGJyMxspERnIw" base_Comment="_7FadcPXpEeGJyMxspERnIw"/>
-  <Default:Documentation xmi:id="_LOs1MPXqEeGJyMxspERnIw" base_Comment="_LOqY8PXqEeGJyMxspERnIw"/>
-  <Default:Documentation xmi:id="_VlHPYPXqEeGJyMxspERnIw" base_Comment="_VlDlAPXqEeGJyMxspERnIw"/>
-  <Default:Documentation xmi:id="_c2PToPXqEeGJyMxspERnIw" base_Comment="_c2NecPXqEeGJyMxspERnIw"/>
-  <Default:Documentation xmi:id="_kzNxQPXqEeGJyMxspERnIw" base_Comment="_kzLVAPXqEeGJyMxspERnIw"/>
-  <Default:Documentation xmi:id="_5rcewAxvEeK8E4ionb-Bzg" base_Comment="_5rXmQAxvEeK8E4ionb-Bzg"/>
 </xmi:XMI>

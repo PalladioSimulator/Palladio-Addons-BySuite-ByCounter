@@ -127,7 +127,7 @@ public class ExecutionProfileItemProvider
 	public Collection<? extends EStructuralFeature> getChildrenFeatures(Object object) {
 		if (childrenFeatures == null) {
 			super.getChildrenFeatures(object);
-			childrenFeatures.add(InputPackage.Literals.EXECUTION_PROFILE__DEFINED_LOGICAL_SETS);
+			childrenFeatures.add(InputPackage.Literals.EXECUTION_PROFILE__LOGICAL_SET_EXTERNAL_TO_CLASS_LOADER);
 		}
 		return childrenFeatures;
 	}
@@ -184,7 +184,7 @@ public class ExecutionProfileItemProvider
 			case InputPackage.EXECUTION_PROFILE__WAIT_FOR_THREADS_TO_FINNISH:
 				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
 				return;
-			case InputPackage.EXECUTION_PROFILE__DEFINED_LOGICAL_SETS:
+			case InputPackage.EXECUTION_PROFILE__LOGICAL_SET_EXTERNAL_TO_CLASS_LOADER:
 				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), true, false));
 				return;
 		}
@@ -204,7 +204,7 @@ public class ExecutionProfileItemProvider
 
 		newChildDescriptors.add
 			(createChildParameter
-				(InputPackage.Literals.EXECUTION_PROFILE__DEFINED_LOGICAL_SETS,
+				(InputPackage.Literals.EXECUTION_PROFILE__LOGICAL_SET_EXTERNAL_TO_CLASS_LOADER,
 				 InputFactory.eINSTANCE.createLogicalSet()));
 	}
 

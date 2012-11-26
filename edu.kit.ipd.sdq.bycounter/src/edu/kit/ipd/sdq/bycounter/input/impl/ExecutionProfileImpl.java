@@ -33,7 +33,7 @@ import org.eclipse.emf.ecore.util.InternalEList;
  * <ul>
  *   <li>{@link edu.kit.ipd.sdq.bycounter.input.impl.ExecutionProfileImpl#isAddUpResultsRecursively <em>Add Up Results Recursively</em>}</li>
  *   <li>{@link edu.kit.ipd.sdq.bycounter.input.impl.ExecutionProfileImpl#isWaitForThreadsToFinnish <em>Wait For Threads To Finnish</em>}</li>
- *   <li>{@link edu.kit.ipd.sdq.bycounter.input.impl.ExecutionProfileImpl#getDefinedLogicalSets <em>Defined Logical Sets</em>}</li>
+ *   <li>{@link edu.kit.ipd.sdq.bycounter.input.impl.ExecutionProfileImpl#getLogicalSetExternalToClassLoader <em>Logical Set External To Class Loader</em>}</li>
  *   <li>{@link edu.kit.ipd.sdq.bycounter.input.impl.ExecutionProfileImpl#getInstrumentationProfileRepository <em>Instrumentation Profile Repository</em>}</li>
  * </ul>
  * </p>
@@ -82,14 +82,14 @@ public class ExecutionProfileImpl extends EObjectImpl implements ExecutionProfil
 	protected boolean waitForThreadsToFinnish = WAIT_FOR_THREADS_TO_FINNISH_EDEFAULT;
 
 	/**
-	 * The cached value of the '{@link #getDefinedLogicalSets() <em>Defined Logical Sets</em>}' containment reference list.
+	 * The cached value of the '{@link #getLogicalSetExternalToClassLoader() <em>Logical Set External To Class Loader</em>}' containment reference list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see #getDefinedLogicalSets()
+	 * @see #getLogicalSetExternalToClassLoader()
 	 * @generated
 	 * @ordered
 	 */
-	protected EList<LogicalSet> definedLogicalSets;
+	protected EList<LogicalSet> logicalSetExternalToClassLoader;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -157,11 +157,11 @@ public class ExecutionProfileImpl extends EObjectImpl implements ExecutionProfil
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EList<LogicalSet> getDefinedLogicalSets() {
-		if (definedLogicalSets == null) {
-			definedLogicalSets = new EObjectContainmentWithInverseEList<LogicalSet>(LogicalSet.class, this, InputPackage.EXECUTION_PROFILE__DEFINED_LOGICAL_SETS, InputPackage.LOGICAL_SET__EXECUTION_PROFILE);
+	public EList<LogicalSet> getLogicalSetExternalToClassLoader() {
+		if (logicalSetExternalToClassLoader == null) {
+			logicalSetExternalToClassLoader = new EObjectContainmentWithInverseEList<LogicalSet>(LogicalSet.class, this, InputPackage.EXECUTION_PROFILE__LOGICAL_SET_EXTERNAL_TO_CLASS_LOADER, InputPackage.LOGICAL_SET__EXECUTION_PROFILE);
 		}
-		return definedLogicalSets;
+		return logicalSetExternalToClassLoader;
 	}
 
 	/**
@@ -214,8 +214,8 @@ public class ExecutionProfileImpl extends EObjectImpl implements ExecutionProfil
 	@Override
 	public NotificationChain eInverseAdd(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
 		switch (featureID) {
-			case InputPackage.EXECUTION_PROFILE__DEFINED_LOGICAL_SETS:
-				return ((InternalEList<InternalEObject>)(InternalEList<?>)getDefinedLogicalSets()).basicAdd(otherEnd, msgs);
+			case InputPackage.EXECUTION_PROFILE__LOGICAL_SET_EXTERNAL_TO_CLASS_LOADER:
+				return ((InternalEList<InternalEObject>)(InternalEList<?>)getLogicalSetExternalToClassLoader()).basicAdd(otherEnd, msgs);
 			case InputPackage.EXECUTION_PROFILE__INSTRUMENTATION_PROFILE_REPOSITORY:
 				if (eInternalContainer() != null)
 					msgs = eBasicRemoveFromContainer(msgs);
@@ -232,8 +232,8 @@ public class ExecutionProfileImpl extends EObjectImpl implements ExecutionProfil
 	@Override
 	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
 		switch (featureID) {
-			case InputPackage.EXECUTION_PROFILE__DEFINED_LOGICAL_SETS:
-				return ((InternalEList<?>)getDefinedLogicalSets()).basicRemove(otherEnd, msgs);
+			case InputPackage.EXECUTION_PROFILE__LOGICAL_SET_EXTERNAL_TO_CLASS_LOADER:
+				return ((InternalEList<?>)getLogicalSetExternalToClassLoader()).basicRemove(otherEnd, msgs);
 			case InputPackage.EXECUTION_PROFILE__INSTRUMENTATION_PROFILE_REPOSITORY:
 				return basicSetInstrumentationProfileRepository(null, msgs);
 		}
@@ -266,8 +266,8 @@ public class ExecutionProfileImpl extends EObjectImpl implements ExecutionProfil
 				return isAddUpResultsRecursively();
 			case InputPackage.EXECUTION_PROFILE__WAIT_FOR_THREADS_TO_FINNISH:
 				return isWaitForThreadsToFinnish();
-			case InputPackage.EXECUTION_PROFILE__DEFINED_LOGICAL_SETS:
-				return getDefinedLogicalSets();
+			case InputPackage.EXECUTION_PROFILE__LOGICAL_SET_EXTERNAL_TO_CLASS_LOADER:
+				return getLogicalSetExternalToClassLoader();
 			case InputPackage.EXECUTION_PROFILE__INSTRUMENTATION_PROFILE_REPOSITORY:
 				return getInstrumentationProfileRepository();
 		}
@@ -289,9 +289,9 @@ public class ExecutionProfileImpl extends EObjectImpl implements ExecutionProfil
 			case InputPackage.EXECUTION_PROFILE__WAIT_FOR_THREADS_TO_FINNISH:
 				setWaitForThreadsToFinnish((Boolean)newValue);
 				return;
-			case InputPackage.EXECUTION_PROFILE__DEFINED_LOGICAL_SETS:
-				getDefinedLogicalSets().clear();
-				getDefinedLogicalSets().addAll((Collection<? extends LogicalSet>)newValue);
+			case InputPackage.EXECUTION_PROFILE__LOGICAL_SET_EXTERNAL_TO_CLASS_LOADER:
+				getLogicalSetExternalToClassLoader().clear();
+				getLogicalSetExternalToClassLoader().addAll((Collection<? extends LogicalSet>)newValue);
 				return;
 			case InputPackage.EXECUTION_PROFILE__INSTRUMENTATION_PROFILE_REPOSITORY:
 				setInstrumentationProfileRepository((InstrumentationProfileRepository)newValue);
@@ -314,8 +314,8 @@ public class ExecutionProfileImpl extends EObjectImpl implements ExecutionProfil
 			case InputPackage.EXECUTION_PROFILE__WAIT_FOR_THREADS_TO_FINNISH:
 				setWaitForThreadsToFinnish(WAIT_FOR_THREADS_TO_FINNISH_EDEFAULT);
 				return;
-			case InputPackage.EXECUTION_PROFILE__DEFINED_LOGICAL_SETS:
-				getDefinedLogicalSets().clear();
+			case InputPackage.EXECUTION_PROFILE__LOGICAL_SET_EXTERNAL_TO_CLASS_LOADER:
+				getLogicalSetExternalToClassLoader().clear();
 				return;
 			case InputPackage.EXECUTION_PROFILE__INSTRUMENTATION_PROFILE_REPOSITORY:
 				setInstrumentationProfileRepository((InstrumentationProfileRepository)null);
@@ -336,8 +336,8 @@ public class ExecutionProfileImpl extends EObjectImpl implements ExecutionProfil
 				return addUpResultsRecursively != ADD_UP_RESULTS_RECURSIVELY_EDEFAULT;
 			case InputPackage.EXECUTION_PROFILE__WAIT_FOR_THREADS_TO_FINNISH:
 				return waitForThreadsToFinnish != WAIT_FOR_THREADS_TO_FINNISH_EDEFAULT;
-			case InputPackage.EXECUTION_PROFILE__DEFINED_LOGICAL_SETS:
-				return definedLogicalSets != null && !definedLogicalSets.isEmpty();
+			case InputPackage.EXECUTION_PROFILE__LOGICAL_SET_EXTERNAL_TO_CLASS_LOADER:
+				return logicalSetExternalToClassLoader != null && !logicalSetExternalToClassLoader.isEmpty();
 			case InputPackage.EXECUTION_PROFILE__INSTRUMENTATION_PROFILE_REPOSITORY:
 				return getInstrumentationProfileRepository() != null;
 		}

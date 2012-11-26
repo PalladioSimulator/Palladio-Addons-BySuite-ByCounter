@@ -219,8 +219,9 @@
           <details key="documentation" value="When true, execution tries to wait for all threads from instrumented methods to finish before returning."/>
         </eAnnotations>
       </eStructuralFeatures>
-      <eStructuralFeatures xsi:type="ecore:EReference" name="definedLogicalSets" ordered="false"
-          upperBound="-1" eType="#//input/LogicalSet" containment="true" eOpposite="#//input/LogicalSet/executionProfile"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="logicalSetExternalToClassLoader"
+          ordered="false" upperBound="-1" eType="#//input/LogicalSet" containment="true"
+          eOpposite="#//input/LogicalSet/executionProfile"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="instrumentationProfileRepository"
           ordered="false" eType="#//input/InstrumentationProfileRepository" eOpposite="#//input/InstrumentationProfileRepository/executionProfile"/>
     </eClassifiers>
@@ -228,7 +229,7 @@
       <eStructuralFeatures xsi:type="ecore:EReference" name="internalClasses" ordered="false"
           upperBound="-1" eType="ecore:EClass platform:/plugin/de.fzi.gast/model/gast.ecore#//types/GASTClass"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="executionProfile" ordered="false"
-          lowerBound="1" eType="#//input/ExecutionProfile" eOpposite="#//input/ExecutionProfile/definedLogicalSets"/>
+          lowerBound="1" eType="#//input/ExecutionProfile" eOpposite="#//input/ExecutionProfile/logicalSetExternalToClassLoader"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="InstrumentedCodeArea" eSuperTypes="#//input/EntityToInstrument">
       <eStructuralFeatures xsi:type="ecore:EReference" name="from" ordered="false"
