@@ -840,6 +840,13 @@ public final class BytecodeCounter {
 	}
 
 	/**
+	 * @return ByCounters {@link ClassLoader} used to load instrumented classes.
+	 */
+	public ClassLoader getClassLoader() {
+		return classLoader;
+	}
+
+	/**
 	 * Specifies (changes) the class to instrument to be the class specified 
 	 * as the byte array.
 	 * <p>
