@@ -552,4 +552,12 @@ public class ByCounterWrapper {
 		CountingResultCollector.getInstance().clearResults();
 		this.countingResultToEMFMap.clear();
 	}
+	
+	/**
+	 * @return ByCounters {@link ClassLoader} used to load instrumented 
+	 * classes.
+	 */
+	public ClassLoader getClassLoader() {
+		return this.bycounter.getClassLoader();
+	}
 }
