@@ -44,7 +44,7 @@ public class FibonacciExample {
 		if (profileRepo.getInstrumentationProfile().size() != 1) {
 			throw new IllegalStateException("File contains more than one instrumentation profile. Example code expects exactly one profile.");
 		}
-		byCounterWrapper.setInstrumentationConfiguration(profileRepo.getInstrumentationProfile().get(0));
+		byCounterWrapper.setInstrumentationProfile(profileRepo.getInstrumentationProfile().get(0));
 		
 		// Execute
 		Method targetMethod = getFibonacciMethod();
