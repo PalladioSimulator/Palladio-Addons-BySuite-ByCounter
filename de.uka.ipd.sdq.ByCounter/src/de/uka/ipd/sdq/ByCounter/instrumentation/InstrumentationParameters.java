@@ -3,8 +3,10 @@ package de.uka.ipd.sdq.ByCounter.instrumentation;
 import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 import de.uka.ipd.sdq.ByCounter.execution.CountingResultCollector;
+import de.uka.ipd.sdq.ByCounter.execution.ExecutionSettings;
 import de.uka.ipd.sdq.ByCounter.utils.MethodDescriptor;
 
 /**
@@ -212,6 +214,11 @@ public final class InstrumentationParameters implements Cloneable {
 	 * Overrides the instrumentation behavior in a method.
 	 */
 	private InstrumentationScopeModeEnum instrumentationScopeOverrideMethodLevel;
+
+	/**
+	 * @see #setExternalClassesDefinition(Set)
+	 */
+	private Set<String> externalToClassLoaderClassesDefinition;
 	
 	/**
 	 * This is intended only for construction in multiple steps.
@@ -283,6 +290,7 @@ public final class InstrumentationParameters implements Cloneable {
 		this.provideOnlineSectionActiveUpdates = PROVIDE_ONLINE_SECTION_ACTIVE_UPDATES_DEFAULT;
 		this.provideJoinThreadsAbility = PROVIDE_JOIN_THREADS_ABILITY_DEFAULT;
 		this.entitiesToInstrument = pEntitesToInstrument;
+		this.externalToClassLoaderClassesDefinition = null;
 	}
 	
 	/* (non-Javadoc)
@@ -304,6 +312,7 @@ public final class InstrumentationParameters implements Cloneable {
 		copy.countStatically = this.countStatically;
 		copy.entitiesToInstrument = new LinkedList<EntityToInstrument>();
 		copy.entitiesToInstrument.addAll(this.entitiesToInstrument);
+		copy.externalToClassLoaderClassesDefinition = this.externalToClassLoaderClassesDefinition;
 		copy.ignoredPackagePrefixes = this.ignoredPackagePrefixes.clone();
 		copy.instrumentationScopeOverrideClassLevel = this.instrumentationScopeOverrideClassLevel;
 		copy.instrumentationScopeOverrideMethodLevel = this.instrumentationScopeOverrideMethodLevel;
@@ -323,6 +332,17 @@ public final class InstrumentationParameters implements Cloneable {
 		copy.writeClassesToDiskDirectory = this.writeClassesToDiskDirectory;
 		
 		return copy;
+	}
+
+
+	/**
+	 * Uses the {@link #getExternalToClassLoaderClassesDefinition()} to decide whether the given 
+	 * name is considered an external class.
+	 * @param qualifyingMethodName Name of the class to check. 
+	 * @return True when the class is external.
+	 */
+	public boolean isExternalToClassLoaderClass(String qualifyingMethodName) {
+		return ExecutionSettings.isInClassesDefinition(qualifyingMethodName, this.externalToClassLoaderClassesDefinition);
 	}
 
 	/**
@@ -347,6 +367,40 @@ public final class InstrumentationParameters implements Cloneable {
 	 */
 	public boolean getInstrumentRecursively() {
 		return this.instrumentRecursively;
+	}
+	
+
+	/**
+	 * When using ByCounter to execute code, it uses a special class loader 
+	 * to load all needed classes in order to be able to select instrumented 
+	 * versions if necessary. If you need to use classes used (referenced) 
+	 * in the executed code, there will be two definitions of the class. One 
+	 * definition by the ByCounter {@link ClassLoader} and one by the 
+	 * ClassLoader used by your code. Java considers these different classes 
+	 * that cannot interoperate.
+	 * <p>
+	 * In order to enable some interoperability, this definition of external 
+	 * classes can be used to tell ByCounter to never load the specified 
+	 * classes. Note that once a class is not loaded by ByCounters 
+	 * {@link ClassLoader}, none of the classes referenced or executed from 
+	 * that class are known to ByCounter. This means that no instrumented 
+	 * classes can be selected at that point.
+	 * </p>
+	 * @param externalClasses The definition of external classes. The syntax is 
+	 * identical to {@link ExecutionSettings#setInternalClassesDefinition(Set)}.
+	 * @see ExecutionSettings#setInternalClassesDefinition(Set)
+	 */
+	public void setExternalToClassLoaderClassesDefinition(Set<String> externalClasses) {
+		this.externalToClassLoaderClassesDefinition = externalClasses;
+	}
+	
+	/**
+	 * @return The currently defined set of classes not loaded by ByCounters
+	 * {@link ClassLoader}.
+	 * @see #getExternalToClassLoaderClassesDefinition()
+	 */
+	public Set<String> getExternalToClassLoaderClassesDefinition() {
+		return this.externalToClassLoaderClassesDefinition;
 	}
 
 	/**

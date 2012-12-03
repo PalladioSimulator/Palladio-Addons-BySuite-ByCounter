@@ -276,6 +276,15 @@ public class InputPackageImpl extends EPackageImpl implements InputPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public EReference getInstrumentationProfile_LogicalSetExternalToClassLoader() {
+		return (EReference)instrumentationProfileEClass.getEStructuralFeatures().get(10);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	public EClass getInstrumentationProfileRepository() {
 		return instrumentationProfileRepositoryEClass;
 	}
@@ -339,17 +348,8 @@ public class InputPackageImpl extends EPackageImpl implements InputPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EReference getExecutionProfile_LogicalSetExternalToClassLoader() {
-		return (EReference)executionProfileEClass.getEStructuralFeatures().get(3);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
 	public EReference getExecutionProfile_InstrumentationProfileRepository() {
-		return (EReference)executionProfileEClass.getEStructuralFeatures().get(4);
+		return (EReference)executionProfileEClass.getEStructuralFeatures().get(3);
 	}
 
 	/**
@@ -553,6 +553,7 @@ public class InputPackageImpl extends EPackageImpl implements InputPackage {
 		createEAttribute(instrumentationProfileEClass, INSTRUMENTATION_PROFILE__PERSIST_INSTRUMENTED_CLASSES_TO_OS_PATH);
 		createEAttribute(instrumentationProfileEClass, INSTRUMENTATION_PROFILE__PROVIDE_ONLINE_SECTION_ACTIVE_UPDATES);
 		createEAttribute(instrumentationProfileEClass, INSTRUMENTATION_PROFILE__TRACE_AND_IDENTIFY_REQUESTS);
+		createEReference(instrumentationProfileEClass, INSTRUMENTATION_PROFILE__LOGICAL_SET_EXTERNAL_TO_CLASS_LOADER);
 
 		instrumentationProfileRepositoryEClass = createEClass(INSTRUMENTATION_PROFILE_REPOSITORY);
 		createEReference(instrumentationProfileRepositoryEClass, INSTRUMENTATION_PROFILE_REPOSITORY__EXECUTION_PROFILE);
@@ -562,7 +563,6 @@ public class InputPackageImpl extends EPackageImpl implements InputPackage {
 		createEAttribute(executionProfileEClass, EXECUTION_PROFILE__ADD_UP_RESULTS_RECURSIVELY);
 		createEAttribute(executionProfileEClass, EXECUTION_PROFILE__WAIT_FOR_THREADS_TO_FINNISH);
 		createEReference(executionProfileEClass, EXECUTION_PROFILE__DEFINED_LOGICAL_SETS);
-		createEReference(executionProfileEClass, EXECUTION_PROFILE__LOGICAL_SET_EXTERNAL_TO_CLASS_LOADER);
 		createEReference(executionProfileEClass, EXECUTION_PROFILE__INSTRUMENTATION_PROFILE_REPOSITORY);
 
 		logicalSetEClass = createEClass(LOGICAL_SET);
@@ -643,6 +643,7 @@ public class InputPackageImpl extends EPackageImpl implements InputPackage {
 		initEAttribute(getInstrumentationProfile_PersistInstrumentedClassesToOSPath(), theEcorePackage.getEString(), "persistInstrumentedClassesToOSPath", null, 0, 1, InstrumentationProfile.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
 		initEAttribute(getInstrumentationProfile_ProvideOnlineSectionActiveUpdates(), ecorePackage.getEBoolean(), "provideOnlineSectionActiveUpdates", "true", 1, 1, InstrumentationProfile.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
 		initEAttribute(getInstrumentationProfile_TraceAndIdentifyRequests(), ecorePackage.getEBoolean(), "traceAndIdentifyRequests", "false", 1, 1, InstrumentationProfile.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+		initEReference(getInstrumentationProfile_LogicalSetExternalToClassLoader(), this.getLogicalSet(), null, "logicalSetExternalToClassLoader", null, 0, -1, InstrumentationProfile.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
 
 		initEClass(instrumentationProfileRepositoryEClass, InstrumentationProfileRepository.class, "InstrumentationProfileRepository", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getInstrumentationProfileRepository_ExecutionProfile(), this.getExecutionProfile(), this.getExecutionProfile_InstrumentationProfileRepository(), "executionProfile", null, 0, -1, InstrumentationProfileRepository.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
@@ -652,7 +653,6 @@ public class InputPackageImpl extends EPackageImpl implements InputPackage {
 		initEAttribute(getExecutionProfile_AddUpResultsRecursively(), ecorePackage.getEBoolean(), "addUpResultsRecursively", "true", 1, 1, ExecutionProfile.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
 		initEAttribute(getExecutionProfile_WaitForThreadsToFinnish(), ecorePackage.getEBoolean(), "waitForThreadsToFinnish", "true", 1, 1, ExecutionProfile.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
 		initEReference(getExecutionProfile_DefinedLogicalSets(), this.getLogicalSet(), this.getLogicalSet_ExecutionProfile(), "definedLogicalSets", null, 0, -1, ExecutionProfile.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
-		initEReference(getExecutionProfile_LogicalSetExternalToClassLoader(), this.getLogicalSet(), null, "logicalSetExternalToClassLoader", null, 0, -1, ExecutionProfile.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
 		initEReference(getExecutionProfile_InstrumentationProfileRepository(), this.getInstrumentationProfileRepository(), this.getInstrumentationProfileRepository_ExecutionProfile(), "instrumentationProfileRepository", null, 0, 1, ExecutionProfile.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
 
 		initEClass(logicalSetEClass, LogicalSet.class, "LogicalSet", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);

@@ -17,7 +17,6 @@ import org.eclipse.emf.ecore.EObject;
  *   <li>{@link edu.kit.ipd.sdq.bycounter.input.ExecutionProfile#isAddUpResultsRecursively <em>Add Up Results Recursively</em>}</li>
  *   <li>{@link edu.kit.ipd.sdq.bycounter.input.ExecutionProfile#isWaitForThreadsToFinnish <em>Wait For Threads To Finnish</em>}</li>
  *   <li>{@link edu.kit.ipd.sdq.bycounter.input.ExecutionProfile#getDefinedLogicalSets <em>Defined Logical Sets</em>}</li>
- *   <li>{@link edu.kit.ipd.sdq.bycounter.input.ExecutionProfile#getLogicalSetExternalToClassLoader <em>Logical Set External To Class Loader</em>}</li>
  *   <li>{@link edu.kit.ipd.sdq.bycounter.input.ExecutionProfile#getInstrumentationProfileRepository <em>Instrumentation Profile Repository</em>}</li>
  * </ul>
  * </p>
@@ -98,22 +97,6 @@ public interface ExecutionProfile extends EObject {
 	 * @generated
 	 */
 	EList<LogicalSet> getDefinedLogicalSets();
-
-	/**
-	 * Returns the value of the '<em><b>Logical Set External To Class Loader</b></em>' containment reference list.
-	 * The list contents are of type {@link edu.kit.ipd.sdq.bycounter.input.LogicalSet}.
-	 * <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of the '<em>Logical Set External To Class Loader</em>' containment reference list isn't clear,
-	 * there really should be more of a description here...
-	 * </p>
-	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Logical Set External To Class Loader</em>' containment reference list.
-	 * @see edu.kit.ipd.sdq.bycounter.input.InputPackage#getExecutionProfile_LogicalSetExternalToClassLoader()
-	 * @model containment="true" ordered="false"
-	 * @generated
-	 */
-	EList<LogicalSet> getLogicalSetExternalToClassLoader();
 
 	/**
 	 * Returns the value of the '<em><b>Instrumentation Profile Repository</b></em>' container reference.

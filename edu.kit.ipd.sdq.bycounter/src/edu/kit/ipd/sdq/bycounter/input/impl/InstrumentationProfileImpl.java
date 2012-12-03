@@ -11,6 +11,7 @@ import edu.kit.ipd.sdq.bycounter.input.InputPackage;
 import edu.kit.ipd.sdq.bycounter.input.InstrumentationProfile;
 import edu.kit.ipd.sdq.bycounter.input.InstrumentationProfileRepository;
 
+import edu.kit.ipd.sdq.bycounter.input.LogicalSet;
 import java.util.Collection;
 
 import org.eclipse.emf.common.notify.Notification;
@@ -45,6 +46,7 @@ import org.eclipse.emf.ecore.util.InternalEList;
  *   <li>{@link edu.kit.ipd.sdq.bycounter.input.impl.InstrumentationProfileImpl#getPersistInstrumentedClassesToOSPath <em>Persist Instrumented Classes To OS Path</em>}</li>
  *   <li>{@link edu.kit.ipd.sdq.bycounter.input.impl.InstrumentationProfileImpl#isProvideOnlineSectionActiveUpdates <em>Provide Online Section Active Updates</em>}</li>
  *   <li>{@link edu.kit.ipd.sdq.bycounter.input.impl.InstrumentationProfileImpl#isTraceAndIdentifyRequests <em>Trace And Identify Requests</em>}</li>
+ *   <li>{@link edu.kit.ipd.sdq.bycounter.input.impl.InstrumentationProfileImpl#getLogicalSetExternalToClassLoader <em>Logical Set External To Class Loader</em>}</li>
  * </ul>
  * </p>
  *
@@ -210,6 +212,16 @@ public class InstrumentationProfileImpl extends IdentifierImpl implements Instru
 	 * @ordered
 	 */
 	protected boolean traceAndIdentifyRequests = TRACE_AND_IDENTIFY_REQUESTS_EDEFAULT;
+
+	/**
+	 * The cached value of the '{@link #getLogicalSetExternalToClassLoader() <em>Logical Set External To Class Loader</em>}' containment reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getLogicalSetExternalToClassLoader()
+	 * @generated
+	 * @ordered
+	 */
+	protected EList<LogicalSet> logicalSetExternalToClassLoader;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -447,6 +459,18 @@ public class InstrumentationProfileImpl extends IdentifierImpl implements Instru
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public EList<LogicalSet> getLogicalSetExternalToClassLoader() {
+		if (logicalSetExternalToClassLoader == null) {
+			logicalSetExternalToClassLoader = new EObjectContainmentEList<LogicalSet>(LogicalSet.class, this, InputPackage.INSTRUMENTATION_PROFILE__LOGICAL_SET_EXTERNAL_TO_CLASS_LOADER);
+		}
+		return logicalSetExternalToClassLoader;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	@SuppressWarnings("unchecked")
 	@Override
 	public NotificationChain eInverseAdd(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
@@ -475,6 +499,8 @@ public class InstrumentationProfileImpl extends IdentifierImpl implements Instru
 				return ((InternalEList<?>)getEntitiesToInstrument()).basicRemove(otherEnd, msgs);
 			case InputPackage.INSTRUMENTATION_PROFILE__INTRUMENTATION_PROFILE_REPOSITORY:
 				return basicSetIntrumentationProfileRepository(null, msgs);
+			case InputPackage.INSTRUMENTATION_PROFILE__LOGICAL_SET_EXTERNAL_TO_CLASS_LOADER:
+				return ((InternalEList<?>)getLogicalSetExternalToClassLoader()).basicRemove(otherEnd, msgs);
 		}
 		return super.eInverseRemove(otherEnd, featureID, msgs);
 	}
@@ -521,6 +547,8 @@ public class InstrumentationProfileImpl extends IdentifierImpl implements Instru
 				return isProvideOnlineSectionActiveUpdates();
 			case InputPackage.INSTRUMENTATION_PROFILE__TRACE_AND_IDENTIFY_REQUESTS:
 				return isTraceAndIdentifyRequests();
+			case InputPackage.INSTRUMENTATION_PROFILE__LOGICAL_SET_EXTERNAL_TO_CLASS_LOADER:
+				return getLogicalSetExternalToClassLoader();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -566,6 +594,10 @@ public class InstrumentationProfileImpl extends IdentifierImpl implements Instru
 			case InputPackage.INSTRUMENTATION_PROFILE__TRACE_AND_IDENTIFY_REQUESTS:
 				setTraceAndIdentifyRequests((Boolean)newValue);
 				return;
+			case InputPackage.INSTRUMENTATION_PROFILE__LOGICAL_SET_EXTERNAL_TO_CLASS_LOADER:
+				getLogicalSetExternalToClassLoader().clear();
+				getLogicalSetExternalToClassLoader().addAll((Collection<? extends LogicalSet>)newValue);
+				return;
 		}
 		super.eSet(featureID, newValue);
 	}
@@ -608,6 +640,9 @@ public class InstrumentationProfileImpl extends IdentifierImpl implements Instru
 			case InputPackage.INSTRUMENTATION_PROFILE__TRACE_AND_IDENTIFY_REQUESTS:
 				setTraceAndIdentifyRequests(TRACE_AND_IDENTIFY_REQUESTS_EDEFAULT);
 				return;
+			case InputPackage.INSTRUMENTATION_PROFILE__LOGICAL_SET_EXTERNAL_TO_CLASS_LOADER:
+				getLogicalSetExternalToClassLoader().clear();
+				return;
 		}
 		super.eUnset(featureID);
 	}
@@ -640,6 +675,8 @@ public class InstrumentationProfileImpl extends IdentifierImpl implements Instru
 				return provideOnlineSectionActiveUpdates != PROVIDE_ONLINE_SECTION_ACTIVE_UPDATES_EDEFAULT;
 			case InputPackage.INSTRUMENTATION_PROFILE__TRACE_AND_IDENTIFY_REQUESTS:
 				return traceAndIdentifyRequests != TRACE_AND_IDENTIFY_REQUESTS_EDEFAULT;
+			case InputPackage.INSTRUMENTATION_PROFILE__LOGICAL_SET_EXTERNAL_TO_CLASS_LOADER:
+				return logicalSetExternalToClassLoader != null && !logicalSetExternalToClassLoader.isEmpty();
 		}
 		return super.eIsSet(featureID);
 	}

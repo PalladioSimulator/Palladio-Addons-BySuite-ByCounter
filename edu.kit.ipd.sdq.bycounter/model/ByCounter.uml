@@ -275,6 +275,10 @@ entitesToInstrument that  are not Java API methods (packages java.*, javax.* sun
             <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/EcorePrimitiveTypes.library.uml#EBoolean"/>
           </defaultValue>
         </ownedAttribute>
+        <ownedAttribute xmi:id="_hVD0EDfwEeKlhsE4mwL0FQ" name="logicalSetExternalToClassLoader" visibility="public" type="_2KvtoEZIEd-sOu4vtdvMEA" aggregation="composite" association="_hUmhEDfwEeKlhsE4mwL0FQ">
+          <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_hVJToTfwEeKlhsE4mwL0FQ" value="*"/>
+          <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_hVJToDfwEeKlhsE4mwL0FQ"/>
+        </ownedAttribute>
       </packagedElement>
       <packagedElement xmi:type="uml:Class" xmi:id="_ZnGycDveEd-PZ70lu-zpYg" name="InstrumentationProfileRepository">
         <generalization xmi:id="_EbFGgDwTEd-Dc9Rw_97E5Q">
@@ -434,14 +438,10 @@ When false, only the counts for operations done in the method itself - not those
           <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_wmbN4DveEd-PZ70lu-zpYg" value="*"/>
           <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_wmam0DveEd-PZ70lu-zpYg"/>
         </ownedAttribute>
-        <ownedAttribute xmi:id="_hVD0EDfwEeKlhsE4mwL0FQ" name="logicalSetExternalToClassLoader" visibility="public" type="_2KvtoEZIEd-sOu4vtdvMEA" aggregation="composite" association="_hUmhEDfwEeKlhsE4mwL0FQ">
-          <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_hVJToTfwEeKlhsE4mwL0FQ" value="*"/>
-          <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_hVJToDfwEeKlhsE4mwL0FQ"/>
-        </ownedAttribute>
       </packagedElement>
       <packagedElement xmi:type="uml:Association" xmi:id="_hkXhkPXoEeGJyMxspERnIw" memberEnd="_hkYvsPXoEeGJyMxspERnIw _hkak4PXoEeGJyMxspERnIw"/>
       <packagedElement xmi:type="uml:Association" xmi:id="_hUmhEDfwEeKlhsE4mwL0FQ" memberEnd="_hVD0EDfwEeKlhsE4mwL0FQ _hVKhwDfwEeKlhsE4mwL0FQ">
-        <ownedEnd xmi:id="_hVKhwDfwEeKlhsE4mwL0FQ" name="executionProfile" visibility="private" type="_cJTAAPXoEeGJyMxspERnIw" association="_hUmhEDfwEeKlhsE4mwL0FQ">
+        <ownedEnd xmi:id="_hVKhwDfwEeKlhsE4mwL0FQ" name="instrumentationProfile" visibility="public" type="_X45kMDveEd-PZ70lu-zpYg" association="_hUmhEDfwEeKlhsE4mwL0FQ">
           <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_hVLv4DfwEeKlhsE4mwL0FQ" value="1"/>
           <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_hVLI0DfwEeKlhsE4mwL0FQ" value="1"/>
         </ownedEnd>

@@ -148,6 +148,10 @@ public class TestQueryUpdates extends AbstractByCounterTest {
         externalClasses.add(StatefulRunnable.class.getCanonicalName());
 		iaem.counter.getExecutionSettings().setExternalToClassLoaderClassesDefinition(externalClasses);
         final Thread executeThread = new Thread(iaem);
+
+		CountingResultCollector crc = CountingResultCollector.getInstance();
+        Assert.assertNull("No section should be active before execution.", crc.queryActiveSection(executeThread.getId()));
+        
         executeThread.start();
         System.out.println("exec started");
         // wait for the construction of the class instance
@@ -160,7 +164,6 @@ public class TestQueryUpdates extends AbstractByCounterTest {
         iaem.lock.unlock();
         
         // query the sections
-		CountingResultCollector crc = CountingResultCollector.getInstance();
 		for(int i = 0; i < 2; i++) {
 			while(classInstance.getCurrentState() < i+2) {Thread.yield();} // wait for other thread
 			EntityToInstrument activeE = crc.queryActiveSection(executeThread.getId());
@@ -168,6 +171,7 @@ public class TestQueryUpdates extends AbstractByCounterTest {
 			classInstance.nextState();
 	    }
         executeThread.join();
+        Assert.assertNull("No section should be active after execution.", crc.queryActiveSection(executeThread.getId()));
     }
     
 	/**

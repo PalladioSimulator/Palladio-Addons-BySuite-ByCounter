@@ -167,13 +167,22 @@ public interface InputPackage extends EPackage {
 	int INSTRUMENTATION_PROFILE__TRACE_AND_IDENTIFY_REQUESTS = IdentifierPackage.IDENTIFIER_FEATURE_COUNT + 9;
 
 	/**
+	 * The feature id for the '<em><b>Logical Set External To Class Loader</b></em>' containment reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int INSTRUMENTATION_PROFILE__LOGICAL_SET_EXTERNAL_TO_CLASS_LOADER = IdentifierPackage.IDENTIFIER_FEATURE_COUNT + 10;
+
+	/**
 	 * The number of structural features of the '<em>Instrumentation Profile</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int INSTRUMENTATION_PROFILE_FEATURE_COUNT = IdentifierPackage.IDENTIFIER_FEATURE_COUNT + 10;
+	int INSTRUMENTATION_PROFILE_FEATURE_COUNT = IdentifierPackage.IDENTIFIER_FEATURE_COUNT + 11;
 
 	/**
 	 * The meta object id for the '{@link edu.kit.ipd.sdq.bycounter.input.impl.InstrumentationProfileRepositoryImpl <em>Instrumentation Profile Repository</em>}' class.
@@ -259,22 +268,13 @@ public interface InputPackage extends EPackage {
 	int EXECUTION_PROFILE__DEFINED_LOGICAL_SETS = 2;
 
 	/**
-	 * The feature id for the '<em><b>Logical Set External To Class Loader</b></em>' containment reference list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int EXECUTION_PROFILE__LOGICAL_SET_EXTERNAL_TO_CLASS_LOADER = 3;
-
-	/**
 	 * The feature id for the '<em><b>Instrumentation Profile Repository</b></em>' container reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int EXECUTION_PROFILE__INSTRUMENTATION_PROFILE_REPOSITORY = 4;
+	int EXECUTION_PROFILE__INSTRUMENTATION_PROFILE_REPOSITORY = 3;
 
 	/**
 	 * The number of structural features of the '<em>Execution Profile</em>' class.
@@ -283,7 +283,7 @@ public interface InputPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int EXECUTION_PROFILE_FEATURE_COUNT = 5;
+	int EXECUTION_PROFILE_FEATURE_COUNT = 4;
 
 	/**
 	 * The meta object id for the '{@link edu.kit.ipd.sdq.bycounter.input.impl.LogicalSetImpl <em>Logical Set</em>}' class.
@@ -655,6 +655,17 @@ public interface InputPackage extends EPackage {
 	EAttribute getInstrumentationProfile_TraceAndIdentifyRequests();
 
 	/**
+	 * Returns the meta object for the containment reference list '{@link edu.kit.ipd.sdq.bycounter.input.InstrumentationProfile#getLogicalSetExternalToClassLoader <em>Logical Set External To Class Loader</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the containment reference list '<em>Logical Set External To Class Loader</em>'.
+	 * @see edu.kit.ipd.sdq.bycounter.input.InstrumentationProfile#getLogicalSetExternalToClassLoader()
+	 * @see #getInstrumentationProfile()
+	 * @generated
+	 */
+	EReference getInstrumentationProfile_LogicalSetExternalToClassLoader();
+
+	/**
 	 * Returns the meta object for class '{@link edu.kit.ipd.sdq.bycounter.input.InstrumentationProfileRepository <em>Instrumentation Profile Repository</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -728,17 +739,6 @@ public interface InputPackage extends EPackage {
 	 * @generated
 	 */
 	EReference getExecutionProfile_DefinedLogicalSets();
-
-	/**
-	 * Returns the meta object for the containment reference list '{@link edu.kit.ipd.sdq.bycounter.input.ExecutionProfile#getLogicalSetExternalToClassLoader <em>Logical Set External To Class Loader</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the containment reference list '<em>Logical Set External To Class Loader</em>'.
-	 * @see edu.kit.ipd.sdq.bycounter.input.ExecutionProfile#getLogicalSetExternalToClassLoader()
-	 * @see #getExecutionProfile()
-	 * @generated
-	 */
-	EReference getExecutionProfile_LogicalSetExternalToClassLoader();
 
 	/**
 	 * Returns the meta object for the container reference '{@link edu.kit.ipd.sdq.bycounter.input.ExecutionProfile#getInstrumentationProfileRepository <em>Instrumentation Profile Repository</em>}'.
@@ -1057,6 +1057,14 @@ public interface InputPackage extends EPackage {
 		EAttribute INSTRUMENTATION_PROFILE__TRACE_AND_IDENTIFY_REQUESTS = eINSTANCE.getInstrumentationProfile_TraceAndIdentifyRequests();
 
 		/**
+		 * The meta object literal for the '<em><b>Logical Set External To Class Loader</b></em>' containment reference list feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference INSTRUMENTATION_PROFILE__LOGICAL_SET_EXTERNAL_TO_CLASS_LOADER = eINSTANCE.getInstrumentationProfile_LogicalSetExternalToClassLoader();
+
+		/**
 		 * The meta object literal for the '{@link edu.kit.ipd.sdq.bycounter.input.impl.InstrumentationProfileRepositoryImpl <em>Instrumentation Profile Repository</em>}' class.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
@@ -1115,14 +1123,6 @@ public interface InputPackage extends EPackage {
 		 * @generated
 		 */
 		EReference EXECUTION_PROFILE__DEFINED_LOGICAL_SETS = eINSTANCE.getExecutionProfile_DefinedLogicalSets();
-
-		/**
-		 * The meta object literal for the '<em><b>Logical Set External To Class Loader</b></em>' containment reference list feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EReference EXECUTION_PROFILE__LOGICAL_SET_EXTERNAL_TO_CLASS_LOADER = eINSTANCE.getExecutionProfile_LogicalSetExternalToClassLoader();
 
 		/**
 		 * The meta object literal for the '<em><b>Instrumentation Profile Repository</b></em>' container reference feature.

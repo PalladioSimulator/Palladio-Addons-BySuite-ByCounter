@@ -112,6 +112,8 @@
         <genFeatures xsi:type="genmodel:GenFeature" createChild="false" ecoreFeature="ecore:EAttribute ByCounter.ecore#//input/InstrumentationProfile/persistInstrumentedClassesToOSPath"/>
         <genFeatures xsi:type="genmodel:GenFeature" createChild="false" ecoreFeature="ecore:EAttribute ByCounter.ecore#//input/InstrumentationProfile/provideOnlineSectionActiveUpdates"/>
         <genFeatures xsi:type="genmodel:GenFeature" createChild="false" ecoreFeature="ecore:EAttribute ByCounter.ecore#//input/InstrumentationProfile/traceAndIdentifyRequests"/>
+        <genFeatures xsi:type="genmodel:GenFeature" property="None" children="true"
+            createChild="true" ecoreFeature="ecore:EReference ByCounter.ecore#//input/InstrumentationProfile/logicalSetExternalToClassLoader"/>
       </genClasses>
       <genClasses xsi:type="genmodel:GenClass" ecoreClass="ByCounter.ecore#//input/InstrumentationProfileRepository">
         <genFeatures xsi:type="genmodel:GenFeature" property="None" children="true"
@@ -124,8 +126,6 @@
         <genFeatures xsi:type="genmodel:GenFeature" createChild="false" ecoreFeature="ecore:EAttribute ByCounter.ecore#//input/ExecutionProfile/waitForThreadsToFinnish"/>
         <genFeatures xsi:type="genmodel:GenFeature" property="None" children="true"
             createChild="true" ecoreFeature="ecore:EReference ByCounter.ecore#//input/ExecutionProfile/definedLogicalSets"/>
-        <genFeatures xsi:type="genmodel:GenFeature" property="None" children="true"
-            createChild="true" ecoreFeature="ecore:EReference ByCounter.ecore#//input/ExecutionProfile/logicalSetExternalToClassLoader"/>
         <genFeatures xsi:type="genmodel:GenFeature" property="None" notify="false"
             createChild="false" ecoreFeature="ecore:EReference ByCounter.ecore#//input/ExecutionProfile/instrumentationProfileRepository"/>
       </genClasses>

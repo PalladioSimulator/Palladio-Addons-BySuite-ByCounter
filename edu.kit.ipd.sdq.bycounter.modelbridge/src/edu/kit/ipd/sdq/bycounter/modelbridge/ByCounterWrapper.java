@@ -187,6 +187,7 @@ public class ByCounterWrapper {
 		instrumentationParams.setProvideOnlineSectionExecutionUpdates(true);
 		instrumentationParams.setProvideJoinThreadsAbility(input.isProvideJoinThreadsAbility());
 		instrumentationParams.setProvideOnlineSectionActiveUpdates(input.isProvideOnlineSectionActiveUpdates());
+		instrumentationParams.setExternalToClassLoaderClassesDefinition(mapLogicalSet(input.getLogicalSetExternalToClassLoader()));
 
 		// update instrumentation parameters and instrument
 		this.instrumentationProfile = input;
@@ -216,7 +217,6 @@ public class ByCounterWrapper {
 		executionSettings.setAddUpResultsRecursively(executionProfile.isAddUpResultsRecursively());
 		executionSettings.setWaitForThreadsToFinnish(executionProfile.isWaitForThreadsToFinnish());
 		executionSettings.setInternalClassesDefinition(mapLogicalSet(executionProfile.getDefinedLogicalSets()));
-		executionSettings.setExternalToClassLoaderClassesDefinition(mapLogicalSet(executionProfile.getLogicalSetExternalToClassLoader()));
 		
 		// update execution parameters
 		this.executionProfile = executionProfile;

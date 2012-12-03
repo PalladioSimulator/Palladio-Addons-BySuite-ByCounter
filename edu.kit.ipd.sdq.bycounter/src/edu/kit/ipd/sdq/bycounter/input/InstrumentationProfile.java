@@ -26,6 +26,7 @@ import org.eclipse.emf.common.util.EList;
  *   <li>{@link edu.kit.ipd.sdq.bycounter.input.InstrumentationProfile#getPersistInstrumentedClassesToOSPath <em>Persist Instrumented Classes To OS Path</em>}</li>
  *   <li>{@link edu.kit.ipd.sdq.bycounter.input.InstrumentationProfile#isProvideOnlineSectionActiveUpdates <em>Provide Online Section Active Updates</em>}</li>
  *   <li>{@link edu.kit.ipd.sdq.bycounter.input.InstrumentationProfile#isTraceAndIdentifyRequests <em>Trace And Identify Requests</em>}</li>
+ *   <li>{@link edu.kit.ipd.sdq.bycounter.input.InstrumentationProfile#getLogicalSetExternalToClassLoader <em>Logical Set External To Class Loader</em>}</li>
  * </ul>
  * </p>
  *
@@ -277,5 +278,21 @@ public interface InstrumentationProfile extends Identifier {
 	 * @generated
 	 */
 	void setTraceAndIdentifyRequests(boolean value);
+
+	/**
+	 * Returns the value of the '<em><b>Logical Set External To Class Loader</b></em>' containment reference list.
+	 * The list contents are of type {@link edu.kit.ipd.sdq.bycounter.input.LogicalSet}.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Logical Set External To Class Loader</em>' containment reference list isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Logical Set External To Class Loader</em>' containment reference list.
+	 * @see edu.kit.ipd.sdq.bycounter.input.InputPackage#getInstrumentationProfile_LogicalSetExternalToClassLoader()
+	 * @model containment="true" ordered="false"
+	 * @generated
+	 */
+	EList<LogicalSet> getLogicalSetExternalToClassLoader();
 
 } // InstrumentationProfile

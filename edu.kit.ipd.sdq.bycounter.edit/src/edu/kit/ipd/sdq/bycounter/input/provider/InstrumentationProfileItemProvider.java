@@ -247,6 +247,7 @@ public class InstrumentationProfileItemProvider
 			super.getChildrenFeatures(object);
 			childrenFeatures.add(InputPackage.Literals.INSTRUMENTATION_PROFILE__AGGREGATION_EXCLUDES);
 			childrenFeatures.add(InputPackage.Literals.INSTRUMENTATION_PROFILE__ENTITIES_TO_INSTRUMENT);
+			childrenFeatures.add(InputPackage.Literals.INSTRUMENTATION_PROFILE__LOGICAL_SET_EXTERNAL_TO_CLASS_LOADER);
 		}
 		return childrenFeatures;
 	}
@@ -312,6 +313,7 @@ public class InstrumentationProfileItemProvider
 				return;
 			case InputPackage.INSTRUMENTATION_PROFILE__AGGREGATION_EXCLUDES:
 			case InputPackage.INSTRUMENTATION_PROFILE__ENTITIES_TO_INSTRUMENT:
+			case InputPackage.INSTRUMENTATION_PROFILE__LOGICAL_SET_EXTERNAL_TO_CLASS_LOADER:
 				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), true, false));
 				return;
 		}
@@ -353,6 +355,11 @@ public class InstrumentationProfileItemProvider
 			(createChildParameter
 				(InputPackage.Literals.INSTRUMENTATION_PROFILE__ENTITIES_TO_INSTRUMENT,
 				 InputFactory.eINSTANCE.createInstrumentedRegion()));
+
+		newChildDescriptors.add
+			(createChildParameter
+				(InputPackage.Literals.INSTRUMENTATION_PROFILE__LOGICAL_SET_EXTERNAL_TO_CLASS_LOADER,
+				 InputFactory.eINSTANCE.createLogicalSet()));
 	}
 
 	/**

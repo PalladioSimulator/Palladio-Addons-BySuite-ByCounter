@@ -128,7 +128,6 @@ public class ExecutionProfileItemProvider
 		if (childrenFeatures == null) {
 			super.getChildrenFeatures(object);
 			childrenFeatures.add(InputPackage.Literals.EXECUTION_PROFILE__DEFINED_LOGICAL_SETS);
-			childrenFeatures.add(InputPackage.Literals.EXECUTION_PROFILE__LOGICAL_SET_EXTERNAL_TO_CLASS_LOADER);
 		}
 		return childrenFeatures;
 	}
@@ -186,7 +185,6 @@ public class ExecutionProfileItemProvider
 				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
 				return;
 			case InputPackage.EXECUTION_PROFILE__DEFINED_LOGICAL_SETS:
-			case InputPackage.EXECUTION_PROFILE__LOGICAL_SET_EXTERNAL_TO_CLASS_LOADER:
 				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), true, false));
 				return;
 		}
@@ -208,34 +206,6 @@ public class ExecutionProfileItemProvider
 			(createChildParameter
 				(InputPackage.Literals.EXECUTION_PROFILE__DEFINED_LOGICAL_SETS,
 				 InputFactory.eINSTANCE.createLogicalSet()));
-
-		newChildDescriptors.add
-			(createChildParameter
-				(InputPackage.Literals.EXECUTION_PROFILE__LOGICAL_SET_EXTERNAL_TO_CLASS_LOADER,
-				 InputFactory.eINSTANCE.createLogicalSet()));
-	}
-
-	/**
-	 * This returns the label text for {@link org.eclipse.emf.edit.command.CreateChildCommand}.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public String getCreateChildText(Object owner, Object feature, Object child, Collection<?> selection) {
-		Object childFeature = feature;
-		Object childObject = child;
-
-		boolean qualify =
-			childFeature == InputPackage.Literals.EXECUTION_PROFILE__DEFINED_LOGICAL_SETS ||
-			childFeature == InputPackage.Literals.EXECUTION_PROFILE__LOGICAL_SET_EXTERNAL_TO_CLASS_LOADER;
-
-		if (qualify) {
-			return getString
-				("_UI_CreateChild_text2",
-				 new Object[] { getTypeText(childObject), getFeatureText(childFeature), getTypeText(owner) });
-		}
-		return super.getCreateChildText(owner, feature, child, selection);
 	}
 
 	/**

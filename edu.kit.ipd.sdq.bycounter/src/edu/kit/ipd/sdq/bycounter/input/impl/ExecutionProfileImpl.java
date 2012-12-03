@@ -35,7 +35,6 @@ import org.eclipse.emf.ecore.util.InternalEList;
  *   <li>{@link edu.kit.ipd.sdq.bycounter.input.impl.ExecutionProfileImpl#isAddUpResultsRecursively <em>Add Up Results Recursively</em>}</li>
  *   <li>{@link edu.kit.ipd.sdq.bycounter.input.impl.ExecutionProfileImpl#isWaitForThreadsToFinnish <em>Wait For Threads To Finnish</em>}</li>
  *   <li>{@link edu.kit.ipd.sdq.bycounter.input.impl.ExecutionProfileImpl#getDefinedLogicalSets <em>Defined Logical Sets</em>}</li>
- *   <li>{@link edu.kit.ipd.sdq.bycounter.input.impl.ExecutionProfileImpl#getLogicalSetExternalToClassLoader <em>Logical Set External To Class Loader</em>}</li>
  *   <li>{@link edu.kit.ipd.sdq.bycounter.input.impl.ExecutionProfileImpl#getInstrumentationProfileRepository <em>Instrumentation Profile Repository</em>}</li>
  * </ul>
  * </p>
@@ -92,16 +91,6 @@ public class ExecutionProfileImpl extends EObjectImpl implements ExecutionProfil
 	 * @ordered
 	 */
 	protected EList<LogicalSet> definedLogicalSets;
-
-	/**
-	 * The cached value of the '{@link #getLogicalSetExternalToClassLoader() <em>Logical Set External To Class Loader</em>}' containment reference list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getLogicalSetExternalToClassLoader()
-	 * @generated
-	 * @ordered
-	 */
-	protected EList<LogicalSet> logicalSetExternalToClassLoader;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -181,18 +170,6 @@ public class ExecutionProfileImpl extends EObjectImpl implements ExecutionProfil
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EList<LogicalSet> getLogicalSetExternalToClassLoader() {
-		if (logicalSetExternalToClassLoader == null) {
-			logicalSetExternalToClassLoader = new EObjectContainmentEList<LogicalSet>(LogicalSet.class, this, InputPackage.EXECUTION_PROFILE__LOGICAL_SET_EXTERNAL_TO_CLASS_LOADER);
-		}
-		return logicalSetExternalToClassLoader;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
 	public InstrumentationProfileRepository getInstrumentationProfileRepository() {
 		if (eContainerFeatureID() != InputPackage.EXECUTION_PROFILE__INSTRUMENTATION_PROFILE_REPOSITORY) return null;
 		return (InstrumentationProfileRepository)eContainer();
@@ -258,8 +235,6 @@ public class ExecutionProfileImpl extends EObjectImpl implements ExecutionProfil
 		switch (featureID) {
 			case InputPackage.EXECUTION_PROFILE__DEFINED_LOGICAL_SETS:
 				return ((InternalEList<?>)getDefinedLogicalSets()).basicRemove(otherEnd, msgs);
-			case InputPackage.EXECUTION_PROFILE__LOGICAL_SET_EXTERNAL_TO_CLASS_LOADER:
-				return ((InternalEList<?>)getLogicalSetExternalToClassLoader()).basicRemove(otherEnd, msgs);
 			case InputPackage.EXECUTION_PROFILE__INSTRUMENTATION_PROFILE_REPOSITORY:
 				return basicSetInstrumentationProfileRepository(null, msgs);
 		}
@@ -294,8 +269,6 @@ public class ExecutionProfileImpl extends EObjectImpl implements ExecutionProfil
 				return isWaitForThreadsToFinnish();
 			case InputPackage.EXECUTION_PROFILE__DEFINED_LOGICAL_SETS:
 				return getDefinedLogicalSets();
-			case InputPackage.EXECUTION_PROFILE__LOGICAL_SET_EXTERNAL_TO_CLASS_LOADER:
-				return getLogicalSetExternalToClassLoader();
 			case InputPackage.EXECUTION_PROFILE__INSTRUMENTATION_PROFILE_REPOSITORY:
 				return getInstrumentationProfileRepository();
 		}
@@ -321,10 +294,6 @@ public class ExecutionProfileImpl extends EObjectImpl implements ExecutionProfil
 				getDefinedLogicalSets().clear();
 				getDefinedLogicalSets().addAll((Collection<? extends LogicalSet>)newValue);
 				return;
-			case InputPackage.EXECUTION_PROFILE__LOGICAL_SET_EXTERNAL_TO_CLASS_LOADER:
-				getLogicalSetExternalToClassLoader().clear();
-				getLogicalSetExternalToClassLoader().addAll((Collection<? extends LogicalSet>)newValue);
-				return;
 			case InputPackage.EXECUTION_PROFILE__INSTRUMENTATION_PROFILE_REPOSITORY:
 				setInstrumentationProfileRepository((InstrumentationProfileRepository)newValue);
 				return;
@@ -349,9 +318,6 @@ public class ExecutionProfileImpl extends EObjectImpl implements ExecutionProfil
 			case InputPackage.EXECUTION_PROFILE__DEFINED_LOGICAL_SETS:
 				getDefinedLogicalSets().clear();
 				return;
-			case InputPackage.EXECUTION_PROFILE__LOGICAL_SET_EXTERNAL_TO_CLASS_LOADER:
-				getLogicalSetExternalToClassLoader().clear();
-				return;
 			case InputPackage.EXECUTION_PROFILE__INSTRUMENTATION_PROFILE_REPOSITORY:
 				setInstrumentationProfileRepository((InstrumentationProfileRepository)null);
 				return;
@@ -373,8 +339,6 @@ public class ExecutionProfileImpl extends EObjectImpl implements ExecutionProfil
 				return waitForThreadsToFinnish != WAIT_FOR_THREADS_TO_FINNISH_EDEFAULT;
 			case InputPackage.EXECUTION_PROFILE__DEFINED_LOGICAL_SETS:
 				return definedLogicalSets != null && !definedLogicalSets.isEmpty();
-			case InputPackage.EXECUTION_PROFILE__LOGICAL_SET_EXTERNAL_TO_CLASS_LOADER:
-				return logicalSetExternalToClassLoader != null && !logicalSetExternalToClassLoader.isEmpty();
 			case InputPackage.EXECUTION_PROFILE__INSTRUMENTATION_PROFILE_REPOSITORY:
 				return getInstrumentationProfileRepository() != null;
 		}

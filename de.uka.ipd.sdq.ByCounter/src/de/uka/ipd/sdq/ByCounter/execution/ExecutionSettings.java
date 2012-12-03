@@ -16,7 +16,6 @@ public class ExecutionSettings implements Cloneable {
 	 * This character ('{@value #CLASSES_DEFINITION_WILDCARD_CHAR}') is
 	 * used in the definition of internal/external classes.
 	 * @see #setInternalClassesDefinition(Set) 
-	 * @see #setExternalToClassLoaderClassesDefinition(Set)
 	 */
 	public static final char CLASSES_DEFINITION_WILDCARD_CHAR = '*';
 
@@ -29,12 +28,6 @@ public class ExecutionSettings implements Cloneable {
 
 	/** Default value for {@link #getWaitForThreadsToFinnish()}. */
 	private static final boolean WAIT_FOR_THREADS_TO_FINNISH_DEFAULT = true;
-
-
-	/**
-	 * @see #setExternalClassesDefinition(Set)
-	 */
-	private Set<String> externalToClassLoaderClassesDefinition;
 
 
 	/**
@@ -75,7 +68,6 @@ public class ExecutionSettings implements Cloneable {
 	public ExecutionSettings() {
 		this.countingResultCollectorMode = COUNTING_RESULT_COLLECTOR_MODE_DEFAULT;
 		this.internalClassesDefinition = null; // this in not initialised with an empty set intentionally because the semantics of null are used!
-		this.externalToClassLoaderClassesDefinition = null;
 		this.addUpResultsRecursively = ADD_UP_RESULTS_RECURSIVELY_DEFAULT;
 		this.setParentClassLoader(null);
 		this.waitForThreadsToFinnish = WAIT_FOR_THREADS_TO_FINNISH_DEFAULT;
@@ -96,7 +88,6 @@ public class ExecutionSettings implements Cloneable {
 		}
 		// copy fields
 		copy.internalClassesDefinition = this.internalClassesDefinition;
-		copy.externalToClassLoaderClassesDefinition = this.externalToClassLoaderClassesDefinition;
 		copy.countingResultCollectorMode = this.countingResultCollectorMode;
 		copy.parentClassLoader = this.parentClassLoader;
 		copy.addUpResultsRecursively = this.addUpResultsRecursively;
@@ -114,16 +105,6 @@ public class ExecutionSettings implements Cloneable {
 	 */
 	public boolean isInternalClass(String qualifyingMethodName) {
 		return isInClassesDefinition(qualifyingMethodName, this.internalClassesDefinition);
-	}
-
-	/**
-	 * Uses the {@link #getExternalToClassLoaderClassesDefinition()} to decide whether the given 
-	 * name is considered an external class.
-	 * @param qualifyingMethodName Name of the class to check. 
-	 * @return True when the class is external.
-	 */
-	public boolean isExternalToClassLoaderClass(String qualifyingMethodName) {
-		return isInClassesDefinition(qualifyingMethodName, this.externalToClassLoaderClassesDefinition);
 	}
 
 	/**
@@ -164,39 +145,6 @@ public class ExecutionSettings implements Cloneable {
 			}
 		}
 		return false;
-	}
-
-	/**
-	 * When using ByCounter to execute code, it uses a special class loader 
-	 * to load all needed classes in order to be able to select instrumented 
-	 * versions if necessary. If you need to use classes used (referenced) 
-	 * in the executed code, there will be two definitions of the class. One 
-	 * definition by the ByCounter {@link ClassLoader} and one by the 
-	 * ClassLoader used by your code. Java considers these different classes 
-	 * that cannot interoperate.
-	 * <p>
-	 * In order to enable some interoperability, this definition of external 
-	 * classes can be used to tell ByCounter to never load the specified 
-	 * classes. Note that once a class is not loaded by ByCounters 
-	 * {@link ClassLoader}, none of the classes referenced or executed from 
-	 * that class are known to ByCounter. This means that no instrumented 
-	 * classes can be selected at that point.
-	 * </p>
-	 * @param externalClasses The definition of external classes. The syntax is 
-	 * identical to {@link #setInternalClassesDefinition(Set)}.
-	 * @see #setInternalClassesDefinition(Set)
-	 */
-	public void setExternalToClassLoaderClassesDefinition(Set<String> externalClasses) {
-		this.externalToClassLoaderClassesDefinition = externalClasses;
-	}
-	
-	/**
-	 * @return The currently defined set of classes not loaded by ByCounters
-	 * {@link ClassLoader}.
-	 * @see #getExternalToClassLoaderClassesDefinition()
-	 */
-	public Set<String> getExternalToClassLoaderClassesDefinition() {
-		return this.externalToClassLoaderClassesDefinition;
 	}
 	
 	/**

@@ -195,6 +195,8 @@
           <details key="documentation" value="RequestIDs are UUIDs used to track the method call graph across threads. They are created in a root method (a method called with no request ID) and then passed recursively on to all methods it calls. Note: Currently, constructors cannot be tracked."/>
         </eAnnotations>
       </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="logicalSetExternalToClassLoader"
+          ordered="false" upperBound="-1" eType="#//input/LogicalSet" containment="true"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="InstrumentationProfileRepository"
         eSuperTypes="platform:/plugin/de.uka.ipd.sdq.identifier/model/identifier.ecore#//Identifier">
@@ -221,8 +223,6 @@
       </eStructuralFeatures>
       <eStructuralFeatures xsi:type="ecore:EReference" name="definedLogicalSets" ordered="false"
           upperBound="-1" eType="#//input/LogicalSet" containment="true" eOpposite="#//input/LogicalSet/executionProfile"/>
-      <eStructuralFeatures xsi:type="ecore:EReference" name="logicalSetExternalToClassLoader"
-          ordered="false" upperBound="-1" eType="#//input/LogicalSet" containment="true"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="instrumentationProfileRepository"
           ordered="false" eType="#//input/InstrumentationProfileRepository" eOpposite="#//input/InstrumentationProfileRepository/executionProfile"/>
     </eClassifiers>
