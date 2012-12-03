@@ -146,7 +146,7 @@ public class TestQueryUpdates extends AbstractByCounterTest {
         InstrumentAndExecuteEntity iaem = new InstrumentAndExecuteEntity(entitiesToInstrument);
         Set<String> externalClasses = new HashSet<String>();
         externalClasses.add(StatefulRunnable.class.getCanonicalName());
-		iaem.counter.getExecutionSettings().setExternalToClassLoaderClassesDefinition(externalClasses);
+		iaem.counter.getInstrumentationParams().setExternalToClassLoaderClassesDefinition(externalClasses);
         final Thread executeThread = new Thread(iaem);
 
 		CountingResultCollector crc = CountingResultCollector.getInstance();

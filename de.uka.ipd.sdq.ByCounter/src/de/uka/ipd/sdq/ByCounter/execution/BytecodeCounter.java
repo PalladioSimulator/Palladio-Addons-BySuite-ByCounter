@@ -317,7 +317,7 @@ public final class BytecodeCounter {
 			this.classLoader.setParentClassLoader(this.executionSettings.getParentClassLoader());
 		}
 		// specify classes to delegate to the system class loader
-		this.classLoader.setExternalClassesDefinition(this.executionSettings.getExternalToClassLoaderClassesDefinition());
+		this.classLoader.setExternalClassesDefinition(this.instrumentationParameters.getExternalToClassLoaderClassesDefinition());
 	
 		// create a class instance
 		Object objInstance = null;	// class instance

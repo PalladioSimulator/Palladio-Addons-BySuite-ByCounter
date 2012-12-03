@@ -104,7 +104,7 @@ public class TestExternalClassDefinition extends AbstractByCounterTest {
         // define TestSubject as external
         Set<String> externalClasses = new HashSet<String>();
         externalClasses.add(TestSubject.class.getCanonicalName());
-        counter.getExecutionSettings().setExternalToClassLoaderClassesDefinition(externalClasses);
+        counter.getInstrumentationParams().setExternalToClassLoaderClassesDefinition(externalClasses);
         Object instantiated = counter.instantiate(methodExecute);
         // execute with ()
         Object[] executionParameters = new Object[] {};
