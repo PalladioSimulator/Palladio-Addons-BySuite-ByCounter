@@ -33,7 +33,7 @@ public class InstrumentationClassLoader extends java.lang.ClassLoader {
 	/**
 	 * A logger instance (java.util Logging)
 	 */
-	private static Logger log;
+	private static final Logger log = Logger.getLogger(InstrumentationClassLoader.class.getCanonicalName());
 	
 	/**
 	 * When a method is instrumented by ByCounter, the class that holds the 
@@ -43,21 +43,21 @@ public class InstrumentationClassLoader extends java.lang.ClassLoader {
 	 * This Javassist {@link ClassPool} holds the instrumented classes that 
 	 * are then used instead of their unmodified versions.
 	 */
-	private ClassPool classPool;
+	private final ClassPool classPool;
 
 	/**
-	 * Parent of this classloader to delegate to.
+	 * The class loader to which the loading itself is delegated. This class only stores the class pool and reuses the loader.
 	 */
-	private ClassLoader parentClassLoader;
+	private Loader delegationLoader;
 
 	/**
 	 * A list of canonical class names for all classes that have been
 	 * updated in the classpool using 
 	 * {@link #updateClassInClassPool(String, byte[])}.
 	 */
-	private List<String> classesInClassPool;
+	private final List<String> classesInClassPool;
 
-	private Map<String, Class<?>> ctClassCache;
+	private final Map<String, Class<?>> ctClassCache;
 
 	private Set<String> externalClassesDefinition;
 	
@@ -70,13 +70,12 @@ public class InstrumentationClassLoader extends java.lang.ClassLoader {
 	 */
 	public InstrumentationClassLoader(ClassLoader parentClassLoader) {
 		super(parentClassLoader);
-		this.parentClassLoader = parentClassLoader;
+		this.setParentClassLoader(parentClassLoader);
 		this.classPool = new ClassPool();
 		this.classPool.appendSystemPath();
 		this.classesInClassPool = new LinkedList<String>();
 		this.ctClassCache = new HashMap<String, Class<?>>();
 		this.externalClassesDefinition = null;
-		log = Logger.getLogger(this.getClass().getCanonicalName());
 	}
 	
 	/**
@@ -125,24 +124,17 @@ public class InstrumentationClassLoader extends java.lang.ClassLoader {
 			throw new ClassNotFoundException("Class pool cannot find the class " + canonicalClassName + ".", e);
 		}
 		
-		// use the supplied class loader if necessary (i.e. for eclipse plugin)
-		Loader loader;
-		if(parentClassLoader == null) {
-			loader = new Loader(this.classPool);
-		} else {
-			loader = new Loader(parentClassLoader, this.classPool);
-		}
 		// make sure that the CountingResultCollector (important!) and all other 
 		// ByCounter classes do not get reloaded.
-		loader.delegateLoadingOf("de.uka.ipd.sdq.ByCounter.execution.");
+		delegationLoader.delegateLoadingOf("de.uka.ipd.sdq.ByCounter.execution.");
 		if(this.externalClassesDefinition != null) {
 			for(String external : this.externalClassesDefinition) {
 				// Javassist uses '.' as a wild card.
 				if(external.charAt(external.length()-1) == ExecutionSettings.CLASSES_DEFINITION_WILDCARD_CHAR) {
 					String externalName = external.substring(0, external.length()-1)+'.';
-					loader.delegateLoadingOf(externalName);
+					delegationLoader.delegateLoadingOf(externalName);
 				} else {
-					loader.delegateLoadingOf(external);
+					delegationLoader.delegateLoadingOf(external);
 				}
 			}
 		}
@@ -153,7 +145,7 @@ public class InstrumentationClassLoader extends java.lang.ClassLoader {
 			Class<?> rClass = ctClassCache.get(canonicalClassName);
 			if(rClass == null) {
 				rClass = ctClassToExecute.toClass(
-						loader, 
+						delegationLoader, 
 						Class.class.getProtectionDomain()
 						);
 				ctClassCache.put(canonicalClassName, rClass);
@@ -200,17 +192,23 @@ public class InstrumentationClassLoader extends java.lang.ClassLoader {
 		return buff;
 	}
 
-	/**
-	 * @param parentClassLoader2 The parent class loader to use.
+	/**Replaces the parent class loader.
+	 * @param parentClassLoader The parent class loader to use.
 	 */
-	public void setParentClassLoader(ClassLoader parentClassLoader2) {
-		this.parentClassLoader = parentClassLoader2;
+	public void setParentClassLoader(ClassLoader parentClassLoader) {
+		if (delegationLoader != null && delegationLoader.getParent() != null) {
+			log.warning("Replacing parent class loader. Accessing classes, which were loaded by the old parent, may not be accessible anymore.");
+		}
+		if(parentClassLoader == null) {
+			delegationLoader = new Loader(this.classPool);
+		} else {
+			delegationLoader = new Loader(parentClassLoader, this.classPool);
+		}
 	}
 
 	/**
 	 * @param externalToClassLoaderClassesDefinition Definition of classes 
 	 * that are not to be delegated by this class loader.
-	 * @see ExecutionSettings#setExternalToClassLoaderClassesDefinition(Set)
 	 */
 	public void setExternalClassesDefinition(
 			Set<String> externalToClassLoaderClassesDefinition) {
