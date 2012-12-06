@@ -126,7 +126,7 @@ public final class BytecodeCounter {
 	/**
 	 * ClassLoader that handles instrumented classes.
 	 */
-	private InstrumentationClassLoader classLoader;
+	private final InstrumentationClassLoader classLoader;
 	
 	/**
 	 * Setup a new BytecodeCounter.
