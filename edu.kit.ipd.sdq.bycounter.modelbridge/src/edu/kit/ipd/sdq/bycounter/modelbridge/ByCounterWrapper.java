@@ -123,7 +123,7 @@ public class ByCounterWrapper {
 	private static final OutputFactory outputFactory = OutputFactory.eINSTANCE;
 
 	/** Wrapped instance of BytecodeCounter. */
-	private BytecodeCounter bycounter;
+	private final BytecodeCounter bycounter;
 	/** Current instrumentation configuration. */
 	private InstrumentationProfile instrumentationProfile;
 	/** Current execution configuration. */
@@ -139,9 +139,9 @@ public class ByCounterWrapper {
 	 * Maps from {@link CountingResult} to the EMF element that was created for 
 	 * it.
 	 */
-	private Map<CountingResult, edu.kit.ipd.sdq.bycounter.output.CountingResult> countingResultToEMFMap;
+	private final Map<CountingResult, edu.kit.ipd.sdq.bycounter.output.CountingResult> countingResultToEMFMap;
 	/** Object used to handle online updates by ByCounter. */
-	private UpdateObserver updateObserver;
+	private final UpdateObserver updateObserver;
 	/** {@link ResultCollection} for the current ByCounter run. It is set on construction time. It is not set in 
 	 * {@link #execute(Method, Object, Object[])} in order to allow external applications to listen on changes during execution.*/
 	private ResultCollection currentRun;
