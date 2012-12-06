@@ -139,7 +139,7 @@ public class InstrumentationClassLoader extends java.lang.ClassLoader {
 			for(String external : this.externalClassesDefinition) {
 				// Javassist uses '.' as a wild card.
 				if(external.charAt(external.length()-1) == ExecutionSettings.CLASSES_DEFINITION_WILDCARD_CHAR) {
-					String externalName = external.substring(0, external.length()-2)+'.';
+					String externalName = external.substring(0, external.length()-1)+'.';
 					loader.delegateLoadingOf(externalName);
 				} else {
 					loader.delegateLoadingOf(external);
