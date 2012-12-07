@@ -211,11 +211,11 @@ public class EntityToInstrumentToByCounterSwitch extends InputSwitch<Boolean> {
 	private void addRootNodeToAvailableRootNodes(
 			EObject gastEObject) {
 		// traverse tree until Root node is found
-		while (gastEObject.eClass().getClassifierID() != corePackage.ROOT && gastEObject.eContainer() != null) {
+		while (!( gastEObject instanceof Root ) && gastEObject.eContainer() != null) {
 			gastEObject = gastEObject.eContainer();
 		}
 		// add object if it is not contained in the list of known nodes
-		if (gastEObject.eClass().getClassifierID() == corePackage.ROOT) {
+		if (gastEObject instanceof Root) {
 			if (!availableGastRootNodes.contains(gastEObject)) {
 				availableGastRootNodes.add((Root)gastEObject);
 			}
