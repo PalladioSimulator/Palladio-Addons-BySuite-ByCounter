@@ -76,6 +76,7 @@ public class InstrumentationClassLoader extends java.lang.ClassLoader {
 		this.classesInClassPool = new LinkedList<String>();
 		this.ctClassCache = new HashMap<String, Class<?>>();
 		this.externalClassesDefinition = null;
+		delegationLoader = new Loader(this.classPool);
 	}
 	
 	/**

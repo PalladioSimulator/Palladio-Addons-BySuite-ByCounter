@@ -311,8 +311,9 @@ public final class BytecodeCounter {
 	public Object instantiate(MethodDescriptor methodToExecute) {
 		log.fine("Instantiating class for method " + methodToExecute);
 		
-		this.classLoader.setParentClassLoader(this.executionSettings.getParentClassLoader());
-
+		if(this.executionSettings.getParentClassLoader() != null) {
+			this.classLoader.setParentClassLoader(this.executionSettings.getParentClassLoader());
+		}
 		// specify classes to delegate to the system class loader
 		this.classLoader.setExternalClassesDefinition(this.instrumentationParameters.getExternalToClassLoaderClassesDefinition());
 	
