@@ -325,6 +325,10 @@ public final class CountingResultCollector extends Observable {
 	 * support the query. 
 	 */
 	public EntityToInstrument queryActiveSection(long threadId) throws InvalidQueryException {
+		if(this.instrumentationContext == null) {
+			// no instrumentation has taken place yet, nothing can be active.
+			return null;
+		}
 		if(!this.instrumentationContext.getQueryActiveEntitySupported()) {
 			throw new InvalidQueryException("The instrumentation does not provide support for querying active sections.");
 		}

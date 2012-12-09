@@ -61,6 +61,10 @@ public class TestBytecodeCounter extends AbstractByCounterTest {
 	private static String nestedClassMethodSig2 = "public boolean isWorking(int a)";
 
 	private static String nestedClassRunMethodSig = "public void useInnerClassLevel2()";
+	
+	static String classNameInnerClassLevel2 = TestSubject.class.getCanonicalName() 
+			+"$" + TestSubject.InnerClass.class.getSimpleName() 
+			+"$" + TestSubject.InnerClass.InnerClassLevel2.class.getSimpleName();
 
 	private static final String resultLogFileName = "output" + File.separatorChar +"tmpLogFile.log";
 	
@@ -403,10 +407,6 @@ public class TestBytecodeCounter extends AbstractByCounterTest {
 	public void testNestedClassInstrumentation() {
 		BytecodeCounter counter = setupByCounter();
 
-		String classNameInnerClassLevel2 = TestSubject.class.getCanonicalName() 
-			+"$" + TestSubject.InnerClass.class.getSimpleName() 
-			+"$" + TestSubject.InnerClass.InnerClassLevel2.class.getSimpleName();
-		
 		// instrument the constructor of the nested class		
 		CountingResult r = Utils.getCountingResultForTest(
 				counter,
@@ -416,17 +416,25 @@ public class TestBytecodeCounter extends AbstractByCounterTest {
 						nestedClassRunMethodSig));
 
 		r.logResult(false, true);
-		
-		cleanResults();
+	}
+
+	/**
+	 * This test uses the instrumenter on inner classes using the classfile 
+	 * overwriting option which is important as 
+	 * nested classes follow a special .class file naming scheme.
+	 */
+	@Test
+	public void testNestedClassInstrumentation_2() {
+		BytecodeCounter counter = setupByCounter();
 		
 		// instrument the method of the nested class
-		r = Utils.getCountingResultForTest(
+		CountingResult r = Utils.getCountingResultForTest(
 				counter,
 				new MethodDescriptor(classNameInnerClassLevel2, 
 						nestedClassMethodSig2),
 				new MethodDescriptor(TestSubject.class.getCanonicalName(), 
 						nestedClassRunMethodSig));
-
+	
 		r.logResult(false, true);
 	}
 	

@@ -203,90 +203,95 @@ public class BlockResultCalculation {
 		// possibly more than one counting result per item in the sequence
 		List<CalculatedCounts> resultCounts = new ArrayList<CalculatedCounts>();
 		
-		if(result.blockCountingMode == BlockCountingMode.BasicBlocks) {
-			// just add the complete basic block
-			CalculatedCounts c = new CalculatedCounts();
-			c.init();
-			for(Integer blockIndex : result.blockExecutionSequence) {
-				c.addMethodCallCounts(this.currentBasicBlocks[blockIndex].getMethodCallCounts(), 1);
-				c.addOpcodeCounts(this.currentBasicBlocks[blockIndex].getOpcodeCounts(), 1);
-			}
-			resultCounts.add(c);
-		} else if(result.blockCountingMode == BlockCountingMode.LabelBlocks) {
-			// label blocks
-			// just add the complete label block
-			CalculatedCounts c = new CalculatedCounts();
-			c.init();
-			for(Integer blockIndex : result.blockExecutionSequence) {
-				c.addMethodCallCounts(this.currentLabelBlocks[blockIndex].getMethodCallCounts(), 1);
-				c.addOpcodeCounts(this.currentLabelBlocks[blockIndex].getOpcodeCounts(), 1);
-			}
-			resultCounts.add(c);
-		} else if(result.blockCountingMode == BlockCountingMode.RangeBlocks) {
-			// range blocks
-			final Map<Integer, List<RangeBlockDescriptor>> rangeBlocksByBasicBlock = 
-				getRangeBlocksByBasicBlock();
-			
-			// A list of active range blocks, i.e. blocks where the currently 
-			// considered block (index) in the execution sequence is part of the range block
-			List<RangeBlocksBBExecutionCounts> currentRBECs = new LinkedList<RangeBlocksBBExecutionCounts>();
-			
-			for(Integer blockIndex : result.blockExecutionSequence) {
-
-				List<RangeBlockDescriptor> rangeBlocksContainingBBblockIndex = 
-					rangeBlocksByBasicBlock.get(blockIndex);	// can be null!
+		if(result.blockExecutionSequence.size() == 0) {
+			// no results
+			return new CalculatedCounts[] {};
+		} else {
+			if(result.blockCountingMode == BlockCountingMode.BasicBlocks) {
+				// just add the complete basic block
+				CalculatedCounts c = new CalculatedCounts();
+				c.init();
+				for(Integer blockIndex : result.blockExecutionSequence) {
+					c.addMethodCallCounts(this.currentBasicBlocks[blockIndex].getMethodCallCounts(), 1);
+					c.addOpcodeCounts(this.currentBasicBlocks[blockIndex].getOpcodeCounts(), 1);
+				}
+				resultCounts.add(c);
+			} else if(result.blockCountingMode == BlockCountingMode.LabelBlocks) {
+				// label blocks
+				// just add the complete label block
+				CalculatedCounts c = new CalculatedCounts();
+				c.init();
+				for(Integer blockIndex : result.blockExecutionSequence) {
+					c.addMethodCallCounts(this.currentLabelBlocks[blockIndex].getMethodCallCounts(), 1);
+					c.addOpcodeCounts(this.currentLabelBlocks[blockIndex].getOpcodeCounts(), 1);
+				}
+				resultCounts.add(c);
+			} else if(result.blockCountingMode == BlockCountingMode.RangeBlocks) {
+				// range blocks
+				final Map<Integer, List<RangeBlockDescriptor>> rangeBlocksByBasicBlock = 
+					getRangeBlocksByBasicBlock();
 				
-				// list of range blocks that end
-				List<RangeBlocksBBExecutionCounts> toRemoveFromCurrentRBs = new LinkedList<BlockResultCalculation.RangeBlocksBBExecutionCounts>();
+				// A list of active range blocks, i.e. blocks where the currently 
+				// considered block (index) in the execution sequence is part of the range block
+				List<RangeBlocksBBExecutionCounts> currentRBECs = new LinkedList<RangeBlocksBBExecutionCounts>();
 				
-				// 1. Find active range blocks that do not contain the new basic block
-				// or have offsets for the basic block.
-				// These range blocks end.
+				for(Integer blockIndex : result.blockExecutionSequence) {
+	
+					List<RangeBlockDescriptor> rangeBlocksContainingBBblockIndex = 
+						rangeBlocksByBasicBlock.get(blockIndex);	// can be null!
+					
+					// list of range blocks that end
+					List<RangeBlocksBBExecutionCounts> toRemoveFromCurrentRBs = new LinkedList<BlockResultCalculation.RangeBlocksBBExecutionCounts>();
+					
+					// 1. Find active range blocks that do not contain the new basic block
+					// or have offsets for the basic block.
+					// These range blocks end.
+					for(RangeBlocksBBExecutionCounts rbec : currentRBECs) {
+						if(rangeBlocksContainingBBblockIndex == null
+								|| !rangeBlocksContainingBBblockIndex.contains(rbec.rbd)
+								|| rbec.rbd.getBasicBlockIndexesWithOffsets().contains(blockIndex)) {
+							// range block ends
+							resultCounts.add(getCountsForRangeBlock(rbec.rbd, rbec.basicBlockExecutionCounts));
+							// mark for removal
+							toRemoveFromCurrentRBs.add(rbec);
+						}
+					}
+					
+					// actually remove the range blocks from the list
+					currentRBECs.removeAll(toRemoveFromCurrentRBs);
+					
+					// 2. Find range blocks that become active
+					
+					// no new range block can start here if no range block contains the bb
+					if(rangeBlocksContainingBBblockIndex == null) {
+						continue;
+					}
+					
+					// find inactive range blocks that contain the new basic block
+					for(RangeBlockDescriptor rbd : rangeBlocksContainingBBblockIndex) {
+						if(!findRangeBlockDescriptorInList(currentRBECs, rbd)) {
+							// a new range block started
+							RangeBlocksBBExecutionCounts newRB = new RangeBlocksBBExecutionCounts();
+							newRB.rbd = rbd;
+							newRB.basicBlockExecutionCounts = new long[this.currentBasicBlocks.length];
+							currentRBECs.add(newRB);
+						}
+					}
+					// add the executed basic block to the execution counts of active range blocks
+					for(RangeBlocksBBExecutionCounts rb : currentRBECs) {
+						rb.basicBlockExecutionCounts[blockIndex] += 1;
+					}
+				}
+				
+				// Add range block execution counts that are still active 
+				// (i.e. have not been removed from the active list)
 				for(RangeBlocksBBExecutionCounts rbec : currentRBECs) {
-					if(rangeBlocksContainingBBblockIndex == null
-							|| !rangeBlocksContainingBBblockIndex.contains(rbec.rbd)
-							|| rbec.rbd.getBasicBlockIndexesWithOffsets().contains(blockIndex)) {
-						// range block ends
-						resultCounts.add(getCountsForRangeBlock(rbec.rbd, rbec.basicBlockExecutionCounts));
-						// mark for removal
-						toRemoveFromCurrentRBs.add(rbec);
-					}
+					resultCounts.add(getCountsForRangeBlock(rbec.rbd, rbec.basicBlockExecutionCounts));
 				}
 				
-				// actually remove the range blocks from the list
-				currentRBECs.removeAll(toRemoveFromCurrentRBs);
+				resultCounts = sortResultsByRangeExecutionOrder((ArrayList<CalculatedCounts>)resultCounts, result.rangeBlockExecutionSequence);
 				
-				// 2. Find range blocks that become active
-				
-				// no new range block can start here if no range block contains the bb
-				if(rangeBlocksContainingBBblockIndex == null) {
-					continue;
-				}
-				
-				// find inactive range blocks that contain the new basic block
-				for(RangeBlockDescriptor rbd : rangeBlocksContainingBBblockIndex) {
-					if(!findRangeBlockDescriptorInList(currentRBECs, rbd)) {
-						// a new range block started
-						RangeBlocksBBExecutionCounts newRB = new RangeBlocksBBExecutionCounts();
-						newRB.rbd = rbd;
-						newRB.basicBlockExecutionCounts = new long[this.currentBasicBlocks.length];
-						currentRBECs.add(newRB);
-					}
-				}
-				// add the executed basic block to the execution counts of active range blocks
-				for(RangeBlocksBBExecutionCounts rb : currentRBECs) {
-					rb.basicBlockExecutionCounts[blockIndex] += 1;
-				}
 			}
-			
-			// Add range block execution counts that are still active 
-			// (i.e. have not been removed from the active list)
-			for(RangeBlocksBBExecutionCounts rbec : currentRBECs) {
-				resultCounts.add(getCountsForRangeBlock(rbec.rbd, rbec.basicBlockExecutionCounts));
-			}
-			
-			resultCounts = sortResultsByRangeExecutionOrder((ArrayList<CalculatedCounts>)resultCounts, result.rangeBlockExecutionSequence);
-			
 		}
 		return resultCounts.toArray(new CalculatedCounts[resultCounts.size()]);
 	}

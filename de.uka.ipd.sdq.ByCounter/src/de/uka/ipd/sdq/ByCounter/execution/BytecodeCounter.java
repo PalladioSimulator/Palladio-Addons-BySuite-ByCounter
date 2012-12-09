@@ -310,12 +310,9 @@ public final class BytecodeCounter {
 	 */
 	public Object instantiate(MethodDescriptor methodToExecute) {
 		log.fine("Instantiating class for method " + methodToExecute);
-		// load the context, basic/range block serialisations in the result collector
-		CountingResultCollector.getInstance().instrumentationContext = InstrumentationContext.loadFromDefaultPath();
 		
-		if(this.executionSettings.getParentClassLoader() != null) {
-			this.classLoader.setParentClassLoader(this.executionSettings.getParentClassLoader());
-		}
+		this.classLoader.setParentClassLoader(this.executionSettings.getParentClassLoader());
+
 		// specify classes to delegate to the system class loader
 		this.classLoader.setExternalClassesDefinition(this.instrumentationParameters.getExternalToClassLoaderClassesDefinition());
 	
@@ -497,6 +494,9 @@ public final class BytecodeCounter {
 			instrumentationParameters.setInstrumentationScopeOverrideClassLevel(oldV);
 		}
 		this.printInstrumentationSummary();
+
+		// load the context, basic/range block serialisations in the result collector
+		CountingResultCollector.getInstance().instrumentationContext = this.instrumentationState.getInstrumentationContext();
 
 		return success;
 	}

@@ -28,7 +28,7 @@ public class Utils {
 	 */
 	public static CountingResult getAssertedResult() {
 		SortedSet<CountingResult> r = CountingResultCollector.getInstance().retrieveAllCountingResults().getCountingResults();
-//		Assert.assertEquals(1, r.length);
+		Assert.assertTrue("At least one result is expected.", r.size() >= 1);
 		return r.first();
 	}
 

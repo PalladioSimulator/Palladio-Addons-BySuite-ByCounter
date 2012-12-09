@@ -50,10 +50,10 @@ public class CountingResultUpdateIndexing {
 	 * This handles updates reported for individual section when online 
 	 * updates are enabled.
 	 * @param result The calculated counting result for the update.
-	 * @param list Basic block execution sequence used to 
+	 * @param blockExecutionSequence Basic block execution sequence used to 
 	 * see if consecutive results contain new information.
 	 */
-	public void add(CountingResult result, List<Integer> list) {
+	public void add(CountingResult result, List<Integer> blockExecutionSequence) {
 		final UUID methodID = result.getMethodExecutionID();
 		if(lastUpdatedMethod != null && !methodID.equals(lastUpdatedMethod)) {
 			// we entered a new method
@@ -78,8 +78,8 @@ public class CountingResultUpdateIndexing {
 		}
 		
 		if(lastBlockExecutionSequenceByMethod.get(methodID) == null
-				|| list != null
-				&& !lastBlockExecutionSequenceByMethod.get(methodID).equals(list)) {
+				|| blockExecutionSequence != null
+				&& !lastBlockExecutionSequenceByMethod.get(methodID).equals(blockExecutionSequence)) {
 			// This is new information, so add it to the queue
 			resultQueue.add(result);
 		}
@@ -87,7 +87,7 @@ public class CountingResultUpdateIndexing {
 		// update last section index for the method
 		lastUpdatedMethod = methodID;
 		lastUpdatedSectionIndex.put(methodID, result.getIndexOfRangeBlock());
-		lastBlockExecutionSequenceByMethod.put(methodID, new ArrayList<Integer>(list));
+		lastBlockExecutionSequenceByMethod.put(methodID, new ArrayList<Integer>(blockExecutionSequence));
 	}
 
 

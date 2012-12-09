@@ -132,7 +132,7 @@ public class CollectionStrategyDefault extends AbstractCollectionStrategy {
 			if(lastExSeq != null) {
 				Integer lastExSeqLength = lastExSeq.size();
 				Integer newExSeqLength = result.blockExecutionSequence.size();
-				if(lastExSeqLength != null && lastExSeqLength != newExSeqLength) {
+				if(lastExSeqLength != null) {
 					ArrayList<Integer> newSequence = new ArrayList<Integer>();
 					for(int i = lastExSeqLength; i < newExSeqLength; i++) {
 						newSequence.add(result.blockExecutionSequence.get(i));
@@ -358,7 +358,6 @@ public class CollectionStrategyDefault extends AbstractCollectionStrategy {
 			ccounts[0] = new CalculatedCounts();
 			ccounts[0].opcodeCounts = result.opcodeCounts;
 			ccounts[0].methodCounts = methodCounts;
-			// numResults is already set to 1 above
 		}
 		return ccounts;
 	}
