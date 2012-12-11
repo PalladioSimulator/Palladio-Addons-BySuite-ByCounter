@@ -34,6 +34,8 @@ import de.uka.ipd.sdq.ByCounter.utils.IAllJavaOpcodes;
  */
 public class CountingResultBase
 implements Serializable, Cloneable, IFullCountingResult, Comparable<IFullCountingResult>{
+	/** Logger for this class. */
+	private static final Logger logger = Logger.getLogger(CountingResultBase.class.getCanonicalName());
 
 	/**
 	 * Class used in {@link #logResult(boolean, boolean)} with
@@ -78,6 +80,8 @@ implements Serializable, Cloneable, IFullCountingResult, Comparable<IFullCountin
 	
 	/** Newline character for log output. */
 	private static final String NEWLINE = System.getProperty("line.separator");
+	/** Constant to denote that the reporting time has not been set. */
+	private static final long UNSET_REPORTING_TIME = -1;
 
 	/**
 	 * see http://en.wikipedia.org/wiki/Data_log
@@ -316,6 +320,7 @@ implements Serializable, Cloneable, IFullCountingResult, Comparable<IFullCountin
 	}
 
 	public static void main(String args[]){
+		//TODO move to test case
 		System.out.println("The main method of CountingResult serves as " +
 				"a test case for compareCounts method");
 		long[] opcodeCounts1 = new long[MAX_OPCODE];
@@ -441,7 +446,7 @@ implements Serializable, Cloneable, IFullCountingResult, Comparable<IFullCountin
 	 * the CountingResultCollector. In other words, this is
 	 * <b>approximately</b> the time when the method execution was finished.
 	 */
-	private long reportingTime;
+	private long reportingTime = UNSET_REPORTING_TIME;
 
 	/**
 	 * This array contains the counts of elementary bytecode instructions.
@@ -615,7 +620,7 @@ implements Serializable, Cloneable, IFullCountingResult, Comparable<IFullCountin
 		this.indexOfRangeBlock = -1;
 		this.methodCallCounts = null;
 		this.methodInvocationBeginning = 0;
-		this.reportingTime = 0;
+		this.reportingTime = UNSET_REPORTING_TIME;
 		this.opcodeCounts = null;
 		this.qualifiedMethodName = null; //should be a PRIVATE setter
 		this.totalCountExclInvokes = 0L;
@@ -1027,13 +1032,13 @@ implements Serializable, Cloneable, IFullCountingResult, Comparable<IFullCountin
 	}
 
 	/**
-	 * TODO consider adding a logger to CountingResult;
-	 * @param reportingTime
+	 * Sets the reporting time of the result.
+	 * @param reportingTime The new reporting time.
 	 */
 	public void setReportingTime(long reportingTime) {
-		if(this.reportingTime==0){
-			System.err.println("Method reporting time "+this.reportingTime+
-					" about to be overwritten with "+reportingTime);
+		if(this.reportingTime!=UNSET_REPORTING_TIME){
+			logger.warning("Result reporting time "+this.reportingTime+
+					" is replaced with "+reportingTime);
 		}
 		this.reportingTime = reportingTime;
 	}

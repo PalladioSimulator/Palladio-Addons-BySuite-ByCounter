@@ -37,6 +37,8 @@ import de.uka.ipd.sdq.ByCounter.utils.FullOpcodeMapper;
  * {@link ICountingResultWriter} that writes reports in the pdf format.
  */
 public class PdfReport implements ICountingResultWriter {
+	/** Logger of this class.*/
+	private static final Logger logger = Logger.getLogger(PdfReport.class.getCanonicalName());
 	private static final int SPACING_TABLE = 12;
 	private static final Font FONT_TITLE = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 36);
 	private static final Font FONT_CHAPTER = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 18);
@@ -71,7 +73,7 @@ public class PdfReport implements ICountingResultWriter {
 			dateFormat.format(new Date(System.currentTimeMillis()))
 			+ "." + methodExecution.canonicalClassName
 			+ ".pdf";
-		System.out.println(fileName);
+		logger.info("Generating PDF and storing in file: " + fileName);
 		openFile(doc, fileName);
 		doc.open();
 

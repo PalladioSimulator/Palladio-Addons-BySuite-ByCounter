@@ -22,6 +22,8 @@ import org.objectweb.asm.Opcodes;
  * @version 1.2
  */
 public class ASMOpcodesMapper implements Opcodes {
+	/** Logger of this class. */
+	private static final Logger logger = Logger.getLogger(ASMOpcodesMapper.class.getCanonicalName());
 
 	/**
 	 * Singleton instance; dao = display ASM opcodes (not "data access object")
@@ -51,10 +53,10 @@ public class ASMOpcodesMapper implements Opcodes {
 	@SuppressWarnings("nls")
 	public static void main(String[] args){
 		ASMOpcodesMapper daoInstance = ASMOpcodesMapper.instance();
-		System.out.println("Running from "+new File(".").getAbsolutePath());
-		System.out.println("If no further output appears below this line, " +
+		logger.info("Running from "+new File(".").getAbsolutePath());
+		logger.info("If no further output appears below this line, " +
 				"check you logger installation and configuration.");
-		daoInstance.printAllInstructions(daoInstance);
+		logger.info(daoInstance.printAllInstructions(daoInstance));
 	}
 	
 	/**
@@ -230,19 +232,18 @@ public class ASMOpcodesMapper implements Opcodes {
 	 * @param daoInstance the instance of <code>DisplayASMOpcodes</code>
 	 */
 	@SuppressWarnings("nls")
-	private void printAllInstructions(ASMOpcodesMapper daoInstance){
+	private String printAllInstructions(ASMOpcodesMapper daoInstance){
 		for (int i = 0; i < 256; i++) {
-//			log.fine("self-test: "+i+" corresponds to "+
-//					daoInstance.getOpcodeString(i));
-			System.out.println("self-test: "+i+" corresponds to "+
+			logger.info("self-test: "+i+" corresponds to "+
 					daoInstance.getOpcodeString(i));
 		}
 		Iterator<String> iterStr = this.opcodesByName.keySet().iterator();
 		String key;
-		System.out.println("Opcodes by name, sorted alphabetically"); 
+		String result = "Opcodes by name, sorted alphabetically"; 
 		while(iterStr.hasNext()){
 			key = iterStr.next();
-			System.out.println(key+" : "+this.opcodesByName.get(key));
+			 result += key+" : "+this.opcodesByName.get(key) + "\n";
 		}
+		return result;
 	}
 }

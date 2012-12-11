@@ -537,14 +537,6 @@ public class CountingResultCSVWriter implements ICountingResultWriter {
 		this.lastWrittenFile = csvwap.getLastWrittenFile();
 		
 		return result;
-//		System.out.println("====================================================");
-//		log.info(totalCountOfAllOpcodes + " opcodes of "+opcodeCounts.size() + " different types were counted.\n");
-//		log.info(totalCountOfAllMethods + " methods of "+methodCallCounts.size() + " different types were counted.\n");
-//		System.out.println("====================================================");
-//		System.out.println("\n");
-//		System.out.println("\n");
-//		System.out.println("\n");
-	
 	}
 
 	/**

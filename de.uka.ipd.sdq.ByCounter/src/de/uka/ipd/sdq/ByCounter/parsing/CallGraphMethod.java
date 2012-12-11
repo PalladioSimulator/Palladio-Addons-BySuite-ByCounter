@@ -140,9 +140,6 @@ public final class CallGraphMethod {
 	 * i.e. all fields equal their equivalents.
 	 */
 	public boolean matchesMethodDescriptor(MethodDescriptor method) {
-//		System.out.println(method.getDescriptor()+  " ## " + this.desc);
-//		System.out.println(method.getCanonicalClassName()+  " ## " + this.owner.replace('.', '/'));
-//		System.out.println(method.getMethodName()+  " ## " + this.name);
 		return method.getDescriptor().equals(this.desc) &&
 			method.getCanonicalClassName().equals(this.owner.replace('/', '.')) &&
 			method.getSimpleMethodName().equals(this.name);

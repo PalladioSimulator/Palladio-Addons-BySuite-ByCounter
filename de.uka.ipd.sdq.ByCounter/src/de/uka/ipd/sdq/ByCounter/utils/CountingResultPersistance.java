@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import de.uka.ipd.sdq.ByCounter.execution.CountingResultBase;
@@ -184,10 +185,11 @@ public class CountingResultPersistance {
 			fileName += suffix+"."+fileExtension;
 			File file = new File(fileName);
 			canonicalPath = file.getCanonicalPath();
-			System.out.println("Writing counting result to "+canonicalPath);
+			log.info("Writing counting result to "+canonicalPath);
 			fos = new FileOutputStream(file);
 			ObjectOutputStream oos = new ObjectOutputStream(fos);
 			oos.writeObject(cr);
+			oos.close();
 		}catch (Exception e) {
 			throw new RuntimeException(e);
 		}finally{
@@ -195,7 +197,7 @@ public class CountingResultPersistance {
 				try{
 					fos.close();
 				}catch (Exception e) {
-					e.printStackTrace();
+					log.log(Level.SEVERE, "Error accessing file.", e);
 				}
 			}
 		}

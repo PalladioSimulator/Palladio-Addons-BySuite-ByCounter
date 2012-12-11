@@ -3,6 +3,7 @@ package de.uka.ipd.sdq.ByCounter.utils;
 import java.util.Arrays;
 import java.util.SortedMap;
 import java.util.TreeMap;
+import java.util.logging.Logger;
 
 /**
  * Methods are capitalised because otherwise, some method names (e.g. goto())
@@ -13,6 +14,8 @@ import java.util.TreeMap;
  * 
  */
 public class FullOpcodeMapper implements IAllJavaOpcodes {
+	/** Logger of this class. */
+	private static final Logger logger = Logger.getLogger(FullOpcodeMapper.class.getCanonicalName());
 	
 	/**
 	 * Should not be sorted!!!
@@ -80,7 +83,7 @@ public class FullOpcodeMapper implements IAllJavaOpcodes {
 		if (opcode >= 0 && opcode < 202) {
 			return mnemonics[opcode];
 		} else {
-			System.err.println("getMnemonicOfOpcode: opcode out of range: "
+			logger.severe("getMnemonicOfOpcode: opcode out of range: "
 					+ opcode + " is not within [0, 200]");
 			return null;
 		}

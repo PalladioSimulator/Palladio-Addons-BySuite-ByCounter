@@ -61,6 +61,8 @@ import de.uka.ipd.sdq.ByCounter.utils.MethodDescriptor;
  * @version 1.2
  */
 public final class MethodCountClassAdapter extends ClassAdapter {
+	/** Logger of this class.*/
+	private static final Logger logger = Logger.getLogger(MethodCountClassAdapter.class.getCanonicalName());
 
 	/**
 	 * Class to save the information passed on visitMethod calls.
@@ -122,10 +124,10 @@ public final class MethodCountClassAdapter extends ClassAdapter {
 				directory = new File(".");
 			}
 			if(!directory.exists() && !directory.mkdirs()) {
-				System.out.println("Could not create directory for log files.");
+				logger.severe("Could not create directory for log files.");
 			}
 			out = new FileOutputStream(resultFile);
-			System.out.println("Writing counting results log file to "
+			logger.info("Writing counting results log file to "
 					+ resultFile.getAbsolutePath());
 			out.write(("LOG_COMMENT_TOKEN + Timestamp: " + result.executionStart + lineSep
 				+ "LOG_COMMENT_TOKEN + RequestID: " + result.requestID + lineSep
@@ -343,7 +345,6 @@ public final class MethodCountClassAdapter extends ClassAdapter {
 		} else {
 			varIndex = 1;
 			if(mInfo.name.equalsIgnoreCase("<init>")) {
-				System.out.println("<init> is here");
 				mv.visitVarInsn(ALOAD, 0);
 				mv.visitMethodInsn(INVOKESPECIAL, "java/lang/Object", "<init>", "()V");
 			}
