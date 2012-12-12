@@ -55,7 +55,7 @@ public interface LogicalSet extends Identifier {
 	 * @see #setExecutionProfile(ExecutionProfile)
 	 * @see edu.kit.ipd.sdq.bycounter.input.InputPackage#getLogicalSet_ExecutionProfile()
 	 * @see edu.kit.ipd.sdq.bycounter.input.ExecutionProfile#getDefinedLogicalSets
-	 * @model opposite="definedLogicalSets" required="true" transient="false" ordered="false"
+	 * @model opposite="definedLogicalSets" transient="false" ordered="false"
 	 * @generated
 	 */
 	ExecutionProfile getExecutionProfile();

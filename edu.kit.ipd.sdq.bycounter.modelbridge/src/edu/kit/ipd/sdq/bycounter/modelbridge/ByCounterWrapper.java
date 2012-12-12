@@ -215,7 +215,7 @@ public class ByCounterWrapper {
 		
 		ExecutionSettings executionSettings = new ExecutionSettings();
 		executionSettings.setAddUpResultsRecursively(executionProfile.isAddUpResultsRecursively());
-		executionSettings.setWaitForThreadsToFinnish(executionProfile.isWaitForThreadsToFinnish());
+		executionSettings.setWaitForThreadsToFinnish(executionProfile.isWaitForThreadsToFinish());
 		executionSettings.setInternalClassesDefinition(mapLogicalSet(executionProfile.getDefinedLogicalSets()));
 		
 		// update execution parameters

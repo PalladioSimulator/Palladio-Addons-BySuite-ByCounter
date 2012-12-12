@@ -123,7 +123,7 @@
       </genClasses>
       <genClasses xsi:type="genmodel:GenClass" ecoreClass="ByCounter.ecore#//input/ExecutionProfile">
         <genFeatures xsi:type="genmodel:GenFeature" createChild="false" ecoreFeature="ecore:EAttribute ByCounter.ecore#//input/ExecutionProfile/addUpResultsRecursively"/>
-        <genFeatures xsi:type="genmodel:GenFeature" createChild="false" ecoreFeature="ecore:EAttribute ByCounter.ecore#//input/ExecutionProfile/waitForThreadsToFinnish"/>
+        <genFeatures xsi:type="genmodel:GenFeature" createChild="false" ecoreFeature="ecore:EAttribute ByCounter.ecore#//input/ExecutionProfile/waitForThreadsToFinish"/>
         <genFeatures xsi:type="genmodel:GenFeature" property="None" children="true"
             createChild="true" ecoreFeature="ecore:EReference ByCounter.ecore#//input/ExecutionProfile/definedLogicalSets"/>
         <genFeatures xsi:type="genmodel:GenFeature" property="None" notify="false"

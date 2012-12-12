@@ -315,7 +315,7 @@ entitesToInstrument that  are not Java API methods (packages java.*, javax.* sun
         </ownedAttribute>
         <ownedAttribute xmi:id="_wmb08DveEd-PZ70lu-zpYg" name="executionProfile" visibility="public" type="_cJTAAPXoEeGJyMxspERnIw" association="_wmYKkDveEd-PZ70lu-zpYg">
           <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_wmdDEDveEd-PZ70lu-zpYg" value="1"/>
-          <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_wmccADveEd-PZ70lu-zpYg" value="1"/>
+          <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_wmccADveEd-PZ70lu-zpYg"/>
         </ownedAttribute>
       </packagedElement>
       <packagedElement xmi:type="uml:Association" xmi:id="_-vze8EZIEd-sOu4vtdvMEA" memberEnd="_-v17MEZIEd-sOu4vtdvMEA _-v4-gEZIEd-sOu4vtdvMEA">
@@ -421,7 +421,7 @@ When false, only the counts for operations done in the method itself - not those
             <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/EcorePrimitiveTypes.library.uml#EBoolean"/>
           </defaultValue>
         </ownedAttribute>
-        <ownedAttribute xmi:id="_rSudQPXoEeGJyMxspERnIw" name="waitForThreadsToFinnish" visibility="public">
+        <ownedAttribute xmi:id="_rSudQPXoEeGJyMxspERnIw" name="waitForThreadsToFinish" visibility="public">
           <ownedComment xmi:id="_HJSUcPXpEeGJyMxspERnIw" annotatedElement="_rSudQPXoEeGJyMxspERnIw">
             <body>When true, execution tries to wait for all threads from instrumented methods to finish before returning.</body>
           </ownedComment>
@@ -443,7 +443,7 @@ When false, only the counts for operations done in the method itself - not those
       <packagedElement xmi:type="uml:Association" xmi:id="_hUmhEDfwEeKlhsE4mwL0FQ" memberEnd="_hVD0EDfwEeKlhsE4mwL0FQ _hVKhwDfwEeKlhsE4mwL0FQ">
         <ownedEnd xmi:id="_hVKhwDfwEeKlhsE4mwL0FQ" name="instrumentationProfile" visibility="public" type="_X45kMDveEd-PZ70lu-zpYg" association="_hUmhEDfwEeKlhsE4mwL0FQ">
           <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_hVLv4DfwEeKlhsE4mwL0FQ" value="1"/>
-          <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_hVLI0DfwEeKlhsE4mwL0FQ" value="1"/>
+          <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_hVLI0DfwEeKlhsE4mwL0FQ"/>
         </ownedEnd>
       </packagedElement>
     </packagedElement>

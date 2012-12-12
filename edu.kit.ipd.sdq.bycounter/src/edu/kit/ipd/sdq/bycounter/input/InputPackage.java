@@ -250,13 +250,13 @@ public interface InputPackage extends EPackage {
 	int EXECUTION_PROFILE__ADD_UP_RESULTS_RECURSIVELY = 0;
 
 	/**
-	 * The feature id for the '<em><b>Wait For Threads To Finnish</b></em>' attribute.
+	 * The feature id for the '<em><b>Wait For Threads To Finish</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int EXECUTION_PROFILE__WAIT_FOR_THREADS_TO_FINNISH = 1;
+	int EXECUTION_PROFILE__WAIT_FOR_THREADS_TO_FINISH = 1;
 
 	/**
 	 * The feature id for the '<em><b>Defined Logical Sets</b></em>' containment reference list.
@@ -719,15 +719,15 @@ public interface InputPackage extends EPackage {
 	EAttribute getExecutionProfile_AddUpResultsRecursively();
 
 	/**
-	 * Returns the meta object for the attribute '{@link edu.kit.ipd.sdq.bycounter.input.ExecutionProfile#isWaitForThreadsToFinnish <em>Wait For Threads To Finnish</em>}'.
+	 * Returns the meta object for the attribute '{@link edu.kit.ipd.sdq.bycounter.input.ExecutionProfile#isWaitForThreadsToFinish <em>Wait For Threads To Finish</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Wait For Threads To Finnish</em>'.
-	 * @see edu.kit.ipd.sdq.bycounter.input.ExecutionProfile#isWaitForThreadsToFinnish()
+	 * @return the meta object for the attribute '<em>Wait For Threads To Finish</em>'.
+	 * @see edu.kit.ipd.sdq.bycounter.input.ExecutionProfile#isWaitForThreadsToFinish()
 	 * @see #getExecutionProfile()
 	 * @generated
 	 */
-	EAttribute getExecutionProfile_WaitForThreadsToFinnish();
+	EAttribute getExecutionProfile_WaitForThreadsToFinish();
 
 	/**
 	 * Returns the meta object for the containment reference list '{@link edu.kit.ipd.sdq.bycounter.input.ExecutionProfile#getDefinedLogicalSets <em>Defined Logical Sets</em>}'.
@@ -1109,12 +1109,12 @@ public interface InputPackage extends EPackage {
 		EAttribute EXECUTION_PROFILE__ADD_UP_RESULTS_RECURSIVELY = eINSTANCE.getExecutionProfile_AddUpResultsRecursively();
 
 		/**
-		 * The meta object literal for the '<em><b>Wait For Threads To Finnish</b></em>' attribute feature.
+		 * The meta object literal for the '<em><b>Wait For Threads To Finish</b></em>' attribute feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		EAttribute EXECUTION_PROFILE__WAIT_FOR_THREADS_TO_FINNISH = eINSTANCE.getExecutionProfile_WaitForThreadsToFinnish();
+		EAttribute EXECUTION_PROFILE__WAIT_FOR_THREADS_TO_FINISH = eINSTANCE.getExecutionProfile_WaitForThreadsToFinish();
 
 		/**
 		 * The meta object literal for the '<em><b>Defined Logical Sets</b></em>' containment reference list feature.

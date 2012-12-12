@@ -15,7 +15,7 @@ import org.eclipse.emf.ecore.EObject;
  * The following features are supported:
  * <ul>
  *   <li>{@link edu.kit.ipd.sdq.bycounter.input.ExecutionProfile#isAddUpResultsRecursively <em>Add Up Results Recursively</em>}</li>
- *   <li>{@link edu.kit.ipd.sdq.bycounter.input.ExecutionProfile#isWaitForThreadsToFinnish <em>Wait For Threads To Finnish</em>}</li>
+ *   <li>{@link edu.kit.ipd.sdq.bycounter.input.ExecutionProfile#isWaitForThreadsToFinish <em>Wait For Threads To Finish</em>}</li>
  *   <li>{@link edu.kit.ipd.sdq.bycounter.input.ExecutionProfile#getDefinedLogicalSets <em>Defined Logical Sets</em>}</li>
  *   <li>{@link edu.kit.ipd.sdq.bycounter.input.ExecutionProfile#getInstrumentationProfileRepository <em>Instrumentation Profile Repository</em>}</li>
  * </ul>
@@ -55,30 +55,30 @@ public interface ExecutionProfile extends EObject {
 	void setAddUpResultsRecursively(boolean value);
 
 	/**
-	 * Returns the value of the '<em><b>Wait For Threads To Finnish</b></em>' attribute.
+	 * Returns the value of the '<em><b>Wait For Threads To Finish</b></em>' attribute.
 	 * The default value is <code>"true"</code>.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * <!-- begin-model-doc -->
 	 * When true, execution tries to wait for all threads from instrumented methods to finish before returning.
 	 * <!-- end-model-doc -->
-	 * @return the value of the '<em>Wait For Threads To Finnish</em>' attribute.
-	 * @see #setWaitForThreadsToFinnish(boolean)
-	 * @see edu.kit.ipd.sdq.bycounter.input.InputPackage#getExecutionProfile_WaitForThreadsToFinnish()
+	 * @return the value of the '<em>Wait For Threads To Finish</em>' attribute.
+	 * @see #setWaitForThreadsToFinish(boolean)
+	 * @see edu.kit.ipd.sdq.bycounter.input.InputPackage#getExecutionProfile_WaitForThreadsToFinish()
 	 * @model default="true" required="true" ordered="false"
 	 * @generated
 	 */
-	boolean isWaitForThreadsToFinnish();
+	boolean isWaitForThreadsToFinish();
 
 	/**
-	 * Sets the value of the '{@link edu.kit.ipd.sdq.bycounter.input.ExecutionProfile#isWaitForThreadsToFinnish <em>Wait For Threads To Finnish</em>}' attribute.
+	 * Sets the value of the '{@link edu.kit.ipd.sdq.bycounter.input.ExecutionProfile#isWaitForThreadsToFinish <em>Wait For Threads To Finish</em>}' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Wait For Threads To Finnish</em>' attribute.
-	 * @see #isWaitForThreadsToFinnish()
+	 * @param value the new value of the '<em>Wait For Threads To Finish</em>' attribute.
+	 * @see #isWaitForThreadsToFinish()
 	 * @generated
 	 */
-	void setWaitForThreadsToFinnish(boolean value);
+	void setWaitForThreadsToFinish(boolean value);
 
 	/**
 	 * Returns the value of the '<em><b>Defined Logical Sets</b></em>' containment reference list.

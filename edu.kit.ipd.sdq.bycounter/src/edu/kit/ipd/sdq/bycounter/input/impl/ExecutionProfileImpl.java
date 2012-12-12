@@ -33,7 +33,7 @@ import org.eclipse.emf.ecore.util.InternalEList;
  * The following features are implemented:
  * <ul>
  *   <li>{@link edu.kit.ipd.sdq.bycounter.input.impl.ExecutionProfileImpl#isAddUpResultsRecursively <em>Add Up Results Recursively</em>}</li>
- *   <li>{@link edu.kit.ipd.sdq.bycounter.input.impl.ExecutionProfileImpl#isWaitForThreadsToFinnish <em>Wait For Threads To Finnish</em>}</li>
+ *   <li>{@link edu.kit.ipd.sdq.bycounter.input.impl.ExecutionProfileImpl#isWaitForThreadsToFinish <em>Wait For Threads To Finish</em>}</li>
  *   <li>{@link edu.kit.ipd.sdq.bycounter.input.impl.ExecutionProfileImpl#getDefinedLogicalSets <em>Defined Logical Sets</em>}</li>
  *   <li>{@link edu.kit.ipd.sdq.bycounter.input.impl.ExecutionProfileImpl#getInstrumentationProfileRepository <em>Instrumentation Profile Repository</em>}</li>
  * </ul>
@@ -63,24 +63,24 @@ public class ExecutionProfileImpl extends EObjectImpl implements ExecutionProfil
 	protected boolean addUpResultsRecursively = ADD_UP_RESULTS_RECURSIVELY_EDEFAULT;
 
 	/**
-	 * The default value of the '{@link #isWaitForThreadsToFinnish() <em>Wait For Threads To Finnish</em>}' attribute.
+	 * The default value of the '{@link #isWaitForThreadsToFinish() <em>Wait For Threads To Finish</em>}' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see #isWaitForThreadsToFinnish()
+	 * @see #isWaitForThreadsToFinish()
 	 * @generated
 	 * @ordered
 	 */
-	protected static final boolean WAIT_FOR_THREADS_TO_FINNISH_EDEFAULT = true;
+	protected static final boolean WAIT_FOR_THREADS_TO_FINISH_EDEFAULT = true;
 
 	/**
-	 * The cached value of the '{@link #isWaitForThreadsToFinnish() <em>Wait For Threads To Finnish</em>}' attribute.
+	 * The cached value of the '{@link #isWaitForThreadsToFinish() <em>Wait For Threads To Finish</em>}' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see #isWaitForThreadsToFinnish()
+	 * @see #isWaitForThreadsToFinish()
 	 * @generated
 	 * @ordered
 	 */
-	protected boolean waitForThreadsToFinnish = WAIT_FOR_THREADS_TO_FINNISH_EDEFAULT;
+	protected boolean waitForThreadsToFinish = WAIT_FOR_THREADS_TO_FINISH_EDEFAULT;
 
 	/**
 	 * The cached value of the '{@link #getDefinedLogicalSets() <em>Defined Logical Sets</em>}' containment reference list.
@@ -137,8 +137,8 @@ public class ExecutionProfileImpl extends EObjectImpl implements ExecutionProfil
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public boolean isWaitForThreadsToFinnish() {
-		return waitForThreadsToFinnish;
+	public boolean isWaitForThreadsToFinish() {
+		return waitForThreadsToFinish;
 	}
 
 	/**
@@ -146,11 +146,11 @@ public class ExecutionProfileImpl extends EObjectImpl implements ExecutionProfil
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setWaitForThreadsToFinnish(boolean newWaitForThreadsToFinnish) {
-		boolean oldWaitForThreadsToFinnish = waitForThreadsToFinnish;
-		waitForThreadsToFinnish = newWaitForThreadsToFinnish;
+	public void setWaitForThreadsToFinish(boolean newWaitForThreadsToFinish) {
+		boolean oldWaitForThreadsToFinish = waitForThreadsToFinish;
+		waitForThreadsToFinish = newWaitForThreadsToFinish;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, InputPackage.EXECUTION_PROFILE__WAIT_FOR_THREADS_TO_FINNISH, oldWaitForThreadsToFinnish, waitForThreadsToFinnish));
+			eNotify(new ENotificationImpl(this, Notification.SET, InputPackage.EXECUTION_PROFILE__WAIT_FOR_THREADS_TO_FINISH, oldWaitForThreadsToFinish, waitForThreadsToFinish));
 	}
 
 	/**
@@ -265,8 +265,8 @@ public class ExecutionProfileImpl extends EObjectImpl implements ExecutionProfil
 		switch (featureID) {
 			case InputPackage.EXECUTION_PROFILE__ADD_UP_RESULTS_RECURSIVELY:
 				return isAddUpResultsRecursively();
-			case InputPackage.EXECUTION_PROFILE__WAIT_FOR_THREADS_TO_FINNISH:
-				return isWaitForThreadsToFinnish();
+			case InputPackage.EXECUTION_PROFILE__WAIT_FOR_THREADS_TO_FINISH:
+				return isWaitForThreadsToFinish();
 			case InputPackage.EXECUTION_PROFILE__DEFINED_LOGICAL_SETS:
 				return getDefinedLogicalSets();
 			case InputPackage.EXECUTION_PROFILE__INSTRUMENTATION_PROFILE_REPOSITORY:
@@ -287,8 +287,8 @@ public class ExecutionProfileImpl extends EObjectImpl implements ExecutionProfil
 			case InputPackage.EXECUTION_PROFILE__ADD_UP_RESULTS_RECURSIVELY:
 				setAddUpResultsRecursively((Boolean)newValue);
 				return;
-			case InputPackage.EXECUTION_PROFILE__WAIT_FOR_THREADS_TO_FINNISH:
-				setWaitForThreadsToFinnish((Boolean)newValue);
+			case InputPackage.EXECUTION_PROFILE__WAIT_FOR_THREADS_TO_FINISH:
+				setWaitForThreadsToFinish((Boolean)newValue);
 				return;
 			case InputPackage.EXECUTION_PROFILE__DEFINED_LOGICAL_SETS:
 				getDefinedLogicalSets().clear();
@@ -312,8 +312,8 @@ public class ExecutionProfileImpl extends EObjectImpl implements ExecutionProfil
 			case InputPackage.EXECUTION_PROFILE__ADD_UP_RESULTS_RECURSIVELY:
 				setAddUpResultsRecursively(ADD_UP_RESULTS_RECURSIVELY_EDEFAULT);
 				return;
-			case InputPackage.EXECUTION_PROFILE__WAIT_FOR_THREADS_TO_FINNISH:
-				setWaitForThreadsToFinnish(WAIT_FOR_THREADS_TO_FINNISH_EDEFAULT);
+			case InputPackage.EXECUTION_PROFILE__WAIT_FOR_THREADS_TO_FINISH:
+				setWaitForThreadsToFinish(WAIT_FOR_THREADS_TO_FINISH_EDEFAULT);
 				return;
 			case InputPackage.EXECUTION_PROFILE__DEFINED_LOGICAL_SETS:
 				getDefinedLogicalSets().clear();
@@ -335,8 +335,8 @@ public class ExecutionProfileImpl extends EObjectImpl implements ExecutionProfil
 		switch (featureID) {
 			case InputPackage.EXECUTION_PROFILE__ADD_UP_RESULTS_RECURSIVELY:
 				return addUpResultsRecursively != ADD_UP_RESULTS_RECURSIVELY_EDEFAULT;
-			case InputPackage.EXECUTION_PROFILE__WAIT_FOR_THREADS_TO_FINNISH:
-				return waitForThreadsToFinnish != WAIT_FOR_THREADS_TO_FINNISH_EDEFAULT;
+			case InputPackage.EXECUTION_PROFILE__WAIT_FOR_THREADS_TO_FINISH:
+				return waitForThreadsToFinish != WAIT_FOR_THREADS_TO_FINISH_EDEFAULT;
 			case InputPackage.EXECUTION_PROFILE__DEFINED_LOGICAL_SETS:
 				return definedLogicalSets != null && !definedLogicalSets.isEmpty();
 			case InputPackage.EXECUTION_PROFILE__INSTRUMENTATION_PROFILE_REPOSITORY:
@@ -357,8 +357,8 @@ public class ExecutionProfileImpl extends EObjectImpl implements ExecutionProfil
 		StringBuffer result = new StringBuffer(super.toString());
 		result.append(" (addUpResultsRecursively: ");
 		result.append(addUpResultsRecursively);
-		result.append(", waitForThreadsToFinnish: ");
-		result.append(waitForThreadsToFinnish);
+		result.append(", waitForThreadsToFinish: ");
+		result.append(waitForThreadsToFinish);
 		result.append(')');
 		return result.toString();
 	}

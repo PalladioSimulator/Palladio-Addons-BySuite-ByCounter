@@ -66,7 +66,7 @@ public class ExecutionProfileItemProvider
 			super.getPropertyDescriptors(object);
 
 			addAddUpResultsRecursivelyPropertyDescriptor(object);
-			addWaitForThreadsToFinnishPropertyDescriptor(object);
+			addWaitForThreadsToFinishPropertyDescriptor(object);
 		}
 		return itemPropertyDescriptors;
 	}
@@ -94,19 +94,19 @@ public class ExecutionProfileItemProvider
 	}
 
 	/**
-	 * This adds a property descriptor for the Wait For Threads To Finnish feature.
+	 * This adds a property descriptor for the Wait For Threads To Finish feature.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	protected void addWaitForThreadsToFinnishPropertyDescriptor(Object object) {
+	protected void addWaitForThreadsToFinishPropertyDescriptor(Object object) {
 		itemPropertyDescriptors.add
 			(createItemPropertyDescriptor
 				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
 				 getResourceLocator(),
-				 getString("_UI_ExecutionProfile_waitForThreadsToFinnish_feature"),
-				 getString("_UI_PropertyDescriptor_description", "_UI_ExecutionProfile_waitForThreadsToFinnish_feature", "_UI_ExecutionProfile_type"),
-				 InputPackage.Literals.EXECUTION_PROFILE__WAIT_FOR_THREADS_TO_FINNISH,
+				 getString("_UI_ExecutionProfile_waitForThreadsToFinish_feature"),
+				 getString("_UI_PropertyDescriptor_description", "_UI_ExecutionProfile_waitForThreadsToFinish_feature", "_UI_ExecutionProfile_type"),
+				 InputPackage.Literals.EXECUTION_PROFILE__WAIT_FOR_THREADS_TO_FINISH,
 				 true,
 				 false,
 				 false,
@@ -181,7 +181,7 @@ public class ExecutionProfileItemProvider
 
 		switch (notification.getFeatureID(ExecutionProfile.class)) {
 			case InputPackage.EXECUTION_PROFILE__ADD_UP_RESULTS_RECURSIVELY:
-			case InputPackage.EXECUTION_PROFILE__WAIT_FOR_THREADS_TO_FINNISH:
+			case InputPackage.EXECUTION_PROFILE__WAIT_FOR_THREADS_TO_FINISH:
 				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
 				return;
 			case InputPackage.EXECUTION_PROFILE__DEFINED_LOGICAL_SETS:
