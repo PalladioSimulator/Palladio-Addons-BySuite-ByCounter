@@ -248,7 +248,7 @@ public class CountingResultIndexing {
 							"("+canditateCAI.getResultsReceivedByCollectorTime()+")< " +
 							"caller reporting time ("+callerReportingTime+").");
 					}
-					candidateCountingResult = canditateCAI.getCountingResult();
+					candidateCountingResult = this.countingResultsByArtefactInformation.get(canditateCAI);
 					if(!suppressDebugMessages) this.log.fine("Added counting result: "+candidateCountingResult);
 					totalCountingResult.add(candidateCountingResult);
 					if(!suppressDebugMessages) this.log.fine("Intermediate total counting result: "+totalCountingResult);

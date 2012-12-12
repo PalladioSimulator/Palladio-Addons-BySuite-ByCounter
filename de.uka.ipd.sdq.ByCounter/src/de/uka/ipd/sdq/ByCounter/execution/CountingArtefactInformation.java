@@ -2,9 +2,6 @@ package de.uka.ipd.sdq.ByCounter.execution;
 
 import java.util.List;
 
-import de.uka.ipd.sdq.ByCounter.results.CountingResult;
-
-
 /**
  * A small class to describe results of a counting step.
  * 
@@ -130,13 +127,6 @@ implements Comparable<CountingArtefactInformation>{
 //	public Long getExitingTime() {
 //		return exitingTime;
 //	}
-
-	/** Delegating getter for counting results that correspond to this artefact
-	 * @return counting results that correspond to this artefact
-	 */
-	public CountingResult getCountingResult() {
-		return myIndexing.getAllCountingResultsByArtefacts().get(this);
-	}
 
 	/**Simple getter
 	 * @return inputPrms

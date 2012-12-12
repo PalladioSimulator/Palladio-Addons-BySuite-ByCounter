@@ -137,7 +137,7 @@ class DummyReportingClass {
 //		this.myCollector.getCountingInformationsByMethodname();
 		Collection<CountingResult> results;
 		IFullCountingResult countingResult; 
-		results = this.myCollectionStrategy.getCountingResultIndexing().getAllCountingResultsByArtefacts().values();
+		results = CountingResultCollector.getInstance().retrieveAllCountingResults().getCountingResults();//this.myCollectionStrategy.getCountingResultIndexing().getAllCountingResultsByArtefacts().values();
 		this.log.fine("listing all available counting results");
 		for (Iterator<CountingResult> iterator = results.iterator(); 
 				iterator.hasNext();
