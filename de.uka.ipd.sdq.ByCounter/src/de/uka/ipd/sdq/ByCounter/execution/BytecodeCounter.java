@@ -13,7 +13,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.objectweb.asm.ClassReader;
@@ -21,18 +20,18 @@ import org.objectweb.asm.ClassReader;
 import de.uka.ipd.sdq.ByCounter.instrumentation.EntityToInstrument;
 import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentationContext;
 import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentationParameters;
+import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentationScopeModeEnum;
+import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentationState;
 import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentedClass;
 import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentedMethod;
 import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentedRegion;
-import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentationScopeModeEnum;
-import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentationState;
 import de.uka.ipd.sdq.ByCounter.instrumentation.Instrumenter;
-import de.uka.ipd.sdq.ByCounter.parsing.InstructionBlockSerialisation;
 import de.uka.ipd.sdq.ByCounter.parsing.CallGraph;
 import de.uka.ipd.sdq.ByCounter.parsing.CallGraphClassAdapter;
 import de.uka.ipd.sdq.ByCounter.parsing.CallGraphMethod;
 import de.uka.ipd.sdq.ByCounter.parsing.ClassMethodImplementations;
 import de.uka.ipd.sdq.ByCounter.parsing.FindMethodDefinitionsClassAdapter;
+import de.uka.ipd.sdq.ByCounter.parsing.InstructionBlockSerialisation;
 import de.uka.ipd.sdq.ByCounter.utils.InvocationResultData;
 import de.uka.ipd.sdq.ByCounter.utils.MethodDescriptor;
 
@@ -65,7 +64,7 @@ public final class BytecodeCounter {
 	/**
 	 * A logger instance (java.util Logging)
 	 */
-	private static Logger log;
+	private static final Logger log = Logger.getLogger(BytecodeCounter.class.getCanonicalName());
 	
 	/**
 	 * A flag which is <code>true</code> if class to count was given as bytes.
@@ -137,7 +136,6 @@ public final class BytecodeCounter {
 		this.instrumentationState = new InstrumentationState();
 		this.successFullyInstrumentedMethods = new ArrayList<MethodDescriptor>();
 		this.classLoader = new InstrumentationClassLoader(null);
-		setupLogging();
 	}
 	
 	/**
@@ -907,14 +905,6 @@ public final class BytecodeCounter {
 		} else {
 			throw new IllegalArgumentException("InstrumentationParameters must not be set to null.");
 		}
-	}
-
-	/**
-	 * Sets up logging
-	 */
-	private void setupLogging() {
-		log = Logger.getLogger(this.getClass().getCanonicalName());
-		log.setLevel(Level.FINEST);
 	}
 
 	/**
