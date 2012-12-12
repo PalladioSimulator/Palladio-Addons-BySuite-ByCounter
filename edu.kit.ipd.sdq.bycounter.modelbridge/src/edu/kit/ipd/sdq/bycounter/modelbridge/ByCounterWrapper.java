@@ -535,7 +535,11 @@ public class ByCounterWrapper {
 		} catch (InvalidQueryException e) {
 			throw new RuntimeException(e);
 		}
-		return entitiesToInstrumentIdMap.get(activeSection.getId());
+		if(activeSection == null) {
+			return null;
+		} else {
+			return entitiesToInstrumentIdMap.get(activeSection.getId());
+		}
 	}
 
 	/**Returns the current result collection.
