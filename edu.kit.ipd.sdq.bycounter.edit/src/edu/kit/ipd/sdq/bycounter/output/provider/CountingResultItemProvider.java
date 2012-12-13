@@ -3,20 +3,13 @@
 package edu.kit.ipd.sdq.bycounter.output.provider;
 
 
-import edu.kit.ipd.sdq.bycounter.output.CountingResult;
-import edu.kit.ipd.sdq.bycounter.output.OutputFactory;
-import edu.kit.ipd.sdq.bycounter.output.OutputPackage;
-
 import java.util.Collection;
 import java.util.List;
 
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.common.notify.Notification;
-
 import org.eclipse.emf.common.util.ResourceLocator;
-
 import org.eclipse.emf.ecore.EStructuralFeature;
-
 import org.eclipse.emf.edit.provider.ComposeableAdapterFactory;
 import org.eclipse.emf.edit.provider.IEditingDomainItemProvider;
 import org.eclipse.emf.edit.provider.IItemLabelProvider;
@@ -27,6 +20,11 @@ import org.eclipse.emf.edit.provider.ITreeItemContentProvider;
 import org.eclipse.emf.edit.provider.ItemPropertyDescriptor;
 import org.eclipse.emf.edit.provider.ItemProviderAdapter;
 import org.eclipse.emf.edit.provider.ViewerNotification;
+
+import edu.kit.ipd.sdq.bycounter.output.CountingResult;
+import edu.kit.ipd.sdq.bycounter.output.MethodCallCount;
+import edu.kit.ipd.sdq.bycounter.output.OutputFactory;
+import edu.kit.ipd.sdq.bycounter.output.OutputPackage;
 
 /**
  * This is the item provider adapter for a {@link edu.kit.ipd.sdq.bycounter.output.CountingResult} object.
@@ -369,10 +367,21 @@ public class CountingResultItemProvider
 	 */
 	@Override
 	public String getText(Object object) {
-		String label = ((CountingResult)object).getQualifiedMethodName();
-		return label == null || label.length() == 0 ?
-			getString("_UI_CountingResult_type") :
-			getString("_UI_CountingResult_type") + " " + label;
+		StringBuilder label = new StringBuilder();
+		CountingResult cr = (CountingResult) object;
+		// human readable list of opcodes and their invocations
+		for (int opcode = 0; opcode < cr.getOpcodeCounts().size(); opcode++) {
+			Long opcodeCount = cr.getOpcodeCounts().get(opcode);
+			if (opcodeCount > 0) {
+				label.append(cr.getOpcodeCounts().get(opcode) + "x #");
+				label.append(opcode + " ");
+			}
+		}
+		// human readable list of method invocations
+		for (MethodCallCount mcc : cr.getMethodCallCounts()) {
+			label.append(mcc.getCount() + "x " + mcc.getQualifiedFunctionName() + " ");
+		}
+		return getString("_UI_CountingResult_type") + " " + label.toString();
 	}
 
 	/**
