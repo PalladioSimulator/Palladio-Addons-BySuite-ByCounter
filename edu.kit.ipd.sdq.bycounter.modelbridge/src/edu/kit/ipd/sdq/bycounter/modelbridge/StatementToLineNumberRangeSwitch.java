@@ -91,7 +91,7 @@ public class StatementToLineNumberRangeSwitch extends
 		LineNumberRange subRange; 
 		// search for last non-empty branch from the end
 		for (int position = object.getBranches().size()-1; position >= 0; position--) {
-			subRange = this.doSwitch(object.getBranches().get(position));
+			subRange = this.doSwitch(object.getBranches().get(position).getStatement());
 			if (subRange.lastLine > 0) {
 				lastLine = subRange.lastLine;
 				break;
