@@ -319,7 +319,7 @@ public final class BytecodeCounter {
 		Object objInstance = null;	// class instance
 		try {
 			// Load the class from the bytecode
-			log.fine("+ Getting class from class pool.");
+			log.fine("Getting class from class pool.");
 			Class<?> classToExecute = this.classLoader.loadClass(methodToExecute.getCanonicalClassName());
 			
 			if(!methodToExecute.getMethodIsStatic()) {
@@ -360,7 +360,7 @@ public final class BytecodeCounter {
 					} catch (InstantiationException e) {
 						throw new RuntimeException("Could not instantiate class. " 
 								+ "Please make sure that "
-								+ "valid construction parameters are available.");
+								+ "valid construction parameters are available.", e);
 					} catch (IllegalAccessException e2) {
 						throw new RuntimeException("Access denied to create a " 
 								+ "new instance of the class to execute.", e2);
