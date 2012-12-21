@@ -310,9 +310,14 @@ public class ByCounterWrapper {
 		b.append(" ");
 		b.append(method.getSimpleName());
 		b.append("(");
-		for(FormalParameter p : method.getFormalParameters()) {
+		for(int i = 0; i < method.getFormalParameters().size(); i++) {
+			FormalParameter p = method.getFormalParameters().get(i);
 			b.append(p.getType().getQualifiedName());
 			b.append(" " + p.getSimpleName());
+			if(i + 1 < method.getFormalParameters().size()) {
+				// separate parameters with a comma
+				b.append(", ");
+			}
 		}
 		b.append(")");
 		
