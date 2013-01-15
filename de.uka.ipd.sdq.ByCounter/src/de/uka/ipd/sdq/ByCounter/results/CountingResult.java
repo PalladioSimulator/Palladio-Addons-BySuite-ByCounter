@@ -335,4 +335,13 @@ public class CountingResult extends CountingResultBase implements Cloneable {
 			CountingResult threadedCountingResultSource) {
 		this.threadedCountingResultSource = threadedCountingResultSource;
 	}
+	
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder(super.toString());
+		sb.append("      > isFinal         : " + this.isFinal + "\n");
+		sb.append("      > observedEntity  : " + this.observedElement.getId() + "\n");
+		sb.append("      > hasParent       : " + (this.resultCollection!=null || this.requestResult!=null) + "\n");
+		return sb.toString();
+	}
 }
