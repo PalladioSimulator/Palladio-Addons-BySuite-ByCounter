@@ -413,7 +413,7 @@ public final class Instrumenter {
 						log.severe("Could not find class.");
 						throw new RuntimeException(e);
 					}
-					javax.swing.JOptionPane.showMessageDialog(null, message);
+					//javax.swing.JOptionPane.showMessageDialog(null, message);
 					retValue = false;
 					throw new RuntimeException(message);
 				}else{
