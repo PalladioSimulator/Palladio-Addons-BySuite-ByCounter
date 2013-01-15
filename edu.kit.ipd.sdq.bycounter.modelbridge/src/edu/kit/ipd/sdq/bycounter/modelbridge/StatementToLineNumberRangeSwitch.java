@@ -121,6 +121,9 @@ public class StatementToLineNumberRangeSwitch extends
 				break;
 			}
 		}
+		if (object.getStatements().size() == 0) {
+			firstLine = lastLine = object.getPosition().getStartLine();
+		}
 		return generateLNR(firstLine, lastLine, object);
 	}
 	
@@ -182,7 +185,7 @@ public class StatementToLineNumberRangeSwitch extends
 			return range;
 		} else {
 			LineNumberRange range = new LineNumberRange(firstLine, lastLine);
-			logger.log(Level.FINER, "Statement(" + object + ") cannot be mapped to Bytecode instructions. Identified lines were from " + firstLine + " to " + lastLine + " (-1 means could not be found).");
+			logger.log(Level.WARNING, "Statement(" + object + ") cannot be mapped to Bytecode instructions. Identified lines were from " + firstLine + " to " + lastLine + " (-1 means could not be found).");
 			return range;
 		}
 	}

@@ -11,6 +11,7 @@ import java.util.logging.Logger;
 
 import org.eclipse.emf.ecore.EObject;
 
+import de.fzi.gast.core.Position;
 import de.fzi.gast.core.Root;
 import de.fzi.gast.core.corePackage;
 import de.fzi.gast.functions.Method;
@@ -176,6 +177,28 @@ public class EntityToInstrumentToByCounterSwitch extends InputSwitch<Boolean> {
 					+ area + ") could not be mapped to a LineNumberRange.");
 		} else {
 			lastLine = tempRange.lastLine;
+		}
+		if (firstLine < 0) {
+			StringBuilder result = new StringBuilder("The provided starting line number was smaller than zero for an InstrumentedCodeArea.");
+			result.append("The firstLine is: " + firstLine+ ". ");
+			result.append("The position is: ");
+			Position pos = (Position) area.getFrom().getPosition();
+			if (pos.getSourceFile() != null) {
+				result.append(pos.getSourceFile().getSimpleName() + ": ");
+			}
+			result.append("(" + pos.getStartLine() +":" + pos.getStartColumn() + " - " + pos.getEndLine() + ":" + pos.getEndColumn() + ")" + ": " + area.getFrom().eClass().getName());
+			throw new IllegalArgumentException(result.toString());
+		}
+		if (lastLine < 0) {
+			StringBuilder result = new StringBuilder("The provided ending line number was smaller than zero for an InstrumentedCodeArea.");
+			result.append("The lastLine is: " + lastLine + ". ");
+			result.append("The position is: ");
+			Position pos = (Position) area.getTo().getPosition();
+			if (pos.getSourceFile() != null) {
+				result.append(pos.getSourceFile().getSimpleName() + ": ");
+			}
+			result.append("(" + pos.getStartLine() +":" + pos.getStartColumn() + " - " + pos.getEndLine() + ":" + pos.getEndColumn() + ")" + ": " + area.getTo().eClass().getName());
+			throw new IllegalArgumentException(result.toString());
 		}
 		LineNumberRange newRange = new LineNumberRange(firstLine,
 					lastLine);
