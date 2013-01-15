@@ -697,6 +697,24 @@ public final class MethodDescriptor implements Comparable<MethodDescriptor>, Ser
 	}
 
 	/**
+	 * Only checks for equaling method name and descriptor.
+	 * @see #equals(Object) for a more complete comparison.
+	 */
+	public boolean equalsIgnoreClass(Object obj) {
+		if (obj instanceof MethodDescriptor) {
+			MethodDescriptor other = (MethodDescriptor) obj;
+			if (this.simpleMethodName.equals(other.simpleMethodName)
+					&& this.descriptor.equals(other.descriptor)) {
+				return true;
+			} else {
+				return false;
+			}
+		} else {
+			return super.equals(obj);
+		}
+	}
+
+	/**
 	 * @return The canonical name of the class declaring the method.
 	 */
 	public String getCanonicalClassName() {

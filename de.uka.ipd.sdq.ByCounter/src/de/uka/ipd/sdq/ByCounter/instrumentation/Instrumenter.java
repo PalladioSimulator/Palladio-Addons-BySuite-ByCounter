@@ -327,14 +327,7 @@ public final class Instrumenter {
 		
 		// run the classes through the instrumentation process
 		this.classReader.accept(mcca, ClassReader.EXPAND_FRAMES);
-		
-		System.gc();
-		try {
-			Thread.sleep(500);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		
+				
 		// do a validity check on the resulting class
 		if(DebugOptions.useCheckClassAdapter) {
 			CheckClassAdapter.verify(new ClassReader(this.classWriter.toByteArray()), 
@@ -371,10 +364,6 @@ public final class Instrumenter {
 				}
 				if(mcca.methodInstrumentationStatus[i] == false) {
 					//TODO Martin: look in super-classes
-					String message = "FAILURE, Method not found (check whether " +
-							"object-typed parameters are given fully, i.e. including package name!):\n"+ 
-							this.instrumentationState.getMethodsToInstrumentCalculated().get(i).toString_Linebreaks();
-					this.log.severe(message);
 					
 					//TODO MK solution 1: parse superclasses (solution 2: find all classes in dir, parse them --> see project MethodByteSizer)
 					try {
@@ -395,27 +384,37 @@ public final class Instrumenter {
 								topClassReached = true;
 								break;
 							}
-							Method[] declaredMethods = currentSuperClass.getSuperclass().getDeclaredMethods();
-							for(Method declMethod : declaredMethods){
-//								if(declMethod.get)
+							Method[] declaredMethods = currentSuperClass.getDeclaredMethods();
+							for(Method declMethod : declaredMethods) {
 								superClassMd = new MethodDescriptor(declMethod);
-								boolean compRes = superClassMd.equals(md);
+								// the super classes method descriptor references the super class so we need to ignore the class and package for the comparison
+								boolean compRes = superClassMd.equalsIgnoreClass(md);
 								if(compRes){
 									log.info("Found method implementation for "+md+
 											"in superclass: "+superClassMd);
 									methodDeclaringSuperClassFound = true;
+									mcca.methodInstrumentationStatus[i] = true;
+									break;
+									// TODO: NOW that the method is found, instrument!
 								}else{
 									log.info("\n"+md+" \n"+"not a submethod of \n"+superClassMd);
 								}
 							}
 						}
+						// have we still not found the method?
+						if(!methodDeclaringSuperClassFound) {
+							String message = "FAILURE, Method not found (check whether " +
+									"object-typed parameters are given fully, i.e. including package name!):\n"+ 
+									this.instrumentationState.getMethodsToInstrumentCalculated().get(i).toString_Linebreaks();
+							this.log.severe(message);
+							retValue = false;
+							throw new RuntimeException(message);
+						}
+
 					} catch (ClassNotFoundException e) {
 						log.severe("Could not find class.");
 						throw new RuntimeException(e);
 					}
-					//javax.swing.JOptionPane.showMessageDialog(null, message);
-					retValue = false;
-					throw new RuntimeException(message);
 				}else{
 					String message = "SUCCESS with instrumenting \n"+
 					this.instrumentationState.getMethodsToInstrumentCalculated().get(i).toString_Linebreaks();
