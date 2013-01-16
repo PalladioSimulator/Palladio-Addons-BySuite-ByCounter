@@ -117,10 +117,6 @@ public class TypeMapping {
 				for (GASTClass clazz : pkg.getClasses()) {
 					// find Class
 					if (clazz.getQualifiedName().equals(fqcn)) {
-						// TODO @Martin: Check which native classes need special handling 
-						if (fqcn.startsWith("java.lang")) {
-							return null;
-						}
 						// find and return Method/Constructor
 						for (Constructor constructor : clazz.getConstructors()) {
 							if (methodDesc.getSimpleMethodName().equals(constructor.getSimpleName())) {
