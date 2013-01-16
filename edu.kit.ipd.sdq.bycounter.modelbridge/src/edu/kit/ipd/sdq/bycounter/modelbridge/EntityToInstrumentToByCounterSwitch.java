@@ -13,7 +13,6 @@ import org.eclipse.emf.ecore.EObject;
 
 import de.fzi.gast.core.Position;
 import de.fzi.gast.core.Root;
-import de.fzi.gast.core.corePackage;
 import de.fzi.gast.functions.Method;
 import de.fzi.gast.statements.BlockStatement;
 import de.fzi.gast.statements.Statement;
@@ -82,6 +81,8 @@ public class EntityToInstrumentToByCounterSwitch extends InputSwitch<Boolean> {
 		methodNameInstrumentedMethodMap.put(
 				methodDesc.getCanonicalMethodName(), instrumentedMethod);
 		this.entitiesToInstrumentMap.put(bcInstrumentedMethod.getId(), instrumentedMethod);
+		logger.info("Instrumented method " + bcInstrumentedMethod.getMethod().getCanonicalMethodName() 
+				+ " with id " + bcInstrumentedMethod.getId() + ".");
 		return true;
 	}
 
@@ -94,8 +95,11 @@ public class EntityToInstrumentToByCounterSwitch extends InputSwitch<Boolean> {
 						startMethod, instrumentedRegion.getStartLine(), 
 						stopMethod, instrumentedRegion.getStopLine());
 		this.entitiesToInstrument.add(bcInstrumentedRegion);
-		// TODO Auto-generated method stub
-		return super.caseInstrumentedRegion(instrumentedRegion);
+		logger.info("Instrumented region from " + bcInstrumentedRegion.getStartMethod().getCanonicalMethodName() + ":" + bcInstrumentedRegion.getStartLine() 
+				+ " to " + bcInstrumentedRegion.getStopMethod().getCanonicalMethodName() + ":" + bcInstrumentedRegion.getStopLine() 
+				+ " with id " + bcInstrumentedRegion.getId() + ".");
+		// TODO Test implementation
+		return true;
 	}
 	
 	@Override
@@ -133,9 +137,9 @@ public class EntityToInstrumentToByCounterSwitch extends InputSwitch<Boolean> {
 		LineNumberRange newRange = instrumentedCodeAreaToLineNumberRange(area); 
 		de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentedCodeArea bcCodeArea = 
 				new de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentedCodeArea(methodDesc, newRange);
-		logger.info("Range from " + newRange.firstLine + " to " + newRange.lastLine + " with id " + bcCodeArea.getId() + " added for method " + methodDesc.getCanonicalMethodName() + ".");
 		this.entitiesToInstrument.add(bcCodeArea);
 		this.entitiesToInstrumentMap.put(bcCodeArea.getId(), area);
+		logger.info("Range from " + newRange.firstLine + " to " + newRange.lastLine + " with id " + bcCodeArea.getId() + " added for method " + methodDesc.getCanonicalMethodName() + ".");
 		return true;
 	}
 
