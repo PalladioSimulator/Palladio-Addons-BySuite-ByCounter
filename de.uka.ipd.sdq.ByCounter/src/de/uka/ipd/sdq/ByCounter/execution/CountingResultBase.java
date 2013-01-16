@@ -18,6 +18,7 @@ import java.util.logging.Logger;
 
 import de.uka.ipd.sdq.ByCounter.parsing.ArrayCreation;
 import de.uka.ipd.sdq.ByCounter.reporting.ICountingResultWriter;
+import de.uka.ipd.sdq.ByCounter.utils.ASMOpcodesMapper;
 import de.uka.ipd.sdq.ByCounter.utils.FullOpcodeMapper;
 import de.uka.ipd.sdq.ByCounter.utils.IAllJavaOpcodes;
 
@@ -1186,7 +1187,7 @@ implements Serializable, Cloneable, IFullCountingResult, Comparable<IFullCountin
 		sb.append("      > Method name     : "+this.qualifiedMethodName+ " (Own UUID: " + this.methodExecutionID + ", threadId: " + this.threadId + ")\n");
 		sb.append("      > Method duration : "+(this.reportingTime-this.methodInvocationBeginning)+
 				"(start: "+this.methodInvocationBeginning+", end: "+this.reportingTime+")\n");
-		sb.append("      > Opcode counts   : "+Arrays.toString(this.opcodeCounts)+"\n");
+		sb.append("      > Opcode counts   : "); appendOpcodeCounts(sb, this.opcodeCounts); sb.append("\n");
 		sb.append("      > Method counts   : "+this.methodCallCounts+"\n");
 //		sb.append("      > Method input    : "+this.inputParams+"\n");
 //		sb.append("      > Method output   : "+this.outputParams+"\n");
@@ -1196,6 +1197,15 @@ implements Serializable, Cloneable, IFullCountingResult, Comparable<IFullCountin
 //		sb.append("      > Sect. opc. cnts : "+this.sectionInstCounts+"\n");
 //		sb.append("      > Sect. meth. cnts: "+this.sectionMethCounts+"\n");
 		return sb.toString();
+	}
+	
+	private void appendOpcodeCounts(StringBuffer sb, long[] counts) {
+		for (int i = 0; i < counts.length; i++) {
+			if (counts[i] > 0) {
+				sb.append(counts[i] + "x " + ASMOpcodesMapper.getInstance().getOpcodeString(i) + ", ");
+			}
+		}
+		sb.delete(sb.length()-2, sb.length()-1);
 	}
 	
 	/**
