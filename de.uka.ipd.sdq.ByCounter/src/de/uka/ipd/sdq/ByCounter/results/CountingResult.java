@@ -342,6 +342,7 @@ public class CountingResult extends CountingResultBase implements Cloneable {
 		sb.append("      > isFinal         : " + this.isFinal + "\n");
 		sb.append("      > observedEntity  : " + this.observedElement.getId() + "\n");
 		sb.append("      > hasParent       : " + (this.resultCollection!=null || this.requestResult!=null) + "\n");
+		sb.append("      > hasThreadParent : " + this.threadedCountingResultSource != null + "\n");
 		return sb.toString();
 	}
 }
