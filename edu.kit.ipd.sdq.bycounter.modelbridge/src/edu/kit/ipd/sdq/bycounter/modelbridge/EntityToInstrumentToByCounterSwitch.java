@@ -131,10 +131,9 @@ public class EntityToInstrumentToByCounterSwitch extends InputSwitch<Boolean> {
 				mid.signature);
 		// add a new range for the instrumented code area
 		LineNumberRange newRange = instrumentedCodeAreaToLineNumberRange(area); 
-		logger.info("Range from " + newRange.firstLine + " to " + newRange.lastLine + " added for method " + methodDesc.getCanonicalMethodName() + ".");
-		// 
 		de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentedCodeArea bcCodeArea = 
 				new de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentedCodeArea(methodDesc, newRange);
+		logger.info("Range from " + newRange.firstLine + " to " + newRange.lastLine + " with id " + bcCodeArea.getId() + " added for method " + methodDesc.getCanonicalMethodName() + ".");
 		this.entitiesToInstrument.add(bcCodeArea);
 		this.entitiesToInstrumentMap.put(bcCodeArea.getId(), area);
 		return true;
