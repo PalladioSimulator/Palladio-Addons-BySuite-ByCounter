@@ -14,7 +14,6 @@ import org.eclipse.emf.ecore.EObject;
 import de.fzi.gast.core.Position;
 import de.fzi.gast.core.Root;
 import de.fzi.gast.functions.Method;
-import de.fzi.gast.statements.BlockStatement;
 import de.fzi.gast.statements.Statement;
 import de.uka.ipd.sdq.ByCounter.parsing.LineNumberRange;
 import de.uka.ipd.sdq.ByCounter.utils.MethodDescriptor;
@@ -214,20 +213,15 @@ public class EntityToInstrumentToByCounterSwitch extends InputSwitch<Boolean> {
 	 */
 	private Method getSourroundingMethod(Statement statement) {
 		assert(statement != null);
-		while (statement.getSurroundingStatement() != null) {
-			statement = statement.getSurroundingStatement();
-			if (statement.getBranch() != null) {
-				statement = statement.getBranch().getBranchstatement();
-			}
+		EObject eObject = statement;
+		while (eObject.eContainer() != null && !( eObject.eContainer() instanceof Method) ) {
+			eObject = eObject.eContainer();
 		}
-//		while (statement.eClass().getClassifierID() != statementsPackage.BLOCK_STATEMENT && statement != null) {
-//			statement = statement.getSurroundingStatement();
-//		}
-		if (statement == null) {
+		if (eObject.eContainer() instanceof Method) {
+			return (Method) eObject.eContainer();
+		} else {
 			throw new IllegalArgumentException("No sourrounding method could be found for the provided statement.");
 		}
-		Method surroundingMethod = (Method)((BlockStatement) statement).getSurroundingFunction();
-		return surroundingMethod;
 	}
 
 	/**Search for the Root node which contains a GAST element. Add this node to
