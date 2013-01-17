@@ -327,7 +327,15 @@ public final class Instrumenter {
 		
 		// run the classes through the instrumentation process
 		this.classReader.accept(mcca, ClassReader.EXPAND_FRAMES);
-				
+		
+		// FIXME: Find out why this delay is necessary.
+		System.gc();
+		try {
+			Thread.sleep(500);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		
 		// do a validity check on the resulting class
 		if(DebugOptions.useCheckClassAdapter) {
 			CheckClassAdapter.verify(new ClassReader(this.classWriter.toByteArray()), 

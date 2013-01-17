@@ -121,7 +121,7 @@ public class CountingResultThreadIndexing {
 				// copy from complete result
 				SortedSet<CountingResult> savedSpawns = resultStub.getSpawnedThreadedCountingResults();
 				CountingResult savedSource = resultStub.getThreadedCountingResultSource();
-				resultStub.set(res);	// use res instead of result because result == resultStaub!
+				resultStub.set(res);	// use res instead of result because result == resultStub!
 				resultStub.setSpawnedThreadedCountingResults(savedSpawns);
 				resultStub.setThreadedCountingResultSource(savedSource);
 			}

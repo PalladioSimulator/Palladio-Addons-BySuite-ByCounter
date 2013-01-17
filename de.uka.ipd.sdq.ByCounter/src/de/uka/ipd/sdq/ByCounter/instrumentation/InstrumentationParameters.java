@@ -45,7 +45,7 @@ public final class InstrumentationParameters implements Cloneable {
 
 	/** Default value for {@link #getUseBasicBlocks()}:
 	 * {@value #USE_BASIC_BLOCKS_DEFAULT} */
-	public static final boolean USE_BASIC_BLOCKS_DEFAULT = false;
+	public static final boolean USE_BASIC_BLOCKS_DEFAULT = true;
 
 	/** 
 	 * Default value for {@link #getRecordBlockExecutionOrder()}:

@@ -124,7 +124,7 @@ public class CollectionStrategyDefault extends AbstractCollectionStrategy {
 		// Is this an update?
 		if(!(result instanceof ProtocolCountUpdateStructure)) {
 			// This is not an update so all updates are done.
-			this.countingResultUpdateIndexing.setMethodDone(result.ownID);
+			this.countingResultUpdateIndexing.setMethodDone(Thread.currentThread().getId(), result.ownID);
 		} else if(result.blockExecutionSequence != null) {
 			// This is an update. Replace the block execution sequence with 
 			// the part of the sequence that is new since the last update.

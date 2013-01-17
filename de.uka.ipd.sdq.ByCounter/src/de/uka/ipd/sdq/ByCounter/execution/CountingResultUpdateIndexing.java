@@ -20,31 +20,86 @@ import de.uka.ipd.sdq.ByCounter.results.CountingResult;
  */
 public class CountingResultUpdateIndexing {
 	/**
-	 * The index of the section that was last added for the method.
+	 * This class groups all indexing information relevant to a single thread.
+	 * @author Martin Krogmann
 	 */
-	private Map<UUID, Integer> lastUpdatedSectionIndex;
-	
+	private class ThreadIndex {
+		/**
+		 * {@link MethodIndex} by method id.
+		 */
+		public Map<UUID, MethodIndex> methodIndexById;
+		/** The method for which the last update was provided. */
+		public UUID lastUpdatedMethod;
+		/** Id of the thread that this index is for. */
+		public long threadId;
+		
+		/**
+		 * @param threadId Id of the thread that this index is for.
+		 */
+		public ThreadIndex(final long threadId) {
+			this.threadId = threadId;
+			lastUpdatedMethod = null;
+			this.methodIndexById = new HashMap<UUID, CountingResultUpdateIndexing.MethodIndex>();
+		}
+
+		@Override
+		public String toString() {
+			return "ThreadIndex [methodIndexById=" + this.methodIndexById
+					+ ", lastUpdatedMethod=" + this.lastUpdatedMethod
+					+ ", threadId=" + this.threadId + "]";
+		}
+	}
 	/**
-	 * Map that holds counting results by method execution id.
+	 * This class groups all indexing information relevant to a single method.
+	 * @author Martin Krogmann
 	 */
-	private Map<UUID, Queue<CountingResult>> sectionUpdatesByMethod;
-	
-	/** The method for which the last update was provided. */
-	private UUID lastUpdatedMethod;
-	
-	/** The last basic block execution sequence of a result. */
-	private Map<UUID, List<Integer>> lastBlockExecutionSequenceByMethod;
+	private class MethodIndex {
+		/**
+		 * The index of the section that was last added for the method.
+		 */
+		public int lastUpdatedSectionIndex;
+		/**
+		 * Queue that holds counting results.
+		 */
+		public Queue<CountingResult> sectionUpdates;
+
+		/** The last basic block execution sequence of a result. */
+		public List<Integer> lastBlockExecutionSequence;
+		
+		/** Id of the method that this index is for. */
+		public UUID methodId;
+
+		/**
+		 * @param methodId Id of the method that this index is for.
+		 */
+		public MethodIndex(final UUID methodId) {
+			this.methodId = methodId;
+			this.sectionUpdates = new LinkedList<CountingResult>(); 
+			this.lastBlockExecutionSequence = null;
+			this.lastUpdatedSectionIndex = -1;
+		}
+
+		@Override
+		public String toString() {
+			return "MethodIndex [lastUpdatedSectionIndex="
+					+ this.lastUpdatedSectionIndex + ", sectionUpdates="
+					+ this.sectionUpdates + ", lastBlockExecutionSequence="
+					+ this.lastBlockExecutionSequence + ", methodId="
+					+ this.methodId + "]";
+		}
+	}
+
+	/**
+	 * Map that holds a {@link ThreadIndex} for each thread by thread id.
+	 */
+	private Map<Long, ThreadIndex> indexForThread;
 	
 	/**
 	 * Construct the indexing structure.
 	 */
 	public CountingResultUpdateIndexing() {
-		lastUpdatedSectionIndex = new HashMap<UUID, Integer>();
-		sectionUpdatesByMethod = new HashMap<UUID, Queue<CountingResult>>();
-		lastUpdatedMethod = null;
-		lastBlockExecutionSequenceByMethod = new HashMap<UUID, List<Integer>>();
+		this.indexForThread = new HashMap<Long, CountingResultUpdateIndexing.ThreadIndex>();
 	}
-
 
 	/**
 	 * This handles updates reported for individual section when online 
@@ -53,23 +108,28 @@ public class CountingResultUpdateIndexing {
 	 * @param blockExecutionSequence Basic block execution sequence used to 
 	 * see if consecutive results contain new information.
 	 */
-	public void add(CountingResult result, List<Integer> blockExecutionSequence) {
+	public void add(CountingResult result, final List<Integer> blockExecutionSequence) {
+		long currentThreadId = result.getThreadId();
+		ThreadIndex currentThreadIndex = this.indexForThread.get(currentThreadId);
+		if(currentThreadIndex == null) {
+			currentThreadIndex = new ThreadIndex(currentThreadId);
+			this.indexForThread.put(currentThreadId, currentThreadIndex);
+		}
 		final UUID methodID = result.getMethodExecutionID();
-		if(lastUpdatedMethod != null && !methodID.equals(lastUpdatedMethod)) {
+		if(currentThreadIndex.lastUpdatedMethod != null && !methodID.equals(currentThreadIndex.lastUpdatedMethod)) {
 			// we entered a new method
 			// provide an update for the previous method
-			setMethodDone(lastUpdatedMethod);
+			setMethodDone(currentThreadId, currentThreadIndex.lastUpdatedMethod);
 		}
-		
-		Queue<CountingResult> resultQueue = sectionUpdatesByMethod.get(methodID);
-		if(resultQueue == null) {
+
+		MethodIndex currentMethodIndex = currentThreadIndex.methodIndexById.get(methodID);
+		if(currentMethodIndex == null) {
 			// no entry for this method yet
-			resultQueue = new LinkedList<CountingResult>();
-			sectionUpdatesByMethod.put(methodID, resultQueue);
-			// initialise last section index
-			lastUpdatedSectionIndex.put(methodID, -1);
+			currentMethodIndex = new MethodIndex(methodID);
+			currentThreadIndex.methodIndexById.put(methodID, currentMethodIndex);
 		}
-		Integer luSectionIndex = lastUpdatedSectionIndex.get(methodID);
+		Queue<CountingResult> resultQueue = currentMethodIndex.sectionUpdates;
+		Integer luSectionIndex = currentMethodIndex.lastUpdatedSectionIndex;
 		
 		if(luSectionIndex >= 0 
 				&& luSectionIndex != result.getIndexOfRangeBlock()) {
@@ -77,24 +137,24 @@ public class CountingResultUpdateIndexing {
 			updateObserversWithSection(resultQueue);
 		}
 		
-		if(lastBlockExecutionSequenceByMethod.get(methodID) == null
+		if(currentMethodIndex.lastBlockExecutionSequence == null
 				|| blockExecutionSequence != null
-				&& !lastBlockExecutionSequenceByMethod.get(methodID).equals(blockExecutionSequence)) {
+				&& !currentMethodIndex.lastBlockExecutionSequence.equals(blockExecutionSequence)) {
 			// This is new information, so add it to the queue
 			resultQueue.add(result);
 		}
 
 		// update last section index for the method
-		lastUpdatedMethod = methodID;
-		lastUpdatedSectionIndex.put(methodID, result.getIndexOfRangeBlock());
-		lastBlockExecutionSequenceByMethod.put(methodID, new ArrayList<Integer>(blockExecutionSequence));
+		currentThreadIndex.lastUpdatedMethod = methodID;
+		currentMethodIndex.lastUpdatedSectionIndex = result.getIndexOfRangeBlock();
+		currentMethodIndex.lastBlockExecutionSequence = new ArrayList<Integer>(blockExecutionSequence);
 	}
 
 
 	/**
 	 * Add up all results for the finished section and send an update.
 	 * The results for the section are removed by this method.
-	 * @param resultQueue Result queue with the partial results for the section.
+	 * @param resultQueue Result queue with the partial results for the section. This queue will be cleared with the update.
 	 */
 	private static void updateObserversWithSection(Queue<CountingResult> resultQueue) {
 		CountingResult resultSumForSection = resultQueue.remove();
@@ -114,21 +174,24 @@ public class CountingResultUpdateIndexing {
 	 * Clears all results in the structure.
 	 */
 	public void clearResults() {
-		this.lastUpdatedSectionIndex.clear();
-		this.sectionUpdatesByMethod.clear();
-		this.lastUpdatedMethod = null;
+		this.indexForThread.clear();
 	}
 
 	/**
 	 * Signal that no further updates for the method are to be expected.
+	 * @param threadID {@link Thread#getId()} of the thread the method executed in.
 	 * @param methodID {@link UUID} of the method in question.
 	 */
-	public void setMethodDone(UUID methodID) {
-		Queue<CountingResult> resultQueue = this.sectionUpdatesByMethod.get(methodID);
+	public void setMethodDone(final long threadID, final UUID methodID) {
+		MethodIndex methodIndex = this.indexForThread.get(threadID).methodIndexById.get(methodID);
+		if(methodIndex == null) {
+			return;
+		}
+		Queue<CountingResult> resultQueue = methodIndex.sectionUpdates;
 		if(resultQueue == null) {
 			return;
 		}
 		updateObserversWithSection(resultQueue);
-		this.sectionUpdatesByMethod.remove(lastUpdatedMethod);
+		methodIndex.sectionUpdates.clear();
 	}
 }
