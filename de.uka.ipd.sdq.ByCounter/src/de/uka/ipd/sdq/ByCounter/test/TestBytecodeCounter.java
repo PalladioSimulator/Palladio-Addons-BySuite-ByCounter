@@ -219,6 +219,7 @@ public class TestBytecodeCounter extends AbstractByCounterTest {
 		
 		// set the file name for the result log
 		counter.getInstrumentationParams().enableResultLogWriter(resultLogFileName);
+		counter.getInstrumentationParams().setUseBasicBlocks(false);
 		counter.getInstrumentationParams().setUseArrayParameterRecording(true);
 		Assert.assertEquals(resultLogFileName, counter.getInstrumentationParams().getResultLogFileName());
 

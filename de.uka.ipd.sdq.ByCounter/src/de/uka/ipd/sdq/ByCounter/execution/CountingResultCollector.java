@@ -387,6 +387,10 @@ public final class CountingResultCollector extends Observable {
 	 */
 	public void setLastMethodExecutionDetails(MethodExecutionRecord lastMethodExecutionDetails) {
 		this.lastMethodExecutionDetails = lastMethodExecutionDetails;
+		log.info("Resetting result collection strategies.");
+		for(ICollectionStrategy cs : this.collectionStrategies) {
+			cs.clearResults();
+		}
 		// set the counting mode
 		this.mode = lastMethodExecutionDetails.executionSettings.getCountingResultCollectorMode();
 	}

@@ -76,6 +76,7 @@ public class TestASMBytecodes extends AbstractByCounterTest {
 	@Test
 	public void testArrayOpcodes() {
 		// make sure array parameters get recorded:
+		this.counter.getInstrumentationParams().setUseBasicBlocks(false);
 		this.counter.getInstrumentationParams().setUseArrayParameterRecording(true);
 		CountingResult r = Utils.getCountingResultForTest(this.counter,
 				new MethodDescriptor(testClassName, "public static void arrayInstructions()"));

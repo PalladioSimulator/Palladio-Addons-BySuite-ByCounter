@@ -157,6 +157,9 @@ public class CountingResultUpdateIndexing {
 	 * @param resultQueue Result queue with the partial results for the section. This queue will be cleared with the update.
 	 */
 	private static void updateObserversWithSection(Queue<CountingResult> resultQueue) {
+		if(resultQueue == null || resultQueue.isEmpty()) {
+			throw new RuntimeException("Cannot update observers when result queue is empty.");
+		}
 		CountingResult resultSumForSection = resultQueue.remove();
 		for(CountingResult r : resultQueue) {
 			resultSumForSection.add(r);
@@ -183,7 +186,11 @@ public class CountingResultUpdateIndexing {
 	 * @param methodID {@link UUID} of the method in question.
 	 */
 	public void setMethodDone(final long threadID, final UUID methodID) {
-		MethodIndex methodIndex = this.indexForThread.get(threadID).methodIndexById.get(methodID);
+		ThreadIndex threadIndex = this.indexForThread.get(threadID);
+		if(threadIndex == null) {
+			return;
+		}
+		MethodIndex methodIndex = threadIndex.methodIndexById.get(methodID);
 		if(methodIndex == null) {
 			return;
 		}

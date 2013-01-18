@@ -205,7 +205,7 @@ public class Expectation {
 			SectionExpectation sectExpt;
 			if (this.ordered) {
 				sectExpt = this.orderedSections.get(i);
-				message = sectExpt.toString() + " not expected. Maybe wrong order.";
+				message = sectExpt.toString() + " not expected (Wrong section number). Maybe wrong order.";
 				Assert.assertEquals(message, sectExpt.getSectionNumber(), observation[i].getIndexOfRangeBlock());
 				if(sectExpt.getRange() != null) {
 					EntityToInstrument observedElement = observation[i].getObservedElement();
