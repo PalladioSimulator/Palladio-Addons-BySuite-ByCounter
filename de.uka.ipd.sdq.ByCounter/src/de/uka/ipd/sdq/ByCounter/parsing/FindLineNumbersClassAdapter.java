@@ -1,4 +1,4 @@
-package de.uka.ipd.sdq.ByCounter.instrumentation;
+package de.uka.ipd.sdq.ByCounter.parsing;
 
 import java.util.HashMap;
 import java.util.List;
@@ -10,6 +10,13 @@ import org.objectweb.asm.MethodVisitor;
 
 import de.uka.ipd.sdq.ByCounter.utils.MethodDescriptor;
 
+/**
+ * {@link ClassAdapter} that reads a class and executes 
+ * {@link FindLineNumbersMethodAdapter} for each method found.
+ * The resulting line numbers are available through 
+ * {@link #getLineNumbersPerMethod()}.
+ * @author Martin Krogmann
+ */
 public class FindLineNumbersClassAdapter extends ClassAdapter {
 
 	/**

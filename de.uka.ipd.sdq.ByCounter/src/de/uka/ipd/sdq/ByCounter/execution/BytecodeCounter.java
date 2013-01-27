@@ -19,7 +19,6 @@ import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
 
 import de.uka.ipd.sdq.ByCounter.instrumentation.EntityToInstrument;
-import de.uka.ipd.sdq.ByCounter.instrumentation.FindLineNumbersClassAdapter;
 import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentationContext;
 import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentationParameters;
 import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentationScopeModeEnum;
@@ -32,6 +31,7 @@ import de.uka.ipd.sdq.ByCounter.parsing.CallGraph;
 import de.uka.ipd.sdq.ByCounter.parsing.CallGraphClassAdapter;
 import de.uka.ipd.sdq.ByCounter.parsing.CallGraphMethod;
 import de.uka.ipd.sdq.ByCounter.parsing.ClassMethodImplementations;
+import de.uka.ipd.sdq.ByCounter.parsing.FindLineNumbersClassAdapter;
 import de.uka.ipd.sdq.ByCounter.parsing.FindMethodDefinitionsClassAdapter;
 import de.uka.ipd.sdq.ByCounter.parsing.InstructionBlockSerialisation;
 import de.uka.ipd.sdq.ByCounter.utils.InvocationResultData;
