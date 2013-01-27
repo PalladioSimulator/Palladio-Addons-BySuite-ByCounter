@@ -132,7 +132,7 @@ public final class CallGraphClassAdapter {
 		ClassNode cn = new ClassNode();		
 		ClassReader cr = currentCR;
 		
-		cr.accept(cn, 0);
+		cr.accept(cn, ClassReader.SKIP_DEBUG | ClassReader.SKIP_FRAMES);
 		
 		// go through all methods
 		Iterator<MethodNode> it = cn.methods.iterator();

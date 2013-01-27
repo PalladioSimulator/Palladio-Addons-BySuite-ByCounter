@@ -256,7 +256,10 @@ public final class RangeBlockAnalyser extends LabelBlockAnalyser {
 				exceptionText.append(lineNr + ";");
 			}
 			exceptionText.append(errorMessage);
-			IllegalArgumentException iae = new IllegalArgumentException(exceptionText.toString());
+			IllegalArgumentException iae = new LineNumberNotFoundException(
+					exceptionText.toString(),
+					this.lineNumbersNotYetFound,
+					this.lineNumberAnalyser.getFoundLineNumbers());
 			log.log(Level.SEVERE, "", iae);
 			throw iae; 
 		}

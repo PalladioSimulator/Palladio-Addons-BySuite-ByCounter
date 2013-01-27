@@ -855,11 +855,11 @@ public final class MethodCountClassAdapter extends ClassAdapter {
 	 */
 	@Override
 	public MethodVisitor visitMethod(
-			int access, 
-			String name, 
-			String desc, 
-			String signature, 
-			String[] exceptions) {
+			final int access, 
+			final String name, 
+			final String desc, 
+			final String signature, 
+			final String[] exceptions) {
 		MethodVisitor nextVisitor = null;
 		MethodVisitor mv = null;
 		

@@ -16,8 +16,10 @@ import java.util.Set;
 import java.util.logging.Logger;
 
 import org.objectweb.asm.ClassReader;
+import org.objectweb.asm.ClassWriter;
 
 import de.uka.ipd.sdq.ByCounter.instrumentation.EntityToInstrument;
+import de.uka.ipd.sdq.ByCounter.instrumentation.FindLineNumbersClassAdapter;
 import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentationContext;
 import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentationParameters;
 import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentationScopeModeEnum;
@@ -583,6 +585,20 @@ public final class BytecodeCounter {
 			}
 		} while(descent);
 		return true;
+	}
+	
+	/**
+	 * @param canonicalClassName
+	 * @return A map with lists of the line numbers for which there are labels in the 
+	 * visited method. There is one entry for each methods {@link MethodDescriptor#getCanonicalMethodName()}.
+	 * @throws IOException Thrown when the class cannot be read.
+	 */
+	public static Map<String, List<Integer>> findLineNumbersIn(final String canonicalClassName) throws IOException {
+		ClassReader cr = new ClassReader(canonicalClassName);
+		ClassWriter cw = new ClassWriter(cr, 0);
+		FindLineNumbersClassAdapter v = new FindLineNumbersClassAdapter(cw);
+		cr.accept(v, 0);
+		return v.getLineNumbersPerMethod();
 	}
 
 	/**
