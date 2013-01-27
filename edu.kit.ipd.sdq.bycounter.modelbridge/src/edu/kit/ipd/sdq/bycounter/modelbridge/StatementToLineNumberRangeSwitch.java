@@ -3,6 +3,7 @@
  */
 package edu.kit.ipd.sdq.bycounter.modelbridge;
 
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -30,6 +31,8 @@ public class StatementToLineNumberRangeSwitch extends
 	private static final Logger logger = Logger.getLogger(StatementToLineNumberRangeSwitch.class.getCanonicalName());
 	/** Indicator that a line number is not valid. Valid line numbers are > 0. */
 	private static final int NO_VALID_LINE = -1;
+	/** Line numbers that exist in the current method.*/
+	private List<Integer> methodLineNumbers = null;
 
 	@Override
 	public LineNumberRange caseSimpleStatement(SimpleStatement object) {
@@ -57,6 +60,10 @@ public class StatementToLineNumberRangeSwitch extends
 					firstLine = object.getPosition().getStartLine();
 				}
 			}
+		}
+		while (firstLine < object.getPosition().getEndLine() && !methodLineNumbers.contains(firstLine)) {
+			// try to adjust the line number until a line exists in bytecode
+			firstLine++;
 		}
 		// determine last line
 		if (object.getIncrementExpression() != null) {
@@ -188,5 +195,12 @@ public class StatementToLineNumberRangeSwitch extends
 			logger.log(Level.WARNING, "Statement(" + object + ") cannot be mapped to Bytecode instructions. Identified lines were from " + firstLine + " to " + lastLine + " (-1 means could not be found).");
 			return range;
 		}
+	}
+
+	/**
+	 * @param methodLineNumbers Line numbers that exist in the current method.
+	 */
+	public void setMethodLineNumbers(final List<Integer> methodLineNumbers) {
+		this.methodLineNumbers = methodLineNumbers;
 	}
 }

@@ -3,6 +3,8 @@
  */
 package edu.kit.ipd.sdq.bycounter.modelbridge;
 
+import java.io.IOException;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -15,6 +17,7 @@ import de.fzi.gast.core.Position;
 import de.fzi.gast.core.Root;
 import de.fzi.gast.functions.Method;
 import de.fzi.gast.statements.Statement;
+import de.uka.ipd.sdq.ByCounter.execution.BytecodeCounter;
 import de.uka.ipd.sdq.ByCounter.parsing.LineNumberRange;
 import de.uka.ipd.sdq.ByCounter.utils.MethodDescriptor;
 import edu.kit.ipd.sdq.bycounter.input.EntityToInstrument;
@@ -39,6 +42,8 @@ public class EntityToInstrumentToByCounterSwitch extends InputSwitch<Boolean> {
 	private static final StatementToLineNumberRangeSwitch statementToLineNumberRangeSwitch = new StatementToLineNumberRangeSwitch();
 	/**  List of available GAST Root Nodes. */
 	private final LinkedList<Root> availableGastRootNodes;
+	/** Line numbers found in the bytecode by canonical class name, then by canonical method name. */
+	private final Map<String, Map<String, List<Integer>>> lineNumbersInBytecode;
 
 	/**
 	 * Maps from {@link de.uka.ipd.sdq.ByCounter.instrumentation.EntityToInstrument#getId()}
@@ -67,6 +72,7 @@ public class EntityToInstrumentToByCounterSwitch extends InputSwitch<Boolean> {
 		this.entitiesToInstrumentMap = entityToInstrumentMap;
 		this.methodNameInstrumentedMethodMap = methodNameInstrumentedMethodMap;
 		this.availableGastRootNodes = availableGastRootNodes;
+		this.lineNumbersInBytecode = new HashMap<String, Map<String,List<Integer>>>();
 	}
 	
 	@Override
@@ -132,8 +138,19 @@ public class EntityToInstrumentToByCounterSwitch extends InputSwitch<Boolean> {
 		MethodDescriptor methodDesc = new MethodDescriptor(
 				mid.fqMethodName,
 				mid.signature);
+		// create list of lines that exist in bytecode
+		Map<String, List<Integer>> lnsInClass = lineNumbersInBytecode.get(methodDesc.getCanonicalClassName());
+		if(lineNumbersInBytecode.get(methodDesc.getCanonicalClassName()) == null) {
+			try {
+				lnsInClass = BytecodeCounter.findLineNumbersIn(methodDesc.getCanonicalClassName());
+			} catch (IOException e) {
+				throw new RuntimeException("Could not read class " + methodDesc.getCanonicalClassName() + " for finding line numbers.", e);
+			}
+			lineNumbersInBytecode.put(methodDesc.getCanonicalClassName(), lnsInClass);
+		}
+		List<Integer> methodLineNumbers = lnsInClass.get(methodDesc.getCanonicalMethodName());
 		// add a new range for the instrumented code area
-		LineNumberRange newRange = instrumentedCodeAreaToLineNumberRange(area); 
+		LineNumberRange newRange = instrumentedCodeAreaToLineNumberRange(area, methodLineNumbers);
 		de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentedCodeArea bcCodeArea = 
 				new de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentedCodeArea(methodDesc, newRange);
 		this.entitiesToInstrument.add(bcCodeArea);
@@ -155,13 +172,15 @@ public class EntityToInstrumentToByCounterSwitch extends InputSwitch<Boolean> {
 
 	/**Generates a {@link LineNumberRange} corresponding to the given {@link InstrumentedCodeArea}.
 	 * @param area The code area.
+	 * @param methodLineNumbers Line numbers that exist in the code areas method.
 	 * @return The corresponding range.
 	 */
 	private LineNumberRange instrumentedCodeAreaToLineNumberRange(
-			InstrumentedCodeArea area) {
+			final InstrumentedCodeArea area, final List<Integer> methodLineNumbers) {
 		int firstLine;
 		int lastLine;
 		LineNumberRange tempRange;
+		statementToLineNumberRangeSwitch.setMethodLineNumbers(methodLineNumbers);
 		tempRange = statementToLineNumberRangeSwitch.doSwitch(area.getFrom());
 		if (tempRange == null) {
 			throw new IllegalArgumentException("The statement ("
@@ -202,8 +221,25 @@ public class EntityToInstrumentToByCounterSwitch extends InputSwitch<Boolean> {
 			result.append("(" + pos.getStartLine() +":" + pos.getStartColumn() + " - " + pos.getEndLine() + ":" + pos.getEndColumn() + ")" + ": " + area.getTo().eClass().getName());
 			throw new IllegalArgumentException(result.toString());
 		}
+		if(lastLine < firstLine) {
+			int tmp = firstLine;
+			firstLine = lastLine;
+			lastLine = tmp;
+		}
+
 		LineNumberRange newRange = new LineNumberRange(firstLine,
 					lastLine);
+		while (firstLine < lastLine && !methodLineNumbers.contains(newRange.firstLine)) {
+			// try to adjust the line number until a line exists in bytecode
+			firstLine++;
+		}
+		while (firstLine < lastLine && !methodLineNumbers.contains(newRange.lastLine)) {
+			// try to adjust the line number until a line exists in bytecode
+			lastLine--;
+		}
+		newRange.firstLine = firstLine;
+		newRange.lastLine = lastLine;
+
 		return newRange;
 	}
 

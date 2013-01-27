@@ -20,7 +20,9 @@ import org.eclipse.emf.common.util.EList;
 
 import de.fzi.gast.core.Root;
 import de.fzi.gast.functions.Method;
+import de.fzi.gast.types.GASTArray;
 import de.fzi.gast.types.GASTClass;
+import de.fzi.gast.types.GASTType;
 import de.fzi.gast.variables.FormalParameter;
 import de.uka.ipd.sdq.ByCounter.execution.BytecodeCounter;
 import de.uka.ipd.sdq.ByCounter.execution.CountingResultCollector;
@@ -306,7 +308,13 @@ public class ByCounterWrapper {
 	 */
 	public static String constructSignature(Method method) {
 		StringBuilder b = new StringBuilder();
-		b.append(method.getReturnTypeDeclaration().getTargetType().getQualifiedName());
+		GASTType targetType = method.getReturnTypeDeclaration().getTargetType();
+		if(targetType instanceof GASTArray) {
+			GASTArray ar = (GASTArray) targetType;
+			b.append(ar.getUndecoratedType().getQualifiedName()+"[]");
+		} else {
+			b.append(method.getReturnTypeDeclaration().getTargetType().getQualifiedName());
+		}
 		b.append(" ");
 		b.append(method.getSimpleName());
 		b.append("(");
