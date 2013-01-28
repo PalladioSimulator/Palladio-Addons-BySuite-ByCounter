@@ -138,6 +138,7 @@ public final class BytecodeCounter {
 		this.instrumentationState = new InstrumentationState();
 		this.successFullyInstrumentedMethods = new ArrayList<MethodDescriptor>();
 		this.classLoader = new InstrumentationClassLoader(null);
+		this.callGraph = new CallGraph();
 	}
 	
 	/**
@@ -433,7 +434,6 @@ public final class BytecodeCounter {
 			// iterate through all selected classes
 			CallGraphClassAdapter callGraphAdapter = new CallGraphClassAdapter(
 					this.instrumentationParameters.getIgnoredPackagePrefixes());
-			this.callGraph = new CallGraph();
 			for(String className : classesToInstrument) {
 				ClassReader cr;
 				if(this.classAsBytes) {

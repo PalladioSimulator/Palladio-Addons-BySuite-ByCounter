@@ -2,9 +2,11 @@ package de.uka.ipd.sdq.ByCounter.parsing;
 
 import java.io.IOException;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
@@ -32,6 +34,8 @@ public final class CallGraphClassAdapter {
 	private static Logger log = Logger.getLogger(CallGraphClassAdapter.class.getCanonicalName());
 	
 	private String[] ignoredPackagePrefixes;
+
+	private static Map<String, String[]> globalClassImplementationCache = new HashMap<String, String[]>();
 	
 	/**
 	 * Construct the adapter.
@@ -159,7 +163,7 @@ public final class CallGraphClassAdapter {
 					
 					if(insn.getOpcode() == Opcodes.INVOKEINTERFACE) {
 						// use a class finder tool to find all implementing classes
-						IImplementingClassesFinder finder = new ClapperImplementingClassesFinder();
+						IImplementingClassesFinder finder = new CachedImplementingClassesFinder(new ClapperImplementingClassesFinder(), globalClassImplementationCache);
 						try {
 							Class<?> interfaceClass = Class.forName(methodCall.owner.replace('/', '.'));
 							String[] foundClasses = finder.findImplementingClasses(interfaceClass);
