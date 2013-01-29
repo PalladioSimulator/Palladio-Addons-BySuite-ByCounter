@@ -129,7 +129,7 @@ public class CallsTest {
 		if (profileRepo.getInstrumentationProfile().size() != 1) {
 			throw new IllegalStateException("File contains more than one instrumentation profile. This is not expected by the test case.");
 		}
-		byCounterWrapper.setInstrumentationConfiguration(profileRepo.getInstrumentationProfile().get(0));
+		byCounterWrapper.setInstrumentationProfile(profileRepo.getInstrumentationProfile().get(0));
 		
 		// Execution
 		Method targetMethod = getFibonacciMethod();
@@ -165,7 +165,7 @@ public class CallsTest {
 		if (profileRepo.getInstrumentationProfile().size() != 1) {
 			throw new IllegalStateException("File contains more than one instrumentation profile. This is not expected by the test case.");
 		}
-		byCounterWrapper.setInstrumentationConfiguration(profileRepo.getInstrumentationProfile().get(0));
+		byCounterWrapper.setInstrumentationProfile(profileRepo.getInstrumentationProfile().get(0));
 		
 		// Execution
 		Method targetMethod = findMethodInCalls("methodInternalCall");
@@ -197,7 +197,7 @@ public class CallsTest {
 		if (profileRepo.getInstrumentationProfile().size() != 1) {
 			throw new IllegalStateException("File contains more than one instrumentation profile. This is not expected by the test case.");
 		}
-		byCounterWrapper.setInstrumentationConfiguration(profileRepo.getInstrumentationProfile().get(0));
+		byCounterWrapper.setInstrumentationProfile(profileRepo.getInstrumentationProfile().get(0));
 		
 		// Execution
 		Method targetMethod = getMethodExternalCall();
