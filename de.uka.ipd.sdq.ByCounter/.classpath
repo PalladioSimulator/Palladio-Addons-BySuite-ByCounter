@@ -18,10 +18,8 @@
 			<attribute name="javadoc_location" value="http://asm.ow2.org/asm33/javadoc/user/"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="lib/jfreechart-1.0.13-experimental.jar"/>
-	<classpathentry kind="lib" path="lib/jfreechart-1.0.13-swt.jar"/>
-	<classpathentry kind="lib" path="lib/jfreechart-1.0.13.jar"/>
 	<classpathentry kind="lib" path="lib/iText-2.1.7.jar"/>
 	<classpathentry kind="lib" path="lib/javautil-3.1.1.jar"/>
+	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
