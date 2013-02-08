@@ -230,7 +230,7 @@ public class TestThreads extends AbstractByCounterTest {
 
         // define expectations
         Expectation e = new Expectation(true);
-        e.add(createExpectationsRunThreads(0));
+        e.add(createExpectationsRunThreads(-1));
         
         // print ByCounter results
         CountingResult[] results = countingResults.toArray(new CountingResult[0]);

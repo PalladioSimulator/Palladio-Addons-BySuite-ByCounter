@@ -68,14 +68,17 @@ public class TestQueryUpdates extends AbstractByCounterTest {
 			this.classInstanceAvailable = lock.newCondition();
 			this.counter = setupQueryByCounter();
 		}
+		
+		public void instrument() {
+	        counter.addEntityToInstrument(this.entities);
+	        counter.instrument();
+		}
 
 		@Override
 		public void run() {
 			// initialize ByCounter
 			this.lock.lock();
 
-	        counter.addEntityToInstrument(this.entities);
-	        counter.instrument();
 	        MethodDescriptor methodToExecute = this.entities.get(0).getMethodsToInstrument()[0];
 			this.classInstance = counter.instantiate(methodToExecute);
 	        this.bClassInstanceAvailable = true;
@@ -147,7 +150,9 @@ public class TestQueryUpdates extends AbstractByCounterTest {
         Set<String> externalClasses = new HashSet<String>();
         externalClasses.add(StatefulRunnable.class.getCanonicalName());
 		iaem.counter.getInstrumentationParams().setExternalToClassLoaderClassesDefinition(externalClasses);
+		iaem.counter.getInstrumentationParams().setProvideOnlineSectionActiveUpdates(true);
         final Thread executeThread = new Thread(iaem);
+        iaem.instrument();
 
 		CountingResultCollector crc = CountingResultCollector.getInstance();
         Assert.assertNull("No section should be active before execution.", crc.queryActiveSection(executeThread.getId()));

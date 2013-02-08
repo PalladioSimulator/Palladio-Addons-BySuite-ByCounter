@@ -68,6 +68,9 @@ public class CountingResultUpdateIndexing {
 		
 		/** Id of the method that this index is for. */
 		public UUID methodId;
+		
+		/** Marker for when the method was left. */
+		public boolean isDone;
 
 		/**
 		 * @param methodId Id of the method that this index is for.
@@ -77,6 +80,7 @@ public class CountingResultUpdateIndexing {
 			this.sectionUpdates = new LinkedList<CountingResult>(); 
 			this.lastBlockExecutionSequence = null;
 			this.lastUpdatedSectionIndex = -1;
+			this.isDone = false;
 		}
 
 		@Override
@@ -131,7 +135,8 @@ public class CountingResultUpdateIndexing {
 		Queue<CountingResult> resultQueue = currentMethodIndex.sectionUpdates;
 		Integer luSectionIndex = currentMethodIndex.lastUpdatedSectionIndex;
 		
-		if(luSectionIndex >= 0 
+		if(!currentMethodIndex.isDone 
+				&& luSectionIndex >= 0 
 				&& luSectionIndex != result.getIndexOfRangeBlock()) {
 			// a new section is being executed
 			updateObserversWithSection(resultQueue);
@@ -141,6 +146,7 @@ public class CountingResultUpdateIndexing {
 				|| blockExecutionSequence != null
 				&& !currentMethodIndex.lastBlockExecutionSequence.equals(blockExecutionSequence)) {
 			// This is new information, so add it to the queue
+			currentMethodIndex.isDone = false;
 			resultQueue.add(result);
 		}
 
@@ -168,7 +174,6 @@ public class CountingResultUpdateIndexing {
 		CountingResultIndexing.removeInternalCalls(lastMethodExecutionDetails, resultSumForSection);
 		CountingResultSectionExecutionUpdate update = 
 				new CountingResultSectionExecutionUpdate(resultSumForSection);
-		resultQueue.clear();
 		CountingResultCollector.getInstance().setChanged();
 		CountingResultCollector.getInstance().notifyObservers(update);
 	}
@@ -194,11 +199,15 @@ public class CountingResultUpdateIndexing {
 		if(methodIndex == null) {
 			return;
 		}
+		if(methodIndex.isDone) {
+			return;
+		}
 		Queue<CountingResult> resultQueue = methodIndex.sectionUpdates;
 		if(resultQueue == null) {
 			return;
 		}
 		updateObserversWithSection(resultQueue);
-		methodIndex.sectionUpdates.clear();
+		// since the method was left, mark it as done
+		methodIndex.isDone = true;
 	}
 }

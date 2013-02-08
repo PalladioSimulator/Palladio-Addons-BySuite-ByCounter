@@ -12,8 +12,14 @@ import de.uka.ipd.sdq.ByCounter.results.CountingResult;
  */
 public class CountingResultRegionIndexing {
 	
+	/**
+	 * Index of results by {@link InstrumentedRegion}.
+	 */
 	Map<InstrumentedRegion, CountingResult> results;
 	
+	/**
+	 * Construct a new index.
+	 */
 	public CountingResultRegionIndexing() {
 		this.results = new HashMap<InstrumentedRegion, CountingResult>();
 	}

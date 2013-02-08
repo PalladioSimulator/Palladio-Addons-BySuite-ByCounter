@@ -75,24 +75,24 @@ public class CountingResultThreadIndexing {
 	/**
 	 * For each {@link CountingResult} a list of thread ids for spawned threads.
 	 */
-	Map<CountingResult, ArrayList<Long>> resultsSpawnedThreads;
+	private Map<CountingResult, ArrayList<Long>> resultsSpawnedThreads;
 	
 	/**
 	 * For a thread <i>t</i> with the key == id, this map contains the counting result for 
 	 * the thread that spawned <i>t</i> if such a result exists.
 	 */
-	Map<Long, CountingResult> spawningThreadForThreadId;
+	private Map<Long, CountingResult> spawningThreadForThreadId;
 	
 	/**
 	 * For threads <i>t</i> with key == t.id, this map contains the entry
 	 * (key, list_of_ts) if the thread could not be linked to a spawning thread.
 	 */
-	Map<Long, List<CountingResult>> rootThreadsByThreadId;
+	private Map<Long, List<CountingResult>> rootThreadsByThreadId;
 	
 	/**
 	 * All incomplete results reported when spawning threads are gathered here.
 	 */
-	Map<ResultHash, CountingResult> incompleteResults;
+	private Map<ResultHash, CountingResult> incompleteResults;
 	
 	/**
 	 * Construct the empty infrastructure.

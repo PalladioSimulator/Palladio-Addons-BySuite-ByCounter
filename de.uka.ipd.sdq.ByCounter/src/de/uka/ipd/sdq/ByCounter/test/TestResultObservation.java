@@ -144,8 +144,7 @@ public class TestResultObservation extends AbstractByCounterTest {
         			  .add(Opcodes.ISTORE, 1);
         LineNumberRange eInitLnr = new LineNumberRange(29, 29);
         Expectation eInt = new Expectation(true);
-        eInt.add(1).add(Opcodes.IINC, 1)
-        			.add(Opcodes.GOTO, 1);
+        eInt.add(1).add(Opcodes.IINC, 1);
         LineNumberRange eIntLnr = new LineNumberRange(31, 31);
         Expectation eDouble = new Expectation(true);
         eDouble.add(2).add(Opcodes.ILOAD, 1)
@@ -190,7 +189,7 @@ public class TestResultObservation extends AbstractByCounterTest {
 					observationCounter++;
 				} else if(updateData instanceof CountingResultCompleteMethodExecutionUpdate) {
 					// skip complete result
-				}else {
+				} else {
 					Assert.fail("Test case is missing the correct updateData type.");
 				}
 			}

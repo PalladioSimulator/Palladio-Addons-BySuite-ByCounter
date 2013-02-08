@@ -106,7 +106,7 @@ public final class CountingResultCollector extends Observable {
 	private List<ICountingResultWriter> resultWriters;
 
 	/** Instrumentation context with basic block and range block definitions. */
-	public InstrumentationContext instrumentationContext;
+	private InstrumentationContext instrumentationContext;
 	
 	/**
 	 * Method execution details on how BytecodeCounters execute method was 
@@ -406,5 +406,22 @@ public final class CountingResultCollector extends Observable {
 	 */
 	public MethodExecutionRecord getLastMethodExecutionDetails() {
 		return lastMethodExecutionDetails;
+	}
+	
+	/**
+	 * @return Instrumentation context with basic block and range block definitions.
+	 * Used internally.
+	 */
+	public InstrumentationContext getInstrumentationContext() {
+		return this.instrumentationContext;
+	}
+	
+	/**
+	 * Used internally.
+	 * @param instrumentationContext Instrumentation context with basic block and range block definitions.
+	 */
+	public void setInstrumentationContext(
+			InstrumentationContext instrumentationContext) {
+		this.instrumentationContext = instrumentationContext;
 	}
 }

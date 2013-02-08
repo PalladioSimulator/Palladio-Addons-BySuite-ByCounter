@@ -71,9 +71,6 @@ public class CollectionStrategyForceInlining extends AbstractCollectionStrategy 
 	 * only relevant to inlining.
 	 */
 	private static final boolean useDeferredBBcalculations = USE_DEFERRED_BB_CALCULATIONS_DEFAULT;
-
-	/** {@link BlockResultCalculation} helper. */
-	private BlockResultCalculation blockCalculation;
 	
 	/** When true, at least one result has been inlined since the last 
 	 * {@link #clearResults()}*/
@@ -89,7 +86,6 @@ public class CollectionStrategyForceInlining extends AbstractCollectionStrategy 
 		this.thresholdTotalMaximum = DEFAULT_TOTAL_THRESHOLD;
 		this.totalOfUninlinedMethodsDespiteForcedInlining = 0;//even augment
 		this.uncalculatedBBCounts_Index = new HashMap<String, Integer>();
-		this.blockCalculation = new BlockResultCalculation(parentResultCollector.instrumentationContext);
 	}
 	
 	/* (non-Javadoc)
@@ -176,8 +172,9 @@ public class CollectionStrategyForceInlining extends AbstractCollectionStrategy 
 				// save the values
 				saveUncalculatedBBCounts(result.qualifyingMethodName, result.opcodeCounts);
 			} else {
-				// calculate immediatly
-				CalculatedCounts ccounts = this.blockCalculation.calculateCountsFromBBCounts(
+				// calculate immediately
+				BlockResultCalculation blockCalculation = new BlockResultCalculation(parentResultCollector.getInstrumentationContext());
+				CalculatedCounts ccounts = blockCalculation.calculateCountsFromBBCounts(
 						result.qualifyingMethodName,
 						result.opcodeCounts,
 						countingResult.getOpcodeCounts(), 
@@ -253,6 +250,7 @@ public class CollectionStrategyForceInlining extends AbstractCollectionStrategy 
 			String canonicalMethodName = e.getKey();
 			
 			// then calculate the opcode counts
+			BlockResultCalculation blockCalculation = new BlockResultCalculation(parentResultCollector.getInstrumentationContext());
 			CalculatedCounts ccounts = blockCalculation.calculateCountsFromBBCounts(
 					canonicalMethodName,
 					this.uncalculatedBBCounts[index],

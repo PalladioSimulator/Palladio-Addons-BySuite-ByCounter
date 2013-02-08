@@ -135,7 +135,7 @@ public final class BytecodeCounter {
 	public BytecodeCounter() {
 		this.instrumentationParameters = new InstrumentationParameters();
 		this.executionSettings = new ExecutionSettings();
-		this.instrumentationState = new InstrumentationState();
+		this.instrumentationState = null;
 		this.successFullyInstrumentedMethods = new ArrayList<MethodDescriptor>();
 		this.classLoader = new InstrumentationClassLoader(null);
 		this.callGraph = new CallGraph();
@@ -497,7 +497,7 @@ public final class BytecodeCounter {
 		this.printInstrumentationSummary();
 
 		// load the context, basic/range block serialisations in the result collector
-		CountingResultCollector.getInstance().instrumentationContext = this.instrumentationState.getInstrumentationContext();
+		CountingResultCollector.getInstance().setInstrumentationContext(this.instrumentationState.getInstrumentationContext());
 
 		return success;
 	}

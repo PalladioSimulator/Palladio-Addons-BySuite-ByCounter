@@ -24,9 +24,6 @@ import de.uka.ipd.sdq.ByCounter.results.RequestResult;
  */
 public class CollectionStrategyDefault extends AbstractCollectionStrategy {
 	
-	/** {@link BlockResultCalculation} helper. */
-	private BlockResultCalculation blockCalculation;
-
 	/** Indexing infrastructure for counting results. */
 	private CountingResultIndexing countingResultIndexing;
 
@@ -64,7 +61,6 @@ public class CollectionStrategyDefault extends AbstractCollectionStrategy {
 	 */
 	public CollectionStrategyDefault(CountingResultCollector parent) {
 		super(parent);
-		this.blockCalculation = new BlockResultCalculation(parentResultCollector.instrumentationContext);
 		this.countingResultIndexing = new CountingResultIndexing();
 		this.countingResultUpdateIndexing = new CountingResultUpdateIndexing();
 		this.countingResultRegionIndexing = new CountingResultRegionIndexing();
@@ -83,6 +79,8 @@ public class CollectionStrategyDefault extends AbstractCollectionStrategy {
 		this.countingResultRegionIndexing.clearResults();
 		this.countingResultThreadIndexing.clearResults();
 		this.lastBlockExecutionSequenceByMethod.clear();
+		this.currentRegion = null;
+		this.regionEnd = null;
 		this.requestMap.clear();
 	}
 
@@ -112,7 +110,7 @@ public class CollectionStrategyDefault extends AbstractCollectionStrategy {
 		CountingResult cr = new CountingResult();
 		cr.setQualifiedMethodName(futureCount.canonicalMethodName);
 		cr.setMethodExecutionID(futureCount.ownID);
-		cr.setObservedElement(parentResultCollector.instrumentationContext.getEntitiesToInstrument().get(futureCount.observedEntityID));
+		cr.setObservedElement(parentResultCollector.getInstrumentationContext().getEntitiesToInstrument().get(futureCount.observedEntityID));
 		cr.setThreadId(Thread.currentThread().getId());
 		cr.setFinal(false);
 		cr = (CountingResult) this.countingResultThreadIndexing.apply(cr, futureCount.spawnedThreads);
@@ -166,7 +164,7 @@ public class CollectionStrategyDefault extends AbstractCollectionStrategy {
 					result.newArrayCounts.length != 0) {
 				// create the map for array creation counts
 				arrayCreationCounts = new HashMap<ArrayCreation, Long>();
-				List<ArrayCreation> creations = this.parentResultCollector.instrumentationContext.getArrayCreations().get(result.qualifyingMethodName);
+				List<ArrayCreation> creations = this.parentResultCollector.getInstrumentationContext().getArrayCreations().get(result.qualifyingMethodName);
 				for(int i = 0; i < result.newArrayCounts.length; i++) {
 					long count = result.newArrayCounts[i];
 					arrayCreationCounts.put(creations.get(i), count);
@@ -183,7 +181,7 @@ public class CollectionStrategyDefault extends AbstractCollectionStrategy {
 			res.overwriteMethodCallCounts(ccounts[ccountsNum].methodCounts);
 			res.setArrayCreationCounts(arrayCreationCounts);
 			res.setThreadId(Thread.currentThread().getId());
-			res.setObservedElement(this.parentResultCollector.instrumentationContext.getEntitiesToInstrument().get(result.observedEntityID));
+			res.setObservedElement(this.parentResultCollector.getInstrumentationContext().getEntitiesToInstrument().get(result.observedEntityID));
 			res.setFinal(true);
 			if(result.blockCountingMode == BlockCountingMode.RangeBlocks) {
 				// set the index of the range block, i.e. the number of the section as
@@ -193,12 +191,12 @@ public class CollectionStrategyDefault extends AbstractCollectionStrategy {
 				res.setIndexOfRangeBlock(indexOfRangeBlock);
 				
 				InstrumentedCodeArea observedRange = 
-						this.parentResultCollector.instrumentationContext.getRangesByMethod().get(
+						this.parentResultCollector.getInstrumentationContext().getRangesByMethod().get(
 								result.qualifyingMethodName)[indexOfRangeBlock];
 				res.setObservedElement(observedRange);
 			} else if(result.blockCountingMode == BlockCountingMode.LabelBlocks) {
 				final int labelBlockIndex = result.blockExecutionSequence.get(result.blockExecutionSequence.size()-1);
-				for(InstrumentedRegion ir : parentResultCollector.instrumentationContext.getInstrumentationRegions()) {
+				for(InstrumentedRegion ir : parentResultCollector.getInstrumentationContext().getInstrumentationRegions()) {
 					if(ir != null) {
 						if(ir.getStartLabelIds().contains(labelBlockIndex)
 								&& result.qualifyingMethodName.equals(ir.getStartMethod().getQualifyingMethodName())) {
@@ -222,7 +220,7 @@ public class CollectionStrategyDefault extends AbstractCollectionStrategy {
 			// When this result is not an update, add it to the permanent results
 			if(!(result instanceof ProtocolCountUpdateStructure)) {
 				if(result.blockCountingMode != BlockCountingMode.LabelBlocks) {
-					if(this.parentResultCollector.instrumentationContext.getCountingMode() == CountingMode.Regions) {
+					if(this.parentResultCollector.getInstrumentationContext().getCountingMode() == CountingMode.Regions) {
 						if(this.currentRegion != null) {
 							res = this.countingResultThreadIndexing.apply(res, result.spawnedThreads);
 							this.countingResultRegionIndexing.add(res, this.currentRegion);
@@ -246,7 +244,7 @@ public class CollectionStrategyDefault extends AbstractCollectionStrategy {
 			} else {
 				// result is an instance of ProtocolCountUpdateStructure
 
-				if(this.parentResultCollector.instrumentationContext.getCountingMode() == CountingMode.Regions) {
+				if(this.parentResultCollector.getInstrumentationContext().getCountingMode() == CountingMode.Regions) {
 					// add up for the counting region if necessary
 					if(this.currentRegion != null) {
 						this.countingResultRegionIndexing.add(res, this.currentRegion);
@@ -311,6 +309,9 @@ public class CollectionStrategyDefault extends AbstractCollectionStrategy {
 	 */
 	private CalculatedCounts[] calculateResultCounts(
 			ProtocolCountStructure result) {
+		// {@link BlockResultCalculation} helper
+		BlockResultCalculation blockCalculation = new BlockResultCalculation(parentResultCollector.getInstrumentationContext());
+		// the result (calculated counts)
 		CalculatedCounts[] ccounts;
 		SortedMap<String, Long> methodCounts = new TreeMap<String, Long>();
 		if(result.blockCountingMode == BlockCountingMode.BasicBlocks) {

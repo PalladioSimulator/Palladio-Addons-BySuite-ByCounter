@@ -685,11 +685,13 @@ public final class InstrumentationParameters implements Cloneable {
 	}
 
 	/**
-	 * When set, instruments methods called from the methods specified in 
-	 * {@link #getEntitiesToInstrument()} that 
-	 * are not Java API methods (packages java.*, javax.* sun.*) and not 
+	 * When set, instruments recursively methods that are called from the 
+	 * methods specified in 
+	 * {@link #getEntitiesToInstrument()} and that 
+	 * are not Java API methods (packages java.*, javax.* sun.*) or
 	 * native methods.
-	 * @param instrumentRecursively When true, the above applies.
+	 * @param instrumentRecursively When true, instrument recursively. When 
+	 * false, only the explicitely specified methods are instrumented.
 	 */
 	public void setInstrumentRecursively(boolean instrumentRecursively) {
 		this.instrumentRecursively = instrumentRecursively;

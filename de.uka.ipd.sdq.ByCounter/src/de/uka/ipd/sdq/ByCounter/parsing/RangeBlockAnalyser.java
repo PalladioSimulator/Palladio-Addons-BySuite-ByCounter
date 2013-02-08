@@ -113,8 +113,8 @@ public final class RangeBlockAnalyser extends LabelBlockAnalyser {
 		// initialise range blocks
 		for(int i = 0; i < this.codeAreas.size(); i++) {
 			rangeBlocks[i] = new RangeBlockDescriptor(
-					instrumentationState.getBasicBlockLabels().length);
-			rangeBlocks[i].setBlockIndex(i);
+					instrumentationState.getBasicBlockLabels().length,
+					i);
 		}
 				
 		// we need the basic blocks to calculate partial blocks
@@ -157,8 +157,7 @@ public final class RangeBlockAnalyser extends LabelBlockAnalyser {
 							&& currentLine <= currentRange.getArea().lastLine) {
 	
 						// add the basic block to all current ranges
-						RangeBlockDescriptor.setUsesBasicBlock(
-								rangeBlocks[r], currentBasicBlockIndex);
+						rangeBlocks[r].setUsesBasicBlock(currentBasicBlockIndex);
 						
 						// add the label to the labels of the range
 						rangeBlockContainsLabels.put(currentLabel, r); // range r is visited

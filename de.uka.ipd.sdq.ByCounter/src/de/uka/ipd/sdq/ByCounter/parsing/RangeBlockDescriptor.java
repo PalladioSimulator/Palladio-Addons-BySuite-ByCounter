@@ -9,12 +9,11 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import de.uka.ipd.sdq.ByCounter.utils.MethodDescriptor;
+import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentedCodeArea;
 
 /**
  * Descriptor for range blocks, i.e. sections of code in methods defined in 
- * {@link LineNumberRange}s using 
- * {@link MethodDescriptor#setCodeAreasToInstrument(LineNumberRange[])}.
+ * {@link LineNumberRange}s using {@link InstrumentedCodeArea}.
  * The descriptor describes the basic blocks of which the range block is made up. 
  * If a range block starts or ends in the middle of a basic block, the 
  * {@link InstructionBlockDescriptor}s in {@link #getBasicBlockOffsets()} 
@@ -62,9 +61,10 @@ public class RangeBlockDescriptor extends InstructionBlockDescriptor {
 	 * @param numOfBasicBlocks The number of basic blocks in the method; used 
 	 * for indexing basic block counts in the range block.
 	 */
-	public RangeBlockDescriptor(final int numOfBasicBlocks) {
+	public RangeBlockDescriptor(final int numOfBasicBlocks, int blockIndex) {
 		this.basicBlockCounts = new int[numOfBasicBlocks];
 		this.bbOffsets = new LinkedList<RangeBlockDescriptor.BasicBlockOffset>();
+		this.setBlockIndex(blockIndex);
 	}
 	
 	/**
@@ -98,13 +98,12 @@ public class RangeBlockDescriptor extends InstructionBlockDescriptor {
 
 	/**
 	 * Sets the counter for the specified basic block to 1.
-	 * @param rangeBlockDescriptor The {@link RangeBlockDescriptor} to modify.
 	 * @param basicBlockIndex Index of the basic block that has to be 
 	 * counted in this rangeBlock.
 	 */
-	public static void setUsesBasicBlock(RangeBlockDescriptor rangeBlockDescriptor,
+	public void setUsesBasicBlock(
 			int basicBlockIndex) {
-		rangeBlockDescriptor.basicBlockCounts[basicBlockIndex] = 1;
+		this.basicBlockCounts[basicBlockIndex] = 1;
 		
 	}
 	
