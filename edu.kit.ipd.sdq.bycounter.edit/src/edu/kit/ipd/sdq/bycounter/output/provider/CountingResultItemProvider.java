@@ -367,21 +367,10 @@ public class CountingResultItemProvider
 	 */
 	@Override
 	public String getText(Object object) {
-		StringBuilder label = new StringBuilder();
-		CountingResult cr = (CountingResult) object;
-		// human readable list of opcodes and their invocations
-		for (int opcode = 0; opcode < cr.getOpcodeCounts().size(); opcode++) {
-			Long opcodeCount = cr.getOpcodeCounts().get(opcode);
-			if (opcodeCount > 0) {
-				label.append(cr.getOpcodeCounts().get(opcode) + "x #");
-				label.append(opcode + " ");
-			}
-		}
-		// human readable list of method invocations
-		for (MethodCallCount mcc : cr.getMethodCallCounts()) {
-			label.append(mcc.getCount() + "x " + mcc.getQualifiedFunctionName() + " ");
-		}
-		return getString("_UI_CountingResult_type") + " " + label.toString();
+		String label = ((CountingResult)object).getQualifiedMethodName();
+		return label == null || label.length() == 0 ?
+			getString("_UI_CountingResult_type") :
+			getString("_UI_CountingResult_type") + " " + label;
 	}
 
 	/**

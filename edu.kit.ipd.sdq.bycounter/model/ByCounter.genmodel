@@ -108,12 +108,17 @@
             createChild="false" ecoreFeature="ecore:EReference ByCounter.ecore#//input/InstrumentationProfile/intrumentationProfileRepository"/>
         <genFeatures xsi:type="genmodel:GenFeature" createChild="false" ecoreFeature="ecore:EAttribute ByCounter.ecore#//input/InstrumentationProfile/instrumentUsingLongCounters"/>
         <genFeatures xsi:type="genmodel:GenFeature" createChild="false" ecoreFeature="ecore:EAttribute ByCounter.ecore#//input/InstrumentationProfile/instrumentUsingBasicBlocks"/>
+        <genFeatures xsi:type="genmodel:GenFeature" createChild="false" ecoreFeature="ecore:EAttribute ByCounter.ecore#//input/InstrumentationProfile/numberCallGraphClassAnalyserThreads"/>
         <genFeatures xsi:type="genmodel:GenFeature" createChild="false" ecoreFeature="ecore:EAttribute ByCounter.ecore#//input/InstrumentationProfile/provideJoinThreadsAbility"/>
         <genFeatures xsi:type="genmodel:GenFeature" createChild="false" ecoreFeature="ecore:EAttribute ByCounter.ecore#//input/InstrumentationProfile/persistInstrumentedClassesToOSPath"/>
         <genFeatures xsi:type="genmodel:GenFeature" createChild="false" ecoreFeature="ecore:EAttribute ByCounter.ecore#//input/InstrumentationProfile/provideOnlineSectionActiveUpdates"/>
         <genFeatures xsi:type="genmodel:GenFeature" createChild="false" ecoreFeature="ecore:EAttribute ByCounter.ecore#//input/InstrumentationProfile/traceAndIdentifyRequests"/>
         <genFeatures xsi:type="genmodel:GenFeature" property="None" children="true"
             createChild="true" ecoreFeature="ecore:EReference ByCounter.ecore#//input/InstrumentationProfile/logicalSetExternalToClassLoader"/>
+        <genOperations xsi:type="genmodel:GenOperation" ecoreOperation="ByCounter.ecore#//input/InstrumentationProfile/atLeastOneThread">
+          <genParameters xsi:type="genmodel:GenParameter" ecoreParameter="ByCounter.ecore#//input/InstrumentationProfile/atLeastOneThread/diagnostics"/>
+          <genParameters xsi:type="genmodel:GenParameter" ecoreParameter="ByCounter.ecore#//input/InstrumentationProfile/atLeastOneThread/context"/>
+        </genOperations>
       </genClasses>
       <genClasses xsi:type="genmodel:GenClass" ecoreClass="ByCounter.ecore#//input/InstrumentationProfileRepository">
         <genFeatures xsi:type="genmodel:GenFeature" property="None" children="true"

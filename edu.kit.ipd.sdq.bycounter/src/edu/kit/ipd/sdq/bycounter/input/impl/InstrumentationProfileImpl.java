@@ -12,11 +12,16 @@ import edu.kit.ipd.sdq.bycounter.input.InstrumentationProfile;
 import edu.kit.ipd.sdq.bycounter.input.InstrumentationProfileRepository;
 
 import edu.kit.ipd.sdq.bycounter.input.LogicalSet;
+import edu.kit.ipd.sdq.bycounter.input.util.InputValidator;
 import java.util.Collection;
 
+import java.util.Map;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
 
+import org.eclipse.emf.common.util.BasicDiagnostic;
+import org.eclipse.emf.common.util.Diagnostic;
+import org.eclipse.emf.common.util.DiagnosticChain;
 import org.eclipse.emf.common.util.EList;
 
 import org.eclipse.emf.ecore.EClass;
@@ -24,8 +29,10 @@ import org.eclipse.emf.ecore.InternalEObject;
 
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 
+import org.eclipse.emf.ecore.plugin.EcorePlugin;
 import org.eclipse.emf.ecore.util.EObjectContainmentEList;
 import org.eclipse.emf.ecore.util.EObjectContainmentWithInverseEList;
+import org.eclipse.emf.ecore.util.EObjectValidator;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.ecore.util.InternalEList;
 
@@ -42,6 +49,7 @@ import org.eclipse.emf.ecore.util.InternalEList;
  *   <li>{@link edu.kit.ipd.sdq.bycounter.input.impl.InstrumentationProfileImpl#getIntrumentationProfileRepository <em>Intrumentation Profile Repository</em>}</li>
  *   <li>{@link edu.kit.ipd.sdq.bycounter.input.impl.InstrumentationProfileImpl#isInstrumentUsingLongCounters <em>Instrument Using Long Counters</em>}</li>
  *   <li>{@link edu.kit.ipd.sdq.bycounter.input.impl.InstrumentationProfileImpl#isInstrumentUsingBasicBlocks <em>Instrument Using Basic Blocks</em>}</li>
+ *   <li>{@link edu.kit.ipd.sdq.bycounter.input.impl.InstrumentationProfileImpl#getNumberCallGraphClassAnalyserThreads <em>Number Call Graph Class Analyser Threads</em>}</li>
  *   <li>{@link edu.kit.ipd.sdq.bycounter.input.impl.InstrumentationProfileImpl#isProvideJoinThreadsAbility <em>Provide Join Threads Ability</em>}</li>
  *   <li>{@link edu.kit.ipd.sdq.bycounter.input.impl.InstrumentationProfileImpl#getPersistInstrumentedClassesToOSPath <em>Persist Instrumented Classes To OS Path</em>}</li>
  *   <li>{@link edu.kit.ipd.sdq.bycounter.input.impl.InstrumentationProfileImpl#isProvideOnlineSectionActiveUpdates <em>Provide Online Section Active Updates</em>}</li>
@@ -132,6 +140,26 @@ public class InstrumentationProfileImpl extends IdentifierImpl implements Instru
 	 * @ordered
 	 */
 	protected boolean instrumentUsingBasicBlocks = INSTRUMENT_USING_BASIC_BLOCKS_EDEFAULT;
+
+	/**
+	 * The default value of the '{@link #getNumberCallGraphClassAnalyserThreads() <em>Number Call Graph Class Analyser Threads</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getNumberCallGraphClassAnalyserThreads()
+	 * @generated
+	 * @ordered
+	 */
+	protected static final int NUMBER_CALL_GRAPH_CLASS_ANALYSER_THREADS_EDEFAULT = 0;
+
+	/**
+	 * The cached value of the '{@link #getNumberCallGraphClassAnalyserThreads() <em>Number Call Graph Class Analyser Threads</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getNumberCallGraphClassAnalyserThreads()
+	 * @generated
+	 * @ordered
+	 */
+	protected int numberCallGraphClassAnalyserThreads = NUMBER_CALL_GRAPH_CLASS_ANALYSER_THREADS_EDEFAULT;
 
 	/**
 	 * The default value of the '{@link #isProvideJoinThreadsAbility() <em>Provide Join Threads Ability</em>}' attribute.
@@ -375,6 +403,27 @@ public class InstrumentationProfileImpl extends IdentifierImpl implements Instru
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public int getNumberCallGraphClassAnalyserThreads() {
+		return numberCallGraphClassAnalyserThreads;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setNumberCallGraphClassAnalyserThreads(int newNumberCallGraphClassAnalyserThreads) {
+		int oldNumberCallGraphClassAnalyserThreads = numberCallGraphClassAnalyserThreads;
+		numberCallGraphClassAnalyserThreads = newNumberCallGraphClassAnalyserThreads;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, InputPackage.INSTRUMENTATION_PROFILE__NUMBER_CALL_GRAPH_CLASS_ANALYSER_THREADS, oldNumberCallGraphClassAnalyserThreads, numberCallGraphClassAnalyserThreads));
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	public boolean isProvideJoinThreadsAbility() {
 		return provideJoinThreadsAbility;
 	}
@@ -471,6 +520,31 @@ public class InstrumentationProfileImpl extends IdentifierImpl implements Instru
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public boolean atLeastOneThread(DiagnosticChain diagnostics, Map<Object, Object> context) {
+		// TODO: implement this method
+		// -> specify the condition that violates the invariant
+		// -> verify the details of the diagnostic, including severity and message
+		// Ensure that you remove @generated or mark it @generated NOT
+		if (false) {
+			if (diagnostics != null) {
+				diagnostics.add
+					(new BasicDiagnostic
+						(Diagnostic.ERROR,
+						 InputValidator.DIAGNOSTIC_SOURCE,
+						 InputValidator.INSTRUMENTATION_PROFILE__AT_LEAST_ONE_THREAD,
+						 EcorePlugin.INSTANCE.getString("_UI_GenericInvariant_diagnostic", new Object[] { "atLeastOneThread", EObjectValidator.getObjectLabel(this, context) }),
+						 new Object [] { this }));
+			}
+			return false;
+		}
+		return true;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	@SuppressWarnings("unchecked")
 	@Override
 	public NotificationChain eInverseAdd(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
@@ -539,6 +613,8 @@ public class InstrumentationProfileImpl extends IdentifierImpl implements Instru
 				return isInstrumentUsingLongCounters();
 			case InputPackage.INSTRUMENTATION_PROFILE__INSTRUMENT_USING_BASIC_BLOCKS:
 				return isInstrumentUsingBasicBlocks();
+			case InputPackage.INSTRUMENTATION_PROFILE__NUMBER_CALL_GRAPH_CLASS_ANALYSER_THREADS:
+				return getNumberCallGraphClassAnalyserThreads();
 			case InputPackage.INSTRUMENTATION_PROFILE__PROVIDE_JOIN_THREADS_ABILITY:
 				return isProvideJoinThreadsAbility();
 			case InputPackage.INSTRUMENTATION_PROFILE__PERSIST_INSTRUMENTED_CLASSES_TO_OS_PATH:
@@ -581,6 +657,9 @@ public class InstrumentationProfileImpl extends IdentifierImpl implements Instru
 				return;
 			case InputPackage.INSTRUMENTATION_PROFILE__INSTRUMENT_USING_BASIC_BLOCKS:
 				setInstrumentUsingBasicBlocks((Boolean)newValue);
+				return;
+			case InputPackage.INSTRUMENTATION_PROFILE__NUMBER_CALL_GRAPH_CLASS_ANALYSER_THREADS:
+				setNumberCallGraphClassAnalyserThreads((Integer)newValue);
 				return;
 			case InputPackage.INSTRUMENTATION_PROFILE__PROVIDE_JOIN_THREADS_ABILITY:
 				setProvideJoinThreadsAbility((Boolean)newValue);
@@ -628,6 +707,9 @@ public class InstrumentationProfileImpl extends IdentifierImpl implements Instru
 			case InputPackage.INSTRUMENTATION_PROFILE__INSTRUMENT_USING_BASIC_BLOCKS:
 				setInstrumentUsingBasicBlocks(INSTRUMENT_USING_BASIC_BLOCKS_EDEFAULT);
 				return;
+			case InputPackage.INSTRUMENTATION_PROFILE__NUMBER_CALL_GRAPH_CLASS_ANALYSER_THREADS:
+				setNumberCallGraphClassAnalyserThreads(NUMBER_CALL_GRAPH_CLASS_ANALYSER_THREADS_EDEFAULT);
+				return;
 			case InputPackage.INSTRUMENTATION_PROFILE__PROVIDE_JOIN_THREADS_ABILITY:
 				setProvideJoinThreadsAbility(PROVIDE_JOIN_THREADS_ABILITY_EDEFAULT);
 				return;
@@ -667,6 +749,8 @@ public class InstrumentationProfileImpl extends IdentifierImpl implements Instru
 				return instrumentUsingLongCounters != INSTRUMENT_USING_LONG_COUNTERS_EDEFAULT;
 			case InputPackage.INSTRUMENTATION_PROFILE__INSTRUMENT_USING_BASIC_BLOCKS:
 				return instrumentUsingBasicBlocks != INSTRUMENT_USING_BASIC_BLOCKS_EDEFAULT;
+			case InputPackage.INSTRUMENTATION_PROFILE__NUMBER_CALL_GRAPH_CLASS_ANALYSER_THREADS:
+				return numberCallGraphClassAnalyserThreads != NUMBER_CALL_GRAPH_CLASS_ANALYSER_THREADS_EDEFAULT;
 			case InputPackage.INSTRUMENTATION_PROFILE__PROVIDE_JOIN_THREADS_ABILITY:
 				return provideJoinThreadsAbility != PROVIDE_JOIN_THREADS_ABILITY_EDEFAULT;
 			case InputPackage.INSTRUMENTATION_PROFILE__PERSIST_INSTRUMENTED_CLASSES_TO_OS_PATH:
@@ -697,6 +781,8 @@ public class InstrumentationProfileImpl extends IdentifierImpl implements Instru
 		result.append(instrumentUsingLongCounters);
 		result.append(", instrumentUsingBasicBlocks: ");
 		result.append(instrumentUsingBasicBlocks);
+		result.append(", numberCallGraphClassAnalyserThreads: ");
+		result.append(numberCallGraphClassAnalyserThreads);
 		result.append(", provideJoinThreadsAbility: ");
 		result.append(provideJoinThreadsAbility);
 		result.append(", persistInstrumentedClassesToOSPath: ");

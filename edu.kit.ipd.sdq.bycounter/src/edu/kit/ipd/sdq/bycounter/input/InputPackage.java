@@ -131,13 +131,22 @@ public interface InputPackage extends EPackage {
 	int INSTRUMENTATION_PROFILE__INSTRUMENT_USING_BASIC_BLOCKS = IdentifierPackage.IDENTIFIER_FEATURE_COUNT + 5;
 
 	/**
+	 * The feature id for the '<em><b>Number Call Graph Class Analyser Threads</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int INSTRUMENTATION_PROFILE__NUMBER_CALL_GRAPH_CLASS_ANALYSER_THREADS = IdentifierPackage.IDENTIFIER_FEATURE_COUNT + 6;
+
+	/**
 	 * The feature id for the '<em><b>Provide Join Threads Ability</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int INSTRUMENTATION_PROFILE__PROVIDE_JOIN_THREADS_ABILITY = IdentifierPackage.IDENTIFIER_FEATURE_COUNT + 6;
+	int INSTRUMENTATION_PROFILE__PROVIDE_JOIN_THREADS_ABILITY = IdentifierPackage.IDENTIFIER_FEATURE_COUNT + 7;
 
 	/**
 	 * The feature id for the '<em><b>Persist Instrumented Classes To OS Path</b></em>' attribute.
@@ -146,7 +155,7 @@ public interface InputPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int INSTRUMENTATION_PROFILE__PERSIST_INSTRUMENTED_CLASSES_TO_OS_PATH = IdentifierPackage.IDENTIFIER_FEATURE_COUNT + 7;
+	int INSTRUMENTATION_PROFILE__PERSIST_INSTRUMENTED_CLASSES_TO_OS_PATH = IdentifierPackage.IDENTIFIER_FEATURE_COUNT + 8;
 
 	/**
 	 * The feature id for the '<em><b>Provide Online Section Active Updates</b></em>' attribute.
@@ -155,7 +164,7 @@ public interface InputPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int INSTRUMENTATION_PROFILE__PROVIDE_ONLINE_SECTION_ACTIVE_UPDATES = IdentifierPackage.IDENTIFIER_FEATURE_COUNT + 8;
+	int INSTRUMENTATION_PROFILE__PROVIDE_ONLINE_SECTION_ACTIVE_UPDATES = IdentifierPackage.IDENTIFIER_FEATURE_COUNT + 9;
 
 	/**
 	 * The feature id for the '<em><b>Trace And Identify Requests</b></em>' attribute.
@@ -164,7 +173,7 @@ public interface InputPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int INSTRUMENTATION_PROFILE__TRACE_AND_IDENTIFY_REQUESTS = IdentifierPackage.IDENTIFIER_FEATURE_COUNT + 9;
+	int INSTRUMENTATION_PROFILE__TRACE_AND_IDENTIFY_REQUESTS = IdentifierPackage.IDENTIFIER_FEATURE_COUNT + 10;
 
 	/**
 	 * The feature id for the '<em><b>Logical Set External To Class Loader</b></em>' containment reference list.
@@ -173,7 +182,7 @@ public interface InputPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int INSTRUMENTATION_PROFILE__LOGICAL_SET_EXTERNAL_TO_CLASS_LOADER = IdentifierPackage.IDENTIFIER_FEATURE_COUNT + 10;
+	int INSTRUMENTATION_PROFILE__LOGICAL_SET_EXTERNAL_TO_CLASS_LOADER = IdentifierPackage.IDENTIFIER_FEATURE_COUNT + 11;
 
 	/**
 	 * The number of structural features of the '<em>Instrumentation Profile</em>' class.
@@ -182,7 +191,7 @@ public interface InputPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int INSTRUMENTATION_PROFILE_FEATURE_COUNT = IdentifierPackage.IDENTIFIER_FEATURE_COUNT + 11;
+	int INSTRUMENTATION_PROFILE_FEATURE_COUNT = IdentifierPackage.IDENTIFIER_FEATURE_COUNT + 12;
 
 	/**
 	 * The meta object id for the '{@link edu.kit.ipd.sdq.bycounter.input.impl.InstrumentationProfileRepositoryImpl <em>Instrumentation Profile Repository</em>}' class.
@@ -611,6 +620,17 @@ public interface InputPackage extends EPackage {
 	EAttribute getInstrumentationProfile_InstrumentUsingBasicBlocks();
 
 	/**
+	 * Returns the meta object for the attribute '{@link edu.kit.ipd.sdq.bycounter.input.InstrumentationProfile#getNumberCallGraphClassAnalyserThreads <em>Number Call Graph Class Analyser Threads</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Number Call Graph Class Analyser Threads</em>'.
+	 * @see edu.kit.ipd.sdq.bycounter.input.InstrumentationProfile#getNumberCallGraphClassAnalyserThreads()
+	 * @see #getInstrumentationProfile()
+	 * @generated
+	 */
+	EAttribute getInstrumentationProfile_NumberCallGraphClassAnalyserThreads();
+
+	/**
 	 * Returns the meta object for the attribute '{@link edu.kit.ipd.sdq.bycounter.input.InstrumentationProfile#isProvideJoinThreadsAbility <em>Provide Join Threads Ability</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -1023,6 +1043,14 @@ public interface InputPackage extends EPackage {
 		 * @generated
 		 */
 		EAttribute INSTRUMENTATION_PROFILE__INSTRUMENT_USING_BASIC_BLOCKS = eINSTANCE.getInstrumentationProfile_InstrumentUsingBasicBlocks();
+
+		/**
+		 * The meta object literal for the '<em><b>Number Call Graph Class Analyser Threads</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute INSTRUMENTATION_PROFILE__NUMBER_CALL_GRAPH_CLASS_ANALYSER_THREADS = eINSTANCE.getInstrumentationProfile_NumberCallGraphClassAnalyserThreads();
 
 		/**
 		 * The meta object literal for the '<em><b>Provide Join Threads Ability</b></em>' attribute feature.

@@ -71,6 +71,7 @@ public class InstrumentationProfileItemProvider
 			addInstrumentRecursivelyPropertyDescriptor(object);
 			addInstrumentUsingLongCountersPropertyDescriptor(object);
 			addInstrumentUsingBasicBlocksPropertyDescriptor(object);
+			addNumberCallGraphClassAnalyserThreadsPropertyDescriptor(object);
 			addProvideJoinThreadsAbilityPropertyDescriptor(object);
 			addPersistInstrumentedClassesToOSPathPropertyDescriptor(object);
 			addProvideOnlineSectionActiveUpdatesPropertyDescriptor(object);
@@ -141,6 +142,28 @@ public class InstrumentationProfileItemProvider
 				 false,
 				 false,
 				 ItemPropertyDescriptor.BOOLEAN_VALUE_IMAGE,
+				 null,
+				 null));
+	}
+
+	/**
+	 * This adds a property descriptor for the Number Call Graph Class Analyser Threads feature.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	protected void addNumberCallGraphClassAnalyserThreadsPropertyDescriptor(Object object) {
+		itemPropertyDescriptors.add
+			(createItemPropertyDescriptor
+				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
+				 getResourceLocator(),
+				 getString("_UI_InstrumentationProfile_numberCallGraphClassAnalyserThreads_feature"),
+				 getString("_UI_PropertyDescriptor_description", "_UI_InstrumentationProfile_numberCallGraphClassAnalyserThreads_feature", "_UI_InstrumentationProfile_type"),
+				 InputPackage.Literals.INSTRUMENTATION_PROFILE__NUMBER_CALL_GRAPH_CLASS_ANALYSER_THREADS,
+				 true,
+				 false,
+				 false,
+				 ItemPropertyDescriptor.INTEGRAL_VALUE_IMAGE,
 				 null,
 				 null));
 	}
@@ -305,6 +328,7 @@ public class InstrumentationProfileItemProvider
 			case InputPackage.INSTRUMENTATION_PROFILE__INSTRUMENT_RECURSIVELY:
 			case InputPackage.INSTRUMENTATION_PROFILE__INSTRUMENT_USING_LONG_COUNTERS:
 			case InputPackage.INSTRUMENTATION_PROFILE__INSTRUMENT_USING_BASIC_BLOCKS:
+			case InputPackage.INSTRUMENTATION_PROFILE__NUMBER_CALL_GRAPH_CLASS_ANALYSER_THREADS:
 			case InputPackage.INSTRUMENTATION_PROFILE__PROVIDE_JOIN_THREADS_ABILITY:
 			case InputPackage.INSTRUMENTATION_PROFILE__PERSIST_INSTRUMENTED_CLASSES_TO_OS_PATH:
 			case InputPackage.INSTRUMENTATION_PROFILE__PROVIDE_ONLINE_SECTION_ACTIVE_UPDATES:

@@ -195,6 +195,15 @@ An instance in which final is used is a result for code which spawns threads. In
     </packagedElement>
     <packagedElement xmi:type="uml:Package" xmi:id="_SuIvgDveEd-PZ70lu-zpYg" name="Input">
       <packagedElement xmi:type="uml:Class" xmi:id="_X45kMDveEd-PZ70lu-zpYg" name="InstrumentationProfile">
+        <ownedComment xmi:id="_TIROMHRJEeKxuMpyopOVFg" annotatedElement="_X45kMDveEd-PZ70lu-zpYg">
+          <body>&lt;p>&lt;/p></body>
+        </ownedComment>
+        <ownedRule xmi:id="_Yc8M0HRJEeKxuMpyopOVFg" name="atLeastOneThread" constrainedElement="_X45kMDveEd-PZ70lu-zpYg">
+          <specification xmi:type="uml:OpaqueExpression" xmi:id="_Yc9a8HRJEeKxuMpyopOVFg">
+            <language>OCL</language>
+            <body>(self.numberCallGraphClassAnalyserThreads = null) or (self.numberCallGraphClassAnalyserThreads >= 1)</body>
+          </specification>
+        </ownedRule>
         <generalization xmi:id="_EAdnEDwTEd-Dc9Rw_97E5Q">
           <general xmi:type="uml:Class" href="identifier.uml#_UMp04JMWEdqSSImFLKDkSg"/>
         </generalization>
@@ -238,6 +247,14 @@ entitesToInstrument that  are not Java API methods (packages java.*, javax.* sun
           <defaultValue xmi:type="uml:LiteralBoolean" xmi:id="_uZ7_gEcTEd-sOu4vtdvMEA" value="true">
             <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/EcorePrimitiveTypes.library.uml#EBoolean"/>
           </defaultValue>
+        </ownedAttribute>
+        <ownedAttribute xmi:id="_waGmAHRIEeKxuMpyopOVFg" name="numberCallGraphClassAnalyserThreads">
+          <ownedComment xmi:id="_eVWfwHRLEeKvnrTyyrCsSw" annotatedElement="_waGmAHRIEeKxuMpyopOVFg">
+            <body>&lt;p >The specific amount of thread to spawn in the CallGraphClassAnalyser which is used when instrumenting recursively. Can be used to potentially limit memory demands etc. When not set a heuristic is used instead.&lt;/p></body>
+          </ownedComment>
+          <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/EcorePrimitiveTypes.library.uml#EInt"/>
+          <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_5Ep7UHRIEeKxuMpyopOVFg" value="1"/>
+          <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_5EpUQHRIEeKxuMpyopOVFg"/>
         </ownedAttribute>
         <ownedAttribute xmi:id="_wlHZYPXnEeGJyMxspERnIw" name="provideJoinThreadsAbility" visibility="public">
           <ownedComment xmi:id="_41Tt8PXnEeGJyMxspERnIw" annotatedElement="_wlHZYPXnEeGJyMxspERnIw">

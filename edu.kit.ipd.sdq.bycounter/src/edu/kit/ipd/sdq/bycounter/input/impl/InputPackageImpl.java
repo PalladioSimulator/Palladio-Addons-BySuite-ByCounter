@@ -4,8 +4,11 @@ package edu.kit.ipd.sdq.bycounter.input.impl;
 
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.EGenericType;
+import org.eclipse.emf.ecore.EOperation;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EReference;
+import org.eclipse.emf.ecore.EValidator;
 import org.eclipse.emf.ecore.EcorePackage;
 import org.eclipse.emf.ecore.impl.EPackageImpl;
 import org.eclipse.uml2.types.TypesPackage;
@@ -28,6 +31,7 @@ import edu.kit.ipd.sdq.bycounter.input.InstrumentedCodeArea;
 import edu.kit.ipd.sdq.bycounter.input.InstrumentedMethod;
 import edu.kit.ipd.sdq.bycounter.input.InstrumentedRegion;
 import edu.kit.ipd.sdq.bycounter.input.LogicalSet;
+import edu.kit.ipd.sdq.bycounter.input.util.InputValidator;
 import edu.kit.ipd.sdq.bycounter.output.OutputPackage;
 import edu.kit.ipd.sdq.bycounter.output.impl.OutputPackageImpl;
 
@@ -163,6 +167,15 @@ public class InputPackageImpl extends EPackageImpl implements InputPackage {
 		theInputPackage.initializePackageContents();
 		theOutputPackage.initializePackageContents();
 
+		// Register package validator
+		EValidator.Registry.INSTANCE.put
+			(theInputPackage, 
+			 new EValidator.Descriptor() {
+				 public EValidator getEValidator() {
+					 return InputValidator.INSTANCE;
+				 }
+			 });
+
 		// Mark meta-data to indicate it can't be changed
 		theInputPackage.freeze();
 
@@ -240,7 +253,7 @@ public class InputPackageImpl extends EPackageImpl implements InputPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getInstrumentationProfile_ProvideJoinThreadsAbility() {
+	public EAttribute getInstrumentationProfile_NumberCallGraphClassAnalyserThreads() {
 		return (EAttribute)instrumentationProfileEClass.getEStructuralFeatures().get(6);
 	}
 
@@ -249,7 +262,7 @@ public class InputPackageImpl extends EPackageImpl implements InputPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getInstrumentationProfile_PersistInstrumentedClassesToOSPath() {
+	public EAttribute getInstrumentationProfile_ProvideJoinThreadsAbility() {
 		return (EAttribute)instrumentationProfileEClass.getEStructuralFeatures().get(7);
 	}
 
@@ -258,7 +271,7 @@ public class InputPackageImpl extends EPackageImpl implements InputPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getInstrumentationProfile_ProvideOnlineSectionActiveUpdates() {
+	public EAttribute getInstrumentationProfile_PersistInstrumentedClassesToOSPath() {
 		return (EAttribute)instrumentationProfileEClass.getEStructuralFeatures().get(8);
 	}
 
@@ -267,7 +280,7 @@ public class InputPackageImpl extends EPackageImpl implements InputPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getInstrumentationProfile_TraceAndIdentifyRequests() {
+	public EAttribute getInstrumentationProfile_ProvideOnlineSectionActiveUpdates() {
 		return (EAttribute)instrumentationProfileEClass.getEStructuralFeatures().get(9);
 	}
 
@@ -276,8 +289,17 @@ public class InputPackageImpl extends EPackageImpl implements InputPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public EAttribute getInstrumentationProfile_TraceAndIdentifyRequests() {
+		return (EAttribute)instrumentationProfileEClass.getEStructuralFeatures().get(10);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	public EReference getInstrumentationProfile_LogicalSetExternalToClassLoader() {
-		return (EReference)instrumentationProfileEClass.getEStructuralFeatures().get(10);
+		return (EReference)instrumentationProfileEClass.getEStructuralFeatures().get(11);
 	}
 
 	/**
@@ -549,6 +571,7 @@ public class InputPackageImpl extends EPackageImpl implements InputPackage {
 		createEReference(instrumentationProfileEClass, INSTRUMENTATION_PROFILE__INTRUMENTATION_PROFILE_REPOSITORY);
 		createEAttribute(instrumentationProfileEClass, INSTRUMENTATION_PROFILE__INSTRUMENT_USING_LONG_COUNTERS);
 		createEAttribute(instrumentationProfileEClass, INSTRUMENTATION_PROFILE__INSTRUMENT_USING_BASIC_BLOCKS);
+		createEAttribute(instrumentationProfileEClass, INSTRUMENTATION_PROFILE__NUMBER_CALL_GRAPH_CLASS_ANALYSER_THREADS);
 		createEAttribute(instrumentationProfileEClass, INSTRUMENTATION_PROFILE__PROVIDE_JOIN_THREADS_ABILITY);
 		createEAttribute(instrumentationProfileEClass, INSTRUMENTATION_PROFILE__PERSIST_INSTRUMENTED_CLASSES_TO_OS_PATH);
 		createEAttribute(instrumentationProfileEClass, INSTRUMENTATION_PROFILE__PROVIDE_ONLINE_SECTION_ACTIVE_UPDATES);
@@ -639,11 +662,21 @@ public class InputPackageImpl extends EPackageImpl implements InputPackage {
 		initEReference(getInstrumentationProfile_IntrumentationProfileRepository(), this.getInstrumentationProfileRepository(), this.getInstrumentationProfileRepository_InstrumentationProfile(), "intrumentationProfileRepository", null, 0, 1, InstrumentationProfile.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
 		initEAttribute(getInstrumentationProfile_InstrumentUsingLongCounters(), ecorePackage.getEBoolean(), "instrumentUsingLongCounters", "true", 1, 1, InstrumentationProfile.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
 		initEAttribute(getInstrumentationProfile_InstrumentUsingBasicBlocks(), ecorePackage.getEBoolean(), "instrumentUsingBasicBlocks", "true", 1, 1, InstrumentationProfile.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+		initEAttribute(getInstrumentationProfile_NumberCallGraphClassAnalyserThreads(), ecorePackage.getEInt(), "numberCallGraphClassAnalyserThreads", null, 0, 1, InstrumentationProfile.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
 		initEAttribute(getInstrumentationProfile_ProvideJoinThreadsAbility(), ecorePackage.getEBoolean(), "provideJoinThreadsAbility", "true", 1, 1, InstrumentationProfile.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
 		initEAttribute(getInstrumentationProfile_PersistInstrumentedClassesToOSPath(), theEcorePackage.getEString(), "persistInstrumentedClassesToOSPath", null, 0, 1, InstrumentationProfile.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
 		initEAttribute(getInstrumentationProfile_ProvideOnlineSectionActiveUpdates(), ecorePackage.getEBoolean(), "provideOnlineSectionActiveUpdates", "true", 1, 1, InstrumentationProfile.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
 		initEAttribute(getInstrumentationProfile_TraceAndIdentifyRequests(), ecorePackage.getEBoolean(), "traceAndIdentifyRequests", "false", 1, 1, InstrumentationProfile.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
 		initEReference(getInstrumentationProfile_LogicalSetExternalToClassLoader(), this.getLogicalSet(), null, "logicalSetExternalToClassLoader", null, 0, -1, InstrumentationProfile.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+
+		EOperation op = addEOperation(instrumentationProfileEClass, ecorePackage.getEBoolean(), "atLeastOneThread", 0, 1, IS_UNIQUE, IS_ORDERED);
+		addEParameter(op, ecorePackage.getEDiagnosticChain(), "diagnostics", 0, 1, IS_UNIQUE, IS_ORDERED);
+		EGenericType g1 = createEGenericType(ecorePackage.getEMap());
+		EGenericType g2 = createEGenericType(ecorePackage.getEJavaObject());
+		g1.getETypeArguments().add(g2);
+		g2 = createEGenericType(ecorePackage.getEJavaObject());
+		g1.getETypeArguments().add(g2);
+		addEParameter(op, g1, "context", 0, 1, IS_UNIQUE, IS_ORDERED);
 
 		initEClass(instrumentationProfileRepositoryEClass, InstrumentationProfileRepository.class, "InstrumentationProfileRepository", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getInstrumentationProfileRepository_ExecutionProfile(), this.getExecutionProfile(), this.getExecutionProfile_InstrumentationProfileRepository(), "executionProfile", null, 0, -1, InstrumentationProfileRepository.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);

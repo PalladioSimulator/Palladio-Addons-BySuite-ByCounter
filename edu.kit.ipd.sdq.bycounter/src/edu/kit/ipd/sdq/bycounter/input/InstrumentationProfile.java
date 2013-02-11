@@ -6,12 +6,18 @@ import de.fzi.gast.functions.Method;
 
 import de.uka.ipd.sdq.identifier.Identifier;
 
+import java.util.Map;
+import org.eclipse.emf.common.util.DiagnosticChain;
 import org.eclipse.emf.common.util.EList;
 
 /**
  * <!-- begin-user-doc -->
  * A representation of the model object '<em><b>Instrumentation Profile</b></em>'.
  * <!-- end-user-doc -->
+ *
+ * <!-- begin-model-doc -->
+ * <p></p>
+ * <!-- end-model-doc -->
  *
  * <p>
  * The following features are supported:
@@ -22,6 +28,7 @@ import org.eclipse.emf.common.util.EList;
  *   <li>{@link edu.kit.ipd.sdq.bycounter.input.InstrumentationProfile#getIntrumentationProfileRepository <em>Intrumentation Profile Repository</em>}</li>
  *   <li>{@link edu.kit.ipd.sdq.bycounter.input.InstrumentationProfile#isInstrumentUsingLongCounters <em>Instrument Using Long Counters</em>}</li>
  *   <li>{@link edu.kit.ipd.sdq.bycounter.input.InstrumentationProfile#isInstrumentUsingBasicBlocks <em>Instrument Using Basic Blocks</em>}</li>
+ *   <li>{@link edu.kit.ipd.sdq.bycounter.input.InstrumentationProfile#getNumberCallGraphClassAnalyserThreads <em>Number Call Graph Class Analyser Threads</em>}</li>
  *   <li>{@link edu.kit.ipd.sdq.bycounter.input.InstrumentationProfile#isProvideJoinThreadsAbility <em>Provide Join Threads Ability</em>}</li>
  *   <li>{@link edu.kit.ipd.sdq.bycounter.input.InstrumentationProfile#getPersistInstrumentedClassesToOSPath <em>Persist Instrumented Classes To OS Path</em>}</li>
  *   <li>{@link edu.kit.ipd.sdq.bycounter.input.InstrumentationProfile#isProvideOnlineSectionActiveUpdates <em>Provide Online Section Active Updates</em>}</li>
@@ -177,6 +184,35 @@ public interface InstrumentationProfile extends Identifier {
 	void setInstrumentUsingBasicBlocks(boolean value);
 
 	/**
+	 * Returns the value of the '<em><b>Number Call Graph Class Analyser Threads</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Number Call Graph Class Analyser Threads</em>' attribute isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * <!-- begin-model-doc -->
+	 * <p >The specific amount of thread to spawn in the CallGraphClassAnalyser which is used when instrumenting recursively. Can be used to potentially limit memory demands etc. When not set a heuristic is used instead.</p>
+	 * <!-- end-model-doc -->
+	 * @return the value of the '<em>Number Call Graph Class Analyser Threads</em>' attribute.
+	 * @see #setNumberCallGraphClassAnalyserThreads(int)
+	 * @see edu.kit.ipd.sdq.bycounter.input.InputPackage#getInstrumentationProfile_NumberCallGraphClassAnalyserThreads()
+	 * @model ordered="false"
+	 * @generated
+	 */
+	int getNumberCallGraphClassAnalyserThreads();
+
+	/**
+	 * Sets the value of the '{@link edu.kit.ipd.sdq.bycounter.input.InstrumentationProfile#getNumberCallGraphClassAnalyserThreads <em>Number Call Graph Class Analyser Threads</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Number Call Graph Class Analyser Threads</em>' attribute.
+	 * @see #getNumberCallGraphClassAnalyserThreads()
+	 * @generated
+	 */
+	void setNumberCallGraphClassAnalyserThreads(int value);
+
+	/**
 	 * Returns the value of the '<em><b>Provide Join Threads Ability</b></em>' attribute.
 	 * The default value is <code>"true"</code>.
 	 * <!-- begin-user-doc -->
@@ -294,5 +330,18 @@ public interface InstrumentationProfile extends Identifier {
 	 * @generated
 	 */
 	EList<LogicalSet> getLogicalSetExternalToClassLoader();
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * <!-- begin-model-doc -->
+	 * (self.numberCallGraphClassAnalyserThreads = null) or (self.numberCallGraphClassAnalyserThreads >= 1)
+	 * @param diagnostics The chain of diagnostics to which problems are to be appended.
+	 * @param context The cache of context-specific information.
+	 * <!-- end-model-doc -->
+	 * @model
+	 * @generated
+	 */
+	boolean atLeastOneThread(DiagnosticChain diagnostics, Map<Object, Object> context);
 
 } // InstrumentationProfile
