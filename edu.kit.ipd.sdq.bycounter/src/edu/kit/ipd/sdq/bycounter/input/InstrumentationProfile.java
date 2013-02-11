@@ -192,15 +192,15 @@ public interface InstrumentationProfile extends Identifier {
 	 * </p>
 	 * <!-- end-user-doc -->
 	 * <!-- begin-model-doc -->
-	 * <p >The specific amount of thread to spawn in the CallGraphClassAnalyser which is used when instrumenting recursively. Can be used to potentially limit memory demands etc. When not set a heuristic is used instead.</p>
+	 * <p>The specific amount of threads to spawn in the CallGraphClassAnalyser which is used when instrumenting recursively. Can be used to potentially limit memory demands etc. When not set a heuristic is used instead.</p>
 	 * <!-- end-model-doc -->
 	 * @return the value of the '<em>Number Call Graph Class Analyser Threads</em>' attribute.
-	 * @see #setNumberCallGraphClassAnalyserThreads(int)
+	 * @see #setNumberCallGraphClassAnalyserThreads(Integer)
 	 * @see edu.kit.ipd.sdq.bycounter.input.InputPackage#getInstrumentationProfile_NumberCallGraphClassAnalyserThreads()
 	 * @model ordered="false"
 	 * @generated
 	 */
-	int getNumberCallGraphClassAnalyserThreads();
+	Integer getNumberCallGraphClassAnalyserThreads();
 
 	/**
 	 * Sets the value of the '{@link edu.kit.ipd.sdq.bycounter.input.InstrumentationProfile#getNumberCallGraphClassAnalyserThreads <em>Number Call Graph Class Analyser Threads</em>}' attribute.
@@ -210,7 +210,7 @@ public interface InstrumentationProfile extends Identifier {
 	 * @see #getNumberCallGraphClassAnalyserThreads()
 	 * @generated
 	 */
-	void setNumberCallGraphClassAnalyserThreads(int value);
+	void setNumberCallGraphClassAnalyserThreads(Integer value);
 
 	/**
 	 * Returns the value of the '<em><b>Provide Join Threads Ability</b></em>' attribute.

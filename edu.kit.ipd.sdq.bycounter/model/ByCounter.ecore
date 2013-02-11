@@ -191,9 +191,9 @@
         </eAnnotations>
       </eStructuralFeatures>
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="numberCallGraphClassAnalyserThreads"
-          ordered="false" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt">
+          ordered="false" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EIntegerObject">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-          <details key="documentation" value="&lt;p >The specific amount of thread to spawn in the CallGraphClassAnalyser which is used when instrumenting recursively. Can be used to potentially limit memory demands etc. When not set a heuristic is used instead.&lt;/p>"/>
+          <details key="documentation" value="&lt;p>The specific amount of threads to spawn in the CallGraphClassAnalyser which is used when instrumenting recursively. Can be used to potentially limit memory demands etc. When not set a heuristic is used instead.&lt;/p>"/>
         </eAnnotations>
       </eStructuralFeatures>
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="provideJoinThreadsAbility"

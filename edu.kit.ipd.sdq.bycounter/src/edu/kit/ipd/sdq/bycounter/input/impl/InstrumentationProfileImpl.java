@@ -149,7 +149,7 @@ public class InstrumentationProfileImpl extends IdentifierImpl implements Instru
 	 * @generated
 	 * @ordered
 	 */
-	protected static final int NUMBER_CALL_GRAPH_CLASS_ANALYSER_THREADS_EDEFAULT = 0;
+	protected static final Integer NUMBER_CALL_GRAPH_CLASS_ANALYSER_THREADS_EDEFAULT = null;
 
 	/**
 	 * The cached value of the '{@link #getNumberCallGraphClassAnalyserThreads() <em>Number Call Graph Class Analyser Threads</em>}' attribute.
@@ -159,7 +159,7 @@ public class InstrumentationProfileImpl extends IdentifierImpl implements Instru
 	 * @generated
 	 * @ordered
 	 */
-	protected int numberCallGraphClassAnalyserThreads = NUMBER_CALL_GRAPH_CLASS_ANALYSER_THREADS_EDEFAULT;
+	protected Integer numberCallGraphClassAnalyserThreads = NUMBER_CALL_GRAPH_CLASS_ANALYSER_THREADS_EDEFAULT;
 
 	/**
 	 * The default value of the '{@link #isProvideJoinThreadsAbility() <em>Provide Join Threads Ability</em>}' attribute.
@@ -403,7 +403,7 @@ public class InstrumentationProfileImpl extends IdentifierImpl implements Instru
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public int getNumberCallGraphClassAnalyserThreads() {
+	public Integer getNumberCallGraphClassAnalyserThreads() {
 		return numberCallGraphClassAnalyserThreads;
 	}
 
@@ -412,8 +412,8 @@ public class InstrumentationProfileImpl extends IdentifierImpl implements Instru
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setNumberCallGraphClassAnalyserThreads(int newNumberCallGraphClassAnalyserThreads) {
-		int oldNumberCallGraphClassAnalyserThreads = numberCallGraphClassAnalyserThreads;
+	public void setNumberCallGraphClassAnalyserThreads(Integer newNumberCallGraphClassAnalyserThreads) {
+		Integer oldNumberCallGraphClassAnalyserThreads = numberCallGraphClassAnalyserThreads;
 		numberCallGraphClassAnalyserThreads = newNumberCallGraphClassAnalyserThreads;
 		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, InputPackage.INSTRUMENTATION_PROFILE__NUMBER_CALL_GRAPH_CLASS_ANALYSER_THREADS, oldNumberCallGraphClassAnalyserThreads, numberCallGraphClassAnalyserThreads));
@@ -750,7 +750,7 @@ public class InstrumentationProfileImpl extends IdentifierImpl implements Instru
 			case InputPackage.INSTRUMENTATION_PROFILE__INSTRUMENT_USING_BASIC_BLOCKS:
 				return instrumentUsingBasicBlocks != INSTRUMENT_USING_BASIC_BLOCKS_EDEFAULT;
 			case InputPackage.INSTRUMENTATION_PROFILE__NUMBER_CALL_GRAPH_CLASS_ANALYSER_THREADS:
-				return numberCallGraphClassAnalyserThreads != NUMBER_CALL_GRAPH_CLASS_ANALYSER_THREADS_EDEFAULT;
+				return NUMBER_CALL_GRAPH_CLASS_ANALYSER_THREADS_EDEFAULT == null ? numberCallGraphClassAnalyserThreads != null : !NUMBER_CALL_GRAPH_CLASS_ANALYSER_THREADS_EDEFAULT.equals(numberCallGraphClassAnalyserThreads);
 			case InputPackage.INSTRUMENTATION_PROFILE__PROVIDE_JOIN_THREADS_ABILITY:
 				return provideJoinThreadsAbility != PROVIDE_JOIN_THREADS_ABILITY_EDEFAULT;
 			case InputPackage.INSTRUMENTATION_PROFILE__PERSIST_INSTRUMENTED_CLASSES_TO_OS_PATH:
