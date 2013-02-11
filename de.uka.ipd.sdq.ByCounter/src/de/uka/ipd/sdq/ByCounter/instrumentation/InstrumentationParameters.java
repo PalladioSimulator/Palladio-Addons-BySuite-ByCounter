@@ -95,8 +95,8 @@ public final class InstrumentationParameters implements Cloneable {
 	/** Default value for {@link #getProvideJoinThreadsAbility()}. */
 	private static final boolean PROVIDE_JOIN_THREADS_ABILITY_DEFAULT = true;
 
-	/** Default value for {@link #getMaxNumberIOThreads()}. */
-	private static final int MAX_NUMBER_IO_THREADS_DEFAULT = Integer.MAX_VALUE;
+	/** Default value for {@link #getNumberCallGraphClassAnalyserThreads()}. */
+	private static final Integer NUMBER_CALL_GRAPH_CLASS_ANALYSER_THREADS_DEFAULT = null;
 	
 	/**
 	 * Directory in which result log files are written by default.
@@ -144,9 +144,9 @@ public final class InstrumentationParameters implements Cloneable {
 	private boolean instrumentRecursively;
 	
 	/**
-	 * @see #setMaxNumberIOThreads(int)
+	 * @see #setNumberCallGraphClassAnalyserThreads(Integer)
 	 */
-	private int maxNumberIOThreads;
+	private Integer numberCallGraphClassAnalyserThreads;
 	
 	/** The filename of the log containing the results, that is used if useResultCollector == false. */
 	private String resultLogFileName;
@@ -299,7 +299,7 @@ public final class InstrumentationParameters implements Cloneable {
 		this.provideJoinThreadsAbility = PROVIDE_JOIN_THREADS_ABILITY_DEFAULT;
 		this.entitiesToInstrument = pEntitesToInstrument;
 		this.externalToClassLoaderClassesDefinition = null;
-		this.maxNumberIOThreads = MAX_NUMBER_IO_THREADS_DEFAULT;
+		this.numberCallGraphClassAnalyserThreads = NUMBER_CALL_GRAPH_CLASS_ANALYSER_THREADS_DEFAULT;
 	}
 	
 	/* (non-Javadoc)
@@ -326,7 +326,7 @@ public final class InstrumentationParameters implements Cloneable {
 		copy.instrumentationScopeOverrideClassLevel = this.instrumentationScopeOverrideClassLevel;
 		copy.instrumentationScopeOverrideMethodLevel = this.instrumentationScopeOverrideMethodLevel;
 		copy.instrumentRecursively = this.instrumentRecursively;
-		copy.maxNumberIOThreads = this.maxNumberIOThreads;
+		copy.numberCallGraphClassAnalyserThreads = this.numberCallGraphClassAnalyserThreads;
 		copy.provideJoinThreadsAbility = this.provideJoinThreadsAbility;
 		copy.provideOnlineSectionActiveUpdates = this.provideOnlineSectionActiveUpdates;
 		copy.provideOnlineSectionExecutionUpdates = this.provideOnlineSectionExecutionUpdates;
@@ -554,7 +554,7 @@ public final class InstrumentationParameters implements Cloneable {
 		b.append("counterPrecision:             	  " + this.counterPrecision + ", \n");
 		b.append("countStatically:                    " + this.countStatically + ", \n");
 		b.append("instrumentRecursively:              " + this.instrumentRecursively + ", \n");
-		b.append("maxNumberIOThreads:                 " + this.maxNumberIOThreads + ", \n");
+		b.append("maxNumberIOThreads:                 " + this.numberCallGraphClassAnalyserThreads + ", \n");
 		b.append("entitesToInstrument:                " + this.entitiesToInstrument + ", \n");
 		b.append("provideJoinThreadsAbility:          " + this.provideJoinThreadsAbility + ", \n");
 		b.append("provideOnlineActiveEntityUpdates:   " + this.provideOnlineSectionActiveUpdates + ", \n");
@@ -809,21 +809,21 @@ public final class InstrumentationParameters implements Cloneable {
 	}
 	
 	/**
-	 * @return The maximum amount of threads used mainly
-	 * for input/output operations that is spawned by ByCounter. Can be used
-	 * to potentially limit memory demands.
+	 * @return The specific amount of threads spawned in the CallGraphClassAnalyser.
+	 * Can be used to potentially limit memory demands etc. When not set or set 
+	 * to null, a heuristic is used.
 	 */
-	public int getMaxNumberIOThreads() {
-		return maxNumberIOThreads;
+	public Integer getNumberCallGraphClassAnalyserThreads() {
+		return numberCallGraphClassAnalyserThreads;
 	}
 
 	/**
-	 * @param maxNumberIOThreads The maximum amount of threads used mainly
-	 * for input/output operations that is spawned by ByCounter. Can be used
-	 * to potentially limit memory demands.
+	 * @param numberCallGraphAnalyserThreads The specific amount of threads spawned in the CallGraphClassAnalyser.
+	 * Can be used to potentially limit memory demands etc. When not set or set 
+	 * to null, a heuristic is used.
 	 */
-	public void setMaxNumberIOThreads(int maxNumberIOThreads) {
-		this.maxNumberIOThreads = maxNumberIOThreads;
+	public void setNumberCallGraphClassAnalyserThreads(final Integer numberCallGraphAnalyserThreads) {
+		this.numberCallGraphClassAnalyserThreads = numberCallGraphAnalyserThreads;
 	}
 
 	/**
@@ -960,7 +960,7 @@ public final class InstrumentationParameters implements Cloneable {
 				throw new IllegalArgumentException("Online active entity updates can only be provided when instrumenting ranges (useBasicBlocks=true)");
 			}
 		}
-		if(this.maxNumberIOThreads < 1) {
+		if(this.numberCallGraphClassAnalyserThreads < 1) {
 			throw new IllegalArgumentException("maxNumIOThreads cannot be < 1!");
 		}
 	}

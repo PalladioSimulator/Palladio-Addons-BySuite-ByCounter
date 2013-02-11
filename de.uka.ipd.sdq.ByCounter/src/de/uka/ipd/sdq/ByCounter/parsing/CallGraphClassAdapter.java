@@ -72,11 +72,14 @@ public final class CallGraphClassAdapter {
 
 		boolean success = true;
 
-		// heuristic for  the selection of the number of threads: max(1, log2(numCores))
-		int numThreads = Math.max(1, (int)Math.round(Math.floor(Math.log(Runtime.getRuntime().availableProcessors())/Math.log(2))));
-		// do not use more than the specified maximum
-		
-		numThreads = Math.min(numThreads, instrumentationParameters.getMaxNumberIOThreads());
+		int numThreads = 1;
+		if(instrumentationParameters.getNumberCallGraphClassAnalyserThreads() == null) {
+			// heuristic for  the selection of the number of threads: max(1, log2(numCores))
+			numThreads = Math.max(1, (int)Math.round(Math.floor(Math.log(Runtime.getRuntime().availableProcessors())/Math.log(2))));
+		} else {
+			// use the specified number
+			numThreads = instrumentationParameters.getNumberCallGraphClassAnalyserThreads();
+		}
 		log.fine("Using " + numThreads + " thread(s) to read classes for call graph.");
 		ExecutorService exec = Executors.newFixedThreadPool(numThreads);
 		
