@@ -190,6 +190,7 @@ public class ByCounterWrapper {
 		instrumentationParams.setProvideJoinThreadsAbility(input.isProvideJoinThreadsAbility());
 		instrumentationParams.setProvideOnlineSectionActiveUpdates(input.isProvideOnlineSectionActiveUpdates());
 		instrumentationParams.setExternalToClassLoaderClassesDefinition(mapLogicalSet(input.getLogicalSetExternalToClassLoader()));
+		instrumentationParams.setNumberCallGraphClassAnalyserThreads(input.getNumberCallGraphClassAnalyserThreads());
 
 		// update instrumentation parameters and instrument
 		this.instrumentationProfile = input;
