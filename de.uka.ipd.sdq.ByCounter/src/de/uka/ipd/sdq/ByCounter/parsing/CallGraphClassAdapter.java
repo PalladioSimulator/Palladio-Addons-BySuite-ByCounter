@@ -23,6 +23,8 @@ import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 
+import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentationParameters;
+
 /**
  * This class has the method {@link #parseClass(CallGraph, ClassReader)} that can be 
  * used to create a {@link CallGraph} for a given class.
@@ -33,17 +35,23 @@ public final class CallGraphClassAdapter {
 	
 	private static Logger log = Logger.getLogger(CallGraphClassAdapter.class.getCanonicalName());
 	
-	private String[] ignoredPackagePrefixes;
-
 	private static Map<String, String[]> globalClassImplementationCache = new HashMap<String, String[]>();
+
+	/**
+	 * InstrumentatationParameters specified by the user.
+	 * Prefixes of packages/classes that will be ignored are specified with 
+	 * {@link InstrumentationParameters#setIgnoredPackagePrefixes(String[])}.
+	 */
+	private InstrumentationParameters instrumentationParameters;
 	
 	/**
 	 * Construct the adapter.
-	 * @param ignoredPackagePrefixes Prefixes of packages/classes that will be 
-	 * ignored.
+	 * @param instrumentationParameters InstrumentatationParameters specified by the user.
+	 * Prefixes of packages/classes that will be ignored are specified with 
+	 * {@link InstrumentationParameters#setIgnoredPackagePrefixes(String[])}.
 	 */
-	public CallGraphClassAdapter(String[] ignoredPackagePrefixes) {
-		this.ignoredPackagePrefixes = ignoredPackagePrefixes;
+	public CallGraphClassAdapter(final InstrumentationParameters instrumentationParameters) {
+		this.instrumentationParameters = instrumentationParameters;
 	}
 	
 	/**
@@ -64,7 +72,13 @@ public final class CallGraphClassAdapter {
 
 		boolean success = true;
 
-		ExecutorService exec = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+		// heuristic for  the selection of the number of threads: max(1, log2(numCores))
+		int numThreads = Math.max(1, (int)Math.round(Math.floor(Math.log(Runtime.getRuntime().availableProcessors())/Math.log(2))));
+		// do not use more than the specified maximum
+		
+		numThreads = Math.min(numThreads, instrumentationParameters.getMaxNumberIOThreads());
+		log.fine("Using " + numThreads + " thread(s) to read classes for call graph.");
+		ExecutorService exec = Executors.newFixedThreadPool(numThreads);
 		
 		while(!classesToParse.isEmpty()) {
 			final BlockingQueue<ClassReader> newClassesToParse = new LinkedBlockingQueue<ClassReader>();
@@ -121,7 +135,7 @@ public final class CallGraphClassAdapter {
 		}
 		
 		// check if the class is to be ignored
-		for(String prefix : ignoredPackagePrefixes) {
+		for(String prefix : instrumentationParameters.getIgnoredPackagePrefixes()) {
 			if (currentCR.getClassName().startsWith(prefix)) {
 				log.finer("Class is in ignored package: " + currentCR.getClassName());				
 				return newClassesToParse;

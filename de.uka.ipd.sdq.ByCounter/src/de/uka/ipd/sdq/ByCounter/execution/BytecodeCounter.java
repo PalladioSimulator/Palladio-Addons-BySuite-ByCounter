@@ -433,7 +433,7 @@ public final class BytecodeCounter {
 		if(this.instrumentationParameters.getInstrumentRecursively()) {
 			// iterate through all selected classes
 			CallGraphClassAdapter callGraphAdapter = new CallGraphClassAdapter(
-					this.instrumentationParameters.getIgnoredPackagePrefixes());
+					this.instrumentationParameters);
 			for(String className : classesToInstrument) {
 				ClassReader cr;
 				if(this.classAsBytes) {

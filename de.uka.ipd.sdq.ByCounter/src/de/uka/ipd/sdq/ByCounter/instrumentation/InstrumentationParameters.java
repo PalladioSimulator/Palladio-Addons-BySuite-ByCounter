@@ -92,8 +92,11 @@ public final class InstrumentationParameters implements Cloneable {
 	/** Default value for {@link #getProvideOnlineSectionActiveUpdates()}. */
 	private static final boolean PROVIDE_ONLINE_SECTION_ACTIVE_UPDATES_DEFAULT = false;
 	
-	/** Default value for #{@link #getProvideJoinThreadsAbility()}. */
+	/** Default value for {@link #getProvideJoinThreadsAbility()}. */
 	private static final boolean PROVIDE_JOIN_THREADS_ABILITY_DEFAULT = true;
+
+	/** Default value for {@link #getMaxNumberIOThreads()}. */
+	private static final int MAX_NUMBER_IO_THREADS_DEFAULT = Integer.MAX_VALUE;
 	
 	/**
 	 * Directory in which result log files are written by default.
@@ -139,6 +142,11 @@ public final class InstrumentationParameters implements Cloneable {
 	 * @see #setInstrumentRecursivly(boolean, int)
 	 */
 	private boolean instrumentRecursively;
+	
+	/**
+	 * @see #setMaxNumberIOThreads(int)
+	 */
+	private int maxNumberIOThreads;
 	
 	/** The filename of the log containing the results, that is used if useResultCollector == false. */
 	private String resultLogFileName;
@@ -291,6 +299,7 @@ public final class InstrumentationParameters implements Cloneable {
 		this.provideJoinThreadsAbility = PROVIDE_JOIN_THREADS_ABILITY_DEFAULT;
 		this.entitiesToInstrument = pEntitesToInstrument;
 		this.externalToClassLoaderClassesDefinition = null;
+		this.maxNumberIOThreads = MAX_NUMBER_IO_THREADS_DEFAULT;
 	}
 	
 	/* (non-Javadoc)
@@ -317,6 +326,7 @@ public final class InstrumentationParameters implements Cloneable {
 		copy.instrumentationScopeOverrideClassLevel = this.instrumentationScopeOverrideClassLevel;
 		copy.instrumentationScopeOverrideMethodLevel = this.instrumentationScopeOverrideMethodLevel;
 		copy.instrumentRecursively = this.instrumentRecursively;
+		copy.maxNumberIOThreads = this.maxNumberIOThreads;
 		copy.provideJoinThreadsAbility = this.provideJoinThreadsAbility;
 		copy.provideOnlineSectionActiveUpdates = this.provideOnlineSectionActiveUpdates;
 		copy.provideOnlineSectionExecutionUpdates = this.provideOnlineSectionExecutionUpdates;
@@ -544,6 +554,7 @@ public final class InstrumentationParameters implements Cloneable {
 		b.append("counterPrecision:             	  " + this.counterPrecision + ", \n");
 		b.append("countStatically:                    " + this.countStatically + ", \n");
 		b.append("instrumentRecursively:              " + this.instrumentRecursively + ", \n");
+		b.append("maxNumberIOThreads:                 " + this.maxNumberIOThreads + ", \n");
 		b.append("entitesToInstrument:                " + this.entitiesToInstrument + ", \n");
 		b.append("provideJoinThreadsAbility:          " + this.provideJoinThreadsAbility + ", \n");
 		b.append("provideOnlineActiveEntityUpdates:   " + this.provideOnlineSectionActiveUpdates + ", \n");
@@ -798,6 +809,24 @@ public final class InstrumentationParameters implements Cloneable {
 	}
 	
 	/**
+	 * @return The maximum amount of threads used mainly
+	 * for input/output operations that is spawned by ByCounter. Can be used
+	 * to potentially limit memory demands.
+	 */
+	public int getMaxNumberIOThreads() {
+		return maxNumberIOThreads;
+	}
+
+	/**
+	 * @param maxNumberIOThreads The maximum amount of threads used mainly
+	 * for input/output operations that is spawned by ByCounter. Can be used
+	 * to potentially limit memory demands.
+	 */
+	public void setMaxNumberIOThreads(int maxNumberIOThreads) {
+		this.maxNumberIOThreads = maxNumberIOThreads;
+	}
+
+	/**
 	 * @see #getEntitiesToInstrument()
 	 * @param md A method that will be searched for {@link InstrumentedRegion}s.
 	 * @return True if an {@link InstrumentedRegion} exists that either has 
@@ -930,6 +959,9 @@ public final class InstrumentationParameters implements Cloneable {
 			if(!this.useBasicBlocks) {
 				throw new IllegalArgumentException("Online active entity updates can only be provided when instrumenting ranges (useBasicBlocks=true)");
 			}
+		}
+		if(this.maxNumberIOThreads < 1) {
+			throw new IllegalArgumentException("maxNumIOThreads cannot be < 1!");
 		}
 	}
 }
