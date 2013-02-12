@@ -960,7 +960,7 @@ public final class InstrumentationParameters implements Cloneable {
 				throw new IllegalArgumentException("Online active entity updates can only be provided when instrumenting ranges (useBasicBlocks=true)");
 			}
 		}
-		if(this.numberCallGraphClassAnalyserThreads < 1) {
+		if(this.numberCallGraphClassAnalyserThreads != null && this.numberCallGraphClassAnalyserThreads < 1) {
 			throw new IllegalArgumentException("maxNumIOThreads cannot be < 1!");
 		}
 	}
