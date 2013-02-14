@@ -192,6 +192,13 @@ public class InstrumentationClassLoader extends java.lang.ClassLoader {
 		in.close();
 		return buff;
 	}
+	
+	/**
+	 * @return The class loader used internally by this class loader.
+	 */
+	public ClassLoader getInnerClassLoader() {
+		return this.delegationLoader;
+	}
 
 	/**Replaces the parent class loader.
 	 * @param parentClassLoader The parent class loader to use.
