@@ -117,26 +117,49 @@ public class TypeMapping {
 				for (GASTClass clazz : pkg.getClasses()) {
 					// find Class
 					if (clazz.getQualifiedName().equals(fqcn)) {
-						// find and return Method/Constructor
-						for (Constructor constructor : clazz.getConstructors()) {
-							if (methodDesc.getSimpleMethodName().equals(constructor.getSimpleName())) {
-								if(doSignaturesMatch(constructor, sig)) {
-									return constructor;
-								}
-							}
-						}
-						for (Method method : clazz.getMethods()) {
-							if (methodDesc.getSimpleMethodName().equals(method.getSimpleName())) {
-								if(doSignaturesMatch(method, sig)) {
-									return method;
-								}
-							}
+						Function f = findFunctionInClass(sig, methodDesc, clazz);
+						if(f != null) {
+							return f;
 						}
 					}
 				}
 			}
 		}
 		throw new IllegalArgumentException("Could not find a method for the given BytecodeCounter name '" + bcName + "'. ");
+	}
+
+	/**
+	 * Look for the function in the given class and its super classes.
+	 * @param sig Function signature.
+	 * @param methodDesc MethodDescriptor of the function.
+	 * @param clazz Class (and super classes of this class) to search.
+	 * @return The found function or null if the function could not be found.
+	 */
+	protected static Function findFunctionInClass(final String sig,
+			final MethodDescriptor methodDesc, final GASTClass clazz) {
+		// find and return Method/Constructor
+		for (Constructor constructor : clazz.getConstructors()) {
+			if (methodDesc.getSimpleMethodName().equals(constructor.getSimpleName())) {
+				if(doSignaturesMatch(constructor, sig)) {
+					return constructor;
+				}
+			}
+		}
+		for (Method method : clazz.getMethods()) {
+			if (methodDesc.getSimpleMethodName().equals(method.getSimpleName())) {
+				if(doSignaturesMatch(method, sig)) {
+					return method;
+				}
+			}
+		}
+		// at this point we can still try to find the function in a parent class
+		for(GASTClass cSuper : clazz.getSuperTypes()) {
+			Function f = findFunctionInClass(sig, methodDesc, cSuper);
+			if(f != null) {
+				return f;
+			}
+		}
+		return null;
 	}
 
 	/**
