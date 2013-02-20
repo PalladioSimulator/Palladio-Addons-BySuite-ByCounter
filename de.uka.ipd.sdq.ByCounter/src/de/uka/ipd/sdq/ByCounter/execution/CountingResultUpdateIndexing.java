@@ -170,6 +170,7 @@ public class CountingResultUpdateIndexing {
 		for(CountingResult r : resultQueue) {
 			resultSumForSection.add(r);
 		}
+		resultQueue.clear();
 		MethodExecutionRecord lastMethodExecutionDetails = CountingResultCollector.getInstance().getLastMethodExecutionDetails();
 		CountingResultIndexing.removeInternalCalls(lastMethodExecutionDetails, resultSumForSection);
 		CountingResultSectionExecutionUpdate update = 

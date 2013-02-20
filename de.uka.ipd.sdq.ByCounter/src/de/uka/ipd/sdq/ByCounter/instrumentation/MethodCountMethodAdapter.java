@@ -693,14 +693,14 @@ public final class MethodCountMethodAdapter extends MethodAdapter {
 		if(instrumentationParameters.getUseArrayParameterRecording()) {
 			// store the newarray counts in an array
 			newArrayListVar = insertAndFillCounterArrayFromRegisters(this.arrayCreationCounters);
-			log.fine("Array parameter recording ON: "+arrayCreationCounters.length+
+			log.finer("Array parameter recording ON: "+arrayCreationCounters.length+
 					" array counters");
 		}
 		
 
 		final String qualifyingMethodNameAndDesc = 
 			this.qualifyingMethodName + this.parameterDesc;
-		log.fine("Inserting a call to protocol* method, " +
+		log.finer("Inserting a call to protocol* method, " +
 				"being in the following state: "+
 				"qualifyingMethodName: "+qualifyingMethodNameAndDesc+", "+
 				"instrumentationParameters: "+this.instrumentationParameters+", ");
@@ -708,13 +708,13 @@ public final class MethodCountMethodAdapter extends MethodAdapter {
 		boolean isInvariant = false;
 		isInvariant = this.methodDescriptor.isInvariant();
 		final UUID uuid = this.methodDescriptor.getContext();
-		log.fine("Found that the currently inserted " +
+		log.finer("Found that the currently inserted " +
 						"protocol* method " +
 						"should be inlined: "+inlineImmediately+
 						" (UUID: "+uuid+")"+
 						" and is invariant: "+isInvariant);
-		log.fine("UUID passing not implemented yet");
-		log.fine("isInvariant ignored by instrumentation now...");
+		log.finer("UUID passing not implemented yet");
+		log.finer("isInvariant ignored by instrumentation now...");
 		final String protocolCountSignature = CountingResultCollector.SIGNATURE_protocolCount;
 		final String protocolStructConstructorSignature;
 		final String protocolCountMethodName = "protocolCount";
