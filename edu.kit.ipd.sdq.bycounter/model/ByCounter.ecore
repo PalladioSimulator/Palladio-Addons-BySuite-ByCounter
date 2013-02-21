@@ -278,32 +278,6 @@
       <eStructuralFeatures xsi:type="ecore:EReference" name="method" ordered="false"
           lowerBound="1" eType="ecore:EClass platform:/plugin/de.fzi.gast/model/gast.ecore#//functions/Method"/>
     </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" name="InstrumentedRegion" eSuperTypes="#//input/EntityToInstrument">
-      <eStructuralFeatures xsi:type="ecore:EAttribute" name="startLine" ordered="false"
-          lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt">
-        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-          <details key="documentation" value="Absolute line number in the file defining startMethod."/>
-        </eAnnotations>
-      </eStructuralFeatures>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" name="stopLine" ordered="false"
-          lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt">
-        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-          <details key="documentation" value="Absolute line number in the file defining stopMethod."/>
-        </eAnnotations>
-      </eStructuralFeatures>
-      <eStructuralFeatures xsi:type="ecore:EReference" name="startMethod" ordered="false"
-          lowerBound="1" eType="ecore:EClass platform:/plugin/de.fzi.gast/model/gast.ecore#//functions/Method">
-        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-          <details key="documentation" value="Method in which startLine defines the begin of the instrumentation region."/>
-        </eAnnotations>
-      </eStructuralFeatures>
-      <eStructuralFeatures xsi:type="ecore:EReference" name="stopMethod" ordered="false"
-          lowerBound="1" eType="ecore:EClass platform:/plugin/de.fzi.gast/model/gast.ecore#//functions/Method">
-        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-          <details key="documentation" value="Method in which stopLine defines the end of the instrumentation region."/>
-        </eAnnotations>
-      </eStructuralFeatures>
-    </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="EntityToInstrument" abstract="true">
       <eStructuralFeatures xsi:type="ecore:EReference" name="instrumentationProfile"
           ordered="false" eType="#//input/InstrumentationProfile" eOpposite="#//input/InstrumentationProfile/entitiesToInstrument"/>

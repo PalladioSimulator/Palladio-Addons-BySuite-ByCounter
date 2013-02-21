@@ -23,7 +23,6 @@ import de.uka.ipd.sdq.ByCounter.utils.MethodDescriptor;
 import edu.kit.ipd.sdq.bycounter.input.EntityToInstrument;
 import edu.kit.ipd.sdq.bycounter.input.InstrumentedCodeArea;
 import edu.kit.ipd.sdq.bycounter.input.InstrumentedMethod;
-import edu.kit.ipd.sdq.bycounter.input.InstrumentedRegion;
 import edu.kit.ipd.sdq.bycounter.input.util.InputSwitch;
 
 /**Converter for {@link EntityToInstrument} to ByCounter terms.
@@ -90,55 +89,69 @@ public class EntityToInstrumentToByCounterSwitch extends InputSwitch<Boolean> {
 				+ " with id " + bcInstrumentedMethod.getId() + ".");
 		return true;
 	}
-
-	@Override
-	public Boolean caseInstrumentedRegion(InstrumentedRegion instrumentedRegion) {
-		MethodDescriptor startMethod = createMethodDescriptorForMethod(instrumentedRegion.getStartMethod());
-		MethodDescriptor stopMethod = createMethodDescriptorForMethod(instrumentedRegion.getStopMethod());
-		de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentedRegion bcInstrumentedRegion = 
-				new de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentedRegion(
-						startMethod, instrumentedRegion.getStartLine(), 
-						stopMethod, instrumentedRegion.getStopLine());
-		this.entitiesToInstrument.add(bcInstrumentedRegion);
-		logger.info("Instrumented region from " + bcInstrumentedRegion.getStartMethod().getCanonicalMethodName() + ":" + bcInstrumentedRegion.getStartLine() 
-				+ " to " + bcInstrumentedRegion.getStopMethod().getCanonicalMethodName() + ":" + bcInstrumentedRegion.getStopLine() 
-				+ " with id " + bcInstrumentedRegion.getId() + ".");
-		// TODO Test implementation
-		return true;
-	}
 	
 	@Override
 	public Boolean caseInstrumentedCodeArea(
 			InstrumentedCodeArea area) {
 		addRootNodeToAvailableRootNodes(area.getFrom());
 		// identify surrounding method
-		Method surroundingMethod = getSourroundingMethod(area.getFrom());
-		String errorMsg = null;
-		if (surroundingMethod == null) {
-			errorMsg = "Could not get surrounding method for statement " + area.getFrom().getId();
-			logger.severe(errorMsg);
-			throw new IllegalArgumentException(errorMsg);
-		}
-		if (surroundingMethod.getSurroundingClass() == null) {
-			errorMsg = "Could not get surrounding class for surrounding method for statement " + area.getFrom().getId();
-			logger.severe(errorMsg);
-			throw new IllegalArgumentException(errorMsg);
-		}
-		if (surroundingMethod.getSurroundingClass().getQualifiedName() == null) {
-			errorMsg = "Could not get qualified name for surrounding class of surrounding method for statement " + area.getFrom().getId();
-			logger.severe(errorMsg);
-			throw new IllegalArgumentException(errorMsg);
-		}
-		
-		MethodIdentifier mid = new MethodIdentifier(
-				surroundingMethod.getSurroundingClass()
+		Method surroundingMethodFrom = getSourroundingMethod(area.getFrom());
+		Method surroundingMethodTo = getSourroundingMethod(area.getFrom());
+		MethodIdentifier midFrom = new MethodIdentifier(
+				surroundingMethodFrom.getSurroundingClass()
 						.getQualifiedName(),
-				ByCounterWrapper.constructSignature(surroundingMethod));
-		// construct a method descriptor
-		MethodDescriptor methodDesc = new MethodDescriptor(
-				mid.fqMethodName,
-				mid.signature);
-		// create list of lines that exist in bytecode
+				ByCounterWrapper.constructSignature(surroundingMethodFrom));
+		MethodIdentifier midTo = new MethodIdentifier(
+				surroundingMethodTo.getSurroundingClass()
+						.getQualifiedName(),
+				ByCounterWrapper.constructSignature(surroundingMethodTo));
+		if(midFrom.equals(midTo)) {
+			// from and to are in the same method; create instrumented code area
+			// construct a method descriptor
+			MethodDescriptor methodDesc = new MethodDescriptor(
+					midFrom.fqMethodName,
+					midFrom.signature);
+			// create list of lines that exist in bytecode
+			List<Integer> methodLineNumbers = getLinenumbersInMethod(methodDesc);
+			// add a new range for the instrumented code area
+			LineNumberRange newRange = instrumentedCodeAreaToLineNumberRange(area, methodLineNumbers);
+			de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentedCodeArea bcCodeArea = 
+					new de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentedCodeArea(methodDesc, newRange);
+			this.entitiesToInstrument.add(bcCodeArea);
+			this.entitiesToInstrumentMap.put(bcCodeArea.getId(), area);
+			logger.info("Range from " + newRange.firstLine + " to " + newRange.lastLine + " with id " + bcCodeArea.getId() + " added for method " + methodDesc.getCanonicalMethodName() + ".");
+		} else {
+			// from and to are in different methods; create instrumented region
+			// construct method descriptors
+			MethodDescriptor methodDescFrom = new MethodDescriptor(
+					midFrom.fqMethodName,
+					midFrom.signature);
+			MethodDescriptor methodDescTo = new MethodDescriptor(
+					midTo.fqMethodName,
+					midTo.signature);
+			// create list of lines that exist in bytecode
+			List<Integer> methodLineNumbersFrom = getLinenumbersInMethod(methodDescFrom);
+			List<Integer> methodLineNumbersTo = getLinenumbersInMethod(methodDescTo);
+			// add a new range for the instrumented code area
+			int firstLineNumber = instrumentedCodeAreaToLineNumberRange(area, methodLineNumbersFrom).firstLine;
+			int lastLineNumber = instrumentedCodeAreaToLineNumberRange(area, methodLineNumbersTo).lastLine;
+			
+			de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentedRegion bcRegion = 
+					new de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentedRegion(methodDescFrom, firstLineNumber, methodDescTo, lastLineNumber);
+			this.entitiesToInstrument.add(bcRegion);
+			this.entitiesToInstrumentMap.put(bcRegion.getId(), area);
+			logger.info("Region from " + firstLineNumber + " to " + lastLineNumber + " with id " + bcRegion.getId() + " added for method " + methodDescFrom.getCanonicalMethodName() + ".");
+		}
+		return true;
+	}
+
+	/**
+	 * Find the methods line numbers in {@link #lineNumbersInBytecode} or 
+	 * compute and add them. 
+	 * @param methodDesc Method to search line numbers for.
+	 * @return Line numbers available in the method.
+	 */
+	private List<Integer> getLinenumbersInMethod(MethodDescriptor methodDesc) {
 		Map<String, List<Integer>> lnsInClass = lineNumbersInBytecode.get(methodDesc.getCanonicalClassName());
 		if(lineNumbersInBytecode.get(methodDesc.getCanonicalClassName()) == null) {
 			try {
@@ -149,14 +162,7 @@ public class EntityToInstrumentToByCounterSwitch extends InputSwitch<Boolean> {
 			lineNumbersInBytecode.put(methodDesc.getCanonicalClassName(), lnsInClass);
 		}
 		List<Integer> methodLineNumbers = lnsInClass.get(methodDesc.getCanonicalMethodName());
-		// add a new range for the instrumented code area
-		LineNumberRange newRange = instrumentedCodeAreaToLineNumberRange(area, methodLineNumbers);
-		de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentedCodeArea bcCodeArea = 
-				new de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentedCodeArea(methodDesc, newRange);
-		this.entitiesToInstrument.add(bcCodeArea);
-		this.entitiesToInstrumentMap.put(bcCodeArea.getId(), area);
-		logger.info("Range from " + newRange.firstLine + " to " + newRange.lastLine + " with id " + bcCodeArea.getId() + " added for method " + methodDesc.getCanonicalMethodName() + ".");
-		return true;
+		return methodLineNumbers;
 	}
 
 	/**
@@ -248,13 +254,31 @@ public class EntityToInstrumentToByCounterSwitch extends InputSwitch<Boolean> {
 	 * @return The method containing the statement.
 	 */
 	private Method getSourroundingMethod(Statement statement) {
+		Method surroundingMethod = null;
 		assert(statement != null);
 		EObject eObject = statement;
 		while (eObject.eContainer() != null && !( eObject.eContainer() instanceof Method) ) {
 			eObject = eObject.eContainer();
 		}
 		if (eObject.eContainer() instanceof Method) {
-			return (Method) eObject.eContainer();
+			surroundingMethod = (Method) eObject.eContainer();
+			String errorMsg = null;
+			if (surroundingMethod == null) {
+				errorMsg = "Could not get surrounding method for statement " + statement.getId();
+				logger.severe(errorMsg);
+				throw new IllegalArgumentException(errorMsg);
+			}
+			if (surroundingMethod.getSurroundingClass() == null) {
+				errorMsg = "Could not get surrounding class for surrounding method for statement " + statement.getId();
+				logger.severe(errorMsg);
+				throw new IllegalArgumentException(errorMsg);
+			}
+			if (surroundingMethod.getSurroundingClass().getQualifiedName() == null) {
+				errorMsg = "Could not get qualified name for surrounding class of surrounding method for statement " + statement.getId();
+				logger.severe(errorMsg);
+				throw new IllegalArgumentException(errorMsg);
+			}
+			return surroundingMethod;
 		} else {
 			throw new IllegalArgumentException("No sourrounding method could be found for the provided statement.");
 		}

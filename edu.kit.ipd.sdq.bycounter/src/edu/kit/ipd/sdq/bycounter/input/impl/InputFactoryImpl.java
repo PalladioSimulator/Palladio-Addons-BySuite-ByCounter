@@ -62,7 +62,6 @@ public class InputFactoryImpl extends EFactoryImpl implements InputFactory {
 			case InputPackage.LOGICAL_SET: return createLogicalSet();
 			case InputPackage.INSTRUMENTED_CODE_AREA: return createInstrumentedCodeArea();
 			case InputPackage.INSTRUMENTED_METHOD: return createInstrumentedMethod();
-			case InputPackage.INSTRUMENTED_REGION: return createInstrumentedRegion();
 			default:
 				throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
 		}
@@ -126,16 +125,6 @@ public class InputFactoryImpl extends EFactoryImpl implements InputFactory {
 	public InstrumentedMethod createInstrumentedMethod() {
 		InstrumentedMethodImpl instrumentedMethod = new InstrumentedMethodImpl();
 		return instrumentedMethod;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public InstrumentedRegion createInstrumentedRegion() {
-		InstrumentedRegionImpl instrumentedRegion = new InstrumentedRegionImpl();
-		return instrumentedRegion;
 	}
 
 	/**

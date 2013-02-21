@@ -29,7 +29,6 @@ import edu.kit.ipd.sdq.bycounter.input.InstrumentationProfile;
 import edu.kit.ipd.sdq.bycounter.input.InstrumentationProfileRepository;
 import edu.kit.ipd.sdq.bycounter.input.InstrumentedCodeArea;
 import edu.kit.ipd.sdq.bycounter.input.InstrumentedMethod;
-import edu.kit.ipd.sdq.bycounter.input.InstrumentedRegion;
 import edu.kit.ipd.sdq.bycounter.input.LogicalSet;
 import edu.kit.ipd.sdq.bycounter.input.util.InputValidator;
 import edu.kit.ipd.sdq.bycounter.output.OutputPackage;
@@ -83,13 +82,6 @@ public class InputPackageImpl extends EPackageImpl implements InputPackage {
 	 * @generated
 	 */
 	private EClass instrumentedMethodEClass = null;
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	private EClass instrumentedRegionEClass = null;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -478,51 +470,6 @@ public class InputPackageImpl extends EPackageImpl implements InputPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EClass getInstrumentedRegion() {
-		return instrumentedRegionEClass;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public EAttribute getInstrumentedRegion_StartLine() {
-		return (EAttribute)instrumentedRegionEClass.getEStructuralFeatures().get(0);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public EAttribute getInstrumentedRegion_StopLine() {
-		return (EAttribute)instrumentedRegionEClass.getEStructuralFeatures().get(1);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public EReference getInstrumentedRegion_StartMethod() {
-		return (EReference)instrumentedRegionEClass.getEStructuralFeatures().get(2);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public EReference getInstrumentedRegion_StopMethod() {
-		return (EReference)instrumentedRegionEClass.getEStructuralFeatures().get(3);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
 	public EClass getEntityToInstrument() {
 		return entityToInstrumentEClass;
 	}
@@ -602,12 +549,6 @@ public class InputPackageImpl extends EPackageImpl implements InputPackage {
 		createEAttribute(instrumentedMethodEClass, INSTRUMENTED_METHOD__INSTRUMENT_DERIVED);
 		createEReference(instrumentedMethodEClass, INSTRUMENTED_METHOD__METHOD);
 
-		instrumentedRegionEClass = createEClass(INSTRUMENTED_REGION);
-		createEAttribute(instrumentedRegionEClass, INSTRUMENTED_REGION__START_LINE);
-		createEAttribute(instrumentedRegionEClass, INSTRUMENTED_REGION__STOP_LINE);
-		createEReference(instrumentedRegionEClass, INSTRUMENTED_REGION__START_METHOD);
-		createEReference(instrumentedRegionEClass, INSTRUMENTED_REGION__STOP_METHOD);
-
 		entityToInstrumentEClass = createEClass(ENTITY_TO_INSTRUMENT);
 		createEReference(entityToInstrumentEClass, ENTITY_TO_INSTRUMENT__INSTRUMENTATION_PROFILE);
 	}
@@ -652,7 +593,6 @@ public class InputPackageImpl extends EPackageImpl implements InputPackage {
 		logicalSetEClass.getESuperTypes().add(theIdentifierPackage.getIdentifier());
 		instrumentedCodeAreaEClass.getESuperTypes().add(this.getEntityToInstrument());
 		instrumentedMethodEClass.getESuperTypes().add(this.getEntityToInstrument());
-		instrumentedRegionEClass.getESuperTypes().add(this.getEntityToInstrument());
 
 		// Initialize classes and features; add operations and parameters
 		initEClass(instrumentationProfileEClass, InstrumentationProfile.class, "InstrumentationProfile", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
@@ -701,12 +641,6 @@ public class InputPackageImpl extends EPackageImpl implements InputPackage {
 		initEReference(getInstrumentedMethod_DeclarationOrParent(), this.getInstrumentedMethod(), this.getInstrumentedMethod_ImplementationOrDerived(), "declarationOrParent", null, 0, 1, InstrumentedMethod.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
 		initEAttribute(getInstrumentedMethod_InstrumentDerived(), ecorePackage.getEBoolean(), "instrumentDerived", "false", 1, 1, InstrumentedMethod.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
 		initEReference(getInstrumentedMethod_Method(), thefunctionsPackage.getMethod(), null, "method", null, 1, 1, InstrumentedMethod.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
-
-		initEClass(instrumentedRegionEClass, InstrumentedRegion.class, "InstrumentedRegion", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEAttribute(getInstrumentedRegion_StartLine(), ecorePackage.getEInt(), "startLine", null, 1, 1, InstrumentedRegion.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
-		initEAttribute(getInstrumentedRegion_StopLine(), ecorePackage.getEInt(), "stopLine", null, 1, 1, InstrumentedRegion.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
-		initEReference(getInstrumentedRegion_StartMethod(), thefunctionsPackage.getMethod(), null, "startMethod", null, 1, 1, InstrumentedRegion.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
-		initEReference(getInstrumentedRegion_StopMethod(), thefunctionsPackage.getMethod(), null, "stopMethod", null, 1, 1, InstrumentedRegion.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
 
 		initEClass(entityToInstrumentEClass, EntityToInstrument.class, "EntityToInstrument", IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getEntityToInstrument_InstrumentationProfile(), this.getInstrumentationProfile(), this.getInstrumentationProfile_EntitiesToInstrument(), "instrumentationProfile", null, 0, 1, EntityToInstrument.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);

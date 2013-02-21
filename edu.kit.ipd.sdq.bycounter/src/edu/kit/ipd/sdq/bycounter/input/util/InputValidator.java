@@ -116,8 +116,6 @@ public class InputValidator extends EObjectValidator {
 				return validateInstrumentedCodeArea((InstrumentedCodeArea)value, diagnostics, context);
 			case InputPackage.INSTRUMENTED_METHOD:
 				return validateInstrumentedMethod((InstrumentedMethod)value, diagnostics, context);
-			case InputPackage.INSTRUMENTED_REGION:
-				return validateInstrumentedRegion((InstrumentedRegion)value, diagnostics, context);
 			case InputPackage.ENTITY_TO_INSTRUMENT:
 				return validateEntityToInstrument((EntityToInstrument)value, diagnostics, context);
 			default:
@@ -218,15 +216,6 @@ public class InputValidator extends EObjectValidator {
 	 */
 	public boolean validateInstrumentedMethod(InstrumentedMethod instrumentedMethod, DiagnosticChain diagnostics, Map<Object, Object> context) {
 		return validate_EveryDefaultConstraint(instrumentedMethod, diagnostics, context);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public boolean validateInstrumentedRegion(InstrumentedRegion instrumentedRegion, DiagnosticChain diagnostics, Map<Object, Object> context) {
-		return validate_EveryDefaultConstraint(instrumentedRegion, diagnostics, context);
 	}
 
 	/**

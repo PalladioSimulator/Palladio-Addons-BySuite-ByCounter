@@ -348,7 +348,7 @@ public interface InputPackage extends EPackage {
 	 * @see edu.kit.ipd.sdq.bycounter.input.impl.InputPackageImpl#getEntityToInstrument()
 	 * @generated
 	 */
-	int ENTITY_TO_INSTRUMENT = 7;
+	int ENTITY_TO_INSTRUMENT = 6;
 
 	/**
 	 * The feature id for the '<em><b>Instrumentation Profile</b></em>' container reference.
@@ -477,71 +477,6 @@ public interface InputPackage extends EPackage {
 	 * @ordered
 	 */
 	int INSTRUMENTED_METHOD_FEATURE_COUNT = ENTITY_TO_INSTRUMENT_FEATURE_COUNT + 4;
-
-	/**
-	 * The meta object id for the '{@link edu.kit.ipd.sdq.bycounter.input.impl.InstrumentedRegionImpl <em>Instrumented Region</em>}' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see edu.kit.ipd.sdq.bycounter.input.impl.InstrumentedRegionImpl
-	 * @see edu.kit.ipd.sdq.bycounter.input.impl.InputPackageImpl#getInstrumentedRegion()
-	 * @generated
-	 */
-	int INSTRUMENTED_REGION = 6;
-
-	/**
-	 * The feature id for the '<em><b>Instrumentation Profile</b></em>' container reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int INSTRUMENTED_REGION__INSTRUMENTATION_PROFILE = ENTITY_TO_INSTRUMENT__INSTRUMENTATION_PROFILE;
-
-	/**
-	 * The feature id for the '<em><b>Start Line</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int INSTRUMENTED_REGION__START_LINE = ENTITY_TO_INSTRUMENT_FEATURE_COUNT + 0;
-
-	/**
-	 * The feature id for the '<em><b>Stop Line</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int INSTRUMENTED_REGION__STOP_LINE = ENTITY_TO_INSTRUMENT_FEATURE_COUNT + 1;
-
-	/**
-	 * The feature id for the '<em><b>Start Method</b></em>' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int INSTRUMENTED_REGION__START_METHOD = ENTITY_TO_INSTRUMENT_FEATURE_COUNT + 2;
-
-	/**
-	 * The feature id for the '<em><b>Stop Method</b></em>' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int INSTRUMENTED_REGION__STOP_METHOD = ENTITY_TO_INSTRUMENT_FEATURE_COUNT + 3;
-
-	/**
-	 * The number of structural features of the '<em>Instrumented Region</em>' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int INSTRUMENTED_REGION_FEATURE_COUNT = ENTITY_TO_INSTRUMENT_FEATURE_COUNT + 4;
-
 
 	/**
 	 * Returns the meta object for class '{@link edu.kit.ipd.sdq.bycounter.input.InstrumentationProfile <em>Instrumentation Profile</em>}'.
@@ -890,60 +825,6 @@ public interface InputPackage extends EPackage {
 	EReference getInstrumentedMethod_Method();
 
 	/**
-	 * Returns the meta object for class '{@link edu.kit.ipd.sdq.bycounter.input.InstrumentedRegion <em>Instrumented Region</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for class '<em>Instrumented Region</em>'.
-	 * @see edu.kit.ipd.sdq.bycounter.input.InstrumentedRegion
-	 * @generated
-	 */
-	EClass getInstrumentedRegion();
-
-	/**
-	 * Returns the meta object for the attribute '{@link edu.kit.ipd.sdq.bycounter.input.InstrumentedRegion#getStartLine <em>Start Line</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Start Line</em>'.
-	 * @see edu.kit.ipd.sdq.bycounter.input.InstrumentedRegion#getStartLine()
-	 * @see #getInstrumentedRegion()
-	 * @generated
-	 */
-	EAttribute getInstrumentedRegion_StartLine();
-
-	/**
-	 * Returns the meta object for the attribute '{@link edu.kit.ipd.sdq.bycounter.input.InstrumentedRegion#getStopLine <em>Stop Line</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Stop Line</em>'.
-	 * @see edu.kit.ipd.sdq.bycounter.input.InstrumentedRegion#getStopLine()
-	 * @see #getInstrumentedRegion()
-	 * @generated
-	 */
-	EAttribute getInstrumentedRegion_StopLine();
-
-	/**
-	 * Returns the meta object for the reference '{@link edu.kit.ipd.sdq.bycounter.input.InstrumentedRegion#getStartMethod <em>Start Method</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the reference '<em>Start Method</em>'.
-	 * @see edu.kit.ipd.sdq.bycounter.input.InstrumentedRegion#getStartMethod()
-	 * @see #getInstrumentedRegion()
-	 * @generated
-	 */
-	EReference getInstrumentedRegion_StartMethod();
-
-	/**
-	 * Returns the meta object for the reference '{@link edu.kit.ipd.sdq.bycounter.input.InstrumentedRegion#getStopMethod <em>Stop Method</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the reference '<em>Stop Method</em>'.
-	 * @see edu.kit.ipd.sdq.bycounter.input.InstrumentedRegion#getStopMethod()
-	 * @see #getInstrumentedRegion()
-	 * @generated
-	 */
-	EReference getInstrumentedRegion_StopMethod();
-
-	/**
 	 * Returns the meta object for class '{@link edu.kit.ipd.sdq.bycounter.input.EntityToInstrument <em>Entity To Instrument</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -1253,48 +1134,6 @@ public interface InputPackage extends EPackage {
 		 * @generated
 		 */
 		EReference INSTRUMENTED_METHOD__METHOD = eINSTANCE.getInstrumentedMethod_Method();
-
-		/**
-		 * The meta object literal for the '{@link edu.kit.ipd.sdq.bycounter.input.impl.InstrumentedRegionImpl <em>Instrumented Region</em>}' class.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @see edu.kit.ipd.sdq.bycounter.input.impl.InstrumentedRegionImpl
-		 * @see edu.kit.ipd.sdq.bycounter.input.impl.InputPackageImpl#getInstrumentedRegion()
-		 * @generated
-		 */
-		EClass INSTRUMENTED_REGION = eINSTANCE.getInstrumentedRegion();
-
-		/**
-		 * The meta object literal for the '<em><b>Start Line</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute INSTRUMENTED_REGION__START_LINE = eINSTANCE.getInstrumentedRegion_StartLine();
-
-		/**
-		 * The meta object literal for the '<em><b>Stop Line</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute INSTRUMENTED_REGION__STOP_LINE = eINSTANCE.getInstrumentedRegion_StopLine();
-
-		/**
-		 * The meta object literal for the '<em><b>Start Method</b></em>' reference feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EReference INSTRUMENTED_REGION__START_METHOD = eINSTANCE.getInstrumentedRegion_StartMethod();
-
-		/**
-		 * The meta object literal for the '<em><b>Stop Method</b></em>' reference feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EReference INSTRUMENTED_REGION__STOP_METHOD = eINSTANCE.getInstrumentedRegion_StopMethod();
 
 		/**
 		 * The meta object literal for the '{@link edu.kit.ipd.sdq.bycounter.input.impl.EntityToInstrumentImpl <em>Entity To Instrument</em>}' class.

@@ -25,8 +25,8 @@ public class MethodIdentifier {
 	public boolean equals(Object obj) {
 		if(obj instanceof MethodIdentifier) {
 			MethodIdentifier id = ((MethodIdentifier)obj);
-			return id.fqMethodName == fqMethodName 
-				&& id.signature == signature;
+			return id.fqMethodName.equals(fqMethodName) 
+				&& id.signature.equals(signature);
 		}
 		return super.equals(obj);
 	}

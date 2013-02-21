@@ -376,37 +376,6 @@ entitesToInstrument that  are not Java API methods (packages java.*, javax.* sun
           <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_ZiMWwPvMEd-ksoJXzVtD8A"/>
         </ownedEnd>
       </packagedElement>
-      <packagedElement xmi:type="uml:Class" xmi:id="_vpIW0OxmEeGzOsvbOdECuw" name="InstrumentedRegion">
-        <generalization xmi:id="_fQClQO0mEeGhudjTzhBXTA" general="_ypRgQO0lEeGhudjTzhBXTA"/>
-        <ownedAttribute xmi:id="_7NWA4OxmEeGzOsvbOdECuw" name="startLine" visibility="public">
-          <ownedComment xmi:id="_QwjxwPKpEeGXcrz1WV8dqw" annotatedElement="_7NWA4OxmEeGzOsvbOdECuw">
-            <body>Absolute line number in the file defining startMethod.</body>
-          </ownedComment>
-          <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/EcorePrimitiveTypes.library.uml#EInt"/>
-        </ownedAttribute>
-        <ownedAttribute xmi:id="_93iWQOxmEeGzOsvbOdECuw" name="stopLine" visibility="public">
-          <ownedComment xmi:id="_Rt0rQPKpEeGXcrz1WV8dqw" annotatedElement="_93iWQOxmEeGzOsvbOdECuw">
-            <body>Absolute line number in the file defining stopMethod.</body>
-          </ownedComment>
-          <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/EcorePrimitiveTypes.library.uml#EInt"/>
-        </ownedAttribute>
-        <ownedAttribute xmi:id="__d41cPUsEeG8mtRmmAr6-A" name="startMethod" visibility="public" association="__dnvsPUsEeG8mtRmmAr6-A">
-          <ownedComment xmi:id="_F8tT8PXmEeGJyMxspERnIw" annotatedElement="__d41cPUsEeG8mtRmmAr6-A">
-            <body>Method in which startLine defines the begin of the instrumentation region.</body>
-          </ownedComment>
-          <type xmi:type="uml:Class" href="SissyModel.uml#_J4qAgDlTEd2QwqggM6JaaA"/>
-          <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="__eBYUfUsEeG8mtRmmAr6-A" value="1"/>
-          <lowerValue xmi:type="uml:LiteralInteger" xmi:id="__eBYUPUsEeG8mtRmmAr6-A" value="1"/>
-        </ownedAttribute>
-        <ownedAttribute xmi:id="_BAt6IPUtEeG8mtRmmAr6-A" name="stopMethod" visibility="public" association="_BAtTEPUtEeG8mtRmmAr6-A">
-          <ownedComment xmi:id="_HdZDkPXmEeGJyMxspERnIw" annotatedElement="_BAt6IPUtEeG8mtRmmAr6-A">
-            <body>Method in which stopLine defines the end of the instrumentation region.</body>
-          </ownedComment>
-          <type xmi:type="uml:Class" href="SissyModel.uml#_J4qAgDlTEd2QwqggM6JaaA"/>
-          <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_BAuhMfUtEeG8mtRmmAr6-A" value="1"/>
-          <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_BAuhMPUtEeG8mtRmmAr6-A" value="1"/>
-        </ownedAttribute>
-      </packagedElement>
       <packagedElement xmi:type="uml:Class" xmi:id="_ypRgQO0lEeGhudjTzhBXTA" name="EntityToInstrument" isAbstract="true">
         <ownedAttribute xmi:id="_KwYqMO0mEeGhudjTzhBXTA" name="instrumentationProfile" visibility="public" type="_X45kMDveEd-PZ70lu-zpYg" association="_KwEhIO0mEeGhudjTzhBXTA">
           <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_WbHzAe0mEeGhudjTzhBXTA" value="1"/>
@@ -414,18 +383,6 @@ entitesToInstrument that  are not Java API methods (packages java.*, javax.* sun
         </ownedAttribute>
       </packagedElement>
       <packagedElement xmi:type="uml:Association" xmi:id="_KwEhIO0mEeGhudjTzhBXTA" memberEnd="_KwFvQO0mEeGhudjTzhBXTA _KwYqMO0mEeGhudjTzhBXTA"/>
-      <packagedElement xmi:type="uml:Association" xmi:id="__dnvsPUsEeG8mtRmmAr6-A" memberEnd="__d41cPUsEeG8mtRmmAr6-A __eB_YPUsEeG8mtRmmAr6-A">
-        <ownedEnd xmi:id="__eB_YPUsEeG8mtRmmAr6-A" name="" visibility="private" type="_vpIW0OxmEeGzOsvbOdECuw" association="__dnvsPUsEeG8mtRmmAr6-A">
-          <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="__eCmcPUsEeG8mtRmmAr6-A" value="*"/>
-          <lowerValue xmi:type="uml:LiteralInteger" xmi:id="__eB_YfUsEeG8mtRmmAr6-A"/>
-        </ownedEnd>
-      </packagedElement>
-      <packagedElement xmi:type="uml:Association" xmi:id="_BAtTEPUtEeG8mtRmmAr6-A" memberEnd="_BAt6IPUtEeG8mtRmmAr6-A _BAvIQPUtEeG8mtRmmAr6-A">
-        <ownedEnd xmi:id="_BAvIQPUtEeG8mtRmmAr6-A" name="" visibility="private" type="_vpIW0OxmEeGzOsvbOdECuw" association="_BAtTEPUtEeG8mtRmmAr6-A">
-          <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_BAvvUfUtEeG8mtRmmAr6-A" value="*"/>
-          <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_BAvvUPUtEeG8mtRmmAr6-A"/>
-        </ownedEnd>
-      </packagedElement>
       <packagedElement xmi:type="uml:Class" xmi:id="_cJTAAPXoEeGJyMxspERnIw" name="ExecutionProfile">
         <ownedAttribute xmi:id="_U2PMoPXpEeGJyMxspERnIw" name="addUpResultsRecursively" visibility="public">
           <ownedComment xmi:id="_bXPbgPXpEeGJyMxspERnIw" annotatedElement="_U2PMoPXpEeGJyMxspERnIw">

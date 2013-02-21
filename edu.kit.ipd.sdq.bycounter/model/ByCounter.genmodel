@@ -155,14 +155,6 @@
         <genFeatures xsi:type="genmodel:GenFeature" notify="false" createChild="false"
             propertySortChoices="true" ecoreFeature="ecore:EReference ByCounter.ecore#//input/InstrumentedMethod/method"/>
       </genClasses>
-      <genClasses xsi:type="genmodel:GenClass" ecoreClass="ByCounter.ecore#//input/InstrumentedRegion">
-        <genFeatures xsi:type="genmodel:GenFeature" createChild="false" ecoreFeature="ecore:EAttribute ByCounter.ecore#//input/InstrumentedRegion/startLine"/>
-        <genFeatures xsi:type="genmodel:GenFeature" createChild="false" ecoreFeature="ecore:EAttribute ByCounter.ecore#//input/InstrumentedRegion/stopLine"/>
-        <genFeatures xsi:type="genmodel:GenFeature" notify="false" createChild="false"
-            propertySortChoices="true" ecoreFeature="ecore:EReference ByCounter.ecore#//input/InstrumentedRegion/startMethod"/>
-        <genFeatures xsi:type="genmodel:GenFeature" notify="false" createChild="false"
-            propertySortChoices="true" ecoreFeature="ecore:EReference ByCounter.ecore#//input/InstrumentedRegion/stopMethod"/>
-      </genClasses>
       <genClasses xsi:type="genmodel:GenClass" ecoreClass="ByCounter.ecore#//input/EntityToInstrument">
         <genFeatures xsi:type="genmodel:GenFeature" property="None" notify="false"
             createChild="false" ecoreFeature="ecore:EReference ByCounter.ecore#//input/EntityToInstrument/instrumentationProfile"/>

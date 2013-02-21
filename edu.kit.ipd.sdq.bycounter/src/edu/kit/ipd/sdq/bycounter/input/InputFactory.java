@@ -76,15 +76,6 @@ public interface InputFactory extends EFactory {
 	InstrumentedMethod createInstrumentedMethod();
 
 	/**
-	 * Returns a new object of class '<em>Instrumented Region</em>'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Instrumented Region</em>'.
-	 * @generated
-	 */
-	InstrumentedRegion createInstrumentedRegion();
-
-	/**
 	 * Returns the package supported by this factory.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->

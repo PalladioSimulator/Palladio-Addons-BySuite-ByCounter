@@ -94,10 +94,6 @@ public class InputAdapterFactory extends AdapterFactoryImpl {
 				return createInstrumentedMethodAdapter();
 			}
 			@Override
-			public Adapter caseInstrumentedRegion(InstrumentedRegion object) {
-				return createInstrumentedRegionAdapter();
-			}
-			@Override
 			public Adapter caseEntityToInstrument(EntityToInstrument object) {
 				return createEntityToInstrumentAdapter();
 			}
@@ -206,20 +202,6 @@ public class InputAdapterFactory extends AdapterFactoryImpl {
 	 * @generated
 	 */
 	public Adapter createInstrumentedMethodAdapter() {
-		return null;
-	}
-
-	/**
-	 * Creates a new adapter for an object of class '{@link edu.kit.ipd.sdq.bycounter.input.InstrumentedRegion <em>Instrumented Region</em>}'.
-	 * <!-- begin-user-doc -->
-	 * This default implementation returns null so that we can easily ignore cases;
-	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
-	 * <!-- end-user-doc -->
-	 * @return the new adapter.
-	 * @see edu.kit.ipd.sdq.bycounter.input.InstrumentedRegion
-	 * @generated
-	 */
-	public Adapter createInstrumentedRegionAdapter() {
 		return null;
 	}
 

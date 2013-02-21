@@ -377,11 +377,6 @@ public class InstrumentationProfileItemProvider
 
 		newChildDescriptors.add
 			(createChildParameter
-				(InputPackage.Literals.INSTRUMENTATION_PROFILE__ENTITIES_TO_INSTRUMENT,
-				 InputFactory.eINSTANCE.createInstrumentedRegion()));
-
-		newChildDescriptors.add
-			(createChildParameter
 				(InputPackage.Literals.INSTRUMENTATION_PROFILE__LOGICAL_SET_EXTERNAL_TO_CLASS_LOADER,
 				 InputFactory.eINSTANCE.createLogicalSet()));
 	}

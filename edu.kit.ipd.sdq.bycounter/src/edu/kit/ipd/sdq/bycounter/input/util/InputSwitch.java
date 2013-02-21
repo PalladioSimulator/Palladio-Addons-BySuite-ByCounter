@@ -109,13 +109,6 @@ public class InputSwitch<T> extends Switch<T> {
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case InputPackage.INSTRUMENTED_REGION: {
-				InstrumentedRegion instrumentedRegion = (InstrumentedRegion)theEObject;
-				T result = caseInstrumentedRegion(instrumentedRegion);
-				if (result == null) result = caseEntityToInstrument(instrumentedRegion);
-				if (result == null) result = defaultCase(theEObject);
-				return result;
-			}
 			case InputPackage.ENTITY_TO_INSTRUMENT: {
 				EntityToInstrument entityToInstrument = (EntityToInstrument)theEObject;
 				T result = caseEntityToInstrument(entityToInstrument);
@@ -213,21 +206,6 @@ public class InputSwitch<T> extends Switch<T> {
 	 * @generated
 	 */
 	public T caseInstrumentedMethod(InstrumentedMethod object) {
-		return null;
-	}
-
-	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Instrumented Region</em>'.
-	 * <!-- begin-user-doc -->
-	 * This implementation returns null;
-	 * returning a non-null result will terminate the switch.
-	 * <!-- end-user-doc -->
-	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Instrumented Region</em>'.
-	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-	 * @generated
-	 */
-	public T caseInstrumentedRegion(InstrumentedRegion object) {
 		return null;
 	}
 
