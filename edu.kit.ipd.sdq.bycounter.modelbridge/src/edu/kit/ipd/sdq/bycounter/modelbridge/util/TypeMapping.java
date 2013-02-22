@@ -108,7 +108,12 @@ public class TypeMapping {
 		String fn = fqmn.substring(fqmn.lastIndexOf('.') + 1, fqmn.length()).replace('/', '.'); // FunctionName (== name)
 		// use the MethodDescriptor class to consider the details
 		MethodDescriptor methodDesc = MethodDescriptor._constructMethodDescriptorFromASM(fqcn, fn, sig); 
-		String fqpn = methodDesc.getPackageName(); // FullyQualifiedPackageName 
+		String fqpn = methodDesc.getPackageName(); // FullyQualifiedPackageName
+		
+		// FIXME: this is a hack for GAST having the wrong name for Map$Entry classes
+		if(fqcn.endsWith("$Entry") && fqcn.startsWith("java.util")) {
+			fqcn = "java.util.Entry";
+		}
 		
 		for (Root node : availableGastRootNodes) {
 			// find Package
@@ -194,7 +199,7 @@ public class TypeMapping {
 		// compare parameters
 		if(formalParams.size() != paramTypes.length) {
 			return false;
-		}		
+		}
 		if(paramTypes.length == 0) {
 			// no parameters: no need to do more tests
 			return true;
@@ -238,6 +243,9 @@ public class TypeMapping {
 					ind = typeName.indexOf("[", ind+2);
 					arrayDim++;
 				} while(ind >= 0);
+				if(innerTypeFQCN.equals("Object")) {
+					innerTypeFQCN = "java.lang.Object";
+				}
 				
 				// check all dimensions of the array
 				JavaType currentType = javaType;
