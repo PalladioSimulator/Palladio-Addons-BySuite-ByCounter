@@ -106,17 +106,26 @@ public class LineNumberAnalyser implements IInstructionAnalyser {
 			loc.lineNumber = lineNumber;
 			
 			// add the block to the line number search structure
-			List<InstructionBlockLocation> blocksForLine 
-				= this.findLabelBlockByLine.get(lineNumber);
-			if(blocksForLine == null) {
-				blocksForLine = new LinkedList<InstructionBlockLocation>();
-				this.findLabelBlockByLine.put(lineNumber, blocksForLine);
-			}
-			blocksForLine.add(loc);
+			addToLabelBlockByLine(lineNumber, loc);
 			
 			// the line lineNumber was found; remove it from the not found set
 			this.foundLineNumbers.add(lineNumber);
 		}
+	}
+
+	/**
+	 * Add the block to the line number search structure.
+	 * @param lineNumber Line number of the label block.
+	 * @param loc Label block descriptor.
+	 */
+	private void addToLabelBlockByLine(int lineNumber, InstructionBlockLocation loc) {
+		List<InstructionBlockLocation> blocksForLine 
+			= this.findLabelBlockByLine.get(lineNumber);
+		if(blocksForLine == null) {
+			blocksForLine = new LinkedList<InstructionBlockLocation>();
+			this.findLabelBlockByLine.put(lineNumber, blocksForLine);
+		}
+		blocksForLine.add(loc);
 	}
 
 	/** Updates {@link #minLineNumber} and {@link #maxLineNumber} if linenumber
@@ -143,6 +152,7 @@ public class LineNumberAnalyser implements IInstructionAnalyser {
 		for(InstructionBlockLocation loc : this.labelBlocks) {
 			if(loc.lineNumber < 0) {
 				loc.lineNumber = findLineNumberFromJumpContext(jumpSourceMap, loc.label);
+				addToLabelBlockByLine(loc.lineNumber, loc);
 			}
 		}
 	}

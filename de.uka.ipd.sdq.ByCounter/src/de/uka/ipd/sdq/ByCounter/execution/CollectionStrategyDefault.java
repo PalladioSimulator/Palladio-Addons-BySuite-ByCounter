@@ -1,7 +1,9 @@
 package de.uka.ipd.sdq.ByCounter.execution;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
@@ -39,15 +41,15 @@ public class CollectionStrategyDefault extends AbstractCollectionStrategy {
 	/** For each method: Last execution sequence. For updates. */
 	private Map<UUID,List<Integer>> lastBlockExecutionSequenceByMethod;
 
-	/** Region that is currently counted. Is null when no region is 
+	/** Regions that are currently counted. Is empty when no region is 
 	 * active. */
-	private InstrumentedRegion currentRegion;
+	private List<InstrumentedRegion> currentRegions;
 
 	/**
-	 * When the instrumentation region ends, the last block needs 
+	 * When a instrumentation region ends, the last block needs 
 	 * to be added still.
 	 */
-	private InstrumentedRegion regionEnd;
+	private List<InstrumentedRegion> regionsThatEnd;
 
 	/**
 	 * Map that maps requestIds to a {@link RequestResult} if there was such 
@@ -66,8 +68,8 @@ public class CollectionStrategyDefault extends AbstractCollectionStrategy {
 		this.countingResultRegionIndexing = new CountingResultRegionIndexing();
 		this.countingResultThreadIndexing = new CountingResultThreadIndexing();
 		this.lastBlockExecutionSequenceByMethod = new HashMap<UUID, List<Integer>>();
-		this.currentRegion = null;
-		this.regionEnd = null;
+		this.currentRegions = new LinkedList<InstrumentedRegion>();
+		this.regionsThatEnd = new LinkedList<InstrumentedRegion>();
 		this.requestMap = new HashMap<UUID, RequestResult>();
 	}
 
@@ -79,8 +81,8 @@ public class CollectionStrategyDefault extends AbstractCollectionStrategy {
 		this.countingResultRegionIndexing.clearResults();
 		this.countingResultThreadIndexing.clearResults();
 		this.lastBlockExecutionSequenceByMethod.clear();
-		this.currentRegion = null;
-		this.regionEnd = null;
+		this.currentRegions.clear();
+		this.regionsThatEnd.clear();
 		this.requestMap.clear();
 	}
 
@@ -201,17 +203,22 @@ public class CollectionStrategyDefault extends AbstractCollectionStrategy {
 						if(ir.getStartLabelIds().contains(labelBlockIndex)
 								&& result.qualifyingMethodName.equals(ir.getStartMethod().getQualifyingMethodName())) {
 							// region started
-							this.currentRegion = ir;
-							log.info("Region started: " + ir);
-							this.addResultToCollection(res);
+							if(!currentRegions.contains(ir)) {
+								this.currentRegions.add(ir);
+								log.info("Region started: " + ir);
+								this.addResultToCollection(res);
+							}
 						}
 						// this is not the else case if the region is a single line
-						if(ir.getStopLabelIds().contains(labelBlockIndex)
+						if(this.currentRegions.contains(ir) 
+								&& ir.getStopLabelIds().contains(labelBlockIndex)
 								&& result.qualifyingMethodName.equals(ir.getStopMethod().getQualifyingMethodName())) {
 							// region ended
-							this.regionEnd = this.currentRegion;
-							this.currentRegion = null;
-							log.info("Region ended: " + regionEnd);
+							if(!this.regionsThatEnd.contains(ir)) {
+								this.regionsThatEnd.add(ir);
+								this.currentRegions.remove(ir);
+								log.info("Region ended: " + ir);
+							}
 						}
 					}
 				}
@@ -221,9 +228,9 @@ public class CollectionStrategyDefault extends AbstractCollectionStrategy {
 			if(!(result instanceof ProtocolCountUpdateStructure)) {
 				if(result.blockCountingMode != BlockCountingMode.LabelBlocks) {
 					if(this.parentResultCollector.getInstrumentationContext().getCountingMode() == CountingMode.Regions) {
-						if(this.currentRegion != null) {
+						if(this.currentRegions != null && !this.currentRegions.isEmpty()) {
 							res = this.countingResultThreadIndexing.apply(res, result.spawnedThreads);
-							this.countingResultRegionIndexing.add(res, this.currentRegion);
+							this.countingResultRegionIndexing.add(res, this.currentRegions);
 						} else {
 							// no region active, skip result
 						}
@@ -246,11 +253,25 @@ public class CollectionStrategyDefault extends AbstractCollectionStrategy {
 
 				if(this.parentResultCollector.getInstrumentationContext().getCountingMode() == CountingMode.Regions) {
 					// add up for the counting region if necessary
-					if(this.currentRegion != null) {
-						this.countingResultRegionIndexing.add(res, this.currentRegion);
-					} else if(this.regionEnd != null) {
-						this.countingResultRegionIndexing.add(res, this.regionEnd);
-						this.regionEnd = null;
+					if(this.currentRegions != null && !this.currentRegions.isEmpty()) {
+						this.countingResultRegionIndexing.add(res, this.currentRegions);
+					}
+					if(this.regionsThatEnd != null && !this.regionsThatEnd.isEmpty()) {
+						final int labelBlockIndex = result.blockExecutionSequence.get(result.blockExecutionSequence.size()-1);
+						List<InstrumentedRegion> regionsToRemove = new LinkedList<InstrumentedRegion>();
+						for(InstrumentedRegion r : regionsThatEnd) {
+							if(r.getStopLabelIds().contains(labelBlockIndex)
+									&& result.qualifyingMethodName.equals(r.getStopMethod().getQualifyingMethodName())) {
+								// the current label is a stop label, so we are still in the region
+								this.countingResultRegionIndexing.add(res, Arrays.asList(r));
+							} else {
+								// the current label is not in the region; the region is done
+								if(!regionsToRemove.contains(r)) {
+									regionsToRemove.add(r);
+								}
+							}
+						}
+						this.regionsThatEnd.removeAll(regionsToRemove);
 					}
 
 					// make sure observers are updated
