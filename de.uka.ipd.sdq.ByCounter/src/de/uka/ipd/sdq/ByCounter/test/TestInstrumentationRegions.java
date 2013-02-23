@@ -326,9 +326,9 @@ public class TestInstrumentationRegions extends AbstractByCounterTest {
 						 .add(Opcodes.INVOKEVIRTUAL, 7) // startB():3x, stopCommon():4x
 						 .add(Opcodes.DLOAD, 1)			// startB():1x
 						 .add(methodExecute.getCanonicalMethodName(), 1) // startA():1x
-						 .add("java.lang.StringBuilder.StringBuilder()V", 2) // startA():1x, stopCommon():1x
-						 .add("java/lang/StringBuilder.append(I)Ljava/lang/StringBuilder;", 1) // startA():1x
-						 .add("java/lang/StringBuilder.toString()Ljava/lang/String;", 2) // startA():1x, stopCommon():1x
+						 .add("java.lang.StringBuilder.StringBuilder()V", 2) // startB():1x, stopCommon():1x
+						 .add("java/lang/StringBuilder.append(D)Ljava/lang/StringBuilder;", 1) // startB():1x
+						 .add("java/lang/StringBuilder.toString()Ljava/lang/String;", 2) // startB():1x, stopCommon():1x
 						 .add(Opcodes.ICONST_1, 1)		// stopCommon():1x
 						 .add(Opcodes.ISTORE, 1)		// stopCommon():1x
 						 .add(Opcodes.GETSTATIC, 1)		// stopCommon():1x
