@@ -288,7 +288,6 @@ public class TestResultWriters extends AbstractByCounterTest {
 		methodDescriptor = new MethodDescriptor(CLASS_TEST_SUBJECT,
 			METHOD_PARAMETER_TEST);
 		counter.addEntityToInstrument(methodDescriptor);
-		counter.getInstrumentationParams().setWriteClassesToDisk(true);
 		counter.instrument();
 		counter.execute(methodDescriptor,
 			new Object[]{2, 2, CLASS_TEST_SUBJECT});
