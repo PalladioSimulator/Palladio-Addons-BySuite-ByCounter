@@ -55,6 +55,9 @@ public class RegionAnalyser extends LabelBlockAnalyser {
 			if(reg.getStartMethod().getCanonicalMethodName().equals(this.method.getCanonicalMethodName())) {
 				List<InstructionBlockLocation> startLabels = this.lineNumberAnalyser.findLabelBlockByLine(reg.getStartLine());
 				List<Integer> labelIds = new LinkedList<Integer>();
+				if(startLabels == null) {
+					throw new IllegalStateException("Cannot find label for " + reg.getStartMethod().getCanonicalMethodName() + " line number " + reg.getStartLine() + ".");
+				}
 				for(InstructionBlockLocation loc : startLabels) {
 					labelIds.add(this.instructionBlockLabels.indexOf(loc.label));
 				}
@@ -65,6 +68,9 @@ public class RegionAnalyser extends LabelBlockAnalyser {
 			if(reg.getStopMethod().getCanonicalMethodName().equals(this.method.getCanonicalMethodName())) {
 				List<InstructionBlockLocation> stopLabels = this.lineNumberAnalyser.findLabelBlockByLine(reg.getStopLine());
 				List<Integer> labelIds = new LinkedList<Integer>();
+				if(stopLabels == null) {
+					throw new IllegalStateException("Cannot find label for " + reg.getStopMethod().getCanonicalMethodName() + " line number " + reg.getStopLine() + ".");
+				}
 				for(InstructionBlockLocation loc : stopLabels) {
 					labelIds.add(this.instructionBlockLabels.indexOf(loc.label));
 				}
