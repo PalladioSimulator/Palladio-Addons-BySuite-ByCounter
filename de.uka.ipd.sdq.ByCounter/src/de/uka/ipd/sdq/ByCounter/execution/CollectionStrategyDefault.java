@@ -204,6 +204,7 @@ public class CollectionStrategyDefault extends AbstractCollectionStrategy {
 								&& result.qualifyingMethodName.equals(ir.getStartMethod().getQualifyingMethodName())) {
 							// region started
 							if(!currentRegions.contains(ir)) {
+								this.parentResultCollector.protocolActiveEntity(ir.getId().toString());
 								this.currentRegions.add(ir);
 								log.info("Region started: " + ir);
 								this.addResultToCollection(res);
@@ -252,9 +253,11 @@ public class CollectionStrategyDefault extends AbstractCollectionStrategy {
 				// result is an instance of ProtocolCountUpdateStructure
 
 				if(this.parentResultCollector.getInstrumentationContext().getCountingMode() == CountingMode.Regions) {
+					boolean wasUsedForRegion = false;
 					// add up for the counting region if necessary
 					if(this.currentRegions != null && !this.currentRegions.isEmpty()) {
 						this.countingResultRegionIndexing.add(res, this.currentRegions);
+						wasUsedForRegion = true;
 					}
 					if(this.regionsThatEnd != null && !this.regionsThatEnd.isEmpty()) {
 						final int labelBlockIndex = result.blockExecutionSequence.get(result.blockExecutionSequence.size()-1);
@@ -264,6 +267,7 @@ public class CollectionStrategyDefault extends AbstractCollectionStrategy {
 									&& result.qualifyingMethodName.equals(r.getStopMethod().getQualifyingMethodName())) {
 								// the current label is a stop label, so we are still in the region
 								this.countingResultRegionIndexing.add(res, Arrays.asList(r));
+								wasUsedForRegion = true;
 							} else {
 								// the current label is not in the region; the region is done
 								if(!regionsToRemove.contains(r)) {
@@ -274,11 +278,13 @@ public class CollectionStrategyDefault extends AbstractCollectionStrategy {
 						this.regionsThatEnd.removeAll(regionsToRemove);
 					}
 
-					// make sure observers are updated
-					CountingResultSectionExecutionUpdate update = 
-							new CountingResultSectionExecutionUpdate(res);
-					CountingResultCollector.getInstance().setChanged();
-					CountingResultCollector.getInstance().notifyObservers(update);
+					if(wasUsedForRegion) {
+						// make sure observers are updated
+						CountingResultSectionExecutionUpdate update = 
+								new CountingResultSectionExecutionUpdate(res);
+						CountingResultCollector.getInstance().setChanged();
+						CountingResultCollector.getInstance().notifyObservers(update);
+					}
 				} else {
 					res = this.countingResultThreadIndexing.apply(res, result.spawnedThreads);
 					this.countingResultUpdateIndexing.add(res, lastBlockExecutionSequenceByMethod.get(result.ownID));
