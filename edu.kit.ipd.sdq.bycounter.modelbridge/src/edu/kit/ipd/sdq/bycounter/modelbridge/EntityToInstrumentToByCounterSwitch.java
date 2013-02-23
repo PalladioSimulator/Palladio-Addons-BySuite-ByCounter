@@ -96,7 +96,7 @@ public class EntityToInstrumentToByCounterSwitch extends InputSwitch<Boolean> {
 		addRootNodeToAvailableRootNodes(area.getFrom());
 		// identify surrounding method
 		Method surroundingMethodFrom = getSourroundingMethod(area.getFrom());
-		Method surroundingMethodTo = getSourroundingMethod(area.getFrom());
+		Method surroundingMethodTo = getSourroundingMethod(area.getTo());
 		MethodIdentifier midFrom = new MethodIdentifier(
 				surroundingMethodFrom.getSurroundingClass()
 						.getQualifiedName(),
@@ -105,7 +105,7 @@ public class EntityToInstrumentToByCounterSwitch extends InputSwitch<Boolean> {
 				surroundingMethodTo.getSurroundingClass()
 						.getQualifiedName(),
 				ByCounterWrapper.constructSignature(surroundingMethodTo));
-		if(midFrom.equals(midTo)) {
+		if(false && midFrom.equals(midTo)) {
 			// from and to are in the same method; create instrumented code area
 			// construct a method descriptor
 			MethodDescriptor methodDesc = new MethodDescriptor(
@@ -235,11 +235,11 @@ public class EntityToInstrumentToByCounterSwitch extends InputSwitch<Boolean> {
 
 		LineNumberRange newRange = new LineNumberRange(firstLine,
 					lastLine);
-		while (firstLine < lastLine && !methodLineNumbers.contains(newRange.firstLine)) {
+		while (firstLine < lastLine && !methodLineNumbers.contains(firstLine)) {
 			// try to adjust the line number until a line exists in bytecode
 			firstLine++;
 		}
-		while (firstLine < lastLine && !methodLineNumbers.contains(newRange.lastLine)) {
+		while (firstLine < lastLine && !methodLineNumbers.contains(lastLine)) {
 			// try to adjust the line number until a line exists in bytecode
 			lastLine--;
 		}
