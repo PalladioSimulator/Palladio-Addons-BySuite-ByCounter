@@ -304,17 +304,18 @@ public class TestInstrumentationRegions extends AbstractByCounterTest {
 						 .add(Opcodes.DUP, 2)			// startA():1x, stopCommon():1x
 						 .add(Opcodes.INVOKESPECIAL, 2)	// startA():1x, stopCommon():1x
 						 .add(Opcodes.INVOKEVIRTUAL, 7) // startA():3x, stopCommon():4x
-						 .add(Opcodes.ILOAD, 1)			// startA():1x
-						 .add(methodExecute.getCanonicalMethodName(), 1) // startA():1x
-						 .add("java.lang.StringBuilder.StringBuilder()V", 2) // startA():1x, stopCommon():1x
-						 .add("java/lang/StringBuilder.append(I)Ljava/lang/StringBuilder;", 1) // startA():1x
-						 .add("java/lang/StringBuilder.toString()Ljava/lang/String;", 2) // startA():1x, stopCommon():1x
+						 .add(Opcodes.ILOAD, 2)			// startA():1x, stopCommon():1x
+						 .add(methodStopCommon.getCanonicalMethodName(), 1) // startA():1x
+						 .add("java.lang.StringBuilder.StringBuilder()V", 1) // startA():1x, stopCommon():1x
+						 .add("java.lang.StringBuilder.append(I)Ljava/lang/StringBuilder;", 1) // startA():1x
+						 .add("java.lang.StringBuilder.toString()Ljava/lang/String;", 2) // startA():1x, stopCommon():1x
 						 .add(Opcodes.ICONST_1, 1)		// stopCommon():1x
 						 .add(Opcodes.GETSTATIC, 1)		// stopCommon():1x
 						 .add(Opcodes.LDC, 1)			// stopCommon():1x
-						 .add("java/lang/StringBuilder.append(Z)Ljava/lang/StringBuilder;", 1) // stopCommon():1x
-						 .add("java/lang/StringBuilder.append(Ljava/lang/String;)Ljava/lang/StringBuilder;", 1) // stopCommon():1x
-						 .add("java/io/PrintStream.println(Ljava/lang/String;)V", 1) // stopCommon():1x
+						 .add("java.lang.StringBuilder.StringBuilder(Ljava/lang/String;)V", 1) // stopCommon():1x
+						 .add("java.lang.StringBuilder.append(Z)Ljava/lang/StringBuilder;", 1) // stopCommon():1x
+						 .add("java.lang.StringBuilder.append(Ljava/lang/String;)Ljava/lang/StringBuilder;", 1) // stopCommon():1x
+						 .add("java.io.PrintStream.println(Ljava/lang/String;)V", 1) // stopCommon():1x
 						 ;
 		// regionB
 		expectation.add().add(Opcodes.LDC, 2)			// startB():1x, stopCommon():1x
@@ -325,17 +326,18 @@ public class TestInstrumentationRegions extends AbstractByCounterTest {
 						 .add(Opcodes.INVOKESPECIAL, 2)	// startB():1x, stopCommon():1x
 						 .add(Opcodes.INVOKEVIRTUAL, 7) // startB():3x, stopCommon():4x
 						 .add(Opcodes.DLOAD, 1)			// startB():1x
-						 .add(methodExecute.getCanonicalMethodName(), 1) // startA():1x
-						 .add("java.lang.StringBuilder.StringBuilder()V", 2) // startB():1x, stopCommon():1x
-						 .add("java/lang/StringBuilder.append(D)Ljava/lang/StringBuilder;", 1) // startB():1x
-						 .add("java/lang/StringBuilder.toString()Ljava/lang/String;", 2) // startB():1x, stopCommon():1x
+						 .add(methodStopCommon.getCanonicalMethodName(), 1) // startA():1x
+						 .add("java.lang.StringBuilder.StringBuilder(Ljava/lang/String;)V", 1) // stopCommon():1x
+						 .add("java.lang.StringBuilder.StringBuilder()V", 1) // startB():1x
+						 .add("java.lang.StringBuilder.append(D)Ljava/lang/StringBuilder;", 1) // startB():1x
+						 .add("java.lang.StringBuilder.toString()Ljava/lang/String;", 2) // startB():1x, stopCommon():1x
 						 .add(Opcodes.ICONST_1, 1)		// stopCommon():1x
 						 .add(Opcodes.ISTORE, 1)		// stopCommon():1x
 						 .add(Opcodes.GETSTATIC, 1)		// stopCommon():1x
 						 .add(Opcodes.ILOAD, 1)			// stopCommon():1x
-						 .add("java/lang/StringBuilder.append(Z)Ljava/lang/StringBuilder;", 1) // stopCommon():1x
-						 .add("java/lang/StringBuilder.append(Ljava/lang/String;)Ljava/lang/StringBuilder;", 1) // stopCommon():1x
-						 .add("java/io/PrintStream.println(Ljava/lang/String;)V", 1) // stopCommon():1x
+						 .add("java.lang.StringBuilder.append(Z)Ljava/lang/StringBuilder;", 1) // stopCommon():1x
+						 .add("java.lang.StringBuilder.append(Ljava/lang/String;)Ljava/lang/StringBuilder;", 1) // stopCommon():1x
+						 .add("java.io.PrintStream.println(Ljava/lang/String;)V", 1) // stopCommon():1x
 						 ;
 		
 		counter.instrument();
