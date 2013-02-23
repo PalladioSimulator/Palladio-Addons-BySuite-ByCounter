@@ -281,19 +281,25 @@ public class TestResultWriters extends AbstractByCounterTest {
 		checkAndDeleteFile(resultLogFileName);
 		cleanResults();
 
+		counter = setupByCounter();
+		counter.getInstrumentationParams().setUseResultCollector(false);
+		counter.getInstrumentationParams().enableResultLogWriter(resultLogFileName);
 		// test with boolean method
 		methodDescriptor = new MethodDescriptor(CLASS_TEST_SUBJECT,
 			METHOD_PARAMETER_TEST);
 		counter.addEntityToInstrument(methodDescriptor);
+		counter.getInstrumentationParams().setWriteClassesToDisk(true);
 		counter.instrument();
 		counter.execute(methodDescriptor,
 			new Object[]{2, 2, CLASS_TEST_SUBJECT});
 
 		// check whether a file was written
 		checkAndDeleteFile(resultLogFileName);
-		
+
+		counter = setupByCounter();
 		// enable CountingResultCollector additionally
 		counter.getInstrumentationParams().setUseResultCollector(true);
+		counter.getInstrumentationParams().enableResultLogWriter(resultLogFileName);
 
 		// test with boolean method
 		methodDescriptor = new MethodDescriptor(CLASS_TEST_SUBJECT,
@@ -362,7 +368,8 @@ public class TestResultWriters extends AbstractByCounterTest {
 		// check whether a file was written
 		final File f = new File(resultLogFileName);
 		// The true result log file name has attached time stamps!
-		String[] files = f.getParentFile().list(new FilenameFilter() {
+		File parentDirectory = f.getParentFile();
+		String[] files = parentDirectory.list(new FilenameFilter() {
 			public boolean accept(File dir, String name) {
 				if(name.startsWith(f.getName())) {
 					return true;
@@ -371,7 +378,7 @@ public class TestResultWriters extends AbstractByCounterTest {
 			}
 		});
 		Assert.assertNotSame("No log file was created.", 0, files.length);
-		File realF = new File(f.getParentFile(), files[0]);
+		File realF = new File(parentDirectory, files[0]);
 		Assert.assertTrue("Created file is empty.", realF.length() > 0);
 
 		// remove file again

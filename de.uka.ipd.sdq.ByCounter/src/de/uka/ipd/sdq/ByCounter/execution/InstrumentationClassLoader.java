@@ -106,6 +106,9 @@ public class InstrumentationClassLoader extends java.lang.ClassLoader {
 				throw new RuntimeException(e);
 			}
 		}
+		if(this.ctClassCache.containsKey(className)) {
+			throw new IllegalStateException("The class '" + className + "' was previously defined and cannot be redefined correctly!");
+		}
 		// make the class known to the class pool
 		this.classPool.insertClassPath(new ByteArrayClassPath(className, bytes));
 		this.classesInClassPool.add(className);

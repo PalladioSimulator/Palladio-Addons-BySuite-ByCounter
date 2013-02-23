@@ -268,7 +268,6 @@ public final class CountingResultCollector extends Observable {
 			// notify observers
 			this.setChanged();
 			if(!(result instanceof ProtocolCountUpdateStructure)) {
-				((CollectionStrategyDefault)this.strategyDefault).getCountingResultIndexing().retrieveCountingResultByMethodStartTime(result.executionStart);
 				ResultCollection allResults = this.retrieveAllCountingResults();
 				// filter results to only contain those for the current method.
 				ResultCollection relevantResults = new ResultCollection();
