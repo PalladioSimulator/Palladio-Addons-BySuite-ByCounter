@@ -20,6 +20,7 @@ import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentedRegion;
 import de.uka.ipd.sdq.ByCounter.parsing.LineNumberRange;
 import de.uka.ipd.sdq.ByCounter.results.CountingResult;
 import de.uka.ipd.sdq.ByCounter.test.framework.expectations.Expectation;
+import de.uka.ipd.sdq.ByCounter.test.helpers.OverlappingRegions;
 import de.uka.ipd.sdq.ByCounter.test.helpers.TestSubject;
 import de.uka.ipd.sdq.ByCounter.test.helpers.subjects.ExecutionOrder;
 import de.uka.ipd.sdq.ByCounter.utils.MethodDescriptor;
@@ -259,6 +260,97 @@ public class TestInstrumentationRegions extends AbstractByCounterTest {
 			exceptionThrown = true;
 		}
 		Assert.assertTrue("The expected exception was not thrown. ", exceptionThrown);
+	}
+	
+	/**
+	 * Tests definition and counting of two instrumentation regions that 
+	 * overlap.
+	 */
+	@Test
+	public void testOverlappingRegions() {
+		// initialize ByCounter
+		BytecodeCounter counter = this.setupByCounter();
+		counter.getInstrumentationParams().setInstrumentRecursively(true);
+		
+		final MethodDescriptor methodStartA = new MethodDescriptor(
+				OverlappingRegions.class.getCanonicalName(), 
+				"public void startA()");
+		final MethodDescriptor methodStartB = new MethodDescriptor(
+				OverlappingRegions.class.getCanonicalName(), 
+				"public void startB()");
+		final MethodDescriptor methodStopCommon = new MethodDescriptor(
+				OverlappingRegions.class.getCanonicalName(), 
+				"public boolean stopCommon(final java.lang.String input)");
+		final MethodDescriptor methodExecute = new MethodDescriptor(
+				OverlappingRegions.class.getCanonicalName(), 
+				"public void execute()");
+
+		InstrumentedRegion regionA = new InstrumentedRegion(
+				methodStartA, 19, 
+				methodStopCommon, 36);
+		InstrumentedRegion regionB = new InstrumentedRegion(
+				methodStartB, 27, 
+				methodStopCommon, 36);
+		counter.getInstrumentationParams().getEntitiesToInstrument().add(regionA);
+		counter.getInstrumentationParams().getEntitiesToInstrument().add(regionB);
+
+		// expectations is the sum of the opcodes in the different methods.
+		Expectation expectation = new Expectation();
+		// regionA
+		expectation.add().add(Opcodes.ICONST_0, 1)		// startA():1x
+						 .add(Opcodes.ISTORE, 2)		// startA():1x, stopCommon():1x
+						 .add(Opcodes.ALOAD, 2)			// startA():1x, stopCommon():1x
+						 .add(Opcodes.NEW, 2)			// startA():1x, stopCommon():1x
+						 .add(Opcodes.DUP, 2)			// startA():1x, stopCommon():1x
+						 .add(Opcodes.INVOKESPECIAL, 2)	// startA():1x, stopCommon():1x
+						 .add(Opcodes.INVOKEVIRTUAL, 7) // startA():3x, stopCommon():4x
+						 .add(Opcodes.ILOAD, 1)			// startA():1x
+						 .add(methodExecute.getCanonicalMethodName(), 1) // startA():1x
+						 .add("java.lang.StringBuilder.StringBuilder()V", 2) // startA():1x, stopCommon():1x
+						 .add("java/lang/StringBuilder.append(I)Ljava/lang/StringBuilder;", 1) // startA():1x
+						 .add("java/lang/StringBuilder.toString()Ljava/lang/String;", 2) // startA():1x, stopCommon():1x
+						 .add(Opcodes.ICONST_1, 1)		// stopCommon():1x
+						 .add(Opcodes.GETSTATIC, 1)		// stopCommon():1x
+						 .add(Opcodes.LDC, 1)			// stopCommon():1x
+						 .add("java/lang/StringBuilder.append(Z)Ljava/lang/StringBuilder;", 1) // stopCommon():1x
+						 .add("java/lang/StringBuilder.append(Ljava/lang/String;)Ljava/lang/StringBuilder;", 1) // stopCommon():1x
+						 .add("java/io/PrintStream.println(Ljava/lang/String;)V", 1) // stopCommon():1x
+						 ;
+		// regionB
+		expectation.add().add(Opcodes.LDC, 2)			// startB():1x, stopCommon():1x
+						 .add(Opcodes.DSTORE, 1)		// startB():1x
+						 .add(Opcodes.ALOAD, 2)			// startB():1x, stopCommon():1x
+						 .add(Opcodes.NEW, 2)			// startB():1x, stopCommon():1x
+						 .add(Opcodes.DUP, 2)			// startB():1x, stopCommon():1x
+						 .add(Opcodes.INVOKESPECIAL, 2)	// startB():1x, stopCommon():1x
+						 .add(Opcodes.INVOKEVIRTUAL, 7) // startB():3x, stopCommon():4x
+						 .add(Opcodes.DLOAD, 1)			// startB():1x
+						 .add(methodExecute.getCanonicalMethodName(), 1) // startA():1x
+						 .add("java.lang.StringBuilder.StringBuilder()V", 2) // startA():1x, stopCommon():1x
+						 .add("java/lang/StringBuilder.append(I)Ljava/lang/StringBuilder;", 1) // startA():1x
+						 .add("java/lang/StringBuilder.toString()Ljava/lang/String;", 2) // startA():1x, stopCommon():1x
+						 .add(Opcodes.ICONST_1, 1)		// stopCommon():1x
+						 .add(Opcodes.ISTORE, 1)		// stopCommon():1x
+						 .add(Opcodes.GETSTATIC, 1)		// stopCommon():1x
+						 .add(Opcodes.ILOAD, 1)			// stopCommon():1x
+						 .add("java/lang/StringBuilder.append(Z)Ljava/lang/StringBuilder;", 1) // stopCommon():1x
+						 .add("java/lang/StringBuilder.append(Ljava/lang/String;)Ljava/lang/StringBuilder;", 1) // stopCommon():1x
+						 .add("java/io/PrintStream.println(Ljava/lang/String;)V", 1) // stopCommon():1x
+						 ;
+		
+		counter.instrument();
+		
+		Object[] executionParameters = new Object[0];
+		counter.execute(methodExecute, executionParameters);
+		
+		SortedSet<CountingResult> countingResults = CountingResultCollector.getInstance().retrieveAllCountingResults().getCountingResults();
+        
+        // print ByCounter results
+		CountingResult[] results = countingResults.toArray(new CountingResult[0]);
+        for (CountingResult r : results) {
+        	r.logResult(false, true);
+        }
+        expectation.compare(results);
 	}
     
     @Override
