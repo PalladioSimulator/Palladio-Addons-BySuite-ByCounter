@@ -34,8 +34,8 @@ public class CountingResultRegionIndexing {
 			CountingResult rs = this.results.get(region);
 			if(rs == null) {
 				// no entry for this region id yet
-				this.results.put(region, res);
 				res.setObservedElement(region);
+				this.results.put(region, res);
 			} else {
 				// add up with the existing results
 				rs.add(res);

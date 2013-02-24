@@ -94,15 +94,48 @@ public class CountingResultUpdateIndexing {
 	}
 
 	/**
+	 * This class groups all indexing information relevant to a single thread 
+	 * for regions.
+	 * @author Martin Krogmann
+	 */
+	private class ThreadRegionIndex {
+		/**
+		 * {@link CountingResult} by region id.
+		 */
+		public Map<UUID, Queue<CountingResult>> regionResultsById;
+		/** Id of the thread that this index is for. */
+		public long threadId;
+		
+		/**
+		 * @param threadId Id of the thread that this index is for.
+		 */
+		public ThreadRegionIndex(final long threadId) {
+			this.threadId = threadId;
+			this.regionResultsById = new HashMap<UUID, Queue<CountingResult>>();
+		}
+
+		@Override
+		public String toString() {
+			return "ThreadRegionIndex [methodIndexById=" + this.regionResultsById
+					+ ", threadId=" + this.threadId + "]";
+		}
+	}
+
+	/**
 	 * Map that holds a {@link ThreadIndex} for each thread by thread id.
 	 */
 	private Map<Long, ThreadIndex> indexForThread;
+	/**
+	 * Map that holds a {@link ThreadRegionIndex} for each thread by thread id.
+	 */
+	private Map<Long, ThreadRegionIndex> indexForThreadRegion;
 	
 	/**
 	 * Construct the indexing structure.
 	 */
 	public CountingResultUpdateIndexing() {
 		this.indexForThread = new HashMap<Long, CountingResultUpdateIndexing.ThreadIndex>();
+		this.indexForThreadRegion = new HashMap<Long, CountingResultUpdateIndexing.ThreadRegionIndex>();
 	}
 
 	/**
@@ -155,6 +188,30 @@ public class CountingResultUpdateIndexing {
 		currentMethodIndex.lastUpdatedSectionIndex = result.getIndexOfRangeBlock();
 		currentMethodIndex.lastBlockExecutionSequence = new ArrayList<Integer>(blockExecutionSequence);
 	}
+	
+
+	/**
+	 * This handles updates reported for a region when online 
+	 * updates are enabled.
+	 * @param result The calculated counting result for the update.
+	 * @param regionId Id of the region for which a new result is added.
+	 */
+	public void add(CountingResult result, final UUID regionId) {
+		long currentThreadId = result.getThreadId();
+		ThreadRegionIndex currentThreadIndex = this.indexForThreadRegion.get(currentThreadId);
+		if(currentThreadIndex == null) {
+			currentThreadIndex = new ThreadRegionIndex(currentThreadId);
+			this.indexForThreadRegion.put(currentThreadId, currentThreadIndex);
+		}
+
+		Queue<CountingResult> resultQueue = currentThreadIndex.regionResultsById.get(regionId);
+		if(resultQueue == null) {
+			// no entry for this method yet
+			resultQueue = new LinkedList<CountingResult>();
+			currentThreadIndex.regionResultsById.put(regionId, resultQueue);
+		}
+		resultQueue.add(result.clone());
+	}
 
 
 	/**
@@ -184,6 +241,7 @@ public class CountingResultUpdateIndexing {
 	 */
 	public void clearResults() {
 		this.indexForThread.clear();
+		this.indexForThreadRegion.clear();
 	}
 
 	/**
@@ -210,5 +268,24 @@ public class CountingResultUpdateIndexing {
 		updateObserversWithSection(resultQueue);
 		// since the method was left, mark it as done
 		methodIndex.isDone = true;
+	}
+
+
+	/**
+	 * Signal that no further updates for the region are to be expected.
+	 * @param threadID {@link Thread#getId()} of the thread the method executed in.
+	 * @param regionID {@link UUID} of the region in question.
+	 */
+	public void setRegionDone(final long threadID, final UUID regionID) {
+		ThreadRegionIndex threadIndex = this.indexForThreadRegion.get(threadID);
+		if(threadIndex == null) {
+			return;
+		}
+		Queue<CountingResult> resultQueue = threadIndex.regionResultsById.get(regionID);
+		if(resultQueue == null) {
+			return;
+		}
+		updateObserversWithSection(resultQueue);
+		threadIndex.regionResultsById.remove(regionID);
 	}
 }
