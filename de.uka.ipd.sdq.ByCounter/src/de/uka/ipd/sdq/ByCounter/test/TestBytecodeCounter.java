@@ -232,7 +232,12 @@ public class TestBytecodeCounter extends AbstractByCounterTest {
 		
 		// The log file name is dynamic and cannot be checked
 		cleanResults();
-
+		counter = setupByCounter();
+		counter.getInstrumentationParams().enableResultLogWriter(resultLogFileName);
+		counter.getInstrumentationParams().setUseBasicBlocks(false);
+		counter.getInstrumentationParams().setUseArrayParameterRecording(true);
+		counter.getInstrumentationParams().setUseResultCollector(false);
+		
 		// test with boolean method
 		methodDescriptor = new MethodDescriptor(TestSubject.class.getCanonicalName(), 
 			"public boolean parameterTest(int i, float f, java.lang.String s)");

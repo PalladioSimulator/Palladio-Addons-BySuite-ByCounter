@@ -195,15 +195,24 @@ public class BlockResultCalculation {
 			final ProtocolCountStructure result) {
 		
 		this.loadUpdatedBlockDefinitions(result.qualifyingMethodName, 
-				result.blockCountingMode != BlockCountingMode.LabelBlocks, 
+				result.blockCountingMode == BlockCountingMode.RangeBlocks || result.blockCountingMode == BlockCountingMode.BasicBlocks, 
 				result.blockCountingMode == BlockCountingMode.RangeBlocks,
 				result.blockCountingMode == BlockCountingMode.LabelBlocks);
 		
 
 		// possibly more than one counting result per item in the sequence
 		List<CalculatedCounts> resultCounts = new ArrayList<CalculatedCounts>();
+		ArrayList<Integer> blockExecutionSequence;
+		if(result.blockCountingMode == BlockCountingMode.BasicBlocks 
+				|| result.blockCountingMode == BlockCountingMode.RangeBlocks) {
+			blockExecutionSequence = result.basicBlockExecutionSequence;
+		} else if (result.blockCountingMode == BlockCountingMode.LabelBlocks ) {
+			blockExecutionSequence = result.labelBlockExecutionSequence;
+		} else {
+			throw new IllegalStateException("Count calculation can not deal with counting mode " + result.blockCountingMode);
+		}
 		
-		if(result.blockExecutionSequence.size() == 0) {
+		if(blockExecutionSequence.size() == 0) {
 			// no results
 			return new CalculatedCounts[] {};
 		} else {
@@ -211,7 +220,7 @@ public class BlockResultCalculation {
 				// just add the complete basic block
 				CalculatedCounts c = new CalculatedCounts();
 				c.init();
-				for(Integer blockIndex : result.blockExecutionSequence) {
+				for(Integer blockIndex : blockExecutionSequence) {
 					c.addMethodCallCounts(this.currentBasicBlocks[blockIndex].getMethodCallCounts(), 1);
 					c.addOpcodeCounts(this.currentBasicBlocks[blockIndex].getOpcodeCounts(), 1);
 				}
@@ -221,7 +230,7 @@ public class BlockResultCalculation {
 				// just add the complete label block
 				CalculatedCounts c = new CalculatedCounts();
 				c.init();
-				for(Integer blockIndex : result.blockExecutionSequence) {
+				for(Integer blockIndex : blockExecutionSequence) {
 					c.addMethodCallCounts(this.currentLabelBlocks[blockIndex].getMethodCallCounts(), 1);
 					c.addOpcodeCounts(this.currentLabelBlocks[blockIndex].getOpcodeCounts(), 1);
 				}
@@ -235,7 +244,7 @@ public class BlockResultCalculation {
 				// considered block (index) in the execution sequence is part of the range block
 				List<RangeBlocksBBExecutionCounts> currentRBECs = new LinkedList<RangeBlocksBBExecutionCounts>();
 				
-				for(Integer blockIndex : result.blockExecutionSequence) {
+				for(Integer blockIndex : blockExecutionSequence) {
 	
 					List<RangeBlockDescriptor> rangeBlocksContainingBBblockIndex = 
 						rangeBlocksByBasicBlock.get(blockIndex);	// can be null!
@@ -307,6 +316,9 @@ public class BlockResultCalculation {
 	private List<CalculatedCounts> sortResultsByRangeExecutionOrder(
 			ArrayList<CalculatedCounts> resultCounts,
 			ArrayList<Integer> rangeBlockExecutionSequence) {
+		if(resultCounts.isEmpty()) {
+			return resultCounts;
+		}
 		// For region updates, there is no 1:1 mapping from results to entries 
 		// in the rangeBlockExecution sequence. Therefore use stable sorting.
 		if(resultCounts.size() < rangeBlockExecutionSequence.size()) {

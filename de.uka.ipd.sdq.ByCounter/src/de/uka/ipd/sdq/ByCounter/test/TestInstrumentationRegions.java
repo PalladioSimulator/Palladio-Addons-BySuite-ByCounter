@@ -13,11 +13,8 @@ import org.objectweb.asm.Opcodes;
 
 import de.uka.ipd.sdq.ByCounter.execution.BytecodeCounter;
 import de.uka.ipd.sdq.ByCounter.execution.CountingResultCollector;
-import de.uka.ipd.sdq.ByCounter.instrumentation.EntityToInstrument;
 import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentationParameters;
-import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentedCodeArea;
 import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentedRegion;
-import de.uka.ipd.sdq.ByCounter.parsing.LineNumberRange;
 import de.uka.ipd.sdq.ByCounter.results.CountingResult;
 import de.uka.ipd.sdq.ByCounter.test.framework.expectations.Expectation;
 import de.uka.ipd.sdq.ByCounter.test.helpers.OverlappingRegions;
@@ -219,40 +216,6 @@ public class TestInstrumentationRegions extends AbstractByCounterTest {
 		List<InstrumentedRegion> instrumentationRegions = new LinkedList<InstrumentedRegion>();
         instrumentationRegions.add(region);
 		counter.getInstrumentationParams().getEntitiesToInstrument().addAll(instrumentationRegions);
-		boolean exceptionThrown = false;
-		try {
-			counter.instrument();
-		} catch(IllegalArgumentException iae) {
-			exceptionThrown = true;
-		}
-		Assert.assertTrue("The expected exception was not thrown. ", exceptionThrown);
-	}
-	
-	/**
-	 * Tests feeding ByCounter with incompatible instrumentation parameters.
-	 * Here regions are used in combination with code areas.
-	 */
-	@Test
-	public void testBadInstrumentationParameters_codeAreas() {
-        // run ByCounter
-		String canonicalClassName = ExecutionOrder.class.getCanonicalName();
-		String methodSignature = "void process()";
-        MethodDescriptor methodRanged = new MethodDescriptor(canonicalClassName, methodSignature);
-        InstrumentedRegion region = new InstrumentedRegion(methodRanged, 15, methodRanged, 15);
-        // specify a code area
-        InstrumentedCodeArea codeArea = new InstrumentedCodeArea(
-        		methodRanged, new LineNumberRange(16, 17));
-
-		// initialise
-        BytecodeCounter counter = setupByCounter();
-        // set up illegal parameters
-        
-		// set regions
-		List<EntityToInstrument> entities = new LinkedList<EntityToInstrument>();
-        entities.add(region);
-        entities.add(codeArea);
-		counter.getInstrumentationParams().getEntitiesToInstrument().addAll(entities);
-		
 		boolean exceptionThrown = false;
 		try {
 			counter.instrument();

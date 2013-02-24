@@ -95,7 +95,11 @@ public class ProtocolCountStructure {
 	/** When execution order recording is enabled, this is a list of integers
 	 * in which each item represents the execution of a block with the index of 
 	 * that number. */
-	public ArrayList<Integer> blockExecutionSequence;
+	public ArrayList<Integer> basicBlockExecutionSequence;
+	/** When execution order recording is enabled, this is a list of integers
+	 * in which each item represents the execution of a block with the index of 
+	 * that number. */
+	public ArrayList<Integer> labelBlockExecutionSequence;
 	/** When execution order recording is enabled, this is a list of integers
 	 * in which each item represents the execution of a range block with the 
 	 * index of that number. */
@@ -289,7 +293,9 @@ public class ProtocolCountStructure {
 		builder.append(", callerID=");
 		builder.append(this.callerID);
 		builder.append(", blockExecutionSequence=");
-		builder.append(this.blockExecutionSequence);
+		builder.append(this.basicBlockExecutionSequence);
+		builder.append(", labelExecutionSequence=");
+		builder.append(this.labelBlockExecutionSequence);
 		builder.append(", rangeBlockExecutionSequence=");
 		builder.append(this.rangeBlockExecutionSequence);
 		builder.append(", spawnedThreads=");

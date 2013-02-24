@@ -218,8 +218,7 @@ public class TestLineNumbers extends AbstractByCounterTest {
     @Test
     public void testBasicBlockCounting() {
         // start standard counting
-        BytecodeCounter counter = new BytecodeCounter();
-        counter.setInstrumentationParams(this.instrumentationParameters);
+        BytecodeCounter counter = setupByCounter();
         counter.getInstrumentationParams().setUseBasicBlocks(false);
         MethodDescriptor methodNormalise = new MethodDescriptor(DEFAULT_SUBJECT_CANONICAL, SIGNATURE_BASIC_BLOCK);
         counter.addEntityToInstrument(methodNormalise);
@@ -232,6 +231,7 @@ public class TestLineNumbers extends AbstractByCounterTest {
         CountingResultCollector.getInstance().clearResults();
 
         // enable usage of basic blocks and count again
+        counter = setupByCounter();
         counter.getInstrumentationParams().setUseBasicBlocks(true);
         counter.getInstrumentationParams().setRecordBlockExecutionOrder(false);
         counter.getInstrumentationParams().setWriteClassesToDisk(true);

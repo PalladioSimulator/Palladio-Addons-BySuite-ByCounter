@@ -57,7 +57,7 @@ public class LabelBlockAnalyser extends InstructionBlockAnalyser {
 		instrumentationState.getInstrumentationContext().getLabelBlocks().addInstructionBlocksForMethod(
 				methodDescriptorString, 
 				labelBlocks);
-		this.instrumentationState.setBasicBlockLabels(
+		this.instrumentationState.setLabelBlockLabels(
 				this.instructionBlockLabels.toArray(new Label[this.instructionBlockLabels.size()]));
 	}
 }

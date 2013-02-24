@@ -38,8 +38,11 @@ public class CollectionStrategyDefault extends AbstractCollectionStrategy {
 	/** Indexing infrastructure for counting thread structures. */
 	private CountingResultThreadIndexing countingResultThreadIndexing;
 	
-	/** For each method: Last execution sequence. For updates. */
-	private Map<UUID,List<Integer>> lastBlockExecutionSequenceByMethod;
+	/** For each method: Last basic block execution sequence. For updates. */
+	private Map<UUID,List<Integer>> lastBasicBlockExecutionSequenceByMethod;
+	
+	/** For each method: Last label block execution sequence. For updates. */
+	private Map<UUID,List<Integer>> lastLabelBlockExecutionSequenceByMethod;
 
 	/** Regions that are currently counted. Is empty when no region is 
 	 * active. */
@@ -67,7 +70,8 @@ public class CollectionStrategyDefault extends AbstractCollectionStrategy {
 		this.countingResultUpdateIndexing = new CountingResultUpdateIndexing();
 		this.countingResultRegionIndexing = new CountingResultRegionIndexing();
 		this.countingResultThreadIndexing = new CountingResultThreadIndexing();
-		this.lastBlockExecutionSequenceByMethod = new HashMap<UUID, List<Integer>>();
+		this.lastBasicBlockExecutionSequenceByMethod = new HashMap<UUID, List<Integer>>();
+		this.lastLabelBlockExecutionSequenceByMethod = new HashMap<UUID, List<Integer>>();
 		this.currentRegions = new LinkedList<InstrumentedRegion>();
 		this.regionsThatEnd = new LinkedList<InstrumentedRegion>();
 		this.requestMap = new HashMap<UUID, RequestResult>();
@@ -80,7 +84,8 @@ public class CollectionStrategyDefault extends AbstractCollectionStrategy {
 		this.countingResultUpdateIndexing.clearResults();
 		this.countingResultRegionIndexing.clearResults();
 		this.countingResultThreadIndexing.clearResults();
-		this.lastBlockExecutionSequenceByMethod.clear();
+		this.lastBasicBlockExecutionSequenceByMethod.clear();
+		this.lastLabelBlockExecutionSequenceByMethod.clear();
 		this.currentRegions.clear();
 		this.regionsThatEnd.clear();
 		this.requestMap.clear();
@@ -134,31 +139,19 @@ public class CollectionStrategyDefault extends AbstractCollectionStrategy {
 				}
 			}
 			this.regionsThatEnd.removeAll(regionsToRemove);
-		} else if(result.blockExecutionSequence != null) {
+		} else if(result.basicBlockExecutionSequence != null) {
 			// This is an update. Replace the block execution sequence with 
 			// the part of the sequence that is new since the last update.
-			List<Integer> lastExSeq = lastBlockExecutionSequenceByMethod.get(result.ownID);
-			if(lastExSeq != null) {
-				Integer lastExSeqLength = lastExSeq.size();
-				Integer newExSeqLength = result.blockExecutionSequence.size();
-				if(lastExSeqLength != null) {
-					ArrayList<Integer> newSequence = new ArrayList<Integer>();
-					for(int i = lastExSeqLength; i < newExSeqLength; i++) {
-						newSequence.add(result.blockExecutionSequence.get(i));
-					}
-					// update execution sequence
-					lastBlockExecutionSequenceByMethod.put(result.ownID, new ArrayList<Integer>(result.blockExecutionSequence));
-					result.blockExecutionSequence = newSequence;
-					if(result.blockCountingMode == BlockCountingMode.RangeBlocks) {
-						// consider only the last entered range block?
-						int rangeBlockIndex = result.rangeBlockExecutionSequence.get(result.rangeBlockExecutionSequence.size()-1);
-						result.rangeBlockExecutionSequence = new ArrayList<Integer>();
-						result.rangeBlockExecutionSequence.add(rangeBlockIndex);
-					}
-				}
-			} else {
-				// update execution sequence
-				lastBlockExecutionSequenceByMethod.put(result.ownID, new ArrayList<Integer>(result.blockExecutionSequence));
+			result.basicBlockExecutionSequence = getNewPartOfExecutionSequence(result, lastBasicBlockExecutionSequenceByMethod, result.basicBlockExecutionSequence);
+			if(result.blockCountingMode == BlockCountingMode.LabelBlocks) {
+				result.labelBlockExecutionSequence = getNewPartOfExecutionSequence(result, lastLabelBlockExecutionSequenceByMethod, result.labelBlockExecutionSequence);
+			}
+			if(result.blockCountingMode == BlockCountingMode.RangeBlocks
+					&& result.rangeBlockExecutionSequence.size() > 0) {
+				// consider only the last entered range block?
+				int rangeBlockIndex = result.rangeBlockExecutionSequence.get(result.rangeBlockExecutionSequence.size()-1);
+				result.rangeBlockExecutionSequence = new ArrayList<Integer>();
+				result.rangeBlockExecutionSequence.add(rangeBlockIndex);
 			}
 		}
 
@@ -206,17 +199,20 @@ public class CollectionStrategyDefault extends AbstractCollectionStrategy {
 								result.qualifyingMethodName)[indexOfRangeBlock];
 				res.setObservedElement(observedRange);
 			} else if(result.blockCountingMode == BlockCountingMode.LabelBlocks) {
-				final int labelBlockIndex = result.blockExecutionSequence.get(result.blockExecutionSequence.size()-1);
+				final int labelBlockIndex = result.labelBlockExecutionSequence.get(result.labelBlockExecutionSequence.size()-1);
 				for(InstrumentedRegion ir : parentResultCollector.getInstrumentationContext().getInstrumentationRegions()) {
 					if(ir != null) {
 						if(ir.getStartLabelIds().contains(labelBlockIndex)
 								&& result.qualifyingMethodName.equals(ir.getStartMethod().getQualifyingMethodName())) {
 							// region started
-							if(!currentRegions.contains(ir) && !regionsThatEnd.contains(ir)) {
+							if(!currentRegions.contains(ir)) {
 								this.parentResultCollector.protocolActiveEntity(ir.getId().toString());
 								this.currentRegions.add(ir);
 								log.info("Region started: " + ir);
 								addResultToCollection(res);
+								if(regionsThatEnd.contains(ir)) {
+									regionsThatEnd.remove(ir);
+								}
 							}
 						}
 						// this is not the else case if the region is a single line
@@ -271,17 +267,14 @@ public class CollectionStrategyDefault extends AbstractCollectionStrategy {
 						}
 					}
 					if(this.regionsThatEnd != null && !this.regionsThatEnd.isEmpty()) {
-						final int labelBlockIndex = result.blockExecutionSequence.get(result.blockExecutionSequence.size()-1);
+						final int labelBlockIndex = result.labelBlockExecutionSequence.get(result.labelBlockExecutionSequence.size()-1);
 						List<InstrumentedRegion> regionsToRemove = new LinkedList<InstrumentedRegion>();
 						for(InstrumentedRegion r : regionsThatEnd) {
 							if(r.getStopLabelIds().contains(labelBlockIndex)
 									&& result.qualifyingMethodName.equals(r.getStopMethod().getQualifyingMethodName())) {
 								// the current label is a stop label, so we are still in the region
 								this.countingResultRegionIndexing.add(res, Arrays.asList(r));
-								// do not add twice!!!!
-//								if(!addedAbove) {
 								this.countingResultUpdateIndexing.add(res, r.getId());
-//								}
 
 								// make sure observers are updated
 								this.countingResultUpdateIndexing.setRegionDone(threadID, r.getId());
@@ -296,12 +289,42 @@ public class CollectionStrategyDefault extends AbstractCollectionStrategy {
 					}
 				} else {
 					res = this.countingResultThreadIndexing.apply(res, result.spawnedThreads);
-					this.countingResultUpdateIndexing.add(res, lastBlockExecutionSequenceByMethod.get(result.ownID));
+					this.countingResultUpdateIndexing.add(res, lastBasicBlockExecutionSequenceByMethod.get(result.ownID));
 				}
 			}
 
 		}
 		return true;
+	}
+
+	/** 
+	 * @param result {@link CountingResult}.
+	 * @param lastExecutionSequence Previous execution sequence.
+	 * @param newExecutionSequence Current execution sequence.
+	 * @return The new part of the execution sequence.
+	 */
+	private ArrayList<Integer> getNewPartOfExecutionSequence(
+			final ProtocolCountStructure result, 
+			final Map<UUID, List<Integer>> lastExecutionSequence, 
+			final ArrayList<Integer> newExecutionSequence) {
+		List<Integer> lastExSeq = lastExecutionSequence.get(result.ownID);
+		if(lastExSeq != null) {
+			Integer lastExSeqLength = lastExSeq.size();
+			Integer newExSeqLength = newExecutionSequence.size();
+			if(lastExSeqLength != null) {
+				ArrayList<Integer> newSequence = new ArrayList<Integer>();
+				for(int i = lastExSeqLength; i < newExSeqLength; i++) {
+					newSequence.add(newExecutionSequence.get(i));
+				}
+				// update execution sequence
+				lastExecutionSequence.put(result.ownID, new ArrayList<Integer>(newExecutionSequence));
+				return newSequence;
+			}
+		} else {
+			// update execution sequence
+			lastExecutionSequence.put(result.ownID, new ArrayList<Integer>(newExecutionSequence));
+		}
+		return newExecutionSequence;
 	}
 
 	/**
@@ -351,9 +374,8 @@ public class CollectionStrategyDefault extends AbstractCollectionStrategy {
 		CalculatedCounts[] ccounts;
 		SortedMap<String, Long> methodCounts = new TreeMap<String, Long>();
 		if(result.blockCountingMode == BlockCountingMode.BasicBlocks) {
-			if(result.blockExecutionSequence != null) {
-				ccounts = blockCalculation.calculateCountsFromBlockExecutionSequence(
-						result);
+			if(result.basicBlockExecutionSequence != null) {
+				ccounts = blockCalculation.calculateCountsFromBlockExecutionSequence(result);
 			} else {
 				ccounts = new CalculatedCounts[] {
 						blockCalculation.calculateCountsFromBBCounts(
@@ -364,17 +386,16 @@ public class CollectionStrategyDefault extends AbstractCollectionStrategy {
 				};
 			}
 		} else if (result.blockCountingMode == BlockCountingMode.LabelBlocks) {//Label blocks!
-			if(result.blockExecutionSequence != null) {
-				ccounts = blockCalculation.calculateCountsFromBlockExecutionSequence(
-						result);
+			if(result.labelBlockExecutionSequence != null) {
+				ccounts = blockCalculation.calculateCountsFromBlockExecutionSequence(result);
 			} else {
 				throw new RuntimeException("Label blocks currently only support calculation from block execution sequences.");
 			}
 		} else if (result.blockCountingMode == BlockCountingMode.RangeBlocks) {//Ranges!
-			if(result.blockExecutionSequence != null) {
+			if(result.basicBlockExecutionSequence != null) {
 				result.rangeBlockExecutionSequence = removeDuplicateSequencesFromList(result.rangeBlockExecutionSequence);
-				ccounts = blockCalculation.calculateCountsFromBlockExecutionSequence(
-						result);
+				// use of basic block execution sequence for range blocks is correct
+				ccounts = blockCalculation.calculateCountsFromBlockExecutionSequence(result);
 			} else {
 				ccounts = blockCalculation.calculateCountsFromRBCounts(
 						result.qualifyingMethodName, 

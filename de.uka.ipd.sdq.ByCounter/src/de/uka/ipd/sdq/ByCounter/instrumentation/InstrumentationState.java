@@ -49,6 +49,11 @@ public class InstrumentationState {
 	 * The labels that start a basic block.
 	 */
 	private Label[] basicBlockLabels;
+
+	/**
+	 * The labels that start a label block.
+	 */
+	private Label[] labelBlockLabels;
 	
 	/**
 	 * The labels that are part of a range block.
@@ -74,6 +79,7 @@ public class InstrumentationState {
     	this.setSuccessFullyInstrumentedMethods(new ArrayList<MethodDescriptor>());
     	this.rangeBlockContainsLabels = new HashMap<Label, Integer>();
     	this.basicBlockLabels = new Label[0];
+    	this.labelBlockLabels = new Label[0];
     	this.methodInvocations = new HashMap<String, List<String>>();
     	this.methodsToInstrumentCalculated = new ArrayList<MethodDescriptor>();
     	this.entitiesToInstrumentByMethod = new HashMap<String, List<EntityToInstrument>>();
@@ -138,6 +144,20 @@ public class InstrumentationState {
 	 */
 	public void setBasicBlockLabels(Label[] basicBlockLabels) {
 		this.basicBlockLabels = basicBlockLabels;
+	}
+	
+	/**
+	 * @return The labels that start a basic block.
+	 */
+	public Label[] getLabelBlockLabels() {
+		return labelBlockLabels;
+	}
+
+	/**
+	 * @param labelBlockLabels The labels that start a label block.
+	 */
+	public void setLabelBlockLabels(Label[] labelBlockLabels) {
+		this.labelBlockLabels = labelBlockLabels;
 	}
 	
 	/**

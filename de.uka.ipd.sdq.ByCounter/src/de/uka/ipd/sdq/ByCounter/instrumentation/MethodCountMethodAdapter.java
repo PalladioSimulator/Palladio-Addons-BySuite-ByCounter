@@ -104,6 +104,11 @@ public final class MethodCountMethodAdapter extends MethodAdapter {
 	 */
 	private Map<Label, BlockCounterData> basicBlockCounters = null;
 	
+	/**
+	 * map from key:Label to value:BlockCounterData
+	 */
+	private Map<Label, BlockCounterData> labelBlockCounters = null;
+	
 	private boolean instructionCountersInitialised = false;
 	
 	private InstrumentationParameters instrumentationParameters;
@@ -198,7 +203,14 @@ public final class MethodCountMethodAdapter extends MethodAdapter {
 	 * The variable of the {@link ArrayList} created in 
 	 * {@link #initialiseBlockExecutionOrderArrayList()}.
 	 */
-	private int blockExecutionOrderArrayListVar;
+	private int basicBlockExecutionOrderArrayListVar;
+	
+
+	/**
+	 * The variable of the {@link ArrayList} created in 
+	 * {@link #initialiseBlockExecutionOrderArrayList()}.
+	 */
+	private int labelBlockExecutionOrderArrayListVar;
 	
 	/**
 	 * The variable of the {@link ArrayList} created in 
@@ -394,10 +406,13 @@ public final class MethodCountMethodAdapter extends MethodAdapter {
 	}
 	
 	private void initialiseBlockExecutionOrderArrayList() {
-		this.blockExecutionOrderArrayListVar = initialiseArrayList();
+		this.basicBlockExecutionOrderArrayListVar = initialiseArrayList();
 		
 		if(this.useRangeBlocks) {
 			this.rangeBlockExecutionOrderArrayListVar = initialiseArrayList();
+		}
+		if(this.useRegions) {
+			this.labelBlockExecutionOrderArrayListVar = initialiseArrayList();
 		}
 	}
 
@@ -439,6 +454,17 @@ public final class MethodCountMethodAdapter extends MethodAdapter {
 					d.variableIndex = getNewCounterVar();	// the index for the new variable
 				}
 				this.basicBlockCounters.put(basicBlockLabels[i], d);
+			}
+			if(useRegions) {
+				Label[] labelBlockLabels = this.instrumentationState.getLabelBlockLabels();
+				for(int i = 0; i < labelBlockLabels.length; i++) {
+					BlockCounterData d = new BlockCounterData();
+					d.blockIndex = i;
+					if(!this.instrumentationParameters.getRecordBlockExecutionOrder()) {
+						d.variableIndex = getNewCounterVar();	// the index for the new variable
+					}
+					this.labelBlockCounters.put(labelBlockLabels[i], d);
+				}
 			}
 		} else {
 			// Initialize registers for all possible opcodes.
@@ -643,29 +669,49 @@ public final class MethodCountMethodAdapter extends MethodAdapter {
 	 * @see #insertResultCollectorCall(String)
 	 */
 	protected void insertResultCollectorCompleteCall(EntityToInstrument observedElement) {
+		BlockCountingMode bcMode;
+		if(useBlockCounters) {
+			if(useRangeBlocks) {
+				bcMode = BlockCountingMode.RangeBlocks;
+			} else if(useRegions) {
+				bcMode = BlockCountingMode.LabelBlocks;
+			} else {
+				bcMode = BlockCountingMode.BasicBlocks;
+			}
+		} else {
+			bcMode = BlockCountingMode.NoBlocks;
+		}
 		this.insertResultCollectorCall(
 				ProtocolCountStructure.class.getCanonicalName().replace('.', '/'),
+				bcMode,
 				observedElement);
 	}
 	
 	/**
 	 * Calls the result collector after a part of the method has been completed.
+	 * @param blockCountingMode {@link BlockCountingMode} for the result to report.
 	 * @param observedElement {@link EntityToInstrument} that produced the result.
 	 * @see #insertResultCollectorCall(String)
 	 */
-	protected void insertResultCollectorUpdateCall(EntityToInstrument observedElement) {
+	protected void insertResultCollectorUpdateCall(
+			final BlockCountingMode blockCountingMode,
+			EntityToInstrument observedElement) {
 		this.insertResultCollectorCall(
 				ProtocolCountUpdateStructure.class.getCanonicalName().replace('.', '/'),
+				blockCountingMode,
 				observedElement);
 	}
 
 	/**
 	 * This is being called at the end of the method to report the resulting counts.
 	 * @param protocolCountStructClassName Canonical class name of the result structure.
+	 * @param blockCountingMode {@link BlockCountingMode} for the result to report.
 	 * @param observedElement {@link EntityToInstrument} that produced the result.
 	 */
 	@SuppressWarnings("boxing")
-	protected void insertResultCollectorCall(final String protocolCountStructClassName, 
+	protected void insertResultCollectorCall(
+			final String protocolCountStructClassName,
+			final BlockCountingMode blockCountingMode,
 			EntityToInstrument observedElement) {
 //		boolean skip = true;
 //		if(skip) {
@@ -793,17 +839,7 @@ public final class MethodCountMethodAdapter extends MethodAdapter {
 		}
 		
 		// specify block counting mode
-		if(useBlockCounters) {
-			if(useRangeBlocks) {
-				this.mv.visitIntInsn(Opcodes.BIPUSH, BlockCountingMode.RangeBlocks.ordinal());
-			} else if(useRegions) {
-				this.mv.visitIntInsn(Opcodes.BIPUSH, BlockCountingMode.LabelBlocks.ordinal());
-			} else {
-				this.mv.visitIntInsn(Opcodes.BIPUSH, BlockCountingMode.BasicBlocks.ordinal());
-			}
-		} else {
-			this.mv.visitIntInsn(Opcodes.BIPUSH, BlockCountingMode.NoBlocks.ordinal());
-		}
+		this.mv.visitIntInsn(Opcodes.BIPUSH, blockCountingMode.ordinal());
 		
 		// call constructor on the new result object
 		mv.visitMethodInsn(Opcodes.INVOKESPECIAL, protocolCountStructClassName, "<init>", protocolStructConstructorSignature);
@@ -812,9 +848,9 @@ public final class MethodCountMethodAdapter extends MethodAdapter {
 		if(this.useBlockCounters && this.instrumentationParameters.getRecordBlockExecutionOrder()) {
 			// set value of order arraylist
 			mv.visitInsn(Opcodes.DUP);
-			mv.visitVarInsn(Opcodes.ALOAD, this.blockExecutionOrderArrayListVar);
+			mv.visitVarInsn(Opcodes.ALOAD, this.basicBlockExecutionOrderArrayListVar);
 			mv.visitFieldInsn(Opcodes.PUTFIELD, protocolCountStructClassName, 
-					"blockExecutionSequence", "Ljava/util/ArrayList;");
+					"basicBlockExecutionSequence", "Ljava/util/ArrayList;");
 			
 			if(this.useRangeBlocks) {
 				// set value of range order arraylist
@@ -822,6 +858,13 @@ public final class MethodCountMethodAdapter extends MethodAdapter {
 				mv.visitVarInsn(Opcodes.ALOAD, this.rangeBlockExecutionOrderArrayListVar);
 				mv.visitFieldInsn(Opcodes.PUTFIELD, protocolCountStructClassName, 
 						"rangeBlockExecutionSequence", "Ljava/util/ArrayList;");
+			}
+			if(this.useRegions) {
+				// set value of label block arraylist
+				mv.visitInsn(Opcodes.DUP);
+				mv.visitVarInsn(Opcodes.ALOAD, this.labelBlockExecutionOrderArrayListVar);
+				mv.visitFieldInsn(Opcodes.PUTFIELD, protocolCountStructClassName, 
+						"labelBlockExecutionSequence", "Ljava/util/ArrayList;");
 			}
 		}
 		
@@ -909,7 +952,7 @@ public final class MethodCountMethodAdapter extends MethodAdapter {
 				indicesOfBasicBlockCounters.length+" opcode counts ");
 		return basicBlockListVar;
 	}
-
+	
 	protected void insertCountThreadStart() {
 		if(this.instrumentationParameters.getProvideJoinThreadsAbility()) {
 			mv.visitInsn(Opcodes.DUP);	// dup the thread variable
@@ -1065,6 +1108,7 @@ public final class MethodCountMethodAdapter extends MethodAdapter {
 		// blocks need to be used
 		if(this.useBlockCounters) {
 			this.basicBlockCounters = new HashMap<Label, BlockCounterData>();
+			this.labelBlockCounters = new HashMap<Label, BlockCounterData>();
 		} else {
 			this.instructionCounters = new int[MAX_OPCODE];
 		}
@@ -1292,21 +1336,28 @@ public final class MethodCountMethodAdapter extends MethodAdapter {
 		if(this.instrumentationParameters.getInstrumentationScopeOverrideMethodLevel() 
 				!= InstrumentationScopeModeEnum.InstrumentNothing) {
 			if(this.useBlockCounters) {
-				boolean callUpdate = false;
-				BlockCounterData blockData = this.basicBlockCounters.get(label);
-				if(blockData != null) {
+				BlockCounterData basicBlockData = this.basicBlockCounters.get(label);
+				if(basicBlockData != null) {
 					if(this.instrumentationParameters.getRecordBlockExecutionOrder()) {
 						insertAddIntegerToArrayList(mv,
-								this.blockExecutionOrderArrayListVar, 
-								new Integer(blockData.blockIndex));
-						if(this.useRegions) {
-							// provide region updates
-							callUpdate = true;
-						}
+								this.basicBlockExecutionOrderArrayListVar, 
+								new Integer(basicBlockData.blockIndex));
 					} else {
 						// a new basic block or range block starts
-						this.insertCounterIncrement(blockData.variableIndex);
+						this.insertCounterIncrement(basicBlockData.variableIndex);
 					}	
+				}
+				if(this.useRegions) {
+					BlockCounterData labelBlockData = this.labelBlockCounters.get(label);
+					if(labelBlockData != null) {
+						insertAddIntegerToArrayList(mv,
+								this.labelBlockExecutionOrderArrayListVar, 
+								new Integer(labelBlockData.blockIndex));
+					}
+					// provide region updates
+					this.insertResultCollectorUpdateCall(
+							BlockCountingMode.LabelBlocks,
+							this.instrumentationEntities.get(0));
 				}
 
 				if(this.useRangeBlocks 
@@ -1319,8 +1370,9 @@ public final class MethodCountMethodAdapter extends MethodAdapter {
 								rangeBlockIndex);
 						currentlyActiveEntity = this.codeAreasForMethod.get(rangeBlockIndex);
 						if(this.instrumentationParameters.getProvideOnlineSectionExecutionUpdates()) {
-							this.insertResultCollectorUpdateCall(currentlyActiveEntity);
-							callUpdate = false; // update already done
+							this.insertResultCollectorUpdateCall(
+									BlockCountingMode.RangeBlocks,
+									currentlyActiveEntity);
 						}
 					} else {
 						currentlyActiveEntity = null;
@@ -1333,9 +1385,6 @@ public final class MethodCountMethodAdapter extends MethodAdapter {
 
 					// update active entity
 					insertProtocolActiveEntity(currentlyActiveEntity);
-				}
-				if(callUpdate) {
-					this.insertResultCollectorUpdateCall(this.instrumentationEntities.get(0));
 				}
 			}
 		}
