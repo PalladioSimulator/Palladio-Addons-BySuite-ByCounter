@@ -105,7 +105,7 @@ public class EntityToInstrumentToByCounterSwitch extends InputSwitch<Boolean> {
 				surroundingMethodTo.getSurroundingClass()
 						.getQualifiedName(),
 				ByCounterWrapper.constructSignature(surroundingMethodTo));
-		if(false && midFrom.equals(midTo)) {
+		if(midFrom.equals(midTo)) {
 			// from and to are in the same method; create instrumented code area
 			// construct a method descriptor
 			MethodDescriptor methodDesc = new MethodDescriptor(
