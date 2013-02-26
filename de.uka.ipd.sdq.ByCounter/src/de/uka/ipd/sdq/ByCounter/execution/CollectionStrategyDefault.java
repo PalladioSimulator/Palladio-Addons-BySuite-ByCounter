@@ -9,10 +9,12 @@ import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.UUID;
+import java.util.Vector;
 
 import de.uka.ipd.sdq.ByCounter.instrumentation.BlockCountingMode;
 import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentedCodeArea;
 import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentedRegion;
+import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentedRegion.StopPointType;
 import de.uka.ipd.sdq.ByCounter.parsing.ArrayCreation;
 import de.uka.ipd.sdq.ByCounter.results.CountingResult;
 import de.uka.ipd.sdq.ByCounter.results.RequestResult;
@@ -46,7 +48,7 @@ public class CollectionStrategyDefault extends AbstractCollectionStrategy {
 
 	/** Regions that are currently counted. Is empty when no region is 
 	 * active. */
-	private List<InstrumentedRegion> currentRegions;
+	private Vector<InstrumentedRegion> currentRegions;
 
 	/**
 	 * When a instrumentation region ends, the last block needs 
@@ -72,7 +74,7 @@ public class CollectionStrategyDefault extends AbstractCollectionStrategy {
 		this.countingResultThreadIndexing = new CountingResultThreadIndexing();
 		this.lastBasicBlockExecutionSequenceByMethod = new HashMap<UUID, List<Integer>>();
 		this.lastLabelBlockExecutionSequenceByMethod = new HashMap<UUID, List<Integer>>();
-		this.currentRegions = new LinkedList<InstrumentedRegion>();
+		this.currentRegions = new Vector<InstrumentedRegion>();
 		this.regionsThatEnd = new LinkedList<InstrumentedRegion>();
 		this.requestMap = new HashMap<UUID, RequestResult>();
 	}
@@ -220,10 +222,17 @@ public class CollectionStrategyDefault extends AbstractCollectionStrategy {
 								&& ir.getStopLabelIds().contains(labelBlockIndex)
 								&& result.qualifyingMethodName.equals(ir.getStopMethod().getQualifyingMethodName())) {
 							// region ended
-							if(!this.regionsThatEnd.contains(ir)) {
-								this.regionsThatEnd.add(ir);
+							if(ir.getStopPointType() == StopPointType.BEFORE_SPECIFIED_LABEL) {
 								this.currentRegions.remove(ir);
 								log.info("Region ended: " + ir);
+								// make sure observers are updated
+								this.regionsThatEnd.add(ir);
+							} else if(ir.getStopPointType() == StopPointType.AFTER_SPECIFIED_LABEL) {
+								if(!this.regionsThatEnd.contains(ir)) {
+									this.regionsThatEnd.add(ir);
+									this.currentRegions.remove(ir);
+									log.info("Region ended: " + ir);
+								}
 							}
 						}
 					}
@@ -259,26 +268,46 @@ public class CollectionStrategyDefault extends AbstractCollectionStrategy {
 				// result is an instance of ProtocolCountUpdateStructure
 
 				if(this.parentResultCollector.getInstrumentationContext().getCountingMode() == CountingMode.Regions) {
+					boolean onlyAddToMostRecentRegion = this.parentResultCollector.getLastMethodExecutionDetails().executionSettings.getOnlyAddCountsForMostRecentRegion();
 					// add up for the counting region if necessary
 					if(this.currentRegions != null && !this.currentRegions.isEmpty()) {
-						this.countingResultRegionIndexing.add(res, this.currentRegions);
-						for(InstrumentedRegion currentRegion : this.currentRegions) {
-							this.countingResultUpdateIndexing.add(res, currentRegion.getId());
+						if(onlyAddToMostRecentRegion) {
+							final InstrumentedRegion mostRecentRegion = this.currentRegions.lastElement();
+							this.countingResultRegionIndexing.add(res, Arrays.asList(mostRecentRegion));
+							this.countingResultUpdateIndexing.add(res, mostRecentRegion.getId());
+						} else {
+							this.countingResultRegionIndexing.add(res, this.currentRegions);
+							for(InstrumentedRegion currentRegion : this.currentRegions) {
+								this.countingResultUpdateIndexing.add(res, currentRegion.getId());
+							}	
 						}
 					}
 					if(this.regionsThatEnd != null && !this.regionsThatEnd.isEmpty()) {
 						final int labelBlockIndex = result.labelBlockExecutionSequence.get(result.labelBlockExecutionSequence.size()-1);
 						List<InstrumentedRegion> regionsToRemove = new LinkedList<InstrumentedRegion>();
 						for(InstrumentedRegion r : regionsThatEnd) {
-							if(r.getStopLabelIds().contains(labelBlockIndex)
-									&& result.qualifyingMethodName.equals(r.getStopMethod().getQualifyingMethodName())) {
-								// the current label is a stop label, so we are still in the region
-								this.countingResultRegionIndexing.add(res, Arrays.asList(r));
-								this.countingResultUpdateIndexing.add(res, r.getId());
-
+							if(r.getStopPointType() == StopPointType.AFTER_SPECIFIED_LABEL) {
+								if(r.getStopLabelIds().contains(labelBlockIndex)
+										&& result.qualifyingMethodName.equals(r.getStopMethod().getQualifyingMethodName())) {
+									// the current label is a stop label, so we are still in the region
+									if(!onlyAddToMostRecentRegion 
+											|| (onlyAddToMostRecentRegion && r == regionsThatEnd.get(0))) {
+										this.countingResultRegionIndexing.add(res, Arrays.asList(r));
+										this.countingResultUpdateIndexing.add(res, r.getId());
+									}
+	
+									// make sure observers are updated
+									this.countingResultUpdateIndexing.setRegionDone(threadID, r.getId());
+								} else {
+									// the current label is not in the region; the region is done
+									if(!regionsToRemove.contains(r)) {
+										regionsToRemove.add(r);
+									}
+								}
+							} else if(r.getStopPointType() == StopPointType.BEFORE_SPECIFIED_LABEL) {
 								// make sure observers are updated
 								this.countingResultUpdateIndexing.setRegionDone(threadID, r.getId());
-							} else {
+
 								// the current label is not in the region; the region is done
 								if(!regionsToRemove.contains(r)) {
 									regionsToRemove.add(r);

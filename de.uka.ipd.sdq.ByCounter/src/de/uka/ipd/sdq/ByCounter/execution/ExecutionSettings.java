@@ -18,13 +18,15 @@ public class ExecutionSettings implements Cloneable {
 	 * @see #setInternalClassesDefinition(Set) 
 	 */
 	public static final char CLASSES_DEFINITION_WILDCARD_CHAR = '*';
-
 	
 	/** Default value of {@link #getCountingResultCollectorMode()}. */
 	private static final CountingResultCollectorMode COUNTING_RESULT_COLLECTOR_MODE_DEFAULT = CountingResultCollectorMode.UseReportingMethodChoiceByInstrumentedMethods;
 
 	/** Default value of {@link #getAddUpResultsRecursively()}. */
 	private static final boolean ADD_UP_RESULTS_RECURSIVELY_DEFAULT = false;
+
+	/** Default value of {@link #getOnlyAddCountsForMostRecentRegion()}. */
+	private static final boolean ONLY_ADD_COUNTS_FOR_MOST_RECENT_REGION_DEFAULT = false;
 
 	/** Default value for {@link #getWaitForThreadsToFinnish()}. */
 	private static final boolean WAIT_FOR_THREADS_TO_FINNISH_DEFAULT = true;
@@ -62,6 +64,11 @@ public class ExecutionSettings implements Cloneable {
 	private boolean waitForThreadsToFinnish;
 
 	/**
+	 * @see #getOnlyAddCountsForMostRecentRegion()
+	 */
+	private boolean onlyAddCountsForMostRecentRegion;
+
+	/**
 	 * Construct {@link ExecutionSettings} by setting every field to it's 
 	 * default value. 
 	 */
@@ -71,6 +78,7 @@ public class ExecutionSettings implements Cloneable {
 		this.addUpResultsRecursively = ADD_UP_RESULTS_RECURSIVELY_DEFAULT;
 		this.setParentClassLoader(null);
 		this.waitForThreadsToFinnish = WAIT_FOR_THREADS_TO_FINNISH_DEFAULT;
+		this.onlyAddCountsForMostRecentRegion = ONLY_ADD_COUNTS_FOR_MOST_RECENT_REGION_DEFAULT;
 	}
 	
 	/* (non-Javadoc)
@@ -87,10 +95,11 @@ public class ExecutionSettings implements Cloneable {
 			return null;
 		}
 		// copy fields
-		copy.internalClassesDefinition = this.internalClassesDefinition;
-		copy.countingResultCollectorMode = this.countingResultCollectorMode;
-		copy.parentClassLoader = this.parentClassLoader;
 		copy.addUpResultsRecursively = this.addUpResultsRecursively;
+		copy.countingResultCollectorMode = this.countingResultCollectorMode;
+		copy.internalClassesDefinition = this.internalClassesDefinition;
+		copy.onlyAddCountsForMostRecentRegion = this.onlyAddCountsForMostRecentRegion;
+		copy.parentClassLoader = this.parentClassLoader;
 		copy.waitForThreadsToFinnish = this.waitForThreadsToFinnish;
 		
 		return copy;
@@ -260,5 +269,26 @@ public class ExecutionSettings implements Cloneable {
 	 */
 	public void setWaitForThreadsToFinnish(boolean waitForThreadsToFinnish) {
 		this.waitForThreadsToFinnish = waitForThreadsToFinnish;
+	}
+
+	/**
+	 * @return When true, counts for currently executed instructions are only added
+	 * to the most recently started region. Once that region is left, the previously
+	 * most recently added region receives counts.
+	 */
+	public boolean getOnlyAddCountsForMostRecentRegion() {
+		return this.onlyAddCountsForMostRecentRegion;
+	}
+	
+	/**
+	 * @see #getOnlyAddCountsForMostRecentRegion()
+	 * @param onlyAddCountsForMostRecentRegion When true, 
+	 * counts for currently executed instructions are only added
+	 * to the most recently started region. Once that region is left, the previously
+	 * most recently added region receives counts.
+	 */
+	public void setOnlyAddCountsForMostRecentRegion(
+			boolean onlyAddCountsForMostRecentRegion) {
+		this.onlyAddCountsForMostRecentRegion = onlyAddCountsForMostRecentRegion;
 	}
 }

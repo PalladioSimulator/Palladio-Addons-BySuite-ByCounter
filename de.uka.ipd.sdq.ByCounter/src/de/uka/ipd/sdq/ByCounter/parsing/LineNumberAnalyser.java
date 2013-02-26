@@ -6,6 +6,8 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import org.objectweb.asm.Label;
 import org.objectweb.asm.tree.AbstractInsnNode;
@@ -55,7 +57,11 @@ public class LineNumberAnalyser implements IInstructionAnalyser {
 	/**
 	 * List of line numbers found in the analysed method.
 	 */
-	private List<Integer> foundLineNumbers;
+	private SortedSet<Integer> foundLineNumbers;
+	/**
+	 * Line number nodes found in the analysed method by line number.
+	 */
+	private Map<Integer, LineNumberNode> findLineNumberNodeByLine;
 		
 	
 	/**
@@ -66,7 +72,8 @@ public class LineNumberAnalyser implements IInstructionAnalyser {
 		this.labelBlocks = new ArrayList<InstructionBlockLocation>();
 		this.findLabelBlockByLabel = new HashMap<Label, InstructionBlockLocation>();
 		this.findLabelBlockByLine = new HashMap<Integer, List<InstructionBlockLocation>>();
-		this.foundLineNumbers = new LinkedList<Integer>();
+		this.foundLineNumbers = new TreeSet<Integer>();
+		this.findLineNumberNodeByLine = new HashMap<Integer, LineNumberNode>();
 	}
 
 	/* (non-Javadoc)
@@ -75,9 +82,9 @@ public class LineNumberAnalyser implements IInstructionAnalyser {
 	public void analyseInstruction(AbstractInsnNode insn) {
 		if(insn instanceof LineNumberNode) {
 			LineNumberNode lnNode = (LineNumberNode) insn;
-			addLabelForInstructionBlock(lnNode.line, lnNode.start.getLabel());
+			addLabelForInstructionBlock(lnNode, lnNode.start.getLabel());
 		} else if(insn instanceof LabelNode) {
-			addLabelForInstructionBlock(-1, ((LabelNode) insn).getLabel());
+			addLabelForInstructionBlock(null, ((LabelNode) insn).getLabel());
 		}
 	}
 
@@ -86,11 +93,11 @@ public class LineNumberAnalyser implements IInstructionAnalyser {
 	 * Add the label to the list of labels. If the label has already been added,
 	 * and the given line number is >= 0, the line number for the label is 
 	 * updated.
-	 * @param lineNumber line number for the label. Set to -1 if there is no 
+	 * @param lnNode line number for the label. Set to null if there is no 
 	 * line number for the label.
 	 * @param label Label to add.
 	 */
-	private void addLabelForInstructionBlock(int lineNumber, Label label) {
+	private void addLabelForInstructionBlock(LineNumberNode lnNode, Label label) {
 		InstructionBlockLocation loc = findLabelBlockByLabel.get(label);
 		if(loc == null) {
 			// this is the first time we see this label, so initialise the 
@@ -101,15 +108,16 @@ public class LineNumberAnalyser implements IInstructionAnalyser {
 			this.findLabelBlockByLabel.put(label, loc);
 			this.labelBlocks.add(loc);
 		}
-		if(lineNumber >= 0) {
-			updateMinMaxLineNumber(lineNumber);
-			loc.lineNumber = lineNumber;
+		if(lnNode != null) {
+			updateMinMaxLineNumber(lnNode.line);
+			loc.lineNumber = lnNode.line;
 			
 			// add the block to the line number search structure
-			addToLabelBlockByLine(lineNumber, loc);
+			addToLabelBlockByLine(lnNode.line, loc);
 			
 			// the line lineNumber was found; remove it from the not found set
-			this.foundLineNumbers.add(lineNumber);
+			this.foundLineNumbers.add(lnNode.line);
+			this.findLineNumberNodeByLine.put(lnNode.line, lnNode);
 		}
 	}
 
@@ -259,7 +267,15 @@ public class LineNumberAnalyser implements IInstructionAnalyser {
 	/**
 	 * @return List of line numbers found in the analysed method.
 	 */
-	public List<Integer> getFoundLineNumbers() {
+	public SortedSet<Integer> getFoundLineNumbers() {
 		return this.foundLineNumbers;
+	}
+	
+	/**
+	 * @param lineNumber Line Number to find.
+	 * @return Line number node found in the analysed method for the line number.
+	 */
+	public LineNumberNode findLineNumberNodeByLine(int lineNumber) {
+		return this.findLineNumberNodeByLine.get(lineNumber);
 	}
 }

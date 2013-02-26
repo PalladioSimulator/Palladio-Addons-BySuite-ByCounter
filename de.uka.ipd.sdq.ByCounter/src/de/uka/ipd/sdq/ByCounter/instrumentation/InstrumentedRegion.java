@@ -22,6 +22,29 @@ import de.uka.ipd.sdq.ByCounter.utils.MethodDescriptor;
  *
  */
 public class InstrumentedRegion extends EntityToInstrument implements Serializable {
+	
+	/***
+	 * This enum contains different type of stop point definition types that 
+	 * decide how the region is interpreted.
+	 * @author Martin Krogmann
+	 */
+	public static enum StopPointType {
+		/**
+		 * The region ends after the specified stop labels and includes the 
+		 * code of these labels.
+		 */
+		AFTER_SPECIFIED_LABEL,
+		/**
+		 * The region ends before the specified labels and does not include  
+		 * the code of these labels.
+		 */
+		BEFORE_SPECIFIED_LABEL,
+		/**
+		 * When this value is set, the {@link StopPointType} was not correctly 
+		 * specified yet.
+		 */
+		NOT_SET;
+	}
 	/**
 	 * Serialisation version.
 	 */
@@ -54,6 +77,10 @@ public class InstrumentedRegion extends EntityToInstrument implements Serializab
 	 * Method referenced by {@link #stopLine}.
 	 */
 	private MethodDescriptor stopMethod;
+	/**
+	 * Specifies how to end the region.
+	 */
+	private StopPointType stopPointType;
 	
 	/**
 	 * Construct the region.
@@ -68,6 +95,7 @@ public class InstrumentedRegion extends EntityToInstrument implements Serializab
 		setStop(stopMethod, lastLineNumber);
 		this.startLabelIds = new LinkedList<Integer>();
 		this.stopLabelIds = new LinkedList<Integer>();
+		this.stopPointType = StopPointType.NOT_SET;
 	}
 	
 	/** {@inheritDoc} */
@@ -123,6 +151,13 @@ public class InstrumentedRegion extends EntityToInstrument implements Serializab
 	}
 
 	/**
+	 * @return Specifies how to end the region.
+	 */
+	public StopPointType getStopPointType() {
+		return stopPointType;
+	}
+
+	/**
 	 * Specify the start of the region.
 	 * @param startMethod Method referenced by firstLineNumber.
 	 * @param firstLineNumber First line in startMethod included in the instrumentation.
@@ -158,6 +193,13 @@ public class InstrumentedRegion extends EntityToInstrument implements Serializab
 	 */
 	public void setStopLabelIds(List<Integer> stopLabelIds) {
 		this.stopLabelIds = stopLabelIds;
+	}
+
+	/**
+	 * @param stopPointType Specifies how to end the region.
+	 */
+	public void setStopPointType(StopPointType stopPointType) {
+		this.stopPointType = stopPointType;
 	}
 
 	/* (non-Javadoc)

@@ -3,10 +3,13 @@ package de.uka.ipd.sdq.ByCounter.parsing;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.InsnList;
+import org.objectweb.asm.tree.LineNumberNode;
 
 import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentedRegion;
 import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentationState;
+import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentedRegion.StopPointType;
 import de.uka.ipd.sdq.ByCounter.utils.MethodDescriptor;
 
 public class RegionAnalyser extends LabelBlockAnalyser {
@@ -66,7 +69,31 @@ public class RegionAnalyser extends LabelBlockAnalyser {
 				instrumentationState.getInstrumentationContext().getInstrumentationRegions().add(reg);
 			}
 			if(reg.getStopMethod().getCanonicalMethodName().equals(this.method.getCanonicalMethodName())) {
-				List<InstructionBlockLocation> stopLabels = this.lineNumberAnalyser.findLabelBlockByLine(reg.getStopLine());
+				int stopLine = reg.getStopLine();
+				if(stopLine == this.lineNumberAnalyser.getFoundLineNumbers().last()) {
+					// line number of the return (or '}' for void methods)
+					// we cannot get the next line because the stop line is the last
+					reg.setStopPointType(StopPointType.AFTER_SPECIFIED_LABEL);
+				} else {
+					if(!this.lineNumberAnalyser.getFoundLineNumbers().contains(stopLine)) {
+						do {
+							stopLine++;
+						} while(!this.lineNumberAnalyser.getFoundLineNumbers().contains(stopLine));
+					} else {
+						final LineNumberNode lnNode = this.lineNumberAnalyser.findLineNumberNodeByLine(stopLine);
+						AbstractInsnNode nextNode = lnNode;
+						do {
+							nextNode = nextNode.getNext();
+						} while(nextNode != null && !(nextNode instanceof LineNumberNode));
+						if(nextNode == null) {
+							throw new IllegalStateException("Cannot find next line number for region end: " + reg);
+						}
+						final LineNumberNode lnNextNode = (LineNumberNode) nextNode;
+						stopLine = lnNextNode.line;
+					}
+					reg.setStopPointType(StopPointType.BEFORE_SPECIFIED_LABEL);
+				}
+				List<InstructionBlockLocation> stopLabels = this.lineNumberAnalyser.findLabelBlockByLine(stopLine);
 				List<Integer> labelIds = new LinkedList<Integer>();
 				if(stopLabels == null) {
 					throw new IllegalStateException("Cannot find label for " + reg.getStopMethod().getCanonicalMethodName() + " line number " + reg.getStopLine() + ".");

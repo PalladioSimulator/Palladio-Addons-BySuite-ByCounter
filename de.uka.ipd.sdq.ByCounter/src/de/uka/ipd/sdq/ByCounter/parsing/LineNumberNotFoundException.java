@@ -1,6 +1,5 @@
 package de.uka.ipd.sdq.ByCounter.parsing;
 
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -15,13 +14,13 @@ public class LineNumberNotFoundException extends IllegalArgumentException {
 	/** Serialization ID. */
 	private static final long serialVersionUID = -4964481312212975624L;
 	/** The line numbers found in the bytecode of the method. */
-	private List<Integer> availableLineNumbers;
+	private Set<Integer> availableLineNumbers;
 	/** The line numbers that were specified, but could not be found in the method. */
 	private Set<Integer> lineNumbersNotFound;
 	
 	public LineNumberNotFoundException(final String exceptionMessage,
 			final Set<Integer> lineNumbersNotFound,
-			final List<Integer> availableLineNumbers) {
+			final Set<Integer> availableLineNumbers) {
 		super(exceptionMessage);
 		this.availableLineNumbers = availableLineNumbers;
 		this.lineNumbersNotFound = lineNumbersNotFound;
@@ -30,7 +29,7 @@ public class LineNumberNotFoundException extends IllegalArgumentException {
 	/**
 	 * @return The line numbers found in the bytecode of the method.
 	 */
-	public List<Integer> getAvailableLineNumbers() {
+	public Set<Integer> getAvailableLineNumbers() {
 		return this.availableLineNumbers;
 	}
 	
