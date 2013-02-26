@@ -290,8 +290,20 @@ public class CollectionStrategyDefault extends AbstractCollectionStrategy {
 								if(r.getStopLabelIds().contains(labelBlockIndex)
 										&& result.qualifyingMethodName.equals(r.getStopMethod().getQualifyingMethodName())) {
 									// the current label is a stop label, so we are still in the region
-									if(!onlyAddToMostRecentRegion 
-											|| (onlyAddToMostRecentRegion && r == regionsThatEnd.get(0))) {
+									if(onlyAddToMostRecentRegion) {
+										InstrumentedRegion mostRecentRelevantRegion = null;
+										for(InstrumentedRegion innerR : regionsThatEnd) {
+											// regions that ended before this label cannot be most recent
+											if(innerR.getStopPointType() != StopPointType.BEFORE_SPECIFIED_LABEL) {
+												mostRecentRelevantRegion = innerR;
+												break;
+											}
+										}
+										if(mostRecentRelevantRegion != null) {
+											this.countingResultRegionIndexing.add(res, Arrays.asList(mostRecentRelevantRegion));
+											this.countingResultUpdateIndexing.add(res, mostRecentRelevantRegion.getId());
+										}
+									} else {
 										this.countingResultRegionIndexing.add(res, Arrays.asList(r));
 										this.countingResultUpdateIndexing.add(res, r.getId());
 									}
