@@ -220,6 +220,7 @@ public class ByCounterWrapper {
 		executionSettings.setAddUpResultsRecursively(executionProfile.isAddUpResultsRecursively());
 		executionSettings.setWaitForThreadsToFinnish(executionProfile.isWaitForThreadsToFinish());
 		executionSettings.setInternalClassesDefinition(mapLogicalSet(executionProfile.getDefinedLogicalSets()));
+		executionSettings.setOnlyAddCountsForMostRecentRegion(true);
 		
 		// update execution parameters
 		this.executionProfile = executionProfile;

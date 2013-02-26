@@ -105,7 +105,7 @@ public class EntityToInstrumentToByCounterSwitch extends InputSwitch<Boolean> {
 				surroundingMethodTo.getSurroundingClass()
 						.getQualifiedName(),
 				ByCounterWrapper.constructSignature(surroundingMethodTo));
-		if(midFrom.equals(midTo)) {
+		if(false && midFrom.equals(midTo)) {
 			// from and to are in the same method; create instrumented code area
 			// construct a method descriptor
 			MethodDescriptor methodDesc = new MethodDescriptor(
@@ -239,7 +239,8 @@ public class EntityToInstrumentToByCounterSwitch extends InputSwitch<Boolean> {
 			// try to adjust the line number until a line exists in bytecode
 			firstLine++;
 		}
-		while (firstLine < lastLine && !methodLineNumbers.contains(lastLine)) {
+		boolean findSpecificExistingLastLine = false;
+		while (findSpecificExistingLastLine && firstLine < lastLine && !methodLineNumbers.contains(lastLine)) {
 			// try to adjust the line number until a line exists in bytecode
 			lastLine--;
 		}

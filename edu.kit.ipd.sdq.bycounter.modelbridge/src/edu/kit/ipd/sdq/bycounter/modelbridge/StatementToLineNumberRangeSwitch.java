@@ -42,7 +42,7 @@ public class StatementToLineNumberRangeSwitch extends
 	@Override
 	public LineNumberRange caseLoopStatement(LoopStatement object) {
 		int firstLine;
-		int lastLine;
+		int lastLine = object.getPosition().getEndLine();
 		// determine first line
 		if (object.getKind().equals(LoopStatementKind.FOREACH)) {
 			// Start line of the loop statement itself
@@ -65,6 +65,8 @@ public class StatementToLineNumberRangeSwitch extends
 			// try to adjust the line number until a line exists in bytecode
 			firstLine++;
 		}
+		boolean findSpecificExistingLastLine = false;
+		if(findSpecificExistingLastLine) {
 		// determine last line
 		if (object.getIncrementExpression() != null) {
 			lastLine = object.getIncrementExpression().getPosition().getEndLine();
@@ -79,6 +81,7 @@ public class StatementToLineNumberRangeSwitch extends
 		} else {
 			// Start line of the loop
 			lastLine = object.getPosition().getStartLine();
+		}
 		}
 		return generateLNR(firstLine, lastLine, object);
 	}
