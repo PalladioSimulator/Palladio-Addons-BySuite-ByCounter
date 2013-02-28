@@ -33,6 +33,7 @@ public class StatementToLineNumberRangeSwitch extends
 	private static final int NO_VALID_LINE = -1;
 	/** Line numbers that exist in the current method.*/
 	private List<Integer> methodLineNumbers = null;
+	private static boolean findSpecificExistingLastLine = false;
 
 	@Override
 	public LineNumberRange caseSimpleStatement(SimpleStatement object) {
@@ -65,23 +66,22 @@ public class StatementToLineNumberRangeSwitch extends
 			// try to adjust the line number until a line exists in bytecode
 			firstLine++;
 		}
-		boolean findSpecificExistingLastLine = false;
 		if(findSpecificExistingLastLine) {
-		// determine last line
-		if (object.getIncrementExpression() != null) {
-			lastLine = object.getIncrementExpression().getPosition().getEndLine();
-		} else if (object.getBreakConditionExpression() != null) {
-			// Start line of the stop condition of the loop
-			if(object.getKind().equals(LoopStatementKind.FOREACH)) {
-				// breakconditionexpr has no position for foreach; assume firstLine
-				lastLine = firstLine;
+			// determine last line
+			if (object.getIncrementExpression() != null) {
+				lastLine = object.getIncrementExpression().getPosition().getEndLine();
+			} else if (object.getBreakConditionExpression() != null) {
+				// Start line of the stop condition of the loop
+				if(object.getKind().equals(LoopStatementKind.FOREACH)) {
+					// breakconditionexpr has no position for foreach; assume firstLine
+					lastLine = firstLine;
+				} else {
+					lastLine = object.getBreakConditionExpression().getPosition().getEndLine();
+				}
 			} else {
-				lastLine = object.getBreakConditionExpression().getPosition().getEndLine();
+				// Start line of the loop
+				lastLine = object.getPosition().getStartLine();
 			}
-		} else {
-			// Start line of the loop
-			lastLine = object.getPosition().getStartLine();
-		}
 		}
 		return generateLNR(firstLine, lastLine, object);
 	}
@@ -123,13 +123,17 @@ public class StatementToLineNumberRangeSwitch extends
 				break;
 			}
 		}
-		// search for the last non-empty statement in the block from the end
-		for (int position = object.getStatements().size()-1; position >= 0; position--) {
-			subRange = this.doSwitch(object.getStatements().get(position));
-			if (subRange.lastLine > 0) {
-				lastLine = subRange.lastLine;
-				break;
+		if(findSpecificExistingLastLine) {
+			// search for the last non-empty statement in the block from the end
+			for (int position = object.getStatements().size()-1; position >= 0; position--) {
+				subRange = this.doSwitch(object.getStatements().get(position));
+				if (subRange.lastLine > 0) {
+					lastLine = subRange.lastLine;
+					break;
+				}
 			}
+		} else {
+			lastLine = object.getPosition().getEndLine();
 		}
 		if (object.getStatements().size() == 0) {
 			firstLine = lastLine = object.getPosition().getStartLine();
