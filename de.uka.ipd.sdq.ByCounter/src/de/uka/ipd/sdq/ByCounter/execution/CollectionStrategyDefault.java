@@ -248,7 +248,6 @@ public class CollectionStrategyDefault extends AbstractCollectionStrategy {
 						if(this.currentRegions != null && !this.currentRegions.isEmpty()) {
 							res = this.countingResultThreadIndexing.apply(res, result.spawnedThreads);
 							this.countingResultRegionIndexing.add(res, this.currentRegions);
-							
 						} else {
 							// no region active, skip result
 						}

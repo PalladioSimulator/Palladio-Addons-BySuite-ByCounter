@@ -76,6 +76,9 @@ public class RegionAnalyser extends LabelBlockAnalyser {
 					reg.setStopPointType(StopPointType.AFTER_SPECIFIED_LABEL);
 				} else {
 					if(!this.lineNumberAnalyser.getFoundLineNumbers().contains(stopLine)) {
+						if(stopLine > this.lineNumberAnalyser.getFoundLineNumbers().last()) {
+							throw new IllegalArgumentException("Stop line number " + stopLine + " is > than the last line of the method '" + this.method.getCanonicalMethodName() + "'.");
+						}
 						do {
 							stopLine++;
 						} while(!this.lineNumberAnalyser.getFoundLineNumbers().contains(stopLine));
