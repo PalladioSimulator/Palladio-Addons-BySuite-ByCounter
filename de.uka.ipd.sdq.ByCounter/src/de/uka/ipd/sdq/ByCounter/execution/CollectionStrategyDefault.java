@@ -285,6 +285,19 @@ public class CollectionStrategyDefault extends AbstractCollectionStrategy {
 					if(this.regionsThatEnd != null && !this.regionsThatEnd.isEmpty()) {
 						final int labelBlockIndex = result.labelBlockExecutionSequence.get(result.labelBlockExecutionSequence.size()-1);
 						List<InstrumentedRegion> regionsToRemove = new LinkedList<InstrumentedRegion>();
+						// first handle all regions that ended before this label to maintain correct sequence
+						for(InstrumentedRegion r : regionsThatEnd) {
+							if(r.getStopPointType() == StopPointType.BEFORE_SPECIFIED_LABEL) {
+								// make sure observers are updated
+								this.countingResultUpdateIndexing.setRegionDone(threadID, r.getId());
+	
+								// the current label is not in the region; the region is done
+								if(!regionsToRemove.contains(r)) {
+									regionsToRemove.add(r);
+								}
+							}
+						}
+						// then handle all regions that end after this label to maintain correct sequence
 						for(InstrumentedRegion r : regionsThatEnd) {
 							if(r.getStopPointType() == StopPointType.AFTER_SPECIFIED_LABEL) {
 								if(r.getStopLabelIds().contains(labelBlockIndex)
@@ -315,14 +328,6 @@ public class CollectionStrategyDefault extends AbstractCollectionStrategy {
 									if(!regionsToRemove.contains(r)) {
 										regionsToRemove.add(r);
 									}
-								}
-							} else if(r.getStopPointType() == StopPointType.BEFORE_SPECIFIED_LABEL) {
-								// make sure observers are updated
-								this.countingResultUpdateIndexing.setRegionDone(threadID, r.getId());
-
-								// the current label is not in the region; the region is done
-								if(!regionsToRemove.contains(r)) {
-									regionsToRemove.add(r);
 								}
 							}
 						}
