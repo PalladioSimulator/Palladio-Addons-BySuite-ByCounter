@@ -211,6 +211,7 @@ public class CollectionStrategyDefault extends AbstractCollectionStrategy {
 								this.parentResultCollector.protocolActiveEntity(ir.getId().toString());
 								this.currentRegions.add(ir);
 								log.info("Region started: " + ir);
+								res.setObservedElement(this.parentResultCollector.getInstrumentationContext().getEntitiesToInstrument().get(ir.getId()));
 								addResultToCollection(res);
 								if(regionsThatEnd.contains(ir)) {
 									regionsThatEnd.remove(ir);
@@ -228,6 +229,7 @@ public class CollectionStrategyDefault extends AbstractCollectionStrategy {
 								// make sure observers are updated
 								this.regionsThatEnd.add(ir);
 							} else if(ir.getStopPointType() == StopPointType.AFTER_SPECIFIED_LABEL) {
+								res.setObservedElement(this.parentResultCollector.getInstrumentationContext().getEntitiesToInstrument().get(ir.getId()));
 								if(!this.regionsThatEnd.contains(ir)) {
 									this.regionsThatEnd.add(ir);
 									this.currentRegions.remove(ir);
