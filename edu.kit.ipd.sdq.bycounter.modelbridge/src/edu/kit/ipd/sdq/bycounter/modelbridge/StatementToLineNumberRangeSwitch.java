@@ -88,9 +88,18 @@ public class StatementToLineNumberRangeSwitch extends
 	
 	@Override
 	public LineNumberRange caseJumpStatement(JumpStatement object) {
-		// computations of values are always made before the jump -> Reversed order of lines
-		int firstLine = object.getPosition().getEndLine(); 
-		int lastLine = object.getPosition().getStartLine();
+		int firstLine = object.getPosition().getStartLine(); 
+		int lastLine = object.getPosition().getEndLine();
+		if(firstLine > lastLine) {
+			// computations of values are always made before the jump -> sometimes reversed order of lines
+			int tmp = firstLine;
+			firstLine = lastLine;
+			lastLine = tmp;
+		}
+		while (firstLine < lastLine && !methodLineNumbers.contains(lastLine)) {
+			// try to adjust the line number until a line exists in bytecode
+			lastLine--;
+		}
 		return generateLNR(firstLine, lastLine, object);
 	}
 	
