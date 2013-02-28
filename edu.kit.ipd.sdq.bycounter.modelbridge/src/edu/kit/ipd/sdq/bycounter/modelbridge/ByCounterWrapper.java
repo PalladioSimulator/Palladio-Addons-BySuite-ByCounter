@@ -154,7 +154,6 @@ public class ByCounterWrapper {
 		this.bycounter = new BytecodeCounter();
 		this.currentRun = outputFactory.createResultCollection();
 		this.updateObserver = new UpdateObserver();
-		CountingResultCollector.getInstance().addObserver(updateObserver);
 		this.instrumentationProfile = null;
 		this.availableGastRootNodes = new LinkedList<Root>();
 		this.countingResultToEMFMap = new HashMap<CountingResult, edu.kit.ipd.sdq.bycounter.output.CountingResult>();
@@ -351,12 +350,18 @@ public class ByCounterWrapper {
 		if(this.executionProfile == null) {
 			throw new IllegalStateException("ExecutionProfile must not be null when calling execute.");
 		}
+		CountingResultCollector.getInstance().addObserver(updateObserver);
 		// specify the method and execute
 		MethodDescriptor methodToExecute = new MethodDescriptor(
 				m.getSurroundingClass().getQualifiedName(),
 				ByCounterWrapper.constructSignature(m));
 		this.bycounter.getExecutionSettings().setAddUpResultsRecursively(this.instrumentationProfile.isInstrumentRecursively());
-		return this.bycounter.execute(methodToExecute, target, params).returnValue;
+		try {
+			Object returnValue = this.bycounter.execute(methodToExecute, target, params).returnValue;
+			return returnValue;
+		} finally {
+			CountingResultCollector.getInstance().deleteObserver(updateObserver);	
+		}
 	}
 	
 	/**Uses ByCounter to create an instance of the class containing the method.
@@ -458,7 +463,11 @@ public class ByCounterWrapper {
 		result.setMethodId(mapUUID(cr.getMethodExecutionID()));
 		result.setMethodInvocationStartTime(cr.getMethodInvocationBeginning());
 		result.getOpcodeCounts().addAll(mapOpcodeCounts(cr.getOpcodeCounts()));
-		result.setObservedElement(entitiesToInstrumentIdMap.get(cr.getObservedElement().getId()));
+		EntityToInstrument observedElement = entitiesToInstrumentIdMap.get(cr.getObservedElement().getId());
+		if(observedElement == null) {
+			throw new IllegalStateException("Could not find entity to instrument for the observed element with the id " + cr.getObservedElement().getId());
+		}
+		result.setObservedElement(observedElement);
 		result.setQualifiedMethodName(cr.getQualifiedMethodName());
 		result.setReportingTime(cr.getReportingTime());
 

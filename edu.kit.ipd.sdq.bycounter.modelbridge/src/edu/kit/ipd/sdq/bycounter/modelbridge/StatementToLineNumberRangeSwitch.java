@@ -123,7 +123,7 @@ public class StatementToLineNumberRangeSwitch extends
 				break;
 			}
 		}
-		if(findSpecificExistingLastLine) {
+		if(object.getSurroundingStatement() == null || findSpecificExistingLastLine) {
 			// search for the last non-empty statement in the block from the end
 			for (int position = object.getStatements().size()-1; position >= 0; position--) {
 				subRange = this.doSwitch(object.getStatements().get(position));
