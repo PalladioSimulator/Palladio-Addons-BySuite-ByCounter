@@ -880,11 +880,13 @@ public final class MethodCountMethodAdapter extends MethodAdapter {
 		mv.visitVarInsn(Opcodes.ASTORE, this.threadSpawnArrayListVar);
 		
 		// set the observed entity
-		mv.visitInsn(Opcodes.DUP);
-		mv.visitLdcInsn(observedElement.getId().toString());
-		mv.visitMethodInsn(Opcodes.INVOKESTATIC, "java/util/UUID", "fromString", "(Ljava/lang/String;)Ljava/util/UUID;");
-		mv.visitFieldInsn(Opcodes.PUTFIELD, "de/uka/ipd/sdq/ByCounter/execution/ProtocolCountStructure", 
-				"observedEntityID", "Ljava/util/UUID;");
+		if(observedElement != null) {
+			mv.visitInsn(Opcodes.DUP);
+			mv.visitLdcInsn(observedElement.getId().toString());
+			mv.visitMethodInsn(Opcodes.INVOKESTATIC, "java/util/UUID", "fromString", "(Ljava/lang/String;)Ljava/util/UUID;");
+			mv.visitFieldInsn(Opcodes.PUTFIELD, "de/uka/ipd/sdq/ByCounter/execution/ProtocolCountStructure", 
+					"observedEntityID", "Ljava/util/UUID;");
+		}
 		
 
 		// call the result collector or the result log writer
@@ -1357,7 +1359,7 @@ public final class MethodCountMethodAdapter extends MethodAdapter {
 					// provide region updates
 					this.insertResultCollectorUpdateCall(
 							BlockCountingMode.LabelBlocks,
-							this.instrumentationEntities.get(0));
+							null);
 				}
 
 				if(this.useRangeBlocks 
