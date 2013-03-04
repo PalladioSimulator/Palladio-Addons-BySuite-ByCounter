@@ -240,6 +240,14 @@ public class CollectionStrategyDefault extends AbstractCollectionStrategy {
 					}
 				}
 			}
+			if(!this.regionsThatEnd.isEmpty()) {
+				// we left a region, report the currently active region
+				if(currentRegions.size() > 0) {
+					this.parentResultCollector.protocolActiveEntity(currentRegions.lastElement().getId().toString());
+				} else {
+					this.parentResultCollector.protocolActiveEntity(null);
+				}
+			}
 			res.setResultCollection(this.currentResultCollection);
 			// When this result is not an update, add it to the permanent results
 			if(!(result instanceof ProtocolCountUpdateStructure)) {

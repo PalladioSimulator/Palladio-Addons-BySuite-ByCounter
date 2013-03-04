@@ -57,8 +57,29 @@ public class RegionAnalyser extends LabelBlockAnalyser {
 		// calculate current regions
 		for(InstrumentedRegion reg : regions) {
 			if(reg.getStartMethod().getCanonicalMethodName().equals(this.method.getCanonicalMethodName())) {
-				List<InstructionBlockLocation> startLabels = this.lineNumberAnalyser.findLabelBlockByLine(reg.getStartLine());
+				int startLine = reg.getStartLine();
 				List<Integer> labelIds = new LinkedList<Integer>();
+				
+				{
+					// try to find out if the region actually should start on a label for a bigger line number
+					final LineNumberNode lnNode = this.lineNumberAnalyser.findLineNumberNodeByLine(startLine);
+					AbstractInsnNode prevNode = lnNode;
+					int prevLine = -1;
+					do {
+						do {
+							prevNode = prevNode.getPrevious();
+						} while(prevNode != null && !(prevNode instanceof LineNumberNode));
+						if(prevNode != null) {
+							final LineNumberNode lnPrevNode = (LineNumberNode) prevNode;
+							prevLine = lnPrevNode.line;
+							if(prevLine >= reg.getStartLine() && prevLine <= reg.getStopLine()) {
+								startLine = prevLine;
+							}
+						}
+					} while(prevNode != null && prevLine > reg.getStartLine());
+				}
+				
+				List<InstructionBlockLocation> startLabels = this.lineNumberAnalyser.findLabelBlockByLine(startLine);
 				if(startLabels == null) {
 					throw new IllegalStateException("Cannot find label for " + reg.getStartMethod().getCanonicalMethodName() + " line number " + reg.getStartLine() + ".");
 				}
