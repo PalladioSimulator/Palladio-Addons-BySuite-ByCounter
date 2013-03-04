@@ -1031,7 +1031,7 @@ public final class MethodCountMethodAdapter extends MethodAdapter {
 			case Opcodes.IRETURN:
 			case Opcodes.LRETURN:
 			case Opcodes.RETURN:
-			case Opcodes.ATHROW:	// exceptions will also terminate the method TODO does this conflict with resultCollector into a log file?
+			case Opcodes.ATHROW:	// exceptions will also terminate the method (does not conflict with resultCollector into a log file)
 				return true;
 			default:
 				return false;

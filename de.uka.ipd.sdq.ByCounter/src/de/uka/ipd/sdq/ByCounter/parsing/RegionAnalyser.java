@@ -3,12 +3,13 @@ package de.uka.ipd.sdq.ByCounter.parsing;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.InsnList;
 import org.objectweb.asm.tree.LineNumberNode;
 
-import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentedRegion;
 import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentationState;
+import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentedRegion;
 import de.uka.ipd.sdq.ByCounter.instrumentation.InstrumentedRegion.StopPointType;
 import de.uka.ipd.sdq.ByCounter.utils.MethodDescriptor;
 
@@ -69,45 +70,83 @@ public class RegionAnalyser extends LabelBlockAnalyser {
 				instrumentationState.getInstrumentationContext().getInstrumentationRegions().add(reg);
 			}
 			if(reg.getStopMethod().getCanonicalMethodName().equals(this.method.getCanonicalMethodName())) {
-				int stopLine = reg.getStopLine();
-				if(stopLine == this.lineNumberAnalyser.getFoundLineNumbers().last()) {
-					// line number of the return (or '}' for void methods)
-					// we cannot get the next line because the stop line is the last
-					reg.setStopPointType(StopPointType.AFTER_SPECIFIED_LABEL);
-				} else {
-					if(!this.lineNumberAnalyser.getFoundLineNumbers().contains(stopLine)) {
-						if(stopLine > this.lineNumberAnalyser.getFoundLineNumbers().last()) {
-							throw new IllegalArgumentException("Stop line number " + stopLine + " is > than the last line of the method '" + this.method.getCanonicalMethodName() + "'.");
+				List<Integer> stopLabelIds = new LinkedList<Integer>();
+				boolean isReturnLineSpecialCase = false;
+				if(reg.getStartLine() != reg.getStopLine() && reg.getStartMethod().getCanonicalMethodName().equals(reg.getStopMethod().getCanonicalMethodName())) {
+					// start and stop in same method
+					for(int startLine : new int[] {reg.getStartLine(), reg.getStartLine()-1}) {
+						List<InstructionBlockLocation> startLabels = this.lineNumberAnalyser.findLabelBlockByLine(startLine);
+						if(startLabels == null) {
+							continue;
 						}
-						do {
-							stopLine++;
-						} while(!this.lineNumberAnalyser.getFoundLineNumbers().contains(stopLine));
-					} else {
-						final LineNumberNode lnNode = this.lineNumberAnalyser.findLineNumberNodeByLine(stopLine);
-						AbstractInsnNode nextNode = lnNode;
-						do {
-							nextNode = nextNode.getNext();
-						} while(nextNode != null && !(nextNode instanceof LineNumberNode));
-						if(nextNode == null) {
-							throw new IllegalStateException("Cannot find next line number for region end: " + reg);
+						for(InstructionBlockLocation loc : startLabels) {
+							int labelBlockIndex = this.instructionBlockLabels.indexOf(loc.label);
+							InstructionBlockDescriptor instructions = this.instrumentationState.getInstrumentationContext().getLabelBlocks().getInstructionBlocksByMethod().get(this.method.getCanonicalMethodName())[labelBlockIndex];
+							if(containsReturnStatement(instructions.getOpcodeCounts())) {
+								isReturnLineSpecialCase = true;
+								stopLabelIds.add(labelBlockIndex);
+								reg.setStopPointType(StopPointType.BEFORE_SPECIFIED_LABEL);
+							}
 						}
-						final LineNumberNode lnNextNode = (LineNumberNode) nextNode;
-						stopLine = lnNextNode.line;
+						if(isReturnLineSpecialCase) {
+							break;
+						}
 					}
-					reg.setStopPointType(StopPointType.BEFORE_SPECIFIED_LABEL);
 				}
-				List<InstructionBlockLocation> stopLabels = this.lineNumberAnalyser.findLabelBlockByLine(stopLine);
-				List<Integer> labelIds = new LinkedList<Integer>();
-				if(stopLabels == null) {
-					throw new IllegalStateException("Cannot find label for " + reg.getStopMethod().getCanonicalMethodName() + " line number " + reg.getStopLine() + ".");
+				if(!isReturnLineSpecialCase) {
+					int stopLine = reg.getStopLine();
+					if(stopLine == this.lineNumberAnalyser.getFoundLineNumbers().last()) {
+						// line number of the return (or '}' for void methods)
+						// we cannot get the next line because the stop line is the last
+						reg.setStopPointType(StopPointType.AFTER_SPECIFIED_LABEL);
+					} else {
+						if(!this.lineNumberAnalyser.getFoundLineNumbers().contains(stopLine)) {
+							if(stopLine > this.lineNumberAnalyser.getFoundLineNumbers().last()) {
+								throw new IllegalArgumentException("Stop line number " + stopLine + " is > than the last line of the method '" + this.method.getCanonicalMethodName() + "'.");
+							}
+							do {
+								stopLine++;
+							} while(!this.lineNumberAnalyser.getFoundLineNumbers().contains(stopLine));
+						} else {
+							final LineNumberNode lnNode = this.lineNumberAnalyser.findLineNumberNodeByLine(stopLine);
+							AbstractInsnNode nextNode = lnNode;
+							do {
+								nextNode = nextNode.getNext();
+							} while(nextNode != null && !(nextNode instanceof LineNumberNode));
+							if(nextNode == null) {
+								throw new IllegalStateException("Cannot find next line number for region end: " + reg);
+							}
+							final LineNumberNode lnNextNode = (LineNumberNode) nextNode;
+							stopLine = lnNextNode.line;
+						}
+						reg.setStopPointType(StopPointType.BEFORE_SPECIFIED_LABEL);
+					}
+					List<InstructionBlockLocation> stopLabels = this.lineNumberAnalyser.findLabelBlockByLine(stopLine);
+					if(stopLabels == null) {
+						throw new IllegalStateException("Cannot find label for " + reg.getStopMethod().getCanonicalMethodName() + " line number " + reg.getStopLine() + ".");
+					}
+					for(InstructionBlockLocation loc : stopLabels) {
+						stopLabelIds.add(this.instructionBlockLabels.indexOf(loc.label));
+					}
 				}
-				for(InstructionBlockLocation loc : stopLabels) {
-					labelIds.add(this.instructionBlockLabels.indexOf(loc.label));
-				}
-				reg.setStopLabelIds(labelIds);
+				reg.setStopLabelIds(stopLabelIds);
 				// save the region
 				instrumentationState.getInstrumentationContext().getInstrumentationRegions().add(reg);
 			}
 		}
+	}
+
+	/**
+	 * @param opcodes Array of opcode counts. The index determines the opcode.
+	 * @return True when the given array contains a return statement.
+	 */
+	private boolean containsReturnStatement(final int[] opcodes) {
+		return opcodes[Opcodes.ARETURN] > 0
+				|| opcodes[Opcodes.DRETURN] > 0
+				|| opcodes[Opcodes.FRETURN] > 0
+				|| opcodes[Opcodes.IRETURN] > 0
+				|| opcodes[Opcodes.LRETURN] > 0
+				|| opcodes[Opcodes.RETURN] > 0
+				|| opcodes[Opcodes.ATHROW] > 0;
 	}
 }
