@@ -180,7 +180,7 @@ public class BlockResultCalculation {
 		if(loadLabelBlocks) {
 			currentLabelBlocks = instrumentationContext.getLabelBlocks().getInstructionBlocksByMethod().get(qualifyingMethodName);
 			if(currentLabelBlocks == null) {
-				throw new IllegalStateException("Could not find the range block definition for the method '" 
+				throw new IllegalStateException("Could not find the label block definition for the method '" 
 						+ qualifyingMethodName + "'");
 			}
 		}

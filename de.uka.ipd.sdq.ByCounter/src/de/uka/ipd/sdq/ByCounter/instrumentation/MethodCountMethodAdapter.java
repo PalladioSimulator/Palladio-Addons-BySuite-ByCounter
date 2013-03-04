@@ -1184,7 +1184,7 @@ public final class MethodCountMethodAdapter extends MethodAdapter {
 	 */
 	protected void readSettings() {
 		this.instrumentationEntities = new LinkedList<EntityToInstrument>();
-		if(this.instrumentationParameters.hasInstrumentationRegionForMethod(methodDescriptor)) {
+		if(this.instrumentationParameters.useRegionsForMethod(methodDescriptor)) {
 			this.useRegions = true;
 		}
 		// at this point, setBasicBlockLabels has been called, if it is called

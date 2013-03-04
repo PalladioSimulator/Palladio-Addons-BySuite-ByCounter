@@ -843,6 +843,18 @@ public final class InstrumentationParameters implements Cloneable {
 		}
 		return false;
 	}
+	
+	/**
+	 * @param md The affected method. 
+	 * @return True, when the method has to be instrumented as though it has regions.
+	 * It can not have regions but be part of a region. False otherwise.
+	 */
+	public boolean useRegionsForMethod(MethodDescriptor md) {
+		if(this.hasInstrumentationRegions() && this.getInstrumentRecursively()) {
+			return true;
+		}
+		return hasInstrumentationRegionForMethod(md);
+	}
 
 	/**
 	 * @see #getEntitiesToInstrument()
