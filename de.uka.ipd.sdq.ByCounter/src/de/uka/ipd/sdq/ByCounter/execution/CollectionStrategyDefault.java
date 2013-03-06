@@ -224,10 +224,12 @@ public class CollectionStrategyDefault extends AbstractCollectionStrategy {
 								&& result.qualifyingMethodName.equals(ir.getStopMethod().getQualifyingMethodName())) {
 							// region ended
 							if(ir.getStopPointType() == StopPointType.BEFORE_SPECIFIED_LABEL) {
-								this.currentRegions.remove(ir);
-								log.info("Region ended: " + ir);
 								// make sure observers are updated
-								this.regionsThatEnd.add(ir);
+								if(!this.regionsThatEnd.contains(ir)) {
+									this.regionsThatEnd.add(ir);
+									this.currentRegions.remove(ir);
+									log.info("Region ended: " + ir);
+								}
 							} else if(ir.getStopPointType() == StopPointType.AFTER_SPECIFIED_LABEL) {
 								res.setObservedElement(this.parentResultCollector.getInstrumentationContext().getEntitiesToInstrument().get(ir.getId()));
 								if(!this.regionsThatEnd.contains(ir)) {

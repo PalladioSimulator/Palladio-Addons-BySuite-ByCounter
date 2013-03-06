@@ -285,6 +285,9 @@ public class CountingResultUpdateIndexing {
 		if(resultQueue == null) {
 			return;
 		}
+		if(resultQueue.isEmpty()) {
+			throw new IllegalStateException("Region is set to done, yet the result queue is empty.");
+		}
 		updateObserversWithSection(resultQueue);
 		threadIndex.regionResultsById.remove(regionID);
 	}
