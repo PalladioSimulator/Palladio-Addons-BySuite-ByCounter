@@ -64,19 +64,21 @@ public class RegionAnalyser extends LabelBlockAnalyser {
 					// try to find out if the region actually should start on a label for a bigger line number
 					final LineNumberNode lnNode = this.lineNumberAnalyser.findLineNumberNodeByLine(startLine);
 					AbstractInsnNode prevNode = lnNode;
-					int prevLine = -1;
-					do {
+					if(prevNode != null && prevNode.getPrevious() != null) {
+						int prevLine = -1;
 						do {
-							prevNode = prevNode.getPrevious();
-						} while(prevNode != null && !(prevNode instanceof LineNumberNode));
-						if(prevNode != null) {
-							final LineNumberNode lnPrevNode = (LineNumberNode) prevNode;
-							prevLine = lnPrevNode.line;
-							if(prevLine >= reg.getStartLine() && prevLine <= reg.getStopLine()) {
-								startLine = prevLine;
+							do {
+								prevNode = prevNode.getPrevious();
+							} while(prevNode != null && !(prevNode instanceof LineNumberNode));
+							if(prevNode != null) {
+								final LineNumberNode lnPrevNode = (LineNumberNode) prevNode;
+								prevLine = lnPrevNode.line;
+								if(prevLine >= reg.getStartLine() && prevLine <= reg.getStopLine()) {
+									startLine = prevLine;
+								}
 							}
-						}
-					} while(prevNode != null && prevLine > reg.getStartLine());
+						} while(prevNode != null && prevLine > reg.getStartLine());
+					}
 				}
 				
 				List<InstructionBlockLocation> startLabels = this.lineNumberAnalyser.findLabelBlockByLine(startLine);
