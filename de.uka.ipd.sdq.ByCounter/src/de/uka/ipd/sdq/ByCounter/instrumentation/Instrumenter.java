@@ -357,7 +357,7 @@ public final class Instrumenter {
 				thisCanonicalClassName = this.getClassCanonicalName().replace('/', '.');
 				if(!canonicalClassName.equals(thisCanonicalClassName)) {
 					// this method is from another class; skip
-					this.log.fine("At this point (while instrumenting "+
+					this.log.finer("At this point (while instrumenting "+
 							thisCanonicalClassName+") nothing to do with method "+
 							methDesc.getSimpleMethodName()+" in class "+canonicalClassName);
 					continue;
@@ -397,7 +397,7 @@ public final class Instrumenter {
 									break;
 									// TODO: NOW that the method is found, instrument!
 								}else{
-									log.info("\n"+md+" \n"+"not a submethod of \n"+superClassMd);
+									log.finer("\n"+md+" \n"+"not a submethod of \n"+superClassMd);
 								}
 							}
 						}
