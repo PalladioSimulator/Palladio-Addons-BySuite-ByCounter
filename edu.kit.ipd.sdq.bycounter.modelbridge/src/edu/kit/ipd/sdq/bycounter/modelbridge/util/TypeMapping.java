@@ -3,6 +3,7 @@ package edu.kit.ipd.sdq.bycounter.modelbridge.util;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import org.eclipse.emf.common.util.EList;
 
@@ -66,6 +67,8 @@ public class TypeMapping {
 		gastTypeJavaTypeMap.put("short", JavaTypeEnum.Short);
 		gastTypeJavaTypeMap.put("void", JavaTypeEnum.Void);
 	}
+	
+	private static final Logger logger = Logger.getLogger(TypeMapping.class.getCanonicalName());
 
 	/**
 	 * @param typeOpcode Array type opcode.
@@ -130,7 +133,9 @@ public class TypeMapping {
 				}
 			}
 		}
-		throw new IllegalArgumentException("Could not find a method for the given BytecodeCounter name '" + bcName + "'. ");
+		String msg = "Could not find a method for the given BytecodeCounter name '" + bcName + "'. ";
+		logger.severe(msg);
+		throw new IllegalArgumentException(msg);
 	}
 
 	/**
