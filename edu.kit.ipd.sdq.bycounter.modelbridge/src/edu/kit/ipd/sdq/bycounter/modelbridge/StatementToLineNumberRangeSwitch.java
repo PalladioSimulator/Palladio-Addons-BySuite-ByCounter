@@ -33,7 +33,8 @@ public class StatementToLineNumberRangeSwitch extends
 	private static final int NO_VALID_LINE = -1;
 	/** Line numbers that exist in the current method.*/
 	private List<Integer> methodLineNumbers = null;
-	private static boolean findSpecificExistingLastLine = false;
+	private static final boolean findSpecificExistingLastLine = false;
+	private static final boolean findFirstLineInInnerStatements = false;
 
 	@Override
 	public LineNumberRange caseSimpleStatement(SimpleStatement object) {
@@ -124,12 +125,15 @@ public class StatementToLineNumberRangeSwitch extends
 		int firstLine = NO_VALID_LINE; // no first line could be found. Valid numbers are > 0.
 		int lastLine = NO_VALID_LINE; // no last line could be found. Valid numbers are > 0.
 		LineNumberRange subRange;
-		// search first non-empty statement within the block from the beginning
-		for (Statement statement : object.getStatements()) {
-			subRange = this.doSwitch(statement);
-			if (subRange.firstLine > 0) {
-				firstLine = subRange.firstLine;
-				break;
+		firstLine = object.getPosition().getStartLine();
+		if(findFirstLineInInnerStatements) {
+			// search first non-empty statement within the block from the beginning
+			for (Statement statement : object.getStatements()) {
+				subRange = this.doSwitch(statement);
+				if (subRange.firstLine > 0) {
+					firstLine = subRange.firstLine;
+					break;
+				}
 			}
 		}
 		if(object.getSurroundingStatement() == null || findSpecificExistingLastLine) {
