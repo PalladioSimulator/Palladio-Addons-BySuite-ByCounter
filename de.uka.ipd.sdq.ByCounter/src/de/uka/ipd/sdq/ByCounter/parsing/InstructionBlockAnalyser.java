@@ -64,8 +64,8 @@ public abstract class InstructionBlockAnalyser implements IInstructionAnalyser {
 
 	/**
 	 * Does {@link #addLabelForInstructionBlockStart(LabelNode)} for the {@link LabelNode}
-	 * instruction that is insn or the first {@link LabelNode} that follows 
-	 * after the given instruction.
+	 * instruction that is the first {@link LabelNode} that follows 
+	 * after the given instruction, or insn itself if there is no such LabelNode.
 	 * @param insn Instruction after which to look for a {@link LabelNode}.
 	 */
 	protected void addNextLabelForInstructionBlockStart(final AbstractInsnNode insn) {
