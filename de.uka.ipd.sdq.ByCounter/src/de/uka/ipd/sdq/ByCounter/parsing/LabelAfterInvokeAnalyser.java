@@ -47,12 +47,15 @@ public class LabelAfterInvokeAnalyser implements IInstructionAnalyser {
 			
 			// look for labels that are marked to start an instruction block
 			if(insn instanceof MethodInsnNode) {
-				LabelNode newLabel = new LabelNode();
-				instructions.insert(insn, newLabel);
-				if(lastLineBeforeInvoke >= 0) {
-					// try to specify a line number node as well, so that the following analysers have more information
-					LineNumberNode newLineNumberNode = new LineNumberNode(lastLineBeforeInvoke, newLabel);
-					instructions.insert(newLabel, newLineNumberNode);
+				// only add a label if there isn't one already
+				if(!(insn.getNext() instanceof LabelNode)) {
+					LabelNode newLabel = new LabelNode();
+					instructions.insert(insn, newLabel);
+					if(lastLineBeforeInvoke >= 0) {
+						// try to specify a line number node as well, so that the following analysers have more information
+						LineNumberNode newLineNumberNode = new LineNumberNode(lastLineBeforeInvoke, newLabel);
+						instructions.insert(newLabel, newLineNumberNode);
+					}
 				}
 			}
 		}
