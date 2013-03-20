@@ -9,7 +9,6 @@ Bundle-ClassPath: lib/commons-math-1.1.jar,
  lib/swtgraphics2d.jar,
  lib/javassist.jar,
  lib/junit-4.4.jar,
- lib/perfcountLinuxRDTSC.jar,
  lib/asm-all-3.3.jar,
  lib/iText-2.1.7.jar,
  lib/javautil-3.1.1.jar
@@ -166,6 +165,5 @@ Export-Package: .,
  org.w3c.dom.views,
  org.xml.sax,
  org.xml.sax.ext,
- org.xml.sax.helpers,
- uka.perfcount
+ org.xml.sax.helpers
 Require-Bundle: org.jfree.jfreechart;bundle-version="1.0.9";resolution:=optional;visibility:=reexport
