@@ -5,9 +5,7 @@ Bundle-SymbolicName: edu.kit.ipd.sdq.bycounter.modelbridge
 Bundle-Version: 1.0.0.qualifier
 Export-Package: edu.kit.ipd.sdq.bycounter.modelbridge,
  edu.kit.ipd.sdq.bycounter.modelbridge.util
-Require-Bundle: org.eclipse.emf.ecore;bundle-version="2.5.0",
- de.fzi.gast;bundle-version="1.0.0";visibility:=reexport,
- edu.kit.ipd.sdq.bycounter;bundle-version="1.0.0";visibility:=reexport,
+Require-Bundle: edu.kit.ipd.sdq.bycounter;bundle-version="1.0.0";visibility:=reexport,
  de.fzi.gast.expressions;bundle-version="1.0.0";visibility:=reexport,
  de.uka.ipd.sdq.ByCounter;bundle-version="2.0.0";visibility:=reexport
 Bundle-Vendor: FZI Forschungszentrum Informatik
