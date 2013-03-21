@@ -9,5 +9,5 @@ Require-Bundle: org.eclipse.emf.ecore;bundle-version="2.5.0",
  de.fzi.gast;bundle-version="1.0.0";visibility:=reexport,
  edu.kit.ipd.sdq.bycounter;bundle-version="1.0.0";visibility:=reexport,
  de.fzi.gast.expressions;bundle-version="1.0.0";visibility:=reexport,
- Palladio.BySuite.ByCounter;bundle-version="1.0.0";visibility:=reexport
+ de.uka.ipd.sdq.ByCounter;bundle-version="2.0.0"
 Bundle-Vendor: FZI Forschungszentrum Informatik
