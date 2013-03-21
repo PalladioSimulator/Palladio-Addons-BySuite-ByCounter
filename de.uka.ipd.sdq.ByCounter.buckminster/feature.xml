@@ -111,4 +111,20 @@ This Agreement is governed by the laws of the State of New York and the intellec
          id="de.uka.ipd.sdq.ByCounter.feature"
          version="0.0.0"/>
 
+   <plugin
+         id="de.uka.ipd.sdq.ByCounter.examples"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         fragment="true"
+         unpack="false"/>
+
+   <plugin
+         id="de.uka.ipd.sdq.ByCounter.tests"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         fragment="true"
+         unpack="false"/>
+
 </feature>
