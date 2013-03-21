@@ -1,5 +1,5 @@
 ByCounter: Lightweight Counting of Java Bytecode Instructions and Method Invocations
-Palladio.ByCounter: Pure Java version of ByCounter
+Palladio.BySuite.ByCounter: Pure Java version of ByCounter
 de.uka.ipd.sdq.ByCounter: Eclipse Plugin version of ByCounter
 ------------------------------------------------------------------------------
 IF YOU HAVE BEEN FORWARDED TO THIS PAGE (http://sdqweb.ipd.kit.edu/eclipse/ByCounter/readme.txt)
