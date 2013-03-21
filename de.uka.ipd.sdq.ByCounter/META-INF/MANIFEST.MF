@@ -10,3 +10,9 @@ Require-Bundle: org.objectweb.asm;bundle-version="3.0.0",
  org.jfree.jfreechart;bundle-version="1.0.9",
  com.lowagie.text;bundle-version="2.1.7",
  org.clapper.util;bundle-version="3.1.1"
+Export-Package: de.uka.ipd.sdq.ByCounter.execution,
+ de.uka.ipd.sdq.ByCounter.instrumentation,
+ de.uka.ipd.sdq.ByCounter.parsing,
+ de.uka.ipd.sdq.ByCounter.results,
+ de.uka.ipd.sdq.ByCounter.utils,
+ de.uka.ipd.sdq.ByCounter.utils.wide
