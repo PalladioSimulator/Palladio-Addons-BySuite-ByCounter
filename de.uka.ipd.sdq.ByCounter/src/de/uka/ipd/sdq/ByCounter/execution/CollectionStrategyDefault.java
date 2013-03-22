@@ -69,7 +69,7 @@ public class CollectionStrategyDefault extends AbstractCollectionStrategy {
 	public CollectionStrategyDefault(CountingResultCollector parent) {
 		super(parent);
 		this.countingResultIndexing = new CountingResultIndexing();
-		this.countingResultUpdateIndexing = new CountingResultUpdateIndexing();
+		this.countingResultUpdateIndexing = new CountingResultUpdateIndexing(parent);
 		this.countingResultRegionIndexing = new CountingResultRegionIndexing();
 		this.countingResultThreadIndexing = new CountingResultThreadIndexing();
 		this.lastBasicBlockExecutionSequenceByMethod = new HashMap<UUID, List<Integer>>();

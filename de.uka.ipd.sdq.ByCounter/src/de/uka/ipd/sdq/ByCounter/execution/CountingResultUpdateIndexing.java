@@ -129,13 +129,18 @@ public class CountingResultUpdateIndexing {
 	 * Map that holds a {@link ThreadRegionIndex} for each thread by thread id.
 	 */
 	private Map<Long, ThreadRegionIndex> indexForThreadRegion;
+	/**
+	 * Reference to the result collector used to access the instrumentation context.
+	 */
+	private CountingResultCollector parentResultCollector;
 	
 	/**
 	 * Construct the indexing structure.
 	 */
-	public CountingResultUpdateIndexing() {
+	public CountingResultUpdateIndexing(final CountingResultCollector crc) {
 		this.indexForThread = new HashMap<Long, CountingResultUpdateIndexing.ThreadIndex>();
 		this.indexForThreadRegion = new HashMap<Long, CountingResultUpdateIndexing.ThreadRegionIndex>();
+		this.parentResultCollector = crc;
 	}
 
 	/**
@@ -287,6 +292,10 @@ public class CountingResultUpdateIndexing {
 		}
 		if(resultQueue.isEmpty()) {
 			throw new IllegalStateException("Region is set to done, yet the result queue is empty.");
+		}
+		CountingResult top = resultQueue.peek();
+		if(top.getObservedElement() == null) {
+			top.setObservedElement(this.parentResultCollector.getInstrumentationContext().getEntitiesToInstrument().get(regionID));
 		}
 		updateObserversWithSection(resultQueue);
 		threadIndex.regionResultsById.remove(regionID);
