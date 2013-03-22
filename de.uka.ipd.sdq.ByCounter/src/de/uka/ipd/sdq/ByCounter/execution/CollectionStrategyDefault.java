@@ -3,6 +3,7 @@ package de.uka.ipd.sdq.ByCounter.execution;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -49,6 +50,12 @@ public class CollectionStrategyDefault extends AbstractCollectionStrategy {
 	/** Regions that are currently counted. Is empty when no region is 
 	 * active. */
 	private Vector<InstrumentedRegion> currentRegions;
+	
+	/**
+	 * Thread ids for current regions. 
+	 * The thread id is assigned when the region starts.
+	 */
+	private Map<InstrumentedRegion, Long> threadByRegion;
 
 	/**
 	 * When a instrumentation region ends, the last block needs 
@@ -75,6 +82,7 @@ public class CollectionStrategyDefault extends AbstractCollectionStrategy {
 		this.lastBasicBlockExecutionSequenceByMethod = new HashMap<UUID, List<Integer>>();
 		this.lastLabelBlockExecutionSequenceByMethod = new HashMap<UUID, List<Integer>>();
 		this.currentRegions = new Vector<InstrumentedRegion>();
+		this.threadByRegion = new HashMap<InstrumentedRegion, Long>();
 		this.regionsThatEnd = new LinkedList<InstrumentedRegion>();
 		this.requestMap = new HashMap<UUID, RequestResult>();
 	}
@@ -89,6 +97,7 @@ public class CollectionStrategyDefault extends AbstractCollectionStrategy {
 		this.lastBasicBlockExecutionSequenceByMethod.clear();
 		this.lastLabelBlockExecutionSequenceByMethod.clear();
 		this.currentRegions.clear();
+		this.threadByRegion.clear();
 		this.regionsThatEnd.clear();
 		this.requestMap.clear();
 	}
@@ -209,8 +218,7 @@ public class CollectionStrategyDefault extends AbstractCollectionStrategy {
 							// region started
 							if(!currentRegions.contains(ir)) {
 								this.parentResultCollector.protocolActiveEntity(ir.getId().toString());
-								this.currentRegions.add(ir);
-								log.info("Region started: " + ir);
+								startRegion(ir);
 								res.setObservedElement(this.parentResultCollector.getInstrumentationContext().getEntitiesToInstrument().get(ir.getId()));
 								addResultToCollection(res);
 								if(regionsThatEnd.contains(ir)) {
@@ -226,16 +234,12 @@ public class CollectionStrategyDefault extends AbstractCollectionStrategy {
 							if(ir.getStopPointType() == StopPointType.BEFORE_SPECIFIED_LABEL) {
 								// make sure observers are updated
 								if(!this.regionsThatEnd.contains(ir)) {
-									this.regionsThatEnd.add(ir);
-									this.currentRegions.remove(ir);
-									log.info("Region ended: " + ir);
+									endRegion(ir);
 								}
 							} else if(ir.getStopPointType() == StopPointType.AFTER_SPECIFIED_LABEL) {
 								res.setObservedElement(this.parentResultCollector.getInstrumentationContext().getEntitiesToInstrument().get(ir.getId()));
 								if(!this.regionsThatEnd.contains(ir)) {
-									this.regionsThatEnd.add(ir);
-									this.currentRegions.remove(ir);
-									log.info("Region ended: " + ir);
+									endRegion(ir);
 								}
 							}
 						}
@@ -283,7 +287,15 @@ public class CollectionStrategyDefault extends AbstractCollectionStrategy {
 					// add up for the counting region if necessary
 					if(this.currentRegions != null && !this.currentRegions.isEmpty()) {
 						if(onlyAddToMostRecentRegion) {
-							final InstrumentedRegion mostRecentRegion = this.currentRegions.lastElement();
+							Iterator<InstrumentedRegion> crIter = this.currentRegions.iterator();
+							InstrumentedRegion mostRecentRegion = crIter.next();
+							while(crIter.hasNext()) {
+								// find the most current region for the thread
+								final InstrumentedRegion currentRegion = crIter.next();
+								if(threadByRegion.get(currentRegion) == threadID) {
+									mostRecentRegion = currentRegion;
+								}
+							}
 							this.countingResultRegionIndexing.add(res, Arrays.asList(mostRecentRegion));
 							this.countingResultUpdateIndexing.add(res, mostRecentRegion.getId());
 						} else {
@@ -352,6 +364,27 @@ public class CollectionStrategyDefault extends AbstractCollectionStrategy {
 
 		}
 		return true;
+	}
+
+	/**
+	 * The given region has been entered. Update data relevant structures.
+	 * @param ir Region that started.
+	 */
+	private void startRegion(InstrumentedRegion ir) {
+		this.currentRegions.add(ir);
+		log.info("Region started: " + ir);
+		this.threadByRegion.put(ir, Thread.currentThread().getId());
+	}
+
+	/**
+	 * The given region has been left. Update data relevant structures.
+	 * @param ir Region that ended.
+	 */
+	private void endRegion(InstrumentedRegion ir) {
+		this.regionsThatEnd.add(ir);
+		this.currentRegions.remove(ir);
+		log.info("Region ended: " + ir);
+		this.threadByRegion.remove(ir);
 	}
 
 	/** 
