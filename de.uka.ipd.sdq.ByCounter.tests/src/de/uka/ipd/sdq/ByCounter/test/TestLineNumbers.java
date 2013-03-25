@@ -234,7 +234,7 @@ public class TestLineNumbers extends AbstractByCounterTest {
         counter = setupByCounter();
         counter.getInstrumentationParams().setUseBasicBlocks(true);
         counter.getInstrumentationParams().setRecordBlockExecutionOrder(false);
-        counter.getInstrumentationParams().setWriteClassesToDisk(true);
+        counter.getInstrumentationParams().setWriteClassesToDisk(false);
         counter.addEntityToInstrument(methodNormalise);
 		counter.instrument();
         counter.execute(methodNormalise, executionParameters);
@@ -471,7 +471,7 @@ public class TestLineNumbers extends AbstractByCounterTest {
         counter.setInstrumentationParams(this.instrumentationParameters);
         counter.getInstrumentationParams().setUseBasicBlocks(true);
         counter.getInstrumentationParams().setRecordBlockExecutionOrder(true);
-        counter.getInstrumentationParams().setWriteClassesToDisk(true);
+        counter.getInstrumentationParams().setWriteClassesToDisk(false);
         MethodDescriptor methodRanged = new MethodDescriptor(UncommonFormatting.class.getCanonicalName(), "public void process()");
         List<EntityToInstrument> entitiesToInstrument = new LinkedList<EntityToInstrument>();
         for(LineNumberRange r : e.getRanges()) {

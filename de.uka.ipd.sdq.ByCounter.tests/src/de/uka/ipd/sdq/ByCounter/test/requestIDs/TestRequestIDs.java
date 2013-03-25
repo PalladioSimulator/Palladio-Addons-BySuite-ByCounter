@@ -60,7 +60,7 @@ public class TestRequestIDs extends AbstractByCounterTest {
 		this.methodToExecute		= METHOD_A_MAIN;
 		this.executionParameters	= EXECUTION_PARAMETERS_NONE;
 		init();
-		this.instrumentationParameters.setWriteClassesToDisk(true);
+		this.instrumentationParameters.setWriteClassesToDisk(false);
 		count();
 	}
 	
