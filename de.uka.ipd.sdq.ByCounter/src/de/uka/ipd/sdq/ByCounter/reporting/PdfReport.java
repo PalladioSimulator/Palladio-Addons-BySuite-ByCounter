@@ -53,6 +53,7 @@ public class PdfReport implements ICountingResultWriter {
 	 */
 	public static class Configuration {
 		public boolean printZeros = false;
+		public File directory = new File(".");
 	}
 
 	private Logger log;
@@ -73,8 +74,9 @@ public class PdfReport implements ICountingResultWriter {
 			dateFormat.format(new Date(System.currentTimeMillis()))
 			+ "." + methodExecution.canonicalClassName
 			+ ".pdf";
-		logger.info("Generating PDF and storing in file: " + fileName);
-		openFile(doc, fileName);
+		File pdfFile = new File(this.configuration.directory, fileName);
+		logger.info("Generating PDF and storing in file: " + pdfFile.getAbsolutePath());
+		openFile(doc, pdfFile.getAbsolutePath());
 		doc.open();
 
 		// Header
@@ -111,7 +113,7 @@ public class PdfReport implements ICountingResultWriter {
 		chSystem.add(createSystemInformationTable());
 		doc.add(chSystem);
 		doc.close();
-		this.lastWrittenFile = new File(fileName);
+		this.lastWrittenFile = pdfFile;
 	}
 
 	private Paragraph createExecutedMethods(MethodExecutionRecord methodExecution) {
