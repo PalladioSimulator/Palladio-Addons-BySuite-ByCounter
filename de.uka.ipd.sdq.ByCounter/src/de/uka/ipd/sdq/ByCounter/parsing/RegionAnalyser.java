@@ -145,7 +145,8 @@ public class RegionAnalyser extends LabelBlockAnalyser {
 			for(InstructionBlockLocation loc : stopLabels) {
 				int labelBlockIndex = this.instructionBlockLabels.indexOf(loc.label);
 				InstructionBlockDescriptor instructions = this.instrumentationState.getInstrumentationContext().getLabelBlocks().getInstructionBlocksByMethod().get(this.method.getCanonicalMethodName())[labelBlockIndex];
-				if(containsReturnStatement(instructions.getOpcodeCounts())) {
+				if(containsReturnStatement(instructions.getOpcodeCounts())
+						|| instructions.getOpcodeCounts()[Opcodes.GOTO] > 0) {
 					// for multi-line return statements, only use the label that actually contains the return opcode
 					stopLabelIds.add(labelBlockIndex);
 					reg.setStopPointType(StopPointType.AFTER_SPECIFIED_LABEL);
