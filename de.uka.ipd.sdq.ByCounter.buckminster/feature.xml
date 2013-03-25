@@ -105,6 +105,8 @@ This Agreement is governed by the laws of the State of New York and the intellec
 
    <url>
       <discovery label="Palladio Component Model" url="http://sdqweb.ipd.kit.edu/eclipse/palladio/releases/current/"/>
+      <discovery label="SISSy" url="http://sdqweb.ipd.kit.edu/eclipse/sissy/releases/1.1.1/"/>
+      <discovery label="Eclipse Modelling Framework" url="http://download.eclipse.org/modeling/emf/updates/"/>
    </url>
 
    <includes
