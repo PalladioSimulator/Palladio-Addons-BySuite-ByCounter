@@ -8,6 +8,7 @@ import java.util.logging.Logger;
 
 import junit.framework.Assert;
 
+import org.junit.AfterClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -34,15 +35,15 @@ public class TestResultWriters extends AbstractByCounterTest {
 
 	private static Logger log = Logger.getLogger(TestResultWriters.class.toString());
 
-	private static final String resultLogFileName = "output" + File.separatorChar +"tmpLogFile.log";
+	private static final String resultLogFileName = "output" + File.separatorChar + "junittest" + File.separatorChar +"tmpLogFile.log";
 
 	private static final String testChartName = "testMyChart";
 
 	private static final String testChartsDirectory = "testCharts";
 	
-	private static final String TEST_CSV_DIRECTORY = "outputCsv";
+	private static final String TEST_CSV_DIRECTORY = "outputCsv" + File.separatorChar + "junittest";
 
-	private static final String TEST_PDF_DIRECTORY = "outputReports";
+	private static final String TEST_PDF_DIRECTORY = "outputReports" + File.separatorChar + "junittest";
 
 	private static final String CLASS_TEST_SUBJECT = TestSubject.class.getCanonicalName();
 
@@ -115,7 +116,7 @@ public class TestResultWriters extends AbstractByCounterTest {
 	public void testCSVReading() {
 		File csvDirectory = new File(TEST_CSV_DIRECTORY);
 		if(!csvDirectory.exists()) {
-			csvDirectory.mkdir();
+			csvDirectory.mkdirs();
 		}
 
 		// create a BytecodeCounter
@@ -192,7 +193,7 @@ public class TestResultWriters extends AbstractByCounterTest {
 	public void testCSVWriter() {
 		File csvDirectory = new File(TEST_CSV_DIRECTORY);
 		if(!csvDirectory.exists()) {
-			csvDirectory.mkdir();
+			csvDirectory.mkdirs();
 		}
 
 		// create a BytecodeCounter
@@ -322,7 +323,7 @@ public class TestResultWriters extends AbstractByCounterTest {
 	public void testPdfReport() {
 		File pdfDirectory = new File(TEST_PDF_DIRECTORY);
 		if(!pdfDirectory.exists()) {
-			pdfDirectory.mkdir();
+			pdfDirectory.mkdirs();
 		}
 
 		// create a BytecodeCounter
@@ -390,6 +391,32 @@ public class TestResultWriters extends AbstractByCounterTest {
 		if(realF.exists()) {
 			realF.delete();
 		}
+	}
+
+	/**
+	 * Since {@link File#delete()} only deletes empty directories, we need 
+	 * a utility function to delete all contained files first.
+	 * @param directory Directory and all its contents to delete.
+	 */
+	public static void deleteDirectory(final File directory) {
+		if(!directory.isDirectory()) {
+			throw new IllegalArgumentException("The file '" + directory + "' is not a directory.");
+		}
+		for(File f : directory.listFiles()) {
+			if(f.isDirectory()) {
+				deleteDirectory(f);
+			} else {
+				f.delete();
+			}
+		}
+		directory.delete();
+	}
+	
+	@AfterClass
+	public static void cleanUpFiles() {
+		deleteDirectory(new File(TEST_CSV_DIRECTORY));
+		deleteDirectory(new File(TEST_PDF_DIRECTORY));
+		deleteDirectory(new File(resultLogFileName).getParentFile());
 	}
 
 }
