@@ -42,6 +42,8 @@ public class TestResultWriters extends AbstractByCounterTest {
 	
 	private static final String TEST_CSV_DIRECTORY = "outputCsv";
 
+	private static final String TEST_PDF_DIRECTORY = "outputReports";
+
 	private static final String CLASS_TEST_SUBJECT = TestSubject.class.getCanonicalName();
 
 	private static final String METHOD_METHOD_CALL_TEST = "public void methodCallTest()";
@@ -318,7 +320,10 @@ public class TestResultWriters extends AbstractByCounterTest {
 	 */
 	@Test
 	public void testPdfReport() {
-
+		File pdfDirectory = new File(TEST_PDF_DIRECTORY);
+		if(!pdfDirectory.exists()) {
+			pdfDirectory.mkdir();
+		}
 
 		// create a BytecodeCounter
 		BytecodeCounter counter = setupByCounter();
@@ -326,6 +331,7 @@ public class TestResultWriters extends AbstractByCounterTest {
 
 		CountingResultCollector resultColl = CountingResultCollector.getInstance();
 		PdfReport pdfReport = new PdfReport();
+		pdfReport.configuration.directory = pdfDirectory;
 		resultColl.registerWriter(pdfReport);
 
 		// test with void method
