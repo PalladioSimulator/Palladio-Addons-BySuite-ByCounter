@@ -7,7 +7,12 @@
 <listEntry value="1"/>
 </listAttribute>
 <listAttribute key="com.mountainminds.eclemma.core.INSTRUMENTATION_PATHS">
-<listEntry value="/de.uka.ipd.sdq.ByCounter.tests/bin"/>
+<listEntry value="/de.uka.ipd.sdq.ByCounter.tests/bin/de/uka/ipd/sdq/ByCounter/execution"/>
+<listEntry value="/de.uka.ipd.sdq.ByCounter.tests/bin/de/uka/ipd/sdq/ByCounter/instrumentation"/>
+<listEntry value="/de.uka.ipd.sdq.ByCounter.tests/bin/de/uka/ipd/sdq/ByCounter/parsing"/>
+<listEntry value="/de.uka.ipd.sdq.ByCounter.tests/bin/de/uka/ipd/sdq/ByCounter/reporting"/>
+<listEntry value="/de.uka.ipd.sdq.ByCounter.tests/bin/de/uka/ipd/sdq/ByCounter/results"/>
+<listEntry value="/de.uka.ipd.sdq.ByCounter.tests/bin/de/uka/ipd/sdq/ByCounter/utils"/>
 </listAttribute>
 <stringAttribute key="org.eclipse.jdt.junit.CONTAINER" value=""/>
 <booleanAttribute key="org.eclipse.jdt.junit.KEEPRUNNING_ATTR" value="false"/>
