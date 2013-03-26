@@ -1,5 +1,6 @@
-<?xml version="1.0" encoding="UTF-8"?><cq:componentQuery xmlns:cq="http://www.eclipse.org/buckminster/CQuery-1.0" resourceMap="bycounter.rmap">
-    <cq:rootRequest name="de.uka.ipd.sdq.ByCounter.buckminster"/>
+<?xml version="1.0" encoding="UTF-8"?>
+<cq:componentQuery xmlns:cq="http://www.eclipse.org/buckminster/CQuery-1.0" resourceMap="bycounter.rmap">
+    <cq:rootRequest name="de.uka.ipd.sdq.ByCounter.buckminster" componentType="eclipse.feature"/>
     <cq:property key="pass" value="anonymous"/>
     <cq:property key="user" value="anonymous"/>
 </cq:componentQuery>

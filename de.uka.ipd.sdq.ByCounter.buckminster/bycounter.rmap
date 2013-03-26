@@ -9,7 +9,7 @@
   <rm:locator searchPathRef="palladio-commons" failOnError="false" pattern="^edu\.kit\.ipd\.sdq\..*" />
   <rm:locator searchPathRef="SISSy" failOnError="false" />
   <rm:locator searchPathRef="eclipse-juno" failOnError="false"/>
-  <rm:locator searchPathRef="orbit" failOnError="false" />
+  <rm:locator searchPathRef="orbit" />
   
   <rm:searchPath name="localresources">
     <rm:provider componentTypes="osgi.bundle,eclipse.feature" readerType="local">
