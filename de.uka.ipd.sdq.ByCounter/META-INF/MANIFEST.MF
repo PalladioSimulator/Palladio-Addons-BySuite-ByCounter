@@ -7,7 +7,7 @@ Bundle-Vendor: %providerName
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Require-Bundle: org.objectweb.asm;bundle-version="[3.0.0,4.0.0)";visibility:=reexport,
  javassist;bundle-version="3.10.0";visibility:=reexport,
- org.jfree.jfreechart;bundle-version="1.0.9";resolution:=optional;visibility:=reexport,
+ org.jfree.jfreechart;bundle-version="1.0.9";visibility:=reexport,
  com.lowagie.text;bundle-version="2.1.7";visibility:=reexport,
  org.clapper.util;bundle-version="3.1.1";visibility:=reexport
 Export-Package: de.uka.ipd.sdq.ByCounter.execution,
