@@ -207,7 +207,7 @@ public final class MethodPreInstrumentationParser extends MethodAdapter {
 				// already done
 				continue;
 			}
-			analyser.postAnalysisEvent(mn.instructions);
+				// analyser.postAnalysisEvent(mn.instructions); // bck
 		}
 		
 		// check whether the method is marked as instrumented.

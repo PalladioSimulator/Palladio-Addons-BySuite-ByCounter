@@ -72,6 +72,12 @@ public final class BytecodeCounter {
 	 * A flag which is <code>true</code> if class to count was given as bytes.
 	 */
 	private boolean classAsBytes;
+
+	/**
+	 * A flag which is <code>true</code> if multiple classes are given to count
+	 * as bytes.
+	 */
+	private boolean classesAsBytes;
 	
 	/**
 	 * The class to count as byte array, if <code>classAsBytes</code> is true.
@@ -100,7 +106,13 @@ public final class BytecodeCounter {
 	 * instrument() was called.
 	 */
 	private byte[] instrumentedClassBytes;
-	
+
+	/**
+	 * A map containing arrays of bytes representing the instrumented classes
+	 * once instrument() was called.
+	 */
+	private Map<String, byte[]> classHierarchyBytesToInstrument;
+
 	/**
 	 * Parameters for instrumentation, can be set by the user.
 	 */
@@ -128,6 +140,7 @@ public final class BytecodeCounter {
 	 * ClassLoader that handles instrumented classes.
 	 */
 	private final InstrumentationClassLoader classLoader;
+
 	
 	/**
 	 * Setup a new BytecodeCounter.
@@ -295,6 +308,19 @@ public final class BytecodeCounter {
 	}
 	
 	/**
+	 * Convenience method for adding a method by name to
+	 * the entityToInstrument collection in {@link #getInstrumentationParams()}.
+	 * with a {@link InstrumentedMethod}.
+	 * Only needed when using 
+	 * void setClassesToInstrument(Map<String, byte[]> classByteMap)
+	 * {@link #instrument()} needs to be called seperately.
+	 * @param fullMethod Method to fully instrument.
+	 */
+	public void addEntityToInstrument(String className) {
+		this.instrumentationParameters.getEntitiesToInstrument().add(new InstrumentedClass(className));
+	}
+	
+	/**
 	 * Convenience method for adding {@link EntityToInstrument} to
 	 * the entityToInstrument collection in {@link #getInstrumentationParams()}.
 	 * with a {@link InstrumentedMethod}.
@@ -441,8 +467,11 @@ public final class BytecodeCounter {
 					callGraphAdapter.parseClass(callGraph, cr);
 				} else {
 					try {
-						cr = new ClassReader(className);
-						success = success && callGraphAdapter.parseClass(callGraph, cr);
+						if(this.classesAsBytes) // bck
+							cr = new ClassReader(this.classHierarchyBytesToInstrument.get(className));
+						else
+							cr = new ClassReader(className); 
+						success = success && callGraphAdapter.parseClassFromHierarchy(callGraph, cr, this.classHierarchyBytesToInstrument); // bck
 					} catch (IOException e) {
 						log.severe("Could not parse class with name '" + className + "'. Skipping.");
 						success = false;
@@ -529,8 +558,9 @@ public final class BytecodeCounter {
 			Map<String, ClassMethodImplementations> classMethodDefinitions, 
 			MethodDescriptor methodToAnalyse) {
 		FindMethodDefinitionsClassAdapter findMethodsCA = 
-			new FindMethodDefinitionsClassAdapter(
-					this.instrumentationParameters.getIgnoredPackagePrefixes());
+				new FindMethodDefinitionsClassAdapter(
+						this.instrumentationParameters.getIgnoredPackagePrefixes(), 
+						this.classHierarchyBytesToInstrument);
 		boolean descent;
 		MethodDescriptor currentM = methodToAnalyse;
 		do {
@@ -715,7 +745,12 @@ public final class BytecodeCounter {
 		boolean success = false;
 
 		try {
-			if(this.classAsBytes) {
+			if(this.classesAsBytes){
+				log.fine("Getting instrumenter over multiple classes bytes");
+				instr = new Instrumenter(this.classHierarchyBytesToInstrument.get(className), 
+						this.instrumentationParameters,
+						this.instrumentationState);
+			}else if(this.classAsBytes) {
 				log.fine("Getting instrumenter over class bytes");
 				instr = new Instrumenter(this.classBytesToInstrument, 
 						this.instrumentationParameters,
@@ -773,21 +808,24 @@ public final class BytecodeCounter {
  
 			this.classLoader.updateClassInClassPool(className, b);
 			
-			// write context
-			try {		
-				File file = new File(InstrumentationContext.FILE_SERIALISATION_DEFAULT_NAME);
-				log.info("Writing ByCounter instrumentation context to " + file.getAbsolutePath());
-				InstrumentationContext.serialise(this.instrumentationState.getInstrumentationContext(), file);
-			} catch (IOException e) {
-				log.severe("Failed to serialise basic or range block definitions. " + e.getMessage());
-				e.printStackTrace();
-			}
+			writeContext();
 		} catch (ClassNotFoundException e3) {
 			log.severe("Could not find the specified class");
 		}
 		return success;
 	}
 	
+	
+	private void writeContext(){
+		try {		
+			File file = new File(InstrumentationContext.FILE_SERIALISATION_DEFAULT_NAME);
+			log.info("Writing ByCounter instrumentation context to " + file.getAbsolutePath());
+			InstrumentationContext.serialise(this.instrumentationState.getInstrumentationContext(), file);
+		} catch (IOException e) {
+			log.severe("Failed to serialise basic or range block definitions. " + e.getMessage());
+			e.printStackTrace();
+		}
+	}
 
 	/**
 	 * Summarise for the user what methods have been instrumented successfully.
@@ -873,6 +911,11 @@ public final class BytecodeCounter {
 	public synchronized void setClassToInstrument(byte[] classToInstrument) {
 		this.classBytesToInstrument = classToInstrument;
 		this.classAsBytes = true;
+	}
+
+	public synchronized void setClassesToInstrument(Map<String, byte[]> map) {
+		this.classHierarchyBytesToInstrument = map;
+		this.classesAsBytes = true;
 	}
 
 	/**

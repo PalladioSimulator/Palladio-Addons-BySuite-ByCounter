@@ -62,6 +62,19 @@ public final class CallGraphClassAdapter {
 	 * @return True, if the class could be found and parsed successfully.
 	 */
 	public boolean parseClass(final CallGraph callGraph, ClassReader classReader) {
+		return parseClassFromHierarchy(callGraph, classReader, null);
+	}
+		
+	/**
+	 * @param callGraph This is the {@link CallGraph} that will be extended with the method calls
+	 * found in the class named className.
+	 * @param classReader An initialised {@link ClassReader} for the class holding the methods that shall be parsed.
+	 * Needs to be fully qualified as this is used to find the correct class.
+	 * @param classHierarchyBytesToInstrument This is a map of byte arrays including dependendant classes.
+	 * Can be set to null if there is only one class specified in bytes. 
+	 * @return True, if the class could be found and parsed successfully.
+	 */
+	public boolean parseClassFromHierarchy(final CallGraph callGraph, ClassReader classReader, final Map<String, byte[]> classHierarchyBytesToInstrument) {
 		if(callGraph == null) {
 			log.severe("CallGraph was null. Aborting parsing.");
 			return false;
@@ -91,7 +104,7 @@ public final class CallGraphClassAdapter {
 					@Override
 					public List<ClassReader> call() throws Exception {
 						try {
-							return parseSingleClass(callGraph, currentCR);
+							return parseSingleClassFromHierarchy(callGraph, currentCR,classHierarchyBytesToInstrument);
 						} catch (IOException e) {
 							log.severe("Could not parse class with name '" + currentCR.getClassName() + "'. Skipping.");
 						}
@@ -115,10 +128,11 @@ public final class CallGraphClassAdapter {
 			// classesToParse is complete; go to newClassesToParse
 			classesToParse = newClassesToParse;
 		}
-		
+		exec.shutdown();
 		return success;
 	}
 
+	
 	/**
 	 * Parse the class given as a class reader and adds method calls to the 
 	 * call graph.
@@ -130,6 +144,20 @@ public final class CallGraphClassAdapter {
 	 */
 	@SuppressWarnings("unchecked")
 	private List<ClassReader> parseSingleClass(final CallGraph callGraph, ClassReader currentCR) throws IOException {
+		return parseSingleClassFromHierarchy(callGraph, currentCR,null);
+	}
+	
+	/**
+	 * Parse the class given as a class reader and adds method calls to the 
+	 * call graph.
+	 * @param callGraph Call graph that will be written to.
+	 * @param currentCR ClassReader for a class.
+	 * @return A {@link List} of classes that are used by this class. These
+	 * need to be parsed as well for a complete call graph.
+	 * @throws IOException Thrown when a class cannot be read.
+	 */
+	@SuppressWarnings("unchecked")
+	private List<ClassReader> parseSingleClassFromHierarchy(final CallGraph callGraph, ClassReader currentCR, Map<String, byte[]> classHierarchyBytesToInstrument) throws IOException {
 		List<ClassReader> newClassesToParse = new LinkedList<ClassReader>();
 		// check if the class was already parsed to avoid endless recursion
 		if(callGraph.getParsedClasses().contains(currentCR.getClassName())) {
@@ -216,8 +244,19 @@ public final class CallGraphClassAdapter {
 						// add the call to the graph
 						callGraph.addMethodCall(m1, m2);
 						
+						// see if we already have bytes for m2
+						byte[] precompiled = null;
+						if(classHierarchyBytesToInstrument !=null){
+							String methodName= methodCall.owner.replaceAll("/", "\\.");
+							precompiled = classHierarchyBytesToInstrument.get(methodName);
+						}
 						// now parse the class that contains m2
-						newClassesToParse.add(new ClassReader(methodCall.owner));
+						if(precompiled==null)
+							newClassesToParse.add(new ClassReader(methodCall.owner));
+						else
+							newClassesToParse.add(new ClassReader(precompiled));
+							
+						
 					}
 				}
 			}

@@ -2,6 +2,7 @@ package de.uka.ipd.sdq.ByCounter.parsing;
 
 import java.io.IOException;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import org.objectweb.asm.ClassReader;
@@ -23,10 +24,21 @@ public final class FindMethodDefinitionsClassAdapter {
 	 */
 	protected String[] ignoredPackagePrefixes;
 	
+	/**
+	 * A reference to a hierarchy of classes as bytes
+	 */
+	private Map<String, byte[]> classesHierarchyLoader = null;
+	
 	public FindMethodDefinitionsClassAdapter(final String[] ignoredPackagePrefixes) {
 		this.ignoredPackagePrefixes = ignoredPackagePrefixes;
 	}
-	
+
+	public FindMethodDefinitionsClassAdapter(final String[] ignoredPackagePrefixes, 
+			Map<String, byte[]> classHierarchyBytesToInstrument) {
+		this.ignoredPackagePrefixes = ignoredPackagePrefixes;
+		this.classesHierarchyLoader = classHierarchyBytesToInstrument;
+	}
+
 	/**
 	 * @param methodDefinitions A list of full method definition descriptions
 	 * for all methods in the class.
@@ -38,7 +50,10 @@ public final class FindMethodDefinitionsClassAdapter {
 
 		ClassReader cr = null;
 		try {
-			cr = new ClassReader(className);
+			if (classesHierarchyLoader != null) {
+				cr = new ClassReader(classesHierarchyLoader.get(className));
+			} else
+				cr = new ClassReader(className);
 		} catch (IOException e) {
 			log.severe("Could not parse class with name '" + className + "'. Skipping.");
 			return false;
